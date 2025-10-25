@@ -1,10 +1,10 @@
 import "./css/App.css";
-import Inicio from './Paginas/Inicio'
+import Inicio from "./pages/Inicio.jsx";
 
 function App() {
   return (
     <>
-{/*       <section>
+      {/*       <section>
         <h1>Hello Rinha de Ratos!</h1>
         <h3>
           Para os intimos, melhor projeto que o Huilson e o Cleiton irão
