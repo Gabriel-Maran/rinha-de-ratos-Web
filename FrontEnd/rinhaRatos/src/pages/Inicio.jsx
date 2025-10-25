@@ -1,4 +1,4 @@
-import Dink from "../assets/Dink.png";
+import RatoEsgoto from "../assets/RatoEsgoto.png";
 
 export default function Inicio() {
   return (
@@ -6,7 +6,7 @@ export default function Inicio() {
       <div>
         <h1>Rinha de Ratos 2000</h1>
         <div>
-          <img src={Dink} />
+          <img src={RatoEsgoto} />
         </div>
       </div>
     </>
