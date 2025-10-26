@@ -3,9 +3,16 @@ package com.unipar.rinhaRatos.models
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "Ratos")
-class RatoModel {
+@Table(name = "ratos")
+class RatoModel(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id_rato: Long = 0
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id_rato: Long = 0,
+    @Column(nullable = false)
+    val nome_customizado: String,
+
+    val descricao: String ? = null,
+
+) {
+
 }
