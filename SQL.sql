@@ -55,11 +55,12 @@ INSERT INTO Classes (nome_classe, apelido, str_min, str_max, agi_min, agi_max, h
 
 /*------------------------------------------------------------------------------------*/
 
-/* Tabela 3: Habilidades (Os 18 modelos de Habilidade) */ - Cria e da Insert pelo PgAdmin
+/* Tabela 3: Habilidades (Os 18 modelos de Habilidade) */
 CREATE TABLE Habilidades (
     id_habilidade SERIAL PRIMARY KEY,
     id_classe INT NOT NULL,
     nome_habilidade VARCHAR(100) NOT NULL,
+    descricao TEXT, -- <<< CAMPO ADICIONADO
     chance_sucesso INT NOT NULL,
     cooldown INT NOT NULL,
     efeito_sucesso_str VARCHAR(255),
@@ -68,40 +69,40 @@ CREATE TABLE Habilidades (
 );
 
 /* Classe 1: Rato de Esgoto */
-INSERT INTO Habilidades (id_classe, nome_habilidade, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
-(1, 'Leptospirose', 85, 2, '-18DEFADVAGR', '-5HPSSEUAGR') [cite: 12, 13, 14],
-(1, 'Nuvem de Lama', 80, 2, '-20AGIADVAGR', '-10PASSEUAGR') [cite: 14, 15, 16],
-(1, 'Fedor Corrosivo', 75, 3, NULL, '-10DEFSSEUAGR') [cite: 17, 18, 19]; /* SUCESSO: Lógica customizada de True Damage [cite: 17] */
+INSERT INTO Habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
+(1, 'Leptospirose', '85% de chance de Reduzir a DEF do alvo em 18%. Falha: Perde 5% do HP.', 85, 2, '-18DEFADVAGR', '-5HPSSEUAGR'),
+(1, 'Nuvem de Lama', '80% de chance de Reduzir a AGI do alvo em 20%. Falha: Perde 10% do PA.', 80, 2, '-20AGIADVAGR', '-10PASSEUAGR'),
+(1, 'Fedor Corrosivo', '75% de chance de causar Dano Direto (8% do HP máx. do alvo) no final da rodada. Falha: Perde 10% da DEF.', 75, 3, NULL, '-10DEFSSEUAGR');
 
 /* Classe 2: Rato de Hospital */
-INSERT INTO Habilidades (id_classe, nome_habilidade, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
-(2, 'Autocurado', 85, 3, '+5HPSSEUAGR;+5HPSSEUPROX', '-6DEFSSEUPROX') [cite: 21, 22, 23], /* Efeito de regeneração em 2 turnos */
-(2, 'Antisséptico', 85, 2, '+10PASSEUAGR;+10PDSSEUAGR', '-6HPSSEUAGR') [cite: 23, 24],
-(2, 'Escudo Antígeno', 80, 2, '+15PDSSEUAGR', '-8HPSSEUAGR;-6DEFSSEUAGR') [cite: 25, 26];
+INSERT INTO Habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
+(2, 'Autocurado', '85% de chance de Regenerar 2-5% do HP máx. agora e mais 2-5% no próximo round. Falha: Perde 6% da DEF no próximo round.', 85, 3, '+5HPSSEUAGR;+5HPSSEUPROX', '-6DEFSSEUPROX'),
+(2, 'Antisséptico', '85% de chance de ganhar +10% PA e +10% PD% neste round. Falha: Perde 6% do HP.', 85, 2, '+10PASSEUAGR;+10PDSSEUAGR', '-6HPSSEUAGR'),
+(2, 'Escudo Antígeno', '80% de chance de ganhar +15 pontos de PD% neste round. Falha: Perde 8% do HP e 6% da DEF.', 80, 2, '+15PDSSEUAGR', '-8HPSSEUAGR;-6DEFSSEUAGR');
 
 /* Classe 3: Rato de Laboratório */
-INSERT INTO Habilidades (id_classe, nome_habilidade, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
-(3, 'Mutação Aguda', 80, 3, '+20PASSEUAGR;+15DEFSSEUAGR', '-12HPSSEUAGR') [cite: 29, 30],
-(3, 'Soro Experimental', 75, 3, '+20CRISSEUAGR', '-8HPSSEUAGR') [cite: 31, 32], /* SUCESSO: Lógica customizada de Multiplicador Crítico (x2.5) [cite: 31] */
-(3, 'Durrateston', 70, 3, '+60PASSEUAGR', '-15HPSSEUAGR;-10DEFSSEUAGR') [cite: 33, 34];
+INSERT INTO Habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
+(3, 'Mutação Aguda', '80% de chance de ganhar +20% PA e +15% DEF neste round. Falha: Perde 12% do HP.', 80, 3, '+20PASSEUAGR;+15DEFSSEUAGR', '-12HPSSEUAGR'),
+(3, 'Soro Experimental', '75% de chance de ganhar +20 pontos de Chance de Crítico e seu crítico causa x2.5 de dano. Falha: Perde 8% do HP.', 75, 3, '+20CRISSEUAGR', '-8HPSSEUAGR'),
+(3, 'Durrateston', '70% de chance de ganhar +60% PA neste round. Falha: Perde 15% do HP e 10% da DEF.', 70, 3, '+60PASSEUAGR', '-15HPSSEUAGR;-10DEFSSEUAGR');
 
 /* Classe 4: Rato de Fazenda */
-INSERT INTO Habilidades (id_classe, nome_habilidade, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
-(4, 'Mordida de Saco', 85, 2, '+20PASSEUAGR', '-6HPSSEUAGR') [cite: 36, 37],
-(4, 'Cascavel de Palha', 80, 2, '+20DEFSSEUAGR', '-10AGISSEUAGR') [cite: 38, 39, 40],
-(4, 'Saracoteia Rural', 75, 3, '-15AGIADVAGR;-10STRADVAGR', '-10AGISSEUAGR') [cite: 41, 42, 43];
+INSERT INTO Habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
+(4, 'Mordida de Saco', '85% de chance de ganhar +20% PA neste round. Falha: Perde 6% do HP.', 85, 2, '+20PASSEUAGR', '-6HPSSEUAGR'),
+(4, 'Cascavel de Palha', '80% de chance de ganhar +20% DEF neste round. Falha: Perde 10% da AGI.', 80, 2, '+20DEFSSEUAGR', '-10AGISSEUAGR'),
+(4, 'Saracoteia Rural', '75% de chance de Reduzir a AGI do alvo em 15% e a STR em 10%. Falha: Perde 10% da AGI.', 75, 3, '-15AGIADVAGR;-10STRADVAGR', '-10AGISSEUAGR');
 
 /* Classe 5: Rato de Cassino */
-INSERT INTO Habilidades (id_classe, nome_habilidade, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
-(5, 'Dado Viciado', 75, 3, '+20CRISSEUAGR', '-10PASSEUAGR') [cite: 46, 47, 48], /* SUCESSO: Lógica customizada de Multiplicador Crítico (x2.5) [cite: 47] */
-(5, 'Trapaceiro', 70, 2, NULL, '-10HPSSEUAGR') [cite: 49, 50, 51], /* SUCESSO: Lógica customizada de Anular Habilidade / Fallback [cite: 49] */
-(5, 'All-in', 60, 4, NULL, '-40PDSSEUAGR;-10HPSSEUAGR') [cite: 52, 53]; /* SUCESSO: Lógica customizada de Multiplicador de PA (x3.0) [cite: 52] */
+INSERT INTO Habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
+(5, 'Dado Viciado', '75% de chance de ganhar +20 pontos de Chance de Crítico e seu crítico causa x2.5 de dano. Falha: Perde 10% do PA.', 75, 3, '+20CRISSEUAGR', '-10PASSEUAGR'),
+(5, 'Trapaceiro', '70% de chance de Anular a habilidade do oponente. Se ele não usar, ganha +15% PA. Falha: Perde 10% do HP.', 70, 2, NULL, '-10HPSSEUAGR'),
+(5, 'All-in', '60% de chance de multiplicar seu PA por 3.0 (300%) neste round. Falha: Perde 40 pontos de PD% e 10% do HP.', 60, 4, NULL, '-40PDSSEUAGR;-10HPSSEUAGR');
 
 /* Classe 6: Rato de Biblioteca */
-INSERT INTO Habilidades (id_classe, nome_habilidade, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
-(6, 'Mente de Arquivo', 82, 2, '+25INTSSEUAGR', '-8STRSSEUAGR') [cite: 56, 57, 58],
-(6, 'Páginas Cortantes', 78, 3, '-20DEFADVAGR', '-8HPSSEUAGR'),
-(6, 'Mapa das Falhas', 75, 2, '+12PASSEUAGR;+10PDSSEUAGR', '-6INTSSEUAGR;-5HPSSEUAGR') [cite: 60];
+INSERT INTO Habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str) VALUES
+(6, 'Mente de Arquivo', '82% de chance de ganhar +25% INT neste round. Falha: Perde 8% da STR.', 82, 2, '+25INTSSEUAGR', '-8STRSSEUAGR'),
+(6, 'Páginas Cortantes', '78% de chance de Ignorar 20% da DEF do alvo neste round. Falha: Perde 8% do HP.', 78, 3, '-20DEFADVAGR', '-8HPSSEUAGR'),
+(6, 'Mapa das Falhas', '75% de chance de ganhar +12% PA e +10% PD% neste round. Falha: Perde 6% da INT e 5% do HP.', 75, 2, '+12PASSEUAGR;+10PDSSEUAGR', '-6INTSSEUAGR;-5HPSSEUAGR');
 
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
