@@ -1,3 +1,8 @@
 .caixaLogin{
-    displa
+    height: 40rem;
+    width: 30rem;
+    background-color: white;
+}
+.container{
+    background-image: url(../assets/paredePedraLogin.png);
 }
