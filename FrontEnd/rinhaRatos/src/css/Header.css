@@ -7,12 +7,11 @@
     color: white;
     height: 200px;
 }
-
 img{
     height: 150px;
 }
 
 img + img{
-
+    
 }
 
