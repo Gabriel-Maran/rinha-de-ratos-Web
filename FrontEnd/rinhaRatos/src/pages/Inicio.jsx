@@ -1,14 +1,9 @@
-import RatoEsgoto from "../assets/RatoEsgoto.png";
+import Header from "../components/Header";
 
 export default function Inicio() {
   return (
     <>
-      <div>
-        <h1>Rinha de Ratos 2000</h1>
-        <div>
-          <img src={RatoEsgoto} />
-        </div>
-      </div>
+      <Header />
     </>
   );
 }

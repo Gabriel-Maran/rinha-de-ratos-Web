@@ -1,0 +1,14 @@
+import RatoEsgoto from "../assets/RatoEsgoto.png";
+import Logo from "../assets/Logo.png";
+import "../css/Header.css";
+
+export default function Header() {
+  return (
+    <>
+      <div className="header">
+        <img src={RatoEsgoto} />
+        <img src={Logo} className="logo" />
+      </div>
+    </>
+  );
+}

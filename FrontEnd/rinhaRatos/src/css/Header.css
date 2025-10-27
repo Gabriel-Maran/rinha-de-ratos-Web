@@ -1,0 +1,18 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    background-color: black;
+    color: white;
+    height: 200px;
+}
+
+img{
+    height: 150px;
+}
+
+img +img{
+
+}
+
