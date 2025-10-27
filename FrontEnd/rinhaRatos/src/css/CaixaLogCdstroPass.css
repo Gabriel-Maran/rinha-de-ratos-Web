@@ -3,6 +3,11 @@
     width: 30rem;
     background-color: white;
 }
+
 .container{
-    background-image: url(../assets/paredePedraLogin.png);
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    background-color: white;
 }

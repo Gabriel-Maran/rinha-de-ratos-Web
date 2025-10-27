@@ -1,5 +1,3 @@
-export default function Input({input}){
-    return(
-        <input {...input} />
-    )
+export default function Input({ input }) {
+  return <input {...input} />;
 }
