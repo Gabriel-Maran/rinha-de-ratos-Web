@@ -1,5 +1,6 @@
 import "./css/App.css";
 import Inicio from "./pages/Inicio.jsx";
+import Login from "./pages/Login.jsx";
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
           corrigir
         </h3>
       </section> */}
-      <Inicio />
+      {/* <Inicio /> */}
+      <Login />
     </>
   );
 }
