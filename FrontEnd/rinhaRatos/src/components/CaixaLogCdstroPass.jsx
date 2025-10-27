@@ -1,8 +1,8 @@
 import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg";
 import Input from "./Input.jsx";
+import "../css/CaixaLogCdstroPass.css";
 
 export default function CaixaLogCdstroPass() {
-    
   const txtLoginCdstroSenha = "Fazer login";
 
   return (
