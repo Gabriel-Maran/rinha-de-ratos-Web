@@ -1,5 +1,5 @@
-import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg";
 import Input from "./Input.jsx";
+import Button from "./BtnLogin.jsx"
 import "../css/CaixaLogCdstroPass.css";
 
 export default function CaixaLogCdstroPass() {
@@ -7,29 +7,30 @@ export default function CaixaLogCdstroPass() {
 
   return (
     <>
-      <div className="container">
-        <img src={Logo} />
-        <div className="caixaLogin">
-          <h3>{txtLoginCdstroSenha}</h3>
-          <div className="inputs">
-            <Input
-              input={{
-                type: "text",
-                placeholder: "E-mail",
-              }}
-            />
+      <div className="caixaLogin">
+        <h3>{txtLoginCdstroSenha}</h3>
+        <div className="inputs">
+          <Input
+            input={{
+              type: "text",
+              placeholder: "E-mail",
+            }}
+          />
+          <div className="input-senha">
             <Input
               input={{
                 type: "password",
                 placeholder: "Senha",
               }}
             />
-            <span>👁</span>
+            <span className="verSenha">👁</span>
           </div>
-          <p>Esqueci a senha...</p>
-          <button>Logar</button>
-          <p>Não possuo conta</p>
         </div>
+        <p className="resetSenha">Esqueci a senha...</p>
+        <Button
+          button={{ className:"botao" }}
+        />
+        <p className="linkCadastro">Não possuo conta</p>
       </div>
     </>
   );
