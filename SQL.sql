@@ -143,8 +143,8 @@ CREATE TABLE ratos (
     FOREIGN KEY (id_habilidade_escolhida) REFERENCES habilidades(id_habilidade)
 );
 
-/* Tabela 5: Batalhas (As salas de batalha 1x1 criadas pelos ADMs) */ - Cria no Spring
-CREATE TABLE Batalhas (
+/* Tabela 5: batalhas (As salas de batalha 1x1 criadas pelos ADMs) */ - Cria no Spring
+CREATE TABLE batalhas (
     id_batalha SERIAL PRIMARY KEY,
     id_adm_criador INT NOT NULL,
     nome_batalha VARCHAR(255) NOT NULL,

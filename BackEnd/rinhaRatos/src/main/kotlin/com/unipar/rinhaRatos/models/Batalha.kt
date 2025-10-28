@@ -1,4 +1,12 @@
 package com.unipar.rinhaRatos.models
 
-class Batalha {
+import jakarta.persistence.*
+
+@Entity
+@Table(name = "batalhas")
+class Batalha(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id_batalha: Long = 0,
+) {
 }
