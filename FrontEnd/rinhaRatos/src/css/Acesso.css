@@ -1,4 +1,4 @@
-.login-container{
+.acesso-container{
     background-image: url(../assets/paredePedraLogin.png);   
     background-size: cover;  /* Essa maravilha faz a imagem cobrir todo o site */       
     background-position: center;  /* Deixa a posição da imagem de fundo no centro */
@@ -8,10 +8,11 @@
     width: 100%;
 
     display: flex;
-    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     /* overflow: hidden; */ /* Isso aqui serve pra esconder o scroll */
+    position: relative;
+
 
     margin: 0;
 }
@@ -20,11 +21,15 @@
 .logo {
     width: 20rem;
     height: 10rem;
-    margin-top: 4rem;
+    margin-top: 2rem;
 }
 
 .caixa{
     height: 20rem;
     width: 25rem;
     margin-top: 3rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

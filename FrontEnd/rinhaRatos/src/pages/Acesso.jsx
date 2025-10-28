@@ -1,15 +1,15 @@
 import CaixaAcesso from "../components/CaixaAcesso";
 import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg"
-import { use, useState } from "react";
-import '../css/Login.css';
+import { useState } from "react";
+import '../css/Acesso.css';
 
-export default function Login() {
+export default function Acesso() {
   const [tela, setTela] = useState(0)
   const [titulo, setTitulo] = useState("Você é...")
 
   return (
     <>
-      <div className="login-container">
+      <div className="acesso-container">
         <img src={Logo} className="logo" />
         <div className="caixa">
           <CaixaAcesso
