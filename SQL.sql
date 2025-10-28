@@ -63,7 +63,7 @@ CREATE TABLE Habilidades (
     descricao TEXT, -- <<< CAMPO ADICIONADO
     chance_sucesso INT NOT NULL,
     cooldown INT NOT NULL,
-    efeito_sucesso_str VARCHAR(255),
+    efeito_sucesso_str VARCHAR(255
     efeito_falha_str VARCHAR(255),
     efetivo_txt VARCHAR(255),
     falha_txt VARCHAR(255),
