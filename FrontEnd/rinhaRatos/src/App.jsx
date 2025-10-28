@@ -1,6 +1,6 @@
 import "./css/App.css";
 import Inicio from "./pages/Inicio.jsx";
-import Login from "./pages/Login.jsx";
+import Acesso from "./pages/Acesso.jsx";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         </h3>
       </section> */}
       {/* <Inicio /> */}
-      <Login />
+      <Acesso />
     </>
   );
 }
