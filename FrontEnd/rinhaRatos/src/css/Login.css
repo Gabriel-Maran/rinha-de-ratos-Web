@@ -1,0 +1,9 @@
+.container{
+    background-image: url(../assets/paredePedraLogin.png);
+    background-repeat: no-repeat;     /* impede repetição */
+    background-size: cover;           /* cobre toda a área visível */
+    background-position: center;      /* centraliza a imagem */
+    background-attachment: fixed;     /* opcional: efeito de fundo fixo */
+    min-width: 100vh;
+    min-height: 23vh;    
+}

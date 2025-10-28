@@ -1,0 +1,13 @@
+.caixaLogin{
+    height: 40rem;
+    width: 30rem;
+    background-color: white;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    background-color: white;
+}
