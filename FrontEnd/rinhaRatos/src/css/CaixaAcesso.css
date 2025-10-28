@@ -24,10 +24,7 @@
     font-weight: 1000;
     background-color: #FFAE52;
     margin-bottom: 1rem;
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 0.3rem;
     border-radius: 0.8rem;
     border-color: #000000;
     border-style: solid;
@@ -75,7 +72,7 @@
 .resetSenha{
     cursor: pointer;
     align-self: flex-end;
-    width: 32%;
+    width: 34%;
     margin-right: 0.8rem;
     border: none;
     background: none;
@@ -88,10 +85,7 @@
     background-color: #FFAE52;
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 0.3rem 2rem;
     border-radius: 0.8rem;
     border-color: #000000;
     border-style: solid;
