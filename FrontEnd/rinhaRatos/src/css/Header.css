@@ -1,0 +1,27 @@
+.header {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: black;
+    color: white;
+}
+
+.nomeFotoPlayer {
+    display: flex;
+    align-items: center;
+}
+
+.nomeFotoPlayer h3{
+    margin-left: 1rem;
+}
+
+.nomeFotoPlayer img{
+    height: 7rem;
+}
+
+img {
+    height: 6rem;
+    margin-right: 1rem;
+}
