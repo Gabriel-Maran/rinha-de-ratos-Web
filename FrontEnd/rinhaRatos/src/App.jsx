@@ -13,7 +13,10 @@ function App() {
         </h3>
       </section> */}
       {/* <Inicio /> */}
-      <Acesso />
+      {/* <Routes>
+        <Route path="/" element={ }></Route>
+      </Routes> */}
+     <Acesso/>
     </>
   );
 }
