@@ -1,5 +1,5 @@
 .acesso-container{
-    background-image: url(../assets/paredePedraLogin.png);   
+    background-image: url(../assets/Backgrounds/bgLogin.png);   
     background-size: cover;  /* Essa maravilha faz a imagem cobrir todo o site */       
     background-position: center;  /* Deixa a posição da imagem de fundo no centro */
     background-attachment: fixed;    /* Faz ela ficar presa */

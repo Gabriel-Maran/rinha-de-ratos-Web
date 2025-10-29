@@ -1,4 +1,4 @@
-import RatoEsgoto from "../assets/RatoEsgoto.png";
+import RatoEsgoto from "../assets/classeRatos/RatoEsgoto.png";
 import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg";
 import "../css/Header.css";
 
