@@ -12,11 +12,11 @@ function App() {
           corrigir
         </h3>
       </section> */}
-      {/* <Inicio /> */}
+      <Inicio />
       {/* <Routes>
         <Route path="/" element={ }></Route>
       </Routes> */}
-     <Acesso/>
+      {/* <Acesso/> */}
     </>
   );
 }

@@ -1,0 +1,15 @@
+.corpo-container{
+    background-image: linear-gradient(rgba(55, 51, 51, 0.5), rgba(55, 51, 51,0.5)), url(../assets/backgrounds/bgHome.svg);
+    background-size: cover;  /* Essa maravilha faz a imagem cobrir todo o site */       
+    background-position: center;  /* Deixa a posição da imagem de fundo no centro */
+    background-attachment: fixed; /* Faz ela ficar presa */
+    
+    height: 100vh;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden; /* Isso aqui serve pra esconder o scroll */
+    justify-content: center;
+}

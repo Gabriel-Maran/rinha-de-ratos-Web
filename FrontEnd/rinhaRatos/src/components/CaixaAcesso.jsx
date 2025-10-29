@@ -1,5 +1,5 @@
 import Input from "./Input.jsx";
-import Button from "./BtnLogin.jsx"
+import Button from "./Botao.jsx"
 import "../css/CaixaAcesso.css";
 
 export default function CaixaAcesso({ tela, setTela, titulo, setTitulo }) {
