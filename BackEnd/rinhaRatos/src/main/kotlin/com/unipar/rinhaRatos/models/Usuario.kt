@@ -17,7 +17,7 @@ class Usuario(
     var email: String,
 
     @Column(name = "senha", nullable = false) // 'senha' no DDL
-    var senhaHash: String,
+    var senha: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
