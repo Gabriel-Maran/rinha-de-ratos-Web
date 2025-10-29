@@ -22,63 +22,7 @@ export default function CaixaAcesso({ tela, setTela, titulo, setTitulo }) {
   if (tela == 0) {
     return (
       <>
-        <div className="caixaLogin">
-          <h3>{titulo}</h3>
-          <Button
-            acaoBtn={"Jogador/ADM"}
-            button={{
-              className: "acesso",
-              onClick: irLogin
-            }}
-          />
-          <Button
-            acaoBtn={"Convidado"}
-            button={{ className: "acesso" }}
-          />
-        </div >
-      </>
-    );
-  } else if (tela == 1) {
-    return (
-      <>
-        <div className="caixaLogin">
-          <h3>{titulo}</h3>
-          <div className="inputs">
-            <Input
-              input={{
-                type: "text",
-                placeholder: "E-mail",
-              }}
-            />
-            <div className="input-senha">
-              <Input
-                input={{
-                  type: "password",
-                  placeholder: "Senha",
-                }}
-              />
-              <span className="verSenha">👁</span>
-            </div>
-          </div>
-          <Button
-            acaoBtn={"Esqueci a senha..."}
-            button={{
-              className: "resetSenha",
-              onClick: irReset
-            }}
-          />
-          <Button
-            acaoBtn={"Logar"}
-            button={{ className: "botao" }}
-          />
-          <Button
-            acaoBtn={"Não possuo conta"}
-            button={{
-              className: "linkCadastro",
-              onClick: irCadastro
-            }}
-          />
-        </div >
+       
       </>
     );
   } else if (tela == 2) {

@@ -1,25 +1,31 @@
-import CaixaAcesso from "../components/CaixaAcesso";
-import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg"
-import { useState } from "react";
+import React from "react";
+import Botao from "../components/Botao.jsx";
 import '../css/Acesso.css';
+import { useNavigate } from "react-router-dom";
 
 export default function Acesso() {
-  const [tela, setTela] = useState(0)
-  const [titulo, setTitulo] = useState("Você é...")
+   const navigate = useNavigate();
+
+   const irLogin = (e) => {
+    navigate("/login"); 
+  };
 
   return (
     <>
-      <div className="acesso-container">
-        <img src={Logo} className="logo" />
-        <div className="caixa">
-          <CaixaAcesso
-          tela = {tela}
-          setTela = {setTela}
-          titulo = {titulo}
-          setTitulo = {setTitulo}
-          />
-        </div>
-      </div>
+       <div className="caixaLogin">
+                <h3>Você é...</h3>
+               <Botao
+                  acaoBtn={"Jogador/ADM"}
+                  button={{
+                    className: "acesso",
+                    onClick: irLogin
+                  }}
+                />
+                <Botao
+                  acaoBtn={"Convidado"}
+                  button={{ className: "acesso" }}
+                />
+              </div >
     </>
   );
 }
