@@ -1,11 +1,15 @@
 .header {
     position: fixed;
+    top: 0;
+    left: 0;
+    height: 7rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     background-color: black;
     color: white;
+    z-index: 1;
 }
 
 .nomeFotoPlayer {
@@ -13,11 +17,11 @@
     align-items: center;
 }
 
-.nomeFotoPlayer h3{
+.nomeFotoPlayer h3 {
     margin-left: 1rem;
 }
 
-.nomeFotoPlayer img{
+.nomeFotoPlayer img {
     height: 7rem;
 }
 
