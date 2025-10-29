@@ -1,0 +1,66 @@
+.bgSelcClass{
+    background-image: linear-gradient(rgba(79, 81, 83, 0.3), rgba(79, 81, 83, 0.3)),url('../assets/backgrounds/bgLogin.png');
+    background-size: cover;
+    display: flex;
+    position: absolute;
+    z-index: 1000;
+    border-radius: 1rem;
+    flex-direction: column;
+    width: 30rem;
+    height: 40rem;
+    text-align: center;
+    font-family: 'Fondamento', 'fantasy';
+    font-weight: lighter;
+    z-index: 1000;
+}
+
+.titulo{
+    height: 3.5rem;
+    width: 20rem;
+    padding: auto;
+    margin: 1.5rem 5rem;
+    background-image: url('../assets/tabuaLabel.svg');
+    background-size: cover;
+    text-align: center;
+    color: white;
+    user-select: none;
+}
+.titulo h1{
+    margin: 0;
+    padding: 0.5rem;
+}
+
+.sair{
+    background-color: transparent;
+    position: absolute;
+    top: 0.6rem;
+    right: 1rem;
+    font-size: 3.5rem;
+    color: white;
+    cursor: pointer;
+    border: none;
+    user-select: none;
+}
+
+.opcoesClasse{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center
+}
+
+.opcoesClasse button{
+    background-image: url('../assets/papelLabel.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 18rem;
+    height: 4rem;
+    margin: 0.7rem 1rem;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.8rem;
+    font-family: 'Fondamento', 'fantasy';
+    cursor: pointer;
+}
