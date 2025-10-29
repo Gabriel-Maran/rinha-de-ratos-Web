@@ -122,6 +122,7 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL,
     tipo_conta ENUM('jogador', 'adm') NOT NULL DEFAULT 'jogador',
     mousecoin_saldo INT NOT NULL DEFAULT 30
+    vitorias INT NOT NULL DEFAULT 0
 );
 
 /* Tabela 4: ratos (As instâncias criadas pelos jogadores - Máx 3 por jogador) */ - Cria no Spring

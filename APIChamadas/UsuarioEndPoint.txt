@@ -1,0 +1,193 @@
+UsuarioController docx básica
+
+Erros:
+--
+EMAIL_EXISTS: 
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 409,
+  "error": "Conflict",
+  "message": "Email já cadastrado",
+  "code": "EMAIL_EXISTS"
+}
+--
+USER_NOT_FOUND
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Usuário não encontrado",
+  "code": "USER_NOT_FOUND"
+}
+--
+EMAIL_EXISTS (atualização)
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 409,
+  "error": "Conflict",
+  "message": "Email já em uso",
+  "code": "EMAIL_EXISTS"
+}
+--
+LOGIN_FAILED
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Email ou senha inválidos",
+  "code": "LOGIN_FAILED"
+}
+--
+EMAIL_NOT_FOUND
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Email inválido",
+  "code": "EMAIL_NOT_FOUND"
+}
+--
+USER_OR_MOUSE_NOT_FOUND
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Usuário ou rato não encontrado",
+  "code": "USER_OR_MOUSE_NOT_FOUND"
+}
+--
+UPDATE_FAILED
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Email já em uso ou usuário não encontrado",
+  "code": "UPDATE_FAILED"
+}
+--
+INSUFFICIENT_BALANCE_OR_USER_NOT_FOUND
+{
+  "timestamp": "2025-10-29T12:00:00Z",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Saldo insuficiente ou usuário não encontrado",
+  "code": "INSUFFICIENT_BALANCE_OR_USER_NOT_FOUND"
+}
+--
+EndPoints
+---
+
+GET /usuario/todos
+O que faz: Lista todos os usuários.
+Enviar: Nenhum.
+Exemplo: http://localhost:8080/usuario/todos
+Corpo: nada
+Retorna: 200 OK — Array<Usuario>.
+
+---
+
+GET /usuario/{id}
+O que faz: Busca usuário por id.
+Enviar: Path param `id`.
+Exemplo: http://localhost:8080/usuario/1
+Corpo: nada
+Retorna: 200 OK — Usuario; 404 Not Found — ErrorResponse.
+
+---
+
+GET /usuario/top10Vitorias
+O que faz: Retorna top 10 usuários por vitórias.
+Enviar: Nenhum.
+Exemplo: http://localhost:8080/usuario/top10Vitorias
+Corpo: nada
+Retorna: 200 OK — Array<Usuario>.
+
+---
+
+POST /usuario/cadastro
+O que faz: Cria novo usuário (email único).
+Enviar: JSON com dados do usuário.
+Exemplo: http://localhost:8080/usuario/cadastro
+Corpo: {"nome":"Gabriel","email":"[gabriel@example.com](mailto:gabriel@example.com)","senha":"senha123","tipo_conta":"JOGADOR","mousecoin_saldo":30}
+Retorna: 201 Created — Usuario criado; 409 Conflict — ErrorResponse.
+
+---
+
+PUT /usuario/changeUser/all
+O que faz: Atualiza todos os campos do usuário (incluir id_usuario no body).
+Enviar: JSON Usuario (com id_usuario).
+Exemplo: http://localhost:8080/usuario/changeUser/all
+Corpo: {"id_usuario":1,"nome":"Novo Nome","email":"[novo@example.com](mailto:novo@example.com)","senha":"nova","tipo_conta":"JOGADOR","mousecoin_saldo":50}
+Retorna: 200 OK — Usuario atualizado; 404/409 — ErrorResponse.
+
+---
+
+DELETE /usuario/{id}
+O que faz: Remove usuário.
+Enviar: Path param `id`.
+Exemplo: http://localhost:8080/usuario/1
+Corpo: nada
+Retorna: 204 No Content ou 404 Not Found — ErrorResponse.
+
+---
+
+POST /usuario/login
+O que faz: Valida email + senha (texto claro).
+Enviar: JSON {"email","senha"}.
+Exemplo: http://localhost:8080/usuario/login
+Corpo: {"email":"[gabriel@example.com](mailto:gabriel@example.com)","senha":"senha123"}
+Retorna: 200 OK — {message, tipo_conta} ou 401 Unauthorized — ErrorResponse.
+
+---
+
+POST /usuario/changeUser/password
+O que faz: Redefine senha por email.
+Enviar: JSON {"email","senha"} (senha nova).
+Exemplo: http://localhost:8080/usuario/changeUser/password
+Corpo: {"email":"[gabriel@example.com](mailto:gabriel@example.com)","senha":"novaSenha"}
+Retorna: 200 OK — {message} ou 404 Not Found — ErrorResponse.
+
+---
+
+DELETE /usuario/{id}/ratos/{idRato}
+O que faz: Remove um rato do usuário (TODO no controller).
+Enviar: Path params id e idRato.
+Exemplo: http://localhost:8080/usuario/1/ratos/10
+Corpo: nada
+Retorna: 204 No Content (esperado) ou 404 Not Found — ErrorResponse.
+
+---
+
+PUT /usuario/{id}/changeUser/basic
+O que faz: Atualiza nome, email e senha via DTO.
+Enviar: JSON UsuarioEmailSenha {nome,email,senha}.
+Exemplo: http://localhost:8080/usuario/1/changeUser/basic
+Corpo: {"nome":"Novo","email":"[novo@example.com](mailto:novo@example.com)","senha":"123"}
+Retorna: 200 OK — {message} ou 400 Bad Request — ErrorResponse.
+
+---
+
+POST /usuario/{id}/compra
+O que faz: Adiciona mousecoins ao saldo.
+Enviar: JSON {"quantidade": <int>}.
+Exemplo: http://localhost:8080/usuario/1/compra
+Corpo: {"quantidade":50}
+Retorna: 200 OK — {message} ou 404 Not Found — ErrorResponse.
+
+---
+
+POST /usuario/{id}/gasto
+O que faz: Deduz mousecoins (verifica saldo suficiente).
+Enviar: JSON {"quantidade": <int>}.
+Exemplo: http://localhost:8080/usuario/1/gasto
+Corpo: {"quantidade":10}
+Retorna: 200 OK — {message} ou 400 Bad Request — ErrorResponse.
+
+---
+
+POST /usuario/{id}/vitoria
+O que faz: Incrementa vitorias em +1.
+Enviar: Path param id.
+Exemplo: http://localhost:8080/usuario/1/vitória
+Corpo: nada
+Retorna: 200 OK — {message} ou 404 Not Found — ErrorResponse.

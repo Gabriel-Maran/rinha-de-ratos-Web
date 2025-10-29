@@ -1,5 +1,6 @@
 package com.unipar.rinhaRatos.service
 
+import com.unipar.rinhaRatos.DTOs.UsuarioEmailSenha
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.models.Usuario
@@ -18,6 +19,10 @@ class UsuarioService(
     fun getAllUsuario(): List<Usuario> = usuarioRepository.findAll()
 
     fun getById(id: Long): Optional<Usuario> = usuarioRepository.findById(id)
+
+    fun getByEmail(email: String): Optional<Usuario> = usuarioRepository.findByEmail(email)
+
+    fun getTop10Vitorias(): List<Usuario> = usuarioRepository.findTop10ByOrderByVitoriasDesc()
 
     fun cadastrarUsuario(usuario: Usuario): Usuario {
         if (usuarioRepository.existsByEmail(usuario.email)) {
@@ -61,6 +66,7 @@ class UsuarioService(
         return Optional.empty()
     }
 
+
     fun redefinirUsuarioSenha(email: String, novaSenha: String): Boolean {
         val usuarioOpt = usuarioRepository.findByEmail(email)
         if (usuarioOpt.isPresent) {
@@ -72,6 +78,7 @@ class UsuarioService(
         return false
     }
 
+    //Função será usada pelo RatosController, na hora de registrar um novo rato
     fun addNewRatoByUserId(id: Long, rato: Rato): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
         if (usuarioOpt.isEmpty) return false
@@ -91,30 +98,16 @@ class UsuarioService(
         return true
     }
 
-    fun changeNameById(id: Long, nome: String): Boolean {
+    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioEmailSenha): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
         if (usuarioOpt.isEmpty) return false
         val usuario = usuarioOpt.get()
-        usuario.nome = nome
-        usuarioRepository.save(usuario)
-        return true
-    }
-
-    fun changeEmailById(id: Long, email: String): Boolean {
-        val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
-        if (usuarioRepository.existsByEmail(email)) return false
-        val usuario = usuarioOpt.get()
-        usuario.email = email
-        usuarioRepository.save(usuario)
-        return true
-    }
-
-    fun changeSenhaById(id: Long, senha: String): Boolean {
-        val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
-        val usuario = usuarioOpt.get()
-        usuario.senha = senha
+        if(usuarioOpt.get().email != usuarioDTO.email){
+            if (usuarioRepository.existsByEmail(usuarioDTO.email)) return false
+        }
+        usuario.nome = usuarioDTO.nome;
+        usuario.email = usuarioDTO.email;
+        usuario.senha = usuarioDTO.senha;
         usuarioRepository.save(usuario)
         return true
     }
@@ -137,4 +130,14 @@ class UsuarioService(
         usuarioRepository.save(usuario)
         return true
     }
+
+    fun aumentaUmaVitoriaById(id: Long): Boolean{
+        val usuarioOpt = usuarioRepository.findById(id)
+        if (usuarioOpt.isEmpty) return false
+        val usuario = usuarioOpt.get()
+        usuario.vitorias = usuario.vitorias + 1
+        usuarioRepository.save(usuario)
+        return true
+    }
+
 }

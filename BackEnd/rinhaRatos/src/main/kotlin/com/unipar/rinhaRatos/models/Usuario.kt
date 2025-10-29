@@ -26,6 +26,9 @@ class Usuario(
     @Column(nullable = false)
     var mousecoin_saldo: Int = 30, // Default do seu DDL
 
+    @Column(nullable = false)
+    var vitorias :Int = 0,
+
     // Esta é a "outra ponta" da relação
     // 'mappedBy = "usuario"' diz ao Spring que a entidade 'Rato' gerencia esta relação
     @OneToMany(
