@@ -16,6 +16,7 @@ export default function Login() {
   };
 
   return (
+    <div className="acesso-container">
     <div className="caixaLogin">
       <h3>Fazer login</h3>
 
@@ -50,6 +51,7 @@ export default function Login() {
        button={{ className: "linkCadastro",
        onClick: irCadastro }} 
        />
+    </div>
     </div>
   );
 }

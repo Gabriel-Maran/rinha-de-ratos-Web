@@ -12,8 +12,6 @@
     flex-direction: column;
     /* overflow: hidden; */ /* Isso aqui serve pra esconder o scroll */
     position: relative;
-
-
     margin: 0;
 }
 
