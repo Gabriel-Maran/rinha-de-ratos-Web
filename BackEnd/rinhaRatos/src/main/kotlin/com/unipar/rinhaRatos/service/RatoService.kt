@@ -12,9 +12,11 @@ import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
+@Transactional // garante contexto de persistência durante as operações do service
 class RatoService(
     private val ratoRepository: RatoRepository,
     private val classeRepository: ClasseRepository,
@@ -24,26 +26,29 @@ class RatoService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
+    // leitura simples - retorna todos os ratos
     fun getAllRatos(): List<Rato> = ratoRepository.findAll()
 
+    // leitura por id (sem carregar usuario) - use findByIdWithUsuario se precisar do dono carregado
     fun getRatoById(id: Long): Optional<Rato> = ratoRepository.findById(id)
 
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, Any> {
-        val donoDoRatoOpt = usuarioRepository.findById(ratoBasic.idUsuario)
+        // busca usuário com ratos (fetch) para evitar LazyInitializationException
+        val donoDoRatoOpt = usuarioRepository.findByIdWithRatos(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
 
         if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
 
-        val classeOpt = classeRepository.findByNomeClasse(ratoBasic.nomeClasse)
         val habilidadeOpt = habilidadeRepository.findByNomeHabilidade(ratoBasic.nomeHabilidade)
-        if (classeOpt.isEmpty || habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
+        if (habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
 
-        val classe = classeOpt.get()
         val habilidade = habilidadeOpt.get()
+        val classe = habilidadeOpt.get().classe
 
         val descricao = ratoBasic.descricao ?: ""
 
+        // cria rato vinculando o dono já carregado
         val rato = Rato(
             nomeCustomizado = ratoBasic.nomeCustomizado,
             descricao = descricao,
@@ -55,6 +60,7 @@ class RatoService(
         val ratoAtualizado = auxSortRatoAtributos(rato, classe)
         val ratoSalvo = ratoRepository.save(ratoAtualizado)
 
+        // garante consistência na coleção do usuário (já estamos em transação)
         donoDoRato.ratos.add(ratoSalvo)
         usuarioRepository.save(donoDoRato)
 
@@ -75,13 +81,13 @@ class RatoService(
     }
 
     fun removeRato(ratoId: Long): Map<String, Any> {
-        val ratoOpt = ratoRepository.findById(ratoId)
+        // buscar rato com usuario carregado para evitar lazy
+        val ratoOpt = ratoRepository.findByIdWithUsuario(ratoId)
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
         val rato = ratoOpt.get()
 
-        val usuarioRef = rato.usuario
-        if (usuarioRef == null) return mapOf("Status" to "USER_NOT_FOUND")
-        val usuarioOpt = usuarioRepository.findById(usuarioRef.idUsuario)
+        val usuarioRef = rato.usuario ?: return mapOf("Status" to "USER_NOT_FOUND")
+        val usuarioOpt = usuarioRepository.findByIdWithRatos(usuarioRef.idUsuario)
         if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val usuario = usuarioOpt.get()
 
@@ -132,7 +138,7 @@ class RatoService(
     }
 
     fun cadastrarRatoNaBatalha(ratoId: Long, batalhaId: Long): Map<String, Any> {
-        val ratoOpt = ratoRepository.findById(ratoId)
+        val ratoOpt = ratoRepository.findByIdWithUsuario(ratoId)
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
         val batalhaOpt = batalhaRepository.findById(batalhaId)
         if (batalhaOpt.isEmpty) return mapOf("Status" to "BATALHA_NOT_FOUND")
@@ -172,13 +178,12 @@ class RatoService(
     }
 
     fun deletarRatoPermanentemente(ratoId: Long): Map<String, Any> {
-        val ratoOpt = ratoRepository.findById(ratoId)
+        val ratoOpt = ratoRepository.findByIdWithUsuario(ratoId)
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
         val rato = ratoOpt.get()
 
-        val usuarioRef = rato.usuario
-        if (usuarioRef == null) return mapOf("Status" to "USER_NOT_FOUND")
-        val usuarioOpt = usuarioRepository.findById(usuarioRef.idUsuario)
+        val usuarioRef = rato.usuario ?: return mapOf("Status" to "USER_NOT_FOUND")
+        val usuarioOpt = usuarioRepository.findByIdWithRatos(usuarioRef.idUsuario)
         if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val usuario = usuarioOpt.get()
 

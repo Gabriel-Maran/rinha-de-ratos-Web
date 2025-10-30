@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
-@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+// @CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
 @RestController
 @RequestMapping("/usuario")
 class UsuarioController(

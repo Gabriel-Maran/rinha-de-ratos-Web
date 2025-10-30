@@ -1,13 +1,15 @@
 package com.unipar.rinhaRatos.models
 
 import jakarta.persistence.*
+import java.io.Serializable
 
 @Entity
 @Table(name = "habilidades")
 class Habilidade(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idHabilidade: Long = 0,
+    var idHabilidade: Long = 0L,
 
     // Relação com Classe
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,5 +41,5 @@ class Habilidade(
     var falhaTxt: String? = null,
 
     @OneToMany(mappedBy = "habilidadeEscolhida", cascade = [CascadeType.ALL])
-    val ratos: MutableList<Rato> = mutableListOf()
+    var ratos: MutableList<Rato> = mutableListOf()
 )

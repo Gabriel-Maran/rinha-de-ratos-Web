@@ -1,50 +1,3 @@
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*--------------------- Tabela que precisam ser criadas no DB ------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-
-CREATE TABLE loja_Pacotes (
-    id_pacote SERIAL PRIMARY KEY,
-    nome_pacote VARCHAR(100) NOT NULL,
-    mousecoin_quantidade INT NOT NULL,
-    preco_brl DECIMAL(10, 2) NOT NULL
-);
-
-INSERT INTO loja_Pacotes (nome_pacote, mousecoin_quantidade, preco_brl) VALUES
-('Pacote de Moedas Pequeno', 15, 30.00),
-('Pacote de Moedas Médio', 30, 60.00),
-('Pacote de Moedas Grande', 60, 100.00);
-
-/*------------------------------------------------------------------------------------*/
-
-/* Tabela 2: classes (Os 6 modelos de Rato) */ - Cria e da Insert pelo PgAdmin
-CREATE TABLE classes (
-    id_classe SERIAL PRIMARY KEY,
-    nome_classe VARCHAR(100) NOT NULL,
-    apelido VARCHAR(100),
-    str_min INT NOT NULL,
-    str_max INT NOT NULL,
-    agi_min INT NOT NULL,
-    agi_max INT NOT NULL,
-    hps_min INT NOT NULL,
-    hps_max INT NOT NULL,
-    int_min INT NOT NULL,
-    int_max INT NOT NULL,
-    def_min INT NOT NULL,
-    def_max INT NOT NULL
-);
-
-/* Estes inserts irão gerar os IDs:
-   1 = Rato de Esgoto
-   2 = Rato de Hospital
-   3 = Rato de Laboratório
-   4 = Rato de Fazenda
-   5 = Rato de Cassino
-   6 = Rato de Biblioteca
-*/
 INSERT INTO classes (nome_classe, apelido, str_min, str_max, agi_min, agi_max, hps_min, hps_max, int_min, int_max, def_min, def_max) VALUES
 ('Rato de Esgoto', 'O Fedoroso', 55, 70, 35, 55, 50, 65, 20, 40, 35, 50),
 ('Rato de Hospital', 'Sarna-Médico', 25, 40, 30, 50, 55, 70, 50, 70, 30, 45),
@@ -53,22 +6,10 @@ INSERT INTO classes (nome_classe, apelido, str_min, str_max, agi_min, agi_max, h
 ('Rato de Cassino', 'Aposta Alta', 35, 55, 45, 65, 30, 50, 55, 75, 25, 35),
 ('Rato de Biblioteca', 'Folha-rato', 30, 50, 45, 60, 35, 55, 65, 90, 25, 35);
 
-/*------------------------------------------------------------------------------------*/
-
-/* Tabela 3: habilidades (Os 18 modelos de Habilidade) */
-CREATE TABLE habilidades (
-    id_habilidade SERIAL PRIMARY KEY,
-    id_classe INT NOT NULL,
-    nome_habilidade VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    chance_sucesso INT NOT NULL,
-    cooldown INT NOT NULL,
-    efeito_sucesso_str VARCHAR(255),
-    efeito_falha_str VARCHAR(255),
-    efetivo_txt VARCHAR(255),
-    falha_txt VARCHAR(255),
-    FOREIGN KEY (id_classe) REFERENCES classes(id_classe)
-);
+INSERT INTO loja_Pacotes (nome_pacote, mousecoin_quantidade, preco_brl) VALUES
+('Pacote de Moedas Pequeno', 15, 30.00),
+('Pacote de Moedas Médio', 30, 60.00),
+('Pacote de Moedas Grande', 60, 100.00);
 
 /* Classe 1: Rato de Esgoto */
 INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, cooldown, efeito_sucesso_str, efeito_falha_str, efetivo_txt, falha_txt) VALUES
@@ -105,73 +46,3 @@ INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, 
 (6, 'Mente de Arquivo', '80% de chance de ganhar +22% INT apenas nesta rodada. Falha: perde 6% da STR apenas nesta rodada.', 80, 2, '+22%INTSEU', '-6%STRSEU', 'Conhecimento é poder! +22% INT nesta rodada!','Esforço mental! -6% STR apenas nesta rodada.'),
 (6, 'Páginas Cortantes', '75% de chance de ignorar 18% da DEF do alvo apenas nesta rodada. Falha: perde 6% do HP.', 75, 3, '-18%DEFADV', '-6%HPSSEU', 'Corte preciso! Ignora 18% da DEF do oponente nesta rodada!','Página cortante volta contra: -6% HP.'),
 (6, 'Mapa das Falhas', '75% de chance de ganhar +11% PA e +9% PD apenas nesta rodada. Falha: perde 5% da INT apenas nesta rodada e 4% do HP.', 75, 2, '+11%PASSEU;+9%PDSSEU', '-5%INTSEU;-4%HPSSEU', 'Pontos vitais expostos! +11% PA e +9% PD nesta rodada!','Leitura errada! -5% INT nesta rodada e -4% HP.');
-
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------- Tabela que NÃO precisam ser criadas no DB ----------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------*/
-
-/* Tabela 1: Usuários (Jogadores e ADMs) */ - Cria no Spring
-CREATE TABLE usuarios (
-    id_usuario SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    senha VARCHAR(255) NOT NULL,
-    tipo_conta ENUM('jogador', 'adm') NOT NULL DEFAULT 'jogador',
-    mousecoin_saldo INT NOT NULL DEFAULT 30
-    vitorias INT NOT NULL DEFAULT 0
-);
-
-/* Tabela 4: ratos (As instâncias criadas pelos jogadores - Máx 3 por jogador) */ - Cria no Spring
-CREATE TABLE ratos (
-    id_rato SERIAL PRIMARY KEY,
-    id_usuario INT NOT NULL,
-    id_classe INT NOT NULL,
-    id_habilidade_escolhida INT NOT NULL,
-    nome_customizado VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    str_base INT NOT NULL,
-    agi_base INT NOT NULL,
-    hps_base INT NOT NULL,
-    int_base INT NOT NULL,
-    def_base INT NOT NULL,
-    esta_torneio BOOLEAN NOT NULL DEFAULT FALSE,
-    esta_vivo BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (id_classe) REFERENCES classes(id_classe),
-    FOREIGN KEY (id_habilidade_escolhida) REFERENCES habilidades(id_habilidade)
-);
-
-/* Tabela 5: batalhas (As salas de batalha 1x1 criadas pelos ADMs) */ - Cria no Spring
-CREATE TABLE batalhas (
-    id_batalha SERIAL PRIMARY KEY,
-    id_adm_criador INT NOT NULL,
-    nome_batalha VARCHAR(255) NOT NULL,
-    data_horario_inicio TIMESTAMP NOT NULL,
-    custo_inscricao INT NOT NULL,
-    premio_total INT NOT NULL,
-    status ENUM('InscricoesAbertas', 'InscricoesFechadas','EmAndamento', 'Concluida') NOT NULL,
-    
-    /* Dados dos participantes (preenchidos quando entram) */
-    id_jogador1 INT NULL,
-    id_rato1 INT NULL,
-    id_jogador2 INT NULL,
-    id_rato2 INT NULL,
-    
-    /* Dados do resultado (preenchidos ao concluir) */
-    id_vencedor INT NULL,
-    id_perdedor INT NULL,
-    
-    FOREIGN KEY (id_adm_criador) REFERENCES usuarios(id_usuario),
-    FOREIGN KEY (id_jogador1) REFERENCES usuarios(id_usuario),
-    FOREIGN KEY (id_rato1) REFERENCES ratos(id_rato),
-    FOREIGN KEY (id_jogador2) REFERENCES usuarios(id_usuario),
-    FOREIGN KEY (id_rato2) REFERENCES ratos(id_rato),
-    FOREIGN KEY (id_vencedor) REFERENCES usuarios(id_usuario),
-    FOREIGN KEY (id_perdedor) REFERENCES usuarios(id_usuario)
-);
-
-/*------------------------------------------------------------------------------------*/

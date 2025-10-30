@@ -3,13 +3,15 @@ package com.unipar.rinhaRatos.models
 import com.unipar.rinhaRatos.enums.StatusBatalha
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import java.io.Serializable
 
 @Entity
 @Table(name = "batalhas")
 class Batalha(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idBatalha: Long = 0,
+    var idBatalha: Long = 0L,
 
     // ADM criador da sala
     @ManyToOne(fetch = FetchType.LAZY)
