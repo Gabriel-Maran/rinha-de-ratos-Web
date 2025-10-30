@@ -3,7 +3,6 @@ package com.unipar.rinhaRatos.mapper
 import com.unipar.rinhaRatos.DTOandBASIC.*
 import com.unipar.rinhaRatos.models.*
 
-// --- Rato and Usuario mappers (você já tinha): ---
 fun Rato.toDto(): RatoDTO {
     return RatoDTO(
         idRato = this.idRato,
@@ -33,7 +32,6 @@ fun Usuario.toDto(): UsuarioDTO {
     )
 }
 
-// resumo leve de Usuario (para usar em batalhas etc)
 fun Usuario.toSummaryDto(): UsuarioSummaryDTO {
     return UsuarioSummaryDTO(
         idUsuario = this.idUsuario,
@@ -41,7 +39,6 @@ fun Usuario.toSummaryDto(): UsuarioSummaryDTO {
     )
 }
 
-// --- LojaPacotes ---
 fun LojaPacotes.toDto(): LojaPacotesDTO {
     return LojaPacotesDTO(
         idPacote = this.idPacote,
@@ -51,7 +48,6 @@ fun LojaPacotes.toDto(): LojaPacotesDTO {
     )
 }
 
-// --- Habilidade ---
 fun Habilidade.toDto(): HabilidadeDTO {
     val classeId = this.classe?.idClasse
     val classeNome = this.classe?.nomeClasse
@@ -70,7 +66,6 @@ fun Habilidade.toDto(): HabilidadeDTO {
     )
 }
 
-// --- Classe ---
 fun Classe.toDto(): ClasseDTO {
     val habilidadesDto = this.habilidades.map { it.toDto() }
     val ratosDto = this.ratos.map { it.toDto() }
@@ -93,7 +88,6 @@ fun Classe.toDto(): ClasseDTO {
     )
 }
 
-// --- Batalha ---
 fun Batalha.toDto(): BatalhaDTO {
     // formatador simples (pode ajustar para ISO se quiser)
     val dataStr = this.dataHorarioInicio.toString()

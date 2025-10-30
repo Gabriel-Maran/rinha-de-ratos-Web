@@ -52,4 +52,11 @@ class Classe(
 
     @OneToMany(mappedBy = "classe", cascade = [CascadeType.ALL])
     var ratos: MutableList<Rato> = mutableListOf()
-)
+) : Serializable {
+    // no-arg constructor para JPA/Hibernate
+    constructor() : this(
+        0L, "", null,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        mutableListOf(), mutableListOf()
+    )
+}

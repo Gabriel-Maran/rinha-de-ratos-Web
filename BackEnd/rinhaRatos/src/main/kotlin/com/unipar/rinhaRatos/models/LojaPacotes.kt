@@ -20,4 +20,7 @@ class LojaPacotes(
 
     @Column(nullable = false, precision = 10, scale = 2)
     var precoBrl: BigDecimal = BigDecimal.ZERO
-)
+) : Serializable {
+    // construtor padrão necessário pelo Hibernate/JPA
+    constructor() : this(0L, "", 0, BigDecimal.ZERO)
+}

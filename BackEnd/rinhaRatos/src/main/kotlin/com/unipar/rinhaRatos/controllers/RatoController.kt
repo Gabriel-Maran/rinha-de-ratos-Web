@@ -2,6 +2,8 @@ package com.unipar.rinhaRatos.controllers
 
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
+import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
+import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.service.RatoService
 import org.springframework.http.HttpStatus
@@ -13,40 +15,66 @@ import java.time.Instant
 @RestController
 @RequestMapping("/rato")
 class RatoController(
-    private val ratoService: RatoService,
+    private val ratoService: RatoService
 ) {
+
     @GetMapping("/todos")
-    fun findAllUsuarios(): ResponseEntity<List<Rato>> =
-        ResponseEntity.ok(ratoService.getAllRatos())
+    fun findAllRatos(): ResponseEntity<List<RatoDTO>> {
+        val ratos = ratoService.getAllRatos()
+        return ResponseEntity.ok(ratos)
+    }
 
     @GetMapping("/{id}")
-    fun findUsuarioById(@PathVariable id: Long): ResponseEntity<Any> {
+    fun findRatoById(@PathVariable id: Long): ResponseEntity<Any> {
         val ratoOpt = ratoService.getRatoById(id)
-        return if (ratoOpt.isPresent) ResponseEntity.ok(ratoOpt.get())
-        else buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
+        if (ratoOpt.isEmpty) {
+            return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
+        }
+
+        val ratoEntity = ratoOpt.get()
+        return ResponseEntity.ok(ratoEntity)
     }
 
     @PostMapping("/cadastro")
     fun cadastrarRato(@RequestBody ratoDTO: RatoBasic): ResponseEntity<Any> {
-        val result = ratoService.cadastrarRato(ratoDTO)
+        val result: Map<String, Any> = ratoService.cadastrarRato(ratoDTO)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
 
         if (status == "CREATED") {
-            val ratoSalvo = result["Rato"]
-            return ResponseEntity.status(HttpStatus.CREATED).body(ratoSalvo)
+            val ratoObj = result["Rato"]
+            if (ratoObj == null) {
+                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Rato criado mas objeto ausente", "UNKNOWN")
+            }
+
+            // Trata os dois casos: service retornou entidade Rato ou já retornou RatoDTO
+            if (ratoObj is Rato) {
+                val bodyDto = ratoObj.toDto()
+                return ResponseEntity.status(HttpStatus.CREATED).body(bodyDto)
+            }
+
+            if (ratoObj is RatoDTO) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(ratoObj)
+            }
+
+            // tipo inesperado
+            return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Objeto Rato com tipo inesperado", "UNKNOWN")
         }
 
         return mapStatusToResponse(status)
     }
 
-
     @PostMapping("/deletar/{id}")
     fun removeRato(@PathVariable("id") id: Long): ResponseEntity<Any> {
         val result = ratoService.removeRato(id)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
-        return when (status) {
-            "NO_CONTENT" -> ResponseEntity.noContent().build()
-            else -> mapStatusToResponse(status)
+
+        when (status) {
+            "NO_CONTENT" -> {
+                return ResponseEntity.noContent().build()
+            }
+            else -> {
+                return mapStatusToResponse(status)
+            }
         }
     }
 
@@ -54,14 +82,21 @@ class RatoController(
     fun sairDoTorneio(@RequestBody payload: Map<String, Long>): ResponseEntity<Any> {
         val usuarioId = payload["usuarioId"]
         val batalhaId = payload["batalhaId"]
+
         if (usuarioId == null || batalhaId == null) {
             return buildError(HttpStatus.BAD_REQUEST, "Parametros ausentes: usuarioId e batalhaId são obrigatórios", "BAD_REQUEST")
         }
+
         val result = ratoService.sairDoTorneio(usuarioId, batalhaId)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
-        return when (status) {
-            "NO_CONTENT" -> ResponseEntity.noContent().build()
-            else -> mapStatusToResponse(status)
+
+        when (status) {
+            "NO_CONTENT" -> {
+                return ResponseEntity.noContent().build()
+            }
+            else -> {
+                return mapStatusToResponse(status)
+            }
         }
     }
 
@@ -69,20 +104,37 @@ class RatoController(
     fun entrarBatalha(@RequestBody payload: Map<String, Long>): ResponseEntity<Any> {
         val ratoId = payload["ratoId"]
         val batalhaId = payload["batalhaId"]
+
         if (ratoId == null || batalhaId == null) {
             return buildError(HttpStatus.BAD_REQUEST, "Parametros ausentes: ratoId e batalhaId são obrigatórios", "BAD_REQUEST")
         }
 
         val result = ratoService.cadastrarRatoNaBatalha(ratoId, batalhaId)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
-        return when (status) {
-            "OK" -> ResponseEntity.ok(mapOf("message" to "Rato inscrito na batalha"))
-            "BATALHA_FULL" -> buildError(HttpStatus.CONFLICT, "Batalha cheia ou inscrições fechadas", "BATALHA_FULL")
-            "BATALHA_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
-            "RATO_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
-            "RATO_NOT_ELIGIBLE" -> buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
-            "BAD_REQUEST" -> buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
-            else -> buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+
+        when (status) {
+            "OK" -> {
+                val body = mapOf("message" to "Rato inscrito na batalha")
+                return ResponseEntity.ok(body)
+            }
+            "BATALHA_FULL" -> {
+                return buildError(HttpStatus.CONFLICT, "Batalha cheia ou inscrições fechadas", "BATALHA_FULL")
+            }
+            "BATALHA_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
+            }
+            "RATO_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
+            }
+            "RATO_NOT_ELIGIBLE" -> {
+                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
+            }
+            "BAD_REQUEST" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
+            }
+            else -> {
+                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+            }
         }
     }
 
@@ -90,28 +142,61 @@ class RatoController(
     fun deletarRatoPermanentemente(@PathVariable id: Long): ResponseEntity<Any> {
         val result = ratoService.deletarRatoPermanentemente(id)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
-        return when (status) {
-            "NO_CONTENT" -> ResponseEntity.noContent().build()
-            "RATO_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
-            "USER_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
-            "USER_DONT_HAS_THISRATO" -> buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não pertence a este usuário", "USER_DONT_HAS_THISRATO")
-            else -> buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+
+        when (status) {
+            "NO_CONTENT" -> {
+                return ResponseEntity.noContent().build()
+            }
+            "RATO_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
+            }
+            "USER_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
+            }
+            "USER_DONT_HAS_THISRATO" -> {
+                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não pertence a este usuário", "USER_DONT_HAS_THISRATO")
+            }
+            else -> {
+                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+            }
         }
     }
 
     private fun mapStatusToResponse(status: String): ResponseEntity<Any> {
-        return when (status) {
-            "USER_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
-            "RATO_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
-            "USER_ALREADY_HAS_3_RATOS" -> buildError(HttpStatus.CONFLICT, "Usuário já possui 3 ratos", "USER_ALREADY_HAS_3_RATOS")
-            "NON_EXISTENT_CLASS_OR_HABILIDADE" -> buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade inexistente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
-            "USER_DONT_HAS_THISRATO" -> buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não pertence a este usuário", "USER_DONT_HAS_THISRATO")
-            "BATALHA_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
-            "BATALHA_FULL" -> buildError(HttpStatus.CONFLICT, "Batalha cheia ou inscrições fechadas", "BATALHA_FULL")
-            "BATALHA_ALREADY_STARTED" -> buildError(HttpStatus.CONFLICT, "Batalha já iniciada", "BATALHA_ALREADY_STARTED")
-            "RATO_NOT_ELIGIBLE" -> buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
-            "BAD_REQUEST" -> buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
-            else -> buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+        when (status) {
+            "USER_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
+            }
+            "RATO_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
+            }
+            "USER_ALREADY_HAS_3_RATOS" -> {
+                return buildError(HttpStatus.CONFLICT, "Usuário já possui 3 ratos", "USER_ALREADY_HAS_3_RATOS")
+            }
+            "NON_EXISTENT_CLASS_OR_HABILIDADE" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade inexistente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
+            }
+            "USER_DONT_HAS_THISRATO" -> {
+                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não pertence a este usuário", "USER_DONT_HAS_THISRATO")
+            }
+            "BATALHA_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
+            }
+            "BATALHA_FULL" -> {
+                return buildError(HttpStatus.CONFLICT, "Batalha cheia ou inscrições fechadas", "BATALHA_FULL")
+            }
+            "BATALHA_ALREADY_STARTED" -> {
+                return buildError(HttpStatus.CONFLICT, "Batalha já iniciada", "BATALHA_ALREADY_STARTED")
+            }
+            "RATO_NOT_ELIGIBLE" -> {
+                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
+            }
+            "BAD_REQUEST" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
+            }
+            else -> {
+                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+            }
         }
     }
 

@@ -42,4 +42,19 @@ class Habilidade(
 
     @OneToMany(mappedBy = "habilidadeEscolhida", cascade = [CascadeType.ALL])
     var ratos: MutableList<Rato> = mutableListOf()
-)
+) : Serializable {
+    // construtor padrão (usa uma Classe "vazia" criada pelo no-arg da Classe)
+    constructor() : this(
+        0L,
+        Classe(),          // depende do construtor no-arg da Classe
+        "",
+        null,
+        100,
+        0,
+        null,
+        null,
+        null,
+        null,
+        mutableListOf()
+    )
+}

@@ -1,7 +1,9 @@
 package com.unipar.rinhaRatos.service
 
+import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.enums.StatusBatalha
+import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Classe
 import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.models.Usuario
@@ -16,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
-@Transactional // garante contexto de persistência durante as operações do service
+@Transactional
 class RatoService(
     private val ratoRepository: RatoRepository,
     private val classeRepository: ClasseRepository,
@@ -26,14 +28,16 @@ class RatoService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // leitura simples - retorna todos os ratos
-    fun getAllRatos(): List<Rato> = ratoRepository.findAll()
+    fun getAllRatos(): List<RatoDTO> =
+        ratoRepository.findAll().map { it.toDto() }
 
-    // leitura por id (sem carregar usuario) - use findByIdWithUsuario se precisar do dono carregado
-    fun getRatoById(id: Long): Optional<Rato> = ratoRepository.findById(id)
+
+    fun getRatoById(id: Long): Optional<RatoDTO> {
+        val ratoOpt = ratoRepository.findByIdWithUsuario(id)
+        return if (ratoOpt.isPresent) Optional.of(ratoOpt.get().toDto()) else Optional.empty()
+    }
 
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, Any> {
-        // busca usuário com ratos (fetch) para evitar LazyInitializationException
         val donoDoRatoOpt = usuarioRepository.findByIdWithRatos(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
@@ -42,13 +46,11 @@ class RatoService(
 
         val habilidadeOpt = habilidadeRepository.findByNomeHabilidade(ratoBasic.nomeHabilidade)
         if (habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
-
         val habilidade = habilidadeOpt.get()
-        val classe = habilidadeOpt.get().classe
+        val classe = habilidade.classe
 
         val descricao = ratoBasic.descricao ?: ""
 
-        // cria rato vinculando o dono já carregado
         val rato = Rato(
             nomeCustomizado = ratoBasic.nomeCustomizado,
             descricao = descricao,
@@ -60,12 +62,11 @@ class RatoService(
         val ratoAtualizado = auxSortRatoAtributos(rato, classe)
         val ratoSalvo = ratoRepository.save(ratoAtualizado)
 
-        // garante consistência na coleção do usuário (já estamos em transação)
         donoDoRato.ratos.add(ratoSalvo)
         usuarioRepository.save(donoDoRato)
 
         log.info("Rato ${ratoSalvo.idRato} cadastrado para usuário ${donoDoRato.idUsuario}")
-        return mapOf("Status" to "CREATED", "Rato" to ratoSalvo)
+        return mapOf("Status" to "CREATED", "Rato" to ratoSalvo.toDto())
     }
 
     private fun auxSortRatoAtributos(rato: Rato, classe: Classe): Rato {
@@ -81,7 +82,6 @@ class RatoService(
     }
 
     fun removeRato(ratoId: Long): Map<String, Any> {
-        // buscar rato com usuario carregado para evitar lazy
         val ratoOpt = ratoRepository.findByIdWithUsuario(ratoId)
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
         val rato = ratoOpt.get()
@@ -146,14 +146,12 @@ class RatoService(
         val rato = ratoOpt.get()
         val batalha = batalhaOpt.get()
 
-        // só enquanto inscrições estiverem abertas
         if (batalha.status != StatusBatalha.InscricoesAbertas) return mapOf("Status" to "BATALHA_NOT_OPEN")
         if (batalha.rato1 != null && batalha.rato2 != null) return mapOf("Status" to "BATALHA_FULL")
 
         if (!rato.estaVivo || rato.estaTorneio) return mapOf("Status" to "RATO_NOT_ELIGIBLE")
 
-        val donoId = rato.usuario?.idUsuario
-        if (donoId == null) return mapOf("Status" to "USER_NOT_FOUND")
+        val donoId = rato.usuario?.idUsuario ?: return mapOf("Status" to "USER_NOT_FOUND")
         if ((batalha.jogador1 != null && batalha.jogador1!!.idUsuario == donoId)
             || (batalha.jogador2 != null && batalha.jogador2!!.idUsuario == donoId)
         ) {

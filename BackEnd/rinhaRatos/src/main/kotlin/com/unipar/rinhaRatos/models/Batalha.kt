@@ -57,4 +57,21 @@ class Batalha(
     @ManyToOne
     @JoinColumn(name = "id_perdedor")
     var perdedor: Usuario? = null
-)
+) : Serializable {
+    // construtor padrão: cria Batalha "placeholder" (data = agora)
+    constructor() : this(
+        0L,
+        Usuario(),                 // depende do no-arg do Usuario (você já tinha)
+        "",
+        LocalDateTime.now(),
+        0,
+        0,
+        StatusBatalha.InscricoesAbertas,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+    )
+}
