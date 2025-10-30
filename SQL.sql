@@ -138,6 +138,7 @@ CREATE TABLE ratos (
     hps_base INT NOT NULL,
     int_base INT NOT NULL,
     def_base INT NOT NULL,
+    esta_torneio BOOLEAN NOT NULL DEFAULT FALSE,
     esta_vivo BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (id_classe) REFERENCES classes(id_classe),

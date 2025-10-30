@@ -7,43 +7,43 @@ import jakarta.persistence.*
 class Classe(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_classe: Long = 0,
+    val idClasse: Long = 0,
 
     @Column(nullable = false)
-    var nome_classe: String,
+    var nomeClasse: String,
 
     @Column(nullable = true)
     var apelido: String? = null,
 
     @Column(nullable = false)
-    var str_min: Int,
+    var strMin: Int,
 
     @Column(nullable = false)
-    var str_max: Int,
+    var strMax: Int,
 
     @Column(nullable = false)
-    var agi_min: Int,
+    var agiMin: Int,
 
     @Column(nullable = false)
-    var agi_max: Int,
+    var agiMax: Int,
 
     @Column(nullable = false)
-    var hps_min: Int,
+    var hpsMin: Int,
 
     @Column(nullable = false)
-    var hps_max: Int,
+    var hpsMax: Int,
 
     @Column(nullable = false)
-    var int_min: Int,
+    var intMin: Int,
 
     @Column(nullable = false)
-    var int_max: Int,
+    var intMax: Int,
 
     @Column(nullable = false)
-    var def_min: Int,
+    var defMin: Int,
 
     @Column(nullable = false)
-    var def_max: Int,
+    var defMax: Int,
 
     // Relação: uma Classe possui várias Habilidades (mapeamento inverso)
     @OneToMany(mappedBy = "classe", cascade = [CascadeType.ALL])

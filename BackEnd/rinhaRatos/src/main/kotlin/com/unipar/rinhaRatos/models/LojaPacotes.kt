@@ -1,0 +1,22 @@
+package com.unipar.rinhaRatos.models
+
+import jakarta.persistence.*
+import java.math.BigDecimal
+
+@Entity
+@Table(name = "lojaPacotes")
+class LojaPacotes(
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val idPacote: Long = 0,
+
+    @Column(nullable = false, length = 100)
+    var nomePacote: String = "",
+
+    @Column(nullable = false)
+    var mousecoinQuantidade: Int = 0,
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    var precoBrl: BigDecimal = BigDecimal.ZERO
+)

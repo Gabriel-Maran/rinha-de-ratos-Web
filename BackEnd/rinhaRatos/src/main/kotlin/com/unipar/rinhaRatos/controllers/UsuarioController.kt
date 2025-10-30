@@ -1,16 +1,16 @@
 package com.unipar.rinhaRatos.controllers
 
 import com.unipar.rinhaRatos.DTOs.ErrorResponse
-import com.unipar.rinhaRatos.DTOs.UsuarioEmailSenha
-import com.unipar.rinhaRatos.models.Rato
+import com.unipar.rinhaRatos.DTOs.UsuarioDTO
+import com.unipar.rinhaRatos.frontConnection.ConnectionFront
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.service.UsuarioService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.time.Instant
 
+@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
 @RestController
 @RequestMapping("/usuario")
 class UsuarioController(
@@ -58,50 +58,8 @@ class UsuarioController(
         }
     }
 
-    @PutMapping("/changeUser/all")
-    fun atualizaUsuarioInteiro(@RequestBody usuario: Usuario): ResponseEntity<Any> {
-        return try {
-            val savedOpt = usuarioService.atualizarTudo(usuario)
-            if (savedOpt.isPresent) ResponseEntity.ok(savedOpt.get())
-            else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.NOT_FOUND.value(),
-                    error = "Not Found",
-                    message = "Usuário não encontrado",
-                    code = "USER_NOT_FOUND"
-                )
-            )
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.CONFLICT.value(),
-                    error = "Conflict",
-                    message = e.message,
-                    code = "EMAIL_EXISTS"
-                )
-            )
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    fun deletarPessoaPorId(@PathVariable id: Long): ResponseEntity<Any> {
-        val pessoaDeletada = usuarioService.deletarPessoaPorId(id)
-        return if (pessoaDeletada) ResponseEntity.noContent().build()
-        else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.NOT_FOUND.value(),
-                error = "Not Found",
-                message = "Usuário não encontrado",
-                code = "USER_NOT_FOUND",
-            )
-        )
-    }
-
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: UsuarioEmailSenha): ResponseEntity<Any> {
+    fun login(@RequestBody loginRequest: UsuarioDTO): ResponseEntity<Any> {
         val tipoContaOpt = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
         return if (tipoContaOpt.isPresent) {
             ResponseEntity.ok(
@@ -124,7 +82,7 @@ class UsuarioController(
     }
 
     @PostMapping("/changeUser/password")
-    fun changePassWord(@RequestBody loginRequest: UsuarioEmailSenha): ResponseEntity<Any> {
+    fun changePassWord(@RequestBody loginRequest: UsuarioDTO): ResponseEntity<Any> {
         val senhaTrocada = usuarioService.redefinirUsuarioSenha(loginRequest.email, loginRequest.senha)
         return if (senhaTrocada) ResponseEntity.ok(mapOf("message" to "Senha trocada com sucesso"))
         else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -134,28 +92,6 @@ class UsuarioController(
                 error = HttpStatus.NOT_FOUND.reasonPhrase,
                 message = "Email inválido",
                 code = "EMAIL_NOT_FOUND"
-            )
-        )
-    }
-
-
-
-    @DeleteMapping("/{id}/ratos/{idRato}")
-    fun removeRatoByUserId(@PathVariable("id") idUsuario: Long, @PathVariable("idRato") idRato: Long): ResponseEntity<Any> {
-        TODO("Implementar remoção de rato: completar service.removeRatoByUserId ou adaptar controller")
-    }
-
-    @PutMapping("/{id}/changeUser/basic")
-    fun changeNomeEmailSenhaById(@PathVariable id: Long, @RequestBody usuarioDTO: UsuarioEmailSenha): ResponseEntity<Any> {
-        val usuarioDTOTrocado = usuarioService.changeNomeEmailSenhaById(id, usuarioDTO)
-        return if (usuarioDTOTrocado) ResponseEntity.ok(mapOf("message" to "Dados atualizados com sucesso"))
-        else ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.BAD_REQUEST.value(),
-                error = "Bad Request",
-                message = "Email já em uso ou usuário não encontrado",
-                code = "UPDATE_FAILED"
             )
         )
     }
@@ -203,6 +139,90 @@ class UsuarioController(
                 error = "Not Found",
                 message = "Usuário não encontrado",
                 code = "USER_NOT_FOUND"
+            )
+        )
+    }
+
+    @PutMapping("/changeUser/all")
+    fun atualizaUsuarioInteiro(@RequestBody usuario: Usuario): ResponseEntity<Any> {
+        return try {
+            val savedOpt = usuarioService.atualizarTudo(usuario)
+            if (savedOpt.isPresent) ResponseEntity.ok(savedOpt.get())
+            else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.NOT_FOUND.value(),
+                    error = "Not Found",
+                    message = "Usuário não encontrado",
+                    code = "USER_NOT_FOUND"
+                )
+            )
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.CONFLICT.value(),
+                    error = "Conflict",
+                    message = e.message,
+                    code = "EMAIL_EXISTS"
+                )
+            )
+        }
+    }
+
+    @PutMapping("/{id}/changeUser/basic")
+    fun changeNomeEmailSenhaById(
+        @PathVariable id: Long,
+        @RequestBody usuarioDTO: UsuarioDTO
+    ): ResponseEntity<Any> {
+        val status = usuarioService.changeNomeEmailSenhaById(id, usuarioDTO)
+
+        return when (status) {
+            HttpStatus.OK -> ResponseEntity.ok(mapOf("message" to "Dados atualizados com sucesso"))
+
+            HttpStatus.NOT_FOUND -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.NOT_FOUND.value(),
+                    error = "Not Found",
+                    message = "Usuário não encontrado",
+                    code = "USER_NOT_FOUND"
+                )
+            )
+
+            HttpStatus.BAD_REQUEST -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.BAD_REQUEST.value(),
+                    error = "Bad Request",
+                    message = "Email já em uso ou dados inválidos",
+                    code = "EMAIL_IN_USE_OR_INVALID"
+                )
+            )
+
+            else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    error = "Internal Server Error",
+                    message = "Erro ao atualizar usuário",
+                    code = "UPDATE_FAILED"
+                )
+            )
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    fun deletarPessoaPorId(@PathVariable id: Long): ResponseEntity<Any> {
+        val pessoaDeletada = usuarioService.deletarPessoaPorId(id)
+        return if (pessoaDeletada) ResponseEntity.noContent().build()
+        else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            ErrorResponse(
+                timestamp = Instant.now().toString(),
+                status = HttpStatus.NOT_FOUND.value(),
+                error = "Not Found",
+                message = "Usuário não encontrado",
+                code = "USER_NOT_FOUND",
             )
         )
     }

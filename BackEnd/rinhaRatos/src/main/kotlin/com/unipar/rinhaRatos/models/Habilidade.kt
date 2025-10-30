@@ -7,7 +7,7 @@ import jakarta.persistence.*
 class Habilidade(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_habilidade: Long = 0,
+    val idHabilidade: Long = 0,
 
     // Relação com Classe
     @ManyToOne(fetch = FetchType.LAZY)
@@ -15,28 +15,28 @@ class Habilidade(
     var classe: Classe,
 
     @Column(nullable = false)
-    var nome_habilidade: String,
+    var nomeHabilidade: String,
 
     @Column(columnDefinition = "TEXT")
     var descricao: String? = null,
 
     @Column(nullable = false)
-    var chance_sucesso: Int = 100,
+    var chanceSucesso: Int = 100,
 
     @Column(nullable = false)
     var cooldown: Int = 0,
 
     @Column(nullable = true)
-    var efeito_sucesso_str: String? = null,
+    var efeitoSucessoStr: String? = null,
 
     @Column(nullable = true)
-    var efeito_falha_str: String? = null,
+    var efeitoFalhaStr: String? = null,
 
     @Column(nullable = true)
-    var efetivo_txt: String? = null,
+    var efetivoTxt: String? = null,
 
     @Column(nullable = true)
-    var falha_txt: String? = null,
+    var falhaTxt: String? = null,
 
     @OneToMany(mappedBy = "habilidadeEscolhida", cascade = [CascadeType.ALL])
     val ratos: MutableList<Rato> = mutableListOf()

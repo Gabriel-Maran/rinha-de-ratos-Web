@@ -1,62 +1,57 @@
 package com.unipar.rinhaRatos.models
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
+import java.io.Serializable
 
 @Entity
 @Table(name = "ratos")
 class Rato(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_rato: Long = 0,
+    var idRato: Long = 0L,
 
     @Column(nullable = false)
-    val nome_customizado: String,
+    var nomeCustomizado: String = "",
 
-    val descricao: String? = null,
+    @Column(columnDefinition = "text")
+    var descricao: String = "",
 
-    // --- Início das Foreign Keys ---
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    @JsonBackReference
+    var usuario: Usuario? = null,
 
-    /* * Foreign Key 1: id_usuario
-     * @ManyToOne: Muitos Ratos podem pertencer a Um Usuario.
-     * @JoinColumn: Especifica que esta entidade (Rato) é a "dona" da relação
-     * e que a coluna 'id_usuario' nesta tabela é usada para
-     * guardar a chave estrangeira.
-     */
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    val usuario: Usuario,
+    // Exemplo de referências à classe/habilidade — ajuste nomes conforme suas entities
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "classe_id")
+    var classe: Classe? = null,
 
-    /* * Foreign Key 2: id_classe
-     * Muitos Ratos podem ter Uma Classe.
-     */
-    @ManyToOne
-    @JoinColumn(name = "id_classe", nullable = false)
-    val classe: Classe,
-
-    /* * Foreign Key 3: id_habilidade_escolhida
-     * Muitos Ratos podem ter escolhido Uma Habilidade.
-     */
-    @ManyToOne
-    @JoinColumn(name = "id_habilidade_escolhida", nullable = false)
-    val habilidadeEscolhida: Habilidade,
-
-    // --- Fim das Foreign Keys ---
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "habilidade_id")
+    var habilidadeEscolhida: Habilidade? = null,
 
     @Column(nullable = false)
-    val str_base: Int,
+    var strBase: Int = 0,
 
     @Column(nullable = false)
-    val agi_base: Int,
+    var agiBase: Int = 0,
 
     @Column(nullable = false)
-    val hps_base: Int,
+    var hpsBase: Int = 0,
 
     @Column(nullable = false)
-    val int_base: Int,
+    var intBase: Int = 0,
 
     @Column(nullable = false)
-    val def_base: Int,
+    var defBase: Int = 0,
 
     @Column(nullable = false)
-    var esta_vivo: Boolean = true
-)
+    var estaTorneio: Boolean = false,
+
+    @Column(nullable = false)
+    var estaVivo: Boolean = true
+) : Serializable {
+    constructor() : this(0L, "", "", null, null, null, 0, 0, 0, 0, 0, false, true)
+}

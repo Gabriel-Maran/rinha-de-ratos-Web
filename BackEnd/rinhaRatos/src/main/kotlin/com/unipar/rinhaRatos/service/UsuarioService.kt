@@ -1,13 +1,12 @@
 package com.unipar.rinhaRatos.service
 
-import com.unipar.rinhaRatos.DTOs.UsuarioEmailSenha
+import com.unipar.rinhaRatos.DTOs.UsuarioDTO
 import com.unipar.rinhaRatos.enums.TipoConta
-import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
@@ -41,19 +40,22 @@ class UsuarioService(
     }
 
     fun atualizarTudo(usuario: Usuario): Optional<Usuario> {
-        val existenteOpt = usuarioRepository.findById(usuario.id_usuario)
+        val existenteOpt = usuarioRepository.findById(usuario.idUsuario)
         if (existenteOpt.isEmpty) return Optional.empty()
         val existente = existenteOpt.get()
+
         existente.nome = usuario.nome
+
         if (usuario.email != existente.email) {
             if (usuarioRepository.existsByEmail(usuario.email)) {
                 throw IllegalArgumentException("Email já em uso")
             }
             existente.email = usuario.email
         }
+
         existente.senha = usuario.senha
-        existente.tipo_conta = usuario.tipo_conta
-        existente.mousecoin_saldo = usuario.mousecoin_saldo
+        existente.tipoConta = usuario.tipoConta
+        existente.mousecoinSaldo = usuario.mousecoinSaldo
         usuarioRepository.save(existente)
         return Optional.of(existente)
     }
@@ -61,16 +63,17 @@ class UsuarioService(
     fun validaUsuarioLogin(email: String, senha: String): Optional<TipoConta> {
         val usuario = usuarioRepository.findByEmail(email)
         if (usuario.isPresent && usuario.get().senha == senha) {
-            return Optional.of(usuario.get().tipo_conta)
+            // ideal: comparar hashes (BCrypt)
+            return Optional.of(usuario.get().tipoConta)
         }
         return Optional.empty()
     }
-
 
     fun redefinirUsuarioSenha(email: String, novaSenha: String): Boolean {
         val usuarioOpt = usuarioRepository.findByEmail(email)
         if (usuarioOpt.isPresent) {
             val usuario = usuarioOpt.get()
+            // TODO: hash novaSenha
             usuario.senha = novaSenha
             usuarioRepository.save(usuario)
             return true
@@ -78,45 +81,27 @@ class UsuarioService(
         return false
     }
 
-    //Função será usada pelo RatosController, na hora de registrar um novo rato
-    fun addNewRatoByUserId(id: Long, rato: Rato): Boolean {
+    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioDTO): HttpStatus {
         val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
+        if (usuarioOpt.isEmpty) return HttpStatus.NOT_FOUND
         val usuario = usuarioOpt.get()
-        if (usuario.ratos.size >= 3) return false
-        usuario.ratos.add(rato)
-        usuarioRepository.save(usuario)
-        return true
-    }
 
-    fun removeRatoByUserId(idUsuario: Long, rato: Rato): Boolean {
-        val usuarioOpt = getById(idUsuario)
-        if(usuarioOpt.isEmpty || TODO()) return false
-        if(!(usuarioOpt.get().ratos.contains(rato))) return false
-        usuarioOpt.get().ratos.remove(rato)
-        usuarioRepository.save<Usuario>(usuarioOpt.get())
-        return true
-    }
-
-    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioEmailSenha): Boolean {
-        val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
-        val usuario = usuarioOpt.get()
-        if(usuarioOpt.get().email != usuarioDTO.email){
-            if (usuarioRepository.existsByEmail(usuarioDTO.email)) return false
+        if (usuario.email != usuarioDTO.email) {
+            if (usuarioRepository.existsByEmail(usuarioDTO.email)) return HttpStatus.BAD_REQUEST
         }
-        usuario.nome = usuarioDTO.nome;
-        usuario.email = usuarioDTO.email;
-        usuario.senha = usuarioDTO.senha;
+
+        usuario.nome = usuarioDTO.nome
+        usuario.email = usuarioDTO.email
+        usuario.senha = usuarioDTO.senha
         usuarioRepository.save(usuario)
-        return true
+        return HttpStatus.OK
     }
 
     fun compraDeMouseCoin(id: Long, quantidade: Int): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
         if (usuarioOpt.isEmpty) return false
         val usuario = usuarioOpt.get()
-        usuario.mousecoin_saldo = usuario.mousecoin_saldo + quantidade
+        usuario.mousecoinSaldo = usuario.mousecoinSaldo + quantidade
         usuarioRepository.save(usuario)
         return true
     }
@@ -125,13 +110,13 @@ class UsuarioService(
         val usuarioOpt = usuarioRepository.findById(id)
         if (usuarioOpt.isEmpty) return false
         val usuario = usuarioOpt.get()
-        if (usuario.mousecoin_saldo < quantidade) return false
-        usuario.mousecoin_saldo = usuario.mousecoin_saldo - quantidade
+        if (usuario.mousecoinSaldo < quantidade) return false
+        usuario.mousecoinSaldo = usuario.mousecoinSaldo - quantidade
         usuarioRepository.save(usuario)
         return true
     }
 
-    fun aumentaUmaVitoriaById(id: Long): Boolean{
+    fun aumentaUmaVitoriaById(id: Long): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
         if (usuarioOpt.isEmpty) return false
         val usuario = usuarioOpt.get()
@@ -139,5 +124,4 @@ class UsuarioService(
         usuarioRepository.save(usuario)
         return true
     }
-
 }

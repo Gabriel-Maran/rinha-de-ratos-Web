@@ -1,40 +1,45 @@
 package com.unipar.rinhaRatos.models
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.unipar.rinhaRatos.enums.TipoConta
 import jakarta.persistence.*
+import java.io.Serializable
 
 @Entity
 @Table(name = "usuarios")
 class Usuario(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_usuario: Long = 0,
+    var idUsuario: Long = 0L,
 
     @Column(nullable = false)
-    var nome: String,
+    var nome: String = "",
 
     @Column(nullable = false, unique = true)
-    var email: String,
+    var email: String = "",
 
-    @Column(name = "senha", nullable = false) // 'senha' no DDL
-    var senha: String,
+    @Column(name = "senha", nullable = false)
+    var senha: String = "",
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var tipo_conta: TipoConta = TipoConta.JOGADOR,
+    var tipoConta: TipoConta = TipoConta.JOGADOR,
 
     @Column(nullable = false)
-    var mousecoin_saldo: Int = 30, // Default do seu DDL
+    var mousecoinSaldo: Int = 30,
 
     @Column(nullable = false)
-    var vitorias :Int = 0,
+    var vitorias: Int = 0,
 
-    // Esta é a "outra ponta" da relação
-    // 'mappedBy = "usuario"' diz ao Spring que a entidade 'Rato' gerencia esta relação
     @OneToMany(
         mappedBy = "usuario",
-        cascade = [CascadeType.ALL], // Se deletar um usuário, deleta seus ratos
-        orphanRemoval = true
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
     )
-    val ratos: MutableList<Rato> = mutableListOf()
-)
+    @JsonManagedReference
+    var ratos: MutableList<Rato> = mutableListOf()
+) : Serializable {
+    constructor() : this(0L, "", "", "", TipoConta.JOGADOR, 30, 0, mutableListOf())
+}

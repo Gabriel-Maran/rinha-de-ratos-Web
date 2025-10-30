@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 class Batalha(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_batalha: Long = 0,
+    val idBatalha: Long = 0,
 
     // ADM criador da sala
     @ManyToOne(fetch = FetchType.LAZY)
@@ -17,16 +17,16 @@ class Batalha(
     var admCriador: Usuario,
 
     @Column(nullable = false)
-    var nome_batalha: String,
+    var nomeBatalha: String,
 
     @Column(nullable = false)
-    var data_horario_inicio: LocalDateTime,
+    var dataHorarioInicio: LocalDateTime,
 
     @Column(nullable = false)
-    var custo_inscricao: Int,
+    var custoInscricao: Int,
 
     @Column(nullable = false)
-    var premio_total: Int,
+    var premioTotal: Int,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
