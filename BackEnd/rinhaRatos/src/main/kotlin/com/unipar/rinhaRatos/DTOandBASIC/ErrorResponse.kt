@@ -1,4 +1,4 @@
-package com.unipar.rinhaRatos.DTOs
+package com.unipar.rinhaRatos.DTOandBASIC
 
 data class ErrorResponse (
     val timestamp: String,

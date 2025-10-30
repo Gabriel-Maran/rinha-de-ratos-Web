@@ -1,8 +1,7 @@
 package com.unipar.rinhaRatos.controllers
 
-import com.unipar.rinhaRatos.DTOs.ErrorResponse
-import com.unipar.rinhaRatos.DTOs.RatoDTO
-import com.unipar.rinhaRatos.frontConnection.ConnectionFront
+import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
+import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.service.RatoService
 import org.springframework.http.HttpStatus
@@ -10,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
-@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+//@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
 @RestController
 @RequestMapping("/rato")
 class RatoController(
@@ -28,7 +27,7 @@ class RatoController(
     }
 
     @PostMapping("/cadastro")
-    fun cadastrarRato(@RequestBody ratoDTO: RatoDTO): ResponseEntity<Any> {
+    fun cadastrarRato(@RequestBody ratoDTO: RatoBasic): ResponseEntity<Any> {
         val result = ratoService.cadastrarRato(ratoDTO)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
 

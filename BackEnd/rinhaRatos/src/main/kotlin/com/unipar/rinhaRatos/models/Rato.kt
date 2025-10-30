@@ -18,17 +18,17 @@ class Rato(
     @Column(columnDefinition = "text")
     var descricao: String = "",
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "usuario_id")
     @JsonBackReference
     var usuario: Usuario? = null,
 
     // Exemplo de referências à classe/habilidade — ajuste nomes conforme suas entities
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "classe_id")
     var classe: Classe? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "habilidade_id")
     var habilidadeEscolhida: Habilidade? = null,
 
@@ -52,6 +52,4 @@ class Rato(
 
     @Column(nullable = false)
     var estaVivo: Boolean = true
-) : Serializable {
-    constructor() : this(0L, "", "", null, null, null, 0, 0, 0, 0, 0, false, true)
-}
+)
