@@ -1,9 +1,8 @@
 package com.unipar.rinhaRatos.models
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.unipar.rinhaRatos.enums.TipoConta
 import jakarta.persistence.*
-import java.io.Serializable
 
 @Entity
 @Table(name = "usuarios")
@@ -35,11 +34,7 @@ class Usuario(
     @OneToMany(
         mappedBy = "usuario",
         cascade = [CascadeType.ALL],
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
+        orphanRemoval = true
     )
-    @JsonManagedReference
     var ratos: MutableList<Rato> = mutableListOf()
-) : Serializable {
-    constructor() : this(0L, "", "", "", TipoConta.JOGADOR, 30, 0, mutableListOf())
-}
+)

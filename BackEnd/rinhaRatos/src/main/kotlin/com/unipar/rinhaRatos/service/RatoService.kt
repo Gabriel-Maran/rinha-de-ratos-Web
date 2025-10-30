@@ -1,6 +1,6 @@
 package com.unipar.rinhaRatos.service
 
-import com.unipar.rinhaRatos.DTOs.RatoDTO
+import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.models.Classe
 import com.unipar.rinhaRatos.models.Rato
@@ -28,23 +28,25 @@ class RatoService(
 
     fun getRatoById(id: Long): Optional<Rato> = ratoRepository.findById(id)
 
-    fun cadastrarRato(ratoDTO: RatoDTO): Map<String, Any> {
-        val donoDoRatoOpt = usuarioRepository.findById(ratoDTO.idUsuario)
+    fun cadastrarRato(ratoBasic: RatoBasic): Map<String, Any> {
+        val donoDoRatoOpt = usuarioRepository.findById(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
 
         if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
 
-        val classeOpt = classeRepository.findByNomeClasse(ratoDTO.nomeClasse)
-        val habilidadeOpt = habilidadeRepository.findByNomeHabilidade(ratoDTO.nomeHabilidade)
+        val classeOpt = classeRepository.findByNomeClasse(ratoBasic.nomeClasse)
+        val habilidadeOpt = habilidadeRepository.findByNomeHabilidade(ratoBasic.nomeHabilidade)
         if (classeOpt.isEmpty || habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
 
         val classe = classeOpt.get()
         val habilidade = habilidadeOpt.get()
 
+        val descricao = ratoBasic.descricao ?: ""
+
         val rato = Rato(
-            nomeCustomizado = ratoDTO.nome_customizado,
-            descricao = ratoDTO.descricao!!,
+            nomeCustomizado = ratoBasic.nomeCustomizado,
+            descricao = descricao,
             usuario = donoDoRato,
             classe = classe,
             habilidadeEscolhida = habilidade
@@ -77,7 +79,9 @@ class RatoService(
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
         val rato = ratoOpt.get()
 
-        val usuarioOpt = usuarioRepository.findById(rato.usuario!!.idUsuario)
+        val usuarioRef = rato.usuario
+        if (usuarioRef == null) return mapOf("Status" to "USER_NOT_FOUND")
+        val usuarioOpt = usuarioRepository.findById(usuarioRef.idUsuario)
         if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val usuario = usuarioOpt.get()
 
@@ -136,12 +140,14 @@ class RatoService(
         val rato = ratoOpt.get()
         val batalha = batalhaOpt.get()
 
-        if (batalha.status == StatusBatalha.InscricoesFechadas) return mapOf("Status" to "BATALHA_FULL")
+        // só enquanto inscrições estiverem abertas
+        if (batalha.status != StatusBatalha.InscricoesAbertas) return mapOf("Status" to "BATALHA_NOT_OPEN")
         if (batalha.rato1 != null && batalha.rato2 != null) return mapOf("Status" to "BATALHA_FULL")
 
         if (!rato.estaVivo || rato.estaTorneio) return mapOf("Status" to "RATO_NOT_ELIGIBLE")
 
         val donoId = rato.usuario?.idUsuario
+        if (donoId == null) return mapOf("Status" to "USER_NOT_FOUND")
         if ((batalha.jogador1 != null && batalha.jogador1!!.idUsuario == donoId)
             || (batalha.jogador2 != null && batalha.jogador2!!.idUsuario == donoId)
         ) {
@@ -170,7 +176,9 @@ class RatoService(
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
         val rato = ratoOpt.get()
 
-        val usuarioOpt = usuarioRepository.findById(rato.usuario!!.idUsuario)
+        val usuarioRef = rato.usuario
+        if (usuarioRef == null) return mapOf("Status" to "USER_NOT_FOUND")
+        val usuarioOpt = usuarioRepository.findById(usuarioRef.idUsuario)
         if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val usuario = usuarioOpt.get()
 
@@ -180,7 +188,6 @@ class RatoService(
         usuario.ratos.removeIf { it.idRato == rato.idRato }
         usuarioRepository.save(usuario)
 
-        // delete definitivo
         ratoRepository.deleteById(ratoId)
 
         log.info("Rato ${ratoId} deletado permanentemente do usuário ${usuario.idUsuario}")

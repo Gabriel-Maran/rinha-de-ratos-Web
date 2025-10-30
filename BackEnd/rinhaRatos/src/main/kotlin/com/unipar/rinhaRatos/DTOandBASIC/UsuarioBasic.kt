@@ -1,6 +1,6 @@
-package com.unipar.rinhaRatos.DTOs
+package com.unipar.rinhaRatos.DTOandBASIC
 
-data class UsuarioDTO(
+data class UsuarioBasic(
     val email: String,
     val senha: String,
     val nome : String

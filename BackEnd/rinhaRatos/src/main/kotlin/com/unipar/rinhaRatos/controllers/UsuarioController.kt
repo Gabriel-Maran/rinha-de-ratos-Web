@@ -1,8 +1,8 @@
 package com.unipar.rinhaRatos.controllers
 
-import com.unipar.rinhaRatos.DTOs.ErrorResponse
-import com.unipar.rinhaRatos.DTOs.UsuarioDTO
+import com.unipar.rinhaRatos.DTOandBASIC.*
 import com.unipar.rinhaRatos.frontConnection.ConnectionFront
+import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.service.UsuarioService
 import org.springframework.http.HttpStatus
@@ -18,14 +18,18 @@ class UsuarioController(
 ) {
 
     @GetMapping("/todos")
-    fun findAllUsuarios(): ResponseEntity<List<Usuario>> =
-        ResponseEntity.ok(usuarioService.getAllUsuario())
+    fun findAllUsuarios(): ResponseEntity<List<UsuarioDTO>> {
+        val usuarios = usuarioService.getAllUsuario()
+        val usuariosMapped = usuarios.map { it.toDto() }
+        return ResponseEntity.ok(usuariosMapped)
+    }
 
     @GetMapping("/{id}")
     fun findUsuarioById(@PathVariable id: Long): ResponseEntity<Any> {
         val usuarioOpt = usuarioService.getById(id)
-        return if (usuarioOpt.isPresent) ResponseEntity.ok(usuarioOpt.get())
-        else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        return if (usuarioOpt.isPresent) {
+            ResponseEntity.ok(usuarioOpt.get().toDto())
+        } else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ErrorResponse(
                 timestamp = Instant.now().toString(),
                 status = HttpStatus.NOT_FOUND.value(),
@@ -37,14 +41,17 @@ class UsuarioController(
     }
 
     @GetMapping("/top10Vitorias")
-    fun findTop10Vitorias(): ResponseEntity<List<Usuario>> =
-        ResponseEntity.ok(usuarioService.getTop10Vitorias())
+    fun findTop10Vitorias(): ResponseEntity<List<UsuarioDTO>> {
+        val top = usuarioService.getTop10Vitorias()
+        val topMapped = top.map { it.toDto() }
+        return ResponseEntity.ok(topMapped)
+    }
 
     @PostMapping("/cadastro")
     fun cadastrarUsuario(@RequestBody usuario: Usuario): ResponseEntity<Any> {
         return try {
             val saved = usuarioService.cadastrarUsuario(usuario)
-            ResponseEntity(saved, HttpStatus.CREATED)
+            ResponseEntity(saved.toDto(), HttpStatus.CREATED)
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(
                 ErrorResponse(
@@ -59,7 +66,7 @@ class UsuarioController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: UsuarioDTO): ResponseEntity<Any> {
+    fun login(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val tipoContaOpt = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
         return if (tipoContaOpt.isPresent) {
             ResponseEntity.ok(
@@ -82,7 +89,7 @@ class UsuarioController(
     }
 
     @PostMapping("/changeUser/password")
-    fun changePassWord(@RequestBody loginRequest: UsuarioDTO): ResponseEntity<Any> {
+    fun changePassWord(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val senhaTrocada = usuarioService.redefinirUsuarioSenha(loginRequest.email, loginRequest.senha)
         return if (senhaTrocada) ResponseEntity.ok(mapOf("message" to "Senha trocada com sucesso"))
         else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -143,37 +150,10 @@ class UsuarioController(
         )
     }
 
-    @PutMapping("/changeUser/all")
-    fun atualizaUsuarioInteiro(@RequestBody usuario: Usuario): ResponseEntity<Any> {
-        return try {
-            val savedOpt = usuarioService.atualizarTudo(usuario)
-            if (savedOpt.isPresent) ResponseEntity.ok(savedOpt.get())
-            else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.NOT_FOUND.value(),
-                    error = "Not Found",
-                    message = "Usuário não encontrado",
-                    code = "USER_NOT_FOUND"
-                )
-            )
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.CONFLICT.value(),
-                    error = "Conflict",
-                    message = e.message,
-                    code = "EMAIL_EXISTS"
-                )
-            )
-        }
-    }
-
     @PutMapping("/{id}/changeUser/basic")
     fun changeNomeEmailSenhaById(
         @PathVariable id: Long,
-        @RequestBody usuarioDTO: UsuarioDTO
+        @RequestBody usuarioDTO: UsuarioBasic
     ): ResponseEntity<Any> {
         val status = usuarioService.changeNomeEmailSenhaById(id, usuarioDTO)
 

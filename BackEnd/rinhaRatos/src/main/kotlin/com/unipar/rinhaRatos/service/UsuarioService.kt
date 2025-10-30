@@ -1,6 +1,8 @@
 package com.unipar.rinhaRatos.service
 
-import com.unipar.rinhaRatos.DTOs.UsuarioDTO
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import com.unipar.rinhaRatos.DTOandBASIC.UsuarioBasic
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
@@ -15,19 +17,38 @@ class UsuarioService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun getAllUsuario(): List<Usuario> = usuarioRepository.findAll()
+    // --- Observação: esses métodos usam queries que já fazem fetch join em "ratos".
+    // Assegure-se de ter findAllWithRatos() e findByIdWithRatos(id) no UsuarioRepository.
+    fun getAllUsuario(): List<Usuario> {
+        log.debug("Buscando todos usuários (com ratos) - iniciando")
+        val list = usuarioRepository.findAllWithRatos()
+        log.debug("Buscando todos usuários - retornados ${list.size}")
+        return list
+    }
 
-    fun getById(id: Long): Optional<Usuario> = usuarioRepository.findById(id)
+    fun getById(id: Long): Optional<Usuario> {
+        log.debug("Buscando usuário por id: $id (com ratos)")
+        return usuarioRepository.findByIdWithRatos(id)
+    }
 
-    fun getByEmail(email: String): Optional<Usuario> = usuarioRepository.findByEmail(email)
-
-    fun getTop10Vitorias(): List<Usuario> = usuarioRepository.findTop10ByOrderByVitoriasDesc()
+    fun getTop10Vitorias(): List<Usuario> {
+        log.debug("Buscando top 10 usuários por vitórias")
+        val page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "vitorias"))
+        return usuarioRepository.findTop10WithRatosOrderByVitoriasDesc(page)
+    }
 
     fun cadastrarUsuario(usuario: Usuario): Usuario {
-        if (usuarioRepository.existsByEmail(usuario.email)) {
+        val emailNormalized = usuario.email.trim()
+        if (usuarioRepository.existsByEmail(emailNormalized)) {
+            log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
             throw IllegalArgumentException("Email já cadastrado")
         }
-        return usuarioRepository.save(usuario)
+
+        usuario.email = emailNormalized
+
+        val saved = usuarioRepository.save(usuario)
+        log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
+        return saved
     }
 
     fun deletarPessoaPorId(id: Long): Boolean {
@@ -36,34 +57,13 @@ class UsuarioService(
             log.info("Usuário $id deletado")
             return true
         }
+        log.warn("Tentativa de deletar usuário não-existente id=$id")
         return false
-    }
-
-    fun atualizarTudo(usuario: Usuario): Optional<Usuario> {
-        val existenteOpt = usuarioRepository.findById(usuario.idUsuario)
-        if (existenteOpt.isEmpty) return Optional.empty()
-        val existente = existenteOpt.get()
-
-        existente.nome = usuario.nome
-
-        if (usuario.email != existente.email) {
-            if (usuarioRepository.existsByEmail(usuario.email)) {
-                throw IllegalArgumentException("Email já em uso")
-            }
-            existente.email = usuario.email
-        }
-
-        existente.senha = usuario.senha
-        existente.tipoConta = usuario.tipoConta
-        existente.mousecoinSaldo = usuario.mousecoinSaldo
-        usuarioRepository.save(existente)
-        return Optional.of(existente)
     }
 
     fun validaUsuarioLogin(email: String, senha: String): Optional<TipoConta> {
         val usuario = usuarioRepository.findByEmail(email)
         if (usuario.isPresent && usuario.get().senha == senha) {
-            // ideal: comparar hashes (BCrypt)
             return Optional.of(usuario.get().tipoConta)
         }
         return Optional.empty()
@@ -73,55 +73,78 @@ class UsuarioService(
         val usuarioOpt = usuarioRepository.findByEmail(email)
         if (usuarioOpt.isPresent) {
             val usuario = usuarioOpt.get()
-            // TODO: hash novaSenha
             usuario.senha = novaSenha
             usuarioRepository.save(usuario)
+            log.info("Senha redefinida para o email $email")
             return true
         }
+        log.warn("Redefinir senha: email não encontrado $email")
         return false
     }
 
-    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioDTO): HttpStatus {
+    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioBasic): HttpStatus {
         val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return HttpStatus.NOT_FOUND
+        if (usuarioOpt.isEmpty) {
+            log.warn("changeNomeEmailSenhaById: usuário não encontrado id=$id")
+            return HttpStatus.NOT_FOUND
+        }
         val usuario = usuarioOpt.get()
 
         if (usuario.email != usuarioDTO.email) {
-            if (usuarioRepository.existsByEmail(usuarioDTO.email)) return HttpStatus.BAD_REQUEST
+            if (usuarioRepository.existsByEmail(usuarioDTO.email)) {
+                log.warn("changeNomeEmailSenhaById: email já em uso ${usuarioDTO.email}")
+                return HttpStatus.BAD_REQUEST
+            }
         }
 
         usuario.nome = usuarioDTO.nome
         usuario.email = usuarioDTO.email
         usuario.senha = usuarioDTO.senha
         usuarioRepository.save(usuario)
+        log.info("Dados básicos atualizados para usuário id=$id")
         return HttpStatus.OK
     }
 
     fun compraDeMouseCoin(id: Long, quantidade: Int): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
+        if (usuarioOpt.isEmpty) {
+            log.warn("compraDeMouseCoin: usuário não encontrado id=$id")
+            return false
+        }
         val usuario = usuarioOpt.get()
         usuario.mousecoinSaldo = usuario.mousecoinSaldo + quantidade
         usuarioRepository.save(usuario)
+        log.info("Usuário id=$id comprou $quantidade mousecoins (novo saldo=${usuario.mousecoinSaldo})")
         return true
     }
 
     fun gastoDeMouseCoin(id: Long, quantidade: Int): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
+        if (usuarioOpt.isEmpty) {
+            log.warn("gastoDeMouseCoin: usuário não encontrado id=$id")
+            return false
+        }
         val usuario = usuarioOpt.get()
-        if (usuario.mousecoinSaldo < quantidade) return false
+        if (usuario.mousecoinSaldo < quantidade) {
+            log.warn("gastoDeMouseCoin: saldo insuficiente id=$id, saldo=${usuario.mousecoinSaldo}, tentado=$quantidade")
+            return false
+        }
         usuario.mousecoinSaldo = usuario.mousecoinSaldo - quantidade
         usuarioRepository.save(usuario)
+        log.info("Usuário id=$id gastou $quantidade mousecoins (novo saldo=${usuario.mousecoinSaldo})")
         return true
     }
 
     fun aumentaUmaVitoriaById(id: Long): Boolean {
         val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) return false
+        if (usuarioOpt.isEmpty) {
+            log.warn("aumentaUmaVitoriaById: usuário não encontrado id=$id")
+            return false
+        }
         val usuario = usuarioOpt.get()
         usuario.vitorias = usuario.vitorias + 1
         usuarioRepository.save(usuario)
+        log.info("Vitória incrementada para usuário id=$id (vitorias=${usuario.vitorias})")
         return true
     }
 }
