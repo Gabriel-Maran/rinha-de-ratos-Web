@@ -49,10 +49,10 @@ class RatoService(
         val habilidade = habilidadeOpt.get()
         val classe = habilidade.classe
 
-        val descricao = ratoBasic.descricao ?: ""
+        val descricao = classe.descricao ?: "Sem descrição"
 
         val rato = Rato(
-            nomeCustomizado = ratoBasic.nomeCustomizado,
+            nomeCustomizado = ratoBasic.nomeCustomizado ?: classe.nomeClasse,
             descricao = descricao,
             usuario = donoDoRato,
             classe = classe,
@@ -103,76 +103,6 @@ class RatoService(
 
         log.info("Rato ${rato.idRato} removido (soft) do usuário ${usuario.idUsuario}")
         return mapOf("Status" to "NO_CONTENT")
-    }
-
-    fun sairDoTorneio(usuarioId: Long, batalhaId: Long): Map<String, Any> {
-        val batalhaOpt = batalhaRepository.findById(batalhaId)
-        if (batalhaOpt.isEmpty) return mapOf("Status" to "BATALHA_NOT_FOUND")
-        val batalha = batalhaOpt.get()
-
-        if (batalha.status != StatusBatalha.InscricoesAbertas) return mapOf("Status" to "BATALHA_ALREADY_STARTED")
-
-        var usuario: Usuario? = null
-        var rato: Rato? = null
-        if (batalha.jogador1?.idUsuario == usuarioId) {
-            usuario = batalha.jogador1
-            rato = batalha.rato1
-        } else if (batalha.jogador2?.idUsuario == usuarioId) {
-            usuario = batalha.jogador2
-            rato = batalha.rato2
-        }
-
-        if (usuario == null) return mapOf("Status" to "USER_NOT_FOUND")
-        if (rato == null) return mapOf("Status" to "RATO_NOT_FOUND")
-
-        if (batalha.rato1 != null && batalha.rato1!!.idRato == rato.idRato) batalha.rato1 = null
-        else if (batalha.rato2 != null && batalha.rato2!!.idRato == rato.idRato) batalha.rato2 = null
-
-        rato.estaTorneio = false
-
-        batalhaRepository.save(batalha)
-        ratoRepository.save(rato)
-
-        log.info("Usuário ${usuario.idUsuario} saiu da batalha ${batalha.idBatalha} com rato ${rato.idRato}")
-        return mapOf("Status" to "NO_CONTENT")
-    }
-
-    fun cadastrarRatoNaBatalha(ratoId: Long, batalhaId: Long): Map<String, Any> {
-        val ratoOpt = ratoRepository.findByIdWithUsuario(ratoId)
-        if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
-        val batalhaOpt = batalhaRepository.findById(batalhaId)
-        if (batalhaOpt.isEmpty) return mapOf("Status" to "BATALHA_NOT_FOUND")
-
-        val rato = ratoOpt.get()
-        val batalha = batalhaOpt.get()
-
-        if (batalha.status != StatusBatalha.InscricoesAbertas) return mapOf("Status" to "BATALHA_NOT_OPEN")
-        if (batalha.rato1 != null && batalha.rato2 != null) return mapOf("Status" to "BATALHA_FULL")
-
-        if (!rato.estaVivo || rato.estaTorneio) return mapOf("Status" to "RATO_NOT_ELIGIBLE")
-
-        val donoId = rato.usuario?.idUsuario ?: return mapOf("Status" to "USER_NOT_FOUND")
-        if ((batalha.jogador1 != null && batalha.jogador1!!.idUsuario == donoId)
-            || (batalha.jogador2 != null && batalha.jogador2!!.idUsuario == donoId)
-        ) {
-            return mapOf("Status" to "BAD_REQUEST")
-        }
-
-        if (batalha.rato1 == null) {
-            batalha.rato1 = rato
-            batalha.jogador1 = rato.usuario
-        } else {
-            batalha.rato2 = rato
-            batalha.jogador2 = rato.usuario
-        }
-
-        rato.estaTorneio = true
-
-        batalhaRepository.save(batalha)
-        ratoRepository.save(rato)
-
-        log.info("Rato ${rato.idRato} entrou na batalha ${batalha.idBatalha}")
-        return mapOf("Status" to "OK")
     }
 
     fun deletarRatoPermanentemente(ratoId: Long): Map<String, Any> {

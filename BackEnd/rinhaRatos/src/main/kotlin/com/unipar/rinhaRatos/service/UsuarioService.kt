@@ -7,6 +7,7 @@ import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.util.Optional
@@ -38,7 +39,8 @@ class UsuarioService(
     }
 
     fun cadastrarUsuario(usuario: Usuario): Usuario {
-        val emailNormalized = usuario.email.trim()
+        // Normaliza o e-mail (trim + lowercase opcional)
+        val emailNormalized = usuario.email.trim() // .lowercase(Locale.ROOT) se quiser case-insensitive
         if (usuarioRepository.existsByEmail(emailNormalized)) {
             log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
             throw IllegalArgumentException("Email já cadastrado")
@@ -46,10 +48,21 @@ class UsuarioService(
 
         usuario.email = emailNormalized
 
-        val saved = usuarioRepository.save(usuario)
-        log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
-        return saved
+        // Garantir que salvamos como nova entidade (evita merges inesperados)
+        usuario.idUsuario = 0L
+
+        try {
+            // saveAndFlush força o flush para que violações de constraint (unique) sejam lançadas aqui
+            val saved = usuarioRepository.saveAndFlush(usuario)
+            log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
+            return saved
+        } catch (ex: DataIntegrityViolationException) {
+            // Trata condição de corrida: duas requisições checaram existsByEmail ao mesmo tempo
+            log.warn("Falha ao salvar usuário (provável e-mail duplicado): ${usuario.email} - ${ex.message}")
+            throw IllegalArgumentException("Email já cadastrado")
+        }
     }
+
 
     fun deletarPessoaPorId(id: Long): Boolean {
         if (usuarioRepository.existsById(id)) {

@@ -78,66 +78,6 @@ class RatoController(
         }
     }
 
-    @PostMapping("/sairBatalha")
-    fun sairDoTorneio(@RequestBody payload: Map<String, Long>): ResponseEntity<Any> {
-        val usuarioId = payload["usuarioId"]
-        val batalhaId = payload["batalhaId"]
-
-        if (usuarioId == null || batalhaId == null) {
-            return buildError(HttpStatus.BAD_REQUEST, "Parametros ausentes: usuarioId e batalhaId são obrigatórios", "BAD_REQUEST")
-        }
-
-        val result = ratoService.sairDoTorneio(usuarioId, batalhaId)
-        val status = result["Status"]?.toString() ?: "UNKNOWN"
-
-        when (status) {
-            "NO_CONTENT" -> {
-                return ResponseEntity.noContent().build()
-            }
-            else -> {
-                return mapStatusToResponse(status)
-            }
-        }
-    }
-
-    @PostMapping("/entrarBatalha")
-    fun entrarBatalha(@RequestBody payload: Map<String, Long>): ResponseEntity<Any> {
-        val ratoId = payload["ratoId"]
-        val batalhaId = payload["batalhaId"]
-
-        if (ratoId == null || batalhaId == null) {
-            return buildError(HttpStatus.BAD_REQUEST, "Parametros ausentes: ratoId e batalhaId são obrigatórios", "BAD_REQUEST")
-        }
-
-        val result = ratoService.cadastrarRatoNaBatalha(ratoId, batalhaId)
-        val status = result["Status"]?.toString() ?: "UNKNOWN"
-
-        when (status) {
-            "OK" -> {
-                val body = mapOf("message" to "Rato inscrito na batalha")
-                return ResponseEntity.ok(body)
-            }
-            "BATALHA_FULL" -> {
-                return buildError(HttpStatus.CONFLICT, "Batalha cheia ou inscrições fechadas", "BATALHA_FULL")
-            }
-            "BATALHA_NOT_FOUND" -> {
-                return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
-            }
-            "RATO_NOT_FOUND" -> {
-                return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
-            }
-            "RATO_NOT_ELIGIBLE" -> {
-                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
-            }
-            "BAD_REQUEST" -> {
-                return buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
-            }
-            else -> {
-                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
-            }
-        }
-    }
-
     @DeleteMapping("/deletarPermanentemente/{id}")
     fun deletarRatoPermanentemente(@PathVariable id: Long): ResponseEntity<Any> {
         val result = ratoService.deletarRatoPermanentemente(id)
@@ -178,18 +118,6 @@ class RatoController(
             }
             "USER_DONT_HAS_THISRATO" -> {
                 return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não pertence a este usuário", "USER_DONT_HAS_THISRATO")
-            }
-            "BATALHA_NOT_FOUND" -> {
-                return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
-            }
-            "BATALHA_FULL" -> {
-                return buildError(HttpStatus.CONFLICT, "Batalha cheia ou inscrições fechadas", "BATALHA_FULL")
-            }
-            "BATALHA_ALREADY_STARTED" -> {
-                return buildError(HttpStatus.CONFLICT, "Batalha já iniciada", "BATALHA_ALREADY_STARTED")
-            }
-            "RATO_NOT_ELIGIBLE" -> {
-                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
             }
             "BAD_REQUEST" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")

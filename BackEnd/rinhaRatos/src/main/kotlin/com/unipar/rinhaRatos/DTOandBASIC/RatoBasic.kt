@@ -1,9 +1,7 @@
 package com.unipar.rinhaRatos.DTOandBASIC
 
 class RatoBasic (
-    val nomeCustomizado: String,
-    val descricao: String? = null,
+    val nomeCustomizado: String?,
     val idUsuario: Long,
-    val nomeClasse: String,
     val nomeHabilidade: String,
     )

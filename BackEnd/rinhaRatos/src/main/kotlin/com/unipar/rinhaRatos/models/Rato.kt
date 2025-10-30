@@ -23,7 +23,7 @@ class Rato(
     @JsonBackReference
     var usuario: Usuario? = null,
 
-    // Exemplo de referências à classe/habilidade — ajuste nomes conforme suas entities
+    // referências às outras entidades (nullable)
     @ManyToOne
     @JoinColumn(name = "classe_id")
     var classe: Classe? = null,
@@ -52,4 +52,22 @@ class Rato(
 
     @Column(nullable = false)
     var estaVivo: Boolean = true
-)
+) : Serializable {
+
+    // construtor no-arg necessário para JPA/Hibernate
+    constructor() : this(
+        0L,
+        "",
+        "",
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        false,
+        true
+    )
+}

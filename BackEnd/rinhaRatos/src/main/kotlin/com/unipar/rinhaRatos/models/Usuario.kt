@@ -1,8 +1,8 @@
 package com.unipar.rinhaRatos.models
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.unipar.rinhaRatos.enums.TipoConta
 import jakarta.persistence.*
+import java.io.Serializable
 
 @Entity
 @Table(name = "usuarios")
@@ -37,4 +37,17 @@ class Usuario(
         orphanRemoval = true
     )
     var ratos: MutableList<Rato> = mutableListOf()
-)
+) : Serializable {
+
+    // construtor no-arg exigido pelo JPA/Hibernate (delegando para o primário)
+    constructor() : this(
+        0L,
+        "",
+        "",
+        "",
+        TipoConta.JOGADOR,
+        30,
+        0,
+        mutableListOf()
+    )
+}

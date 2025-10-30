@@ -17,6 +17,9 @@ class Classe(
     @Column(nullable = true)
     var apelido: String? = null,
 
+    @Column(nullable = true)
+    var descricao: String? = null,
+
     @Column(nullable = false)
     var strMin: Int = 0,
 
@@ -55,7 +58,7 @@ class Classe(
 ) : Serializable {
     // no-arg constructor para JPA/Hibernate
     constructor() : this(
-        0L, "", null,
+        0L, "", null, null,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         mutableListOf(), mutableListOf()
     )
