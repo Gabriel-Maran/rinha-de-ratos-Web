@@ -1,34 +1,41 @@
+import React from 'react'
+import SelecaoDeClasse from "./SelecaoDeClasse.jsx";
+import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
 import "../css/SelcClassRato.css";
 
-export default function SelcClassRato({ ativado, setAtivado, setEstilo, setEstilo2 }) {
-  const handleClose = () => {
-    setAtivado(false);
-    setEstilo("corpo-container");
-    setEstilo2("display");
+export default function SelcClassRato({ etapa, etapas, onClose, onSlctClasse, onVoltar, classe }) {
+  if (etapa === etapas.FECHADO) {
+    return null;
   }
-  if (ativado) {
-    return (
-      <>
-        <div className="bgSelcClass">
-          <div className="containerSelcClass">
-            <div className="titulo">
-              <h1>Escolha uma Classe</h1>
-            </div>
-            <button className="sair" onClick={handleClose}>
-              ✖
-            </button>
-          </div>
-          <div className="opcoesClasse">
-            <button>Rato de Esgoto</button>
-            <button>Rato de Hospital</button>
-            <button>Rato de Laboratório</button>
-            <button>Rato de Fazenda</button>
-            <button>Rato de Cassino</button>
-            <button>Rato de Biblioteca</button>
-          </div>
+
+  let conteudoModal;
+
+  switch (etapa) {
+    case etapas.SELECAO_CLASSE:
+      conteudoModal = <SelecaoDeClasse onSlctClasse={onSlctClasse} />
+      break;
+    case etapas.DETALHES_CLASSE:
+      conteudoModal = (
+        <DetalhesDaClasse
+          classe={classe}
+          onConfirmar={onClose}
+        />
+      );
+      break
+    default:
+      conteudoModal = null
+  }
+
+  return (
+    <>
+      <div className="bgSelcClass">
+        <div className="containerSelcClass">
+          <button className="sair" onClick={onClose}>
+            ✖
+          </button>
+          {conteudoModal}
         </div>
-      </>
-    );
-  }
-  return null;
+      </div>
+    </>
+  );
 }

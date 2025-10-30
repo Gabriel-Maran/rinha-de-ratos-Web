@@ -4,8 +4,8 @@ import Corpo from "../components/Corpo";
 export default function Inicio() {
   return (
     <>
-      <Header />
-      <Corpo />
+        <Header />
+        <Corpo />
     </>
   );
 }
