@@ -3,7 +3,9 @@ import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg";
 import "../css/Header.css";
 
 export default function Header() {
-  const nomePlayer = "João";
+  let nomePlayer; /* Parte que vai receber o nome do player da api */
+
+  nomePlayer = "João";
 
   return (
     <>
