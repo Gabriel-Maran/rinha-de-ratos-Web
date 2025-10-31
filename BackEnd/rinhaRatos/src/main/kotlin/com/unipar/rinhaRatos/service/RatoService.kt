@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
-@Transactional
 class RatoService(
     private val ratoRepository: RatoRepository,
     private val classeRepository: ClasseRepository,
