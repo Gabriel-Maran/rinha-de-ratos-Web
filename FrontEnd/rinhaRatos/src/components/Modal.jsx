@@ -1,9 +1,17 @@
-import React from 'react'
 import SelecaoDeClasse from "./SelecaoDeClasse.jsx";
 import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
-import "../css/SelcClassRato.css";
+import RatoCriado from "./RatoCriado.jsx";
+import "../css/Modal.css";
 
-export default function SelcClassRato({ etapa, etapas, onClose, onSlctClasse, onVoltar, classe }) {
+export default function SelcClassRato({
+  etapa,
+  etapas,
+  onClose,
+  onSlctClasse,
+  onMostrarRato,
+  onVoltar,
+  classe,
+}) {
   if (etapa === etapas.FECHADO) {
     return null;
   }
@@ -12,18 +20,18 @@ export default function SelcClassRato({ etapa, etapas, onClose, onSlctClasse, on
 
   switch (etapa) {
     case etapas.SELECAO_CLASSE:
-      conteudoModal = <SelecaoDeClasse onSlctClasse={onSlctClasse} />
+      conteudoModal = <SelecaoDeClasse onSlctClasse={onSlctClasse} />;
       break;
     case etapas.DETALHES_CLASSE:
       conteudoModal = (
-        <DetalhesDaClasse
-          classe={classe}
-          onConfirmar={onClose}
-        />
+        <DetalhesDaClasse classe={classe} onMostrar={onMostrarRato} />
       );
-      break
+      break;
+    case etapas.RATO_CRIADO:
+      conteudoModal = <RatoCriado />;
+      break;
     default:
-      conteudoModal = null
+      conteudoModal = null;
   }
 
   return (

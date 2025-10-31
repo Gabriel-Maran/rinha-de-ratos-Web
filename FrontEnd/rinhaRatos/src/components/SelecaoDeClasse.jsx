@@ -1,5 +1,4 @@
-import React from 'react'
-import "../css/SelcClassRato.css";
+import "../css/Modal.css";
 
 export default function SelecaoDeClasse({ onSlctClasse }) {
     const classes = [
