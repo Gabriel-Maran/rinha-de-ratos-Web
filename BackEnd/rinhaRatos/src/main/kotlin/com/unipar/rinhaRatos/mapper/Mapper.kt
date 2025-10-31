@@ -1,9 +1,7 @@
-// file: src/main/kotlin/com/unipar/rinhaRatos/mapper/Mapper.kt
 package com.unipar.rinhaRatos.mapper
 
 import com.unipar.rinhaRatos.DTOandBASIC.*
 import com.unipar.rinhaRatos.models.*
-import java.time.LocalDateTime
 
 fun Usuario.toSummaryDto(): UsuarioSummaryDTO {
     return UsuarioSummaryDTO(
@@ -40,7 +38,6 @@ fun Usuario.toDto(): UsuarioDTO {
         idUsuario = this.idUsuario,
         nome = this.nome,
         email = this.email,
-        senha = this.senha,
         tipoConta = this.tipoConta.name,
         mousecoinSaldo = this.mousecoinSaldo,
         vitorias = this.vitorias,
@@ -54,8 +51,8 @@ fun Rato.toDto(): RatoDTO {
         nomeCustomizado = this.nomeCustomizado,
         descricao = this.descricao,
         usuario = this.usuario?.toSummaryDto(),
-        classe = this.classe?.toDtoWithoutRatos(),           // evita recursão
-        habilidade = this.habilidadeEscolhida?.toDtoWithoutRatosOrClasse(),
+        classe = this.classe?.toSummaryDto(),
+        habilidade = this.habilidadeEscolhida?.toSummaryDto(),
         strBase = this.strBase,
         agiBase = this.agiBase,
         hpsBase = this.hpsBase,
@@ -66,10 +63,7 @@ fun Rato.toDto(): RatoDTO {
     )
 }
 
-// Classe: full DTO but we DO NOT include full ratos (we include summaries)
 fun Classe.toDto(): ClasseDTO {
-    val habilidadesSummary = this.habilidades.map { it.toSummaryDto() }
-    val ratosSummary = this.ratos.map { it.toSummaryDto() }
     return ClasseDTO(
         idClasse = this.idClasse,
         nomeClasse = this.nomeClasse,
@@ -84,35 +78,11 @@ fun Classe.toDto(): ClasseDTO {
         intMax = this.intMax,
         defMin = this.defMin,
         defMax = this.defMax,
-        habilidades = habilidadesSummary,
-        ratos = ratosSummary
-    )
-}
-
-// Helper: Classe -> DTO sem ratos (para evitar ciclo quando Rato inclui Classe)
-fun Classe.toDtoWithoutRatos(): ClasseDTO {
-    val habilidadesSummary = this.habilidades.map { it.toSummaryDto() }
-    return ClasseDTO(
-        idClasse = this.idClasse,
-        nomeClasse = this.nomeClasse,
-        apelido = this.apelido,
-        strMin = this.strMin,
-        strMax = this.strMax,
-        agiMin = this.agiMin,
-        agiMax = this.agiMax,
-        hpsMin = this.hpsMin,
-        hpsMax = this.hpsMax,
-        intMin = this.intMin,
-        intMax = this.intMax,
-        defMin = this.defMin,
-        defMax = this.defMax,
-        habilidades = habilidadesSummary,
-        ratos = emptyList()
+        habilidades = this.habilidades.map { it.toSummaryDto() } // summaries
     )
 }
 
 fun Habilidade.toDto(): HabilidadeDTO {
-    val ratosSummary = this.ratos.map { it.toSummaryDto() }
     return HabilidadeDTO(
         idHabilidade = this.idHabilidade,
         classe = this.classe?.toSummaryDto(),
@@ -124,24 +94,6 @@ fun Habilidade.toDto(): HabilidadeDTO {
         efeitoFalhaStr = this.efeitoFalhaStr,
         efetivoTxt = this.efetivoTxt,
         falhaTxt = this.falhaTxt,
-        ratos = ratosSummary
-    )
-}
-
-// Helper: Habilidade -> DTO sem listar ratos nem incluir classe full (usado em Rato)
-fun Habilidade.toDtoWithoutRatosOrClasse(): HabilidadeDTO {
-    return HabilidadeDTO(
-        idHabilidade = this.idHabilidade,
-        classe = this.classe?.toSummaryDto(),
-        nomeHabilidade = this.nomeHabilidade,
-        descricao = this.descricao,
-        chanceSucesso = this.chanceSucesso,
-        cooldown = this.cooldown,
-        efeitoSucessoStr = this.efeitoSucessoStr,
-        efeitoFalhaStr = this.efeitoFalhaStr,
-        efetivoTxt = this.efetivoTxt,
-        falhaTxt = this.falhaTxt,
-        ratos = emptyList()
     )
 }
 

@@ -29,7 +29,6 @@ data class UsuarioDTO(
     val idUsuario: Long,
     val nome: String,
     val email: String,
-    val senha: String?,
     val tipoConta: String,
     val mousecoinSaldo: Int,
     val vitorias: Int,
@@ -41,8 +40,8 @@ data class RatoDTO(
     val nomeCustomizado: String,
     val descricao: String,
     val usuario: UsuarioSummaryDTO?,
-    val classe: ClasseDTO?,
-    val habilidade: HabilidadeDTO?,
+    val classe: ClasseSummaryDTO?,
+    val habilidade: HabilidadeSummaryDTO?,
     val strBase: Int,
     val agiBase: Int,
     val hpsBase: Int,
@@ -66,8 +65,7 @@ data class ClasseDTO(
     val intMax: Int,
     val defMin: Int,
     val defMax: Int,
-    val habilidades: List<HabilidadeSummaryDTO> = emptyList(),
-    val ratos: List<RatoSummaryDTO> = emptyList()
+    val habilidades: List<HabilidadeSummaryDTO> = emptyList()
 )
 
 data class HabilidadeDTO(

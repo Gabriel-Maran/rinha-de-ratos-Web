@@ -40,8 +40,6 @@ class Habilidade(
     @Column(nullable = true)
     var falhaTxt: String? = null,
 
-    @OneToMany(mappedBy = "habilidadeEscolhida", cascade = [CascadeType.ALL])
-    var ratos: MutableList<Rato> = mutableListOf()
 ) : Serializable {
     // construtor padrão (usa uma Classe "vazia" criada pelo no-arg da Classe)
     constructor() : this(
@@ -55,6 +53,5 @@ class Habilidade(
         null,
         null,
         null,
-        mutableListOf()
     )
 }

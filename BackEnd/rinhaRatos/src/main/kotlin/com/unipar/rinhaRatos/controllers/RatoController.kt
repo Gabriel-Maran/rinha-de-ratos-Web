@@ -47,7 +47,6 @@ class RatoController(
                 return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Rato criado mas objeto ausente", "UNKNOWN")
             }
 
-            // Trata os dois casos: service retornou entidade Rato ou já retornou RatoDTO
             if (ratoObj is Rato) {
                 val bodyDto = ratoObj.toDto()
                 return ResponseEntity.status(HttpStatus.CREATED).body(bodyDto)
@@ -57,7 +56,6 @@ class RatoController(
                 return ResponseEntity.status(HttpStatus.CREATED).body(ratoObj)
             }
 
-            // tipo inesperado
             return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Objeto Rato com tipo inesperado", "UNKNOWN")
         }
 

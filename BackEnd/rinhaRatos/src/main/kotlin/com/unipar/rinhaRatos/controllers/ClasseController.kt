@@ -1,0 +1,57 @@
+package com.unipar.rinhaRatos.controllers
+
+import com.unipar.rinhaRatos.DTOandBASIC.ClasseDTO
+import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
+import com.unipar.rinhaRatos.frontConnection.ConnectionFront
+import com.unipar.rinhaRatos.service.ClasseService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.time.Instant
+
+@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+@RestController
+@RequestMapping("/classe")
+class ClasseController(
+    private val classeService: ClasseService
+) {
+    @GetMapping("/todos")
+    fun getAllClasse(): ResponseEntity<List<ClasseDTO>> {
+        val classe = classeService.getAllClasse()
+        return ResponseEntity.ok(classe)
+    }
+
+    @GetMapping("/{id}")
+    fun getClasseById(@PathVariable("id") id: Long): ResponseEntity<Any> {
+        val classeOpt = classeService.getClassePorId(id)
+        if (classeOpt.isEmpty) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.NOT_FOUND.value(),
+                    error = "Not Found",
+                    message = "Classe não encontrada",
+                    code = "CLASSE_NOT_FOUND"
+                )
+            )
+        }
+        return ResponseEntity.ok(classeOpt.get())
+    }
+
+    @GetMapping("/searchByname/{nomeClasse}")
+    fun getClassePorNome(@PathVariable("nomeClasse") nomeClasse: String): ResponseEntity<Any> {
+        val classeOpt = classeService.getClassePorNome(nomeClasse)
+        if (classeOpt.isEmpty) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.NOT_FOUND.value(),
+                    error = "Not Found",
+                    message = "Classe não encontrada",
+                    code = "CLASSE_NOT_FOUND"
+                )
+            )
+        }
+        return ResponseEntity.ok(classeOpt.get())
+    }
+}
