@@ -1,14 +1,14 @@
 import RatoEsgoto from "../assets/classeRatos/RatoEsgoto.png";
-import Input from "../components/Input"
+import Input from "../components/Input";
 import "../css/SelcClassRato.css";
 
 export default function DetalhesDaClasse({ classe, onConfirmar }) {
-
-  let nomeRato;/* Parte que pega da api o nome default do id do rato*/
+  let nomeRato; /* Parte que pega da api o nome default do id do rato*/
   let descRato;
 
-  nomeRato = "Fedoroso"
-  descRato = "O rato de esgoto é um sobrevivente nato das profundezas urbanas — pequeno, ágil e astuto. Com pelos úmidos e olhar desconfiado, ele percorre túneis e sombras em busca de restos e oportunidades, adaptando-se a qualquer ambiente. É o verdadeiro símbolo da resistência silenciosa no submundo das cidades."
+  nomeRato = "Fedoroso";
+  descRato =
+    "O rato de esgoto é um sobrevivente nato das profundezas urbanas — pequeno, ágil e astuto. Com pelos úmidos e olhar desconfiado, ele percorre túneis e sombras em busca de restos e oportunidades, adaptando-se a qualquer ambiente. É o verdadeiro símbolo da resistência silenciosa no submundo das cidades.";
 
   return (
     <>
@@ -19,12 +19,13 @@ export default function DetalhesDaClasse({ classe, onConfirmar }) {
         <Input
           input={{
             type: "text",
-            placeholder: nomeRato
+            placeholder: nomeRato,
           }}
         />
         <div className="descEFoto">
           <img src={RatoEsgoto} />
-          <div className="desc"><p>{descRato}</p>
+          <div className="desc">
+            <p>{descRato}</p>
           </div>
         </div>
         {/* Adicionar um botão de Voltar e Confirmar */}
@@ -32,4 +33,4 @@ export default function DetalhesDaClasse({ classe, onConfirmar }) {
       </div>
     </>
   );
-};
+}
