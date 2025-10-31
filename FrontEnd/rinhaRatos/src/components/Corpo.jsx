@@ -13,6 +13,7 @@ const ETAPAS = {
 export default function Corpo() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
+  const [indexClasse, setIndexClasse] = useState(null)
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -23,15 +24,11 @@ export default function Corpo() {
     setClasseSelecionada(null);
   };
 
-  const selecionarClasse = (classe) => {
+  const selecionarClasse = (classe, index) => {
     setClasseSelecionada(classe);
+    setIndexClasse(index);
     setEtapaModal(ETAPAS.DETALHES_CLASSE);
   };
-
-  const voltarParaSelecao = () => {
-    setEtapaModal(ETAPAS.SELECAO_CLASSE);
-    setClasseSelecionada(null)
-  }
 
   const mostrarRatoCriado = () => {
     setEtapaModal(ETAPAS.RATO_CRIADO);
@@ -46,8 +43,8 @@ export default function Corpo() {
           onClose={fecharModal}
           onSlctClasse={selecionarClasse}
           onMostrarRato={mostrarRatoCriado}
-          onVoltar={voltarParaSelecao}
           classe={classeSelecionada}
+          indexClasse={indexClasse}
         />
         <div
           className={`conteudo-principal ${

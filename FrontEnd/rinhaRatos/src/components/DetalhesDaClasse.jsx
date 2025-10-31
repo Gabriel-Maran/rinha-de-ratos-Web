@@ -1,10 +1,9 @@
 import { useState } from "react";
-import RatoEsgoto from "../assets/classeRatos/RatoEsgoto.png";
+import imagensRato from "./ImagensRato";
 import MouseCoin from "../assets/moedas/MouseCoin.svg";
 import Input from "../components/Input";
 
-
-export default function DetalhesDaClasse({ classe, onMostrar }) {
+export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
   let nomeRato; /* Parte que pega da api o nome default do id do rato*/
   let descRato;
   let habilidades;
@@ -20,7 +19,7 @@ export default function DetalhesDaClasse({ classe, onMostrar }) {
     "75% de chance de causar dano direto igual a 8% do HP máximo do alvo (instantâneo). Falha: perde 6% da DEF apenas nesta rodada.",
   ];
 
-  const [habilAtiva, setHabilAtiva] = useState(1);
+  const [habilAtiva, setHabilAtiva] = useState(0);
 
   const handleBtnHabil = (index) => {
     setHabilAtiva(index - 1);
@@ -29,7 +28,7 @@ export default function DetalhesDaClasse({ classe, onMostrar }) {
   return (
     <>
       <div className="titulo">
-        <h1>{classe}</h1>
+        {classe}
       </div>
       <div className="detalhes-conteudo">
         <div className="inputEFoto">
@@ -43,10 +42,9 @@ export default function DetalhesDaClasse({ classe, onMostrar }) {
             />
             <span className="simboloEditar">🖊</span>
           </div>
-          <img src={RatoEsgoto} />
+          <img src={imagensRato[indexClasse]} />
         </div>
         <div className="descRato">{descRato}</div>
-        {/* Adicionar um botão de Voltar e Confirmar */}
         <p className="slctHabilidade">Selecione a habilidade:</p>
         <div className="opcoesHabilidade">
           {habilidades.map((habilidade, index) => (
@@ -61,7 +59,7 @@ export default function DetalhesDaClasse({ classe, onMostrar }) {
         </div>
         <div className="descHabilidade">{descHabilidade[habilAtiva]}</div>
         <div className="socorro">
-          <button className="btnFinalizar" onClick={onMostrar}>
+          <button className="btnFinalizar" onClick={() => onMostrar(imagensRato)}>
             Finalizar
           </button>
           <div className="custo">

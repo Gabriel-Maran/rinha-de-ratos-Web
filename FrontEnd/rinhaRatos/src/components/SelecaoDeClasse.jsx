@@ -12,13 +12,13 @@ export default function SelecaoDeClasse({ onSlctClasse }) {
     return (
         <>
             <div className="titulo">
-                <h1>Escolha uma Classe</h1>
+                Escolha uma Classe
             </div>
             <div className="opcoesClasse">
-                {classes.map(classe => (
+                {classes.map((classe, index) => (
                     <button
                         key={classe}
-                        onClick={() => onSlctClasse(classe)}
+                        onClick={() => onSlctClasse(classe, index)}
                     >
                         {classe}
                     </button>
