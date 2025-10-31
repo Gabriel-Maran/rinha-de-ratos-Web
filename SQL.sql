@@ -1,12 +1,12 @@
 /* ------------------------------------------------------- PRIMEIRO EXECUTE O BACK END, DEPOIS DE ESTES INSERTS NO PGADMIN -------------------------------------------------------*/
 
-INSERT INTO classes (nome_classe, descricao,"" ,apelido, str_min, str_max, agi_min, agi_max, hps_min, hps_max, int_min, int_max, def_min, def_max) VALUES
-('Rato de Esgoto',"Sobrevive nas sombras, usando lama e toxinas para corroer defesas; brutal e imprevisível." ,'O Fedoroso', 55, 70, 35, 55, 50, 65, 20, 40, 35, 50),
-('Rato de Hospital',"Mistura cura e combate: regenera e protege aliados, sacrificando-se quando preciso." ,'Sarna-Médico', 25, 40, 30, 50, 55, 70, 50, 70, 30, 45),
-('Rato de Laboratório',"Explosão experimental: ganha buffs monstruosos com alto risco — recompensa ou desastre." ,'Cobaia 07', 40, 60, 40, 60, 35, 55, 60, 80, 20, 35),
-('Rato de Fazenda',"Tanque rústico: força bruta e golpes pesados que esmagam a defesa inimiga." ,'Tratorzinho', 60, 80, 25, 45, 55, 70, 20, 40, 40, 60),
-('Rato de Cassino',"Apostador audaz: trapaças e jogadas de alto risco que podem virar a partida." ,'Aposta Alta', 35, 55, 45, 65, 30, 50, 55, 75, 25, 35),
-('Rato de Biblioteca',"Estratégia fria: lê padrões, reduz defesas e abre janelas para ataques precisos." ,'Folha-rato', 30, 50, 45, 60, 35, 55, 65, 90, 25, 35);
+INSERT INTO classes (nome_classe, descricao ,apelido, str_min, str_max, agi_min, agi_max, hps_min, hps_max, int_min, int_max, def_min, def_max) VALUES
+('Rato de Esgoto','Sobrevive nas sombras, usando lama e toxinas para corroer defesas; brutal e imprevisível.' ,'O Fedoroso', 55, 70, 35, 55, 50, 65, 20, 40, 35, 50),
+('Rato de Hospital','Mistura cura e combate: regenera e protege aliados, sacrificando-se quando preciso.' ,'Sarna-Médico', 25, 40, 30, 50, 55, 70, 50, 70, 30, 45),
+('Rato de Laboratório','Explosão experimental: ganha buffs monstruosos com alto risco — recompensa ou desastre.' ,'Cobaia 07', 40, 60, 40, 60, 35, 55, 60, 80, 20, 35),
+('Rato de Fazenda','Tanque rústico: força bruta e golpes pesados que esmagam a defesa inimiga.' ,'Tratorzinho', 60, 80, 25, 45, 55, 70, 20, 40, 40, 60),
+('Rato de Cassino','Apostador audaz: trapaças e jogadas de alto risco que podem virar a partida.' ,'Aposta Alta', 35, 55, 45, 65, 30, 50, 55, 75, 25, 35),
+('Rato de Biblioteca','Estratégia fria: lê padrões, reduz defesas e abre janelas para ataques precisos.' ,'Folha-rato', 30, 50, 45, 60, 35, 55, 65, 90, 25, 35);
 
 INSERT INTO loja_Pacotes (nome_pacote, mousecoin_quantidade, preco_brl) VALUES
 ('Pacote de Moedas Pequeno', 15, 30.00),

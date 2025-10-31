@@ -1,8 +1,8 @@
 package com.unipar.rinhaRatos.service
 
+import com.unipar.rinhaRatos.DTOandBASIC.UsuarioBasic
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import com.unipar.rinhaRatos.DTOandBASIC.UsuarioBasic
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
@@ -38,6 +38,14 @@ class UsuarioService(
         return usuarioRepository.findTop10WithRatosOrderByVitoriasDesc(page)
     }
 
+    fun getUserPodeCriarNewRato(id: Long): String{
+        val usuarioOpt = getById(id)
+        if(usuarioOpt.isEmpty) return "SEM_USER"
+        val usuario = usuarioOpt.get()
+        if(usuario.ratos.size == 3) return  "NAO"
+        return "SIM"
+    }
+
     fun cadastrarUsuario(usuario: Usuario): Usuario {
         // Normaliza o e-mail (trim + lowercase opcional)
         val emailNormalized = usuario.email.trim() // .lowercase(Locale.ROOT) se quiser case-insensitive
@@ -45,12 +53,7 @@ class UsuarioService(
             log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
             throw IllegalArgumentException("Email já cadastrado")
         }
-
         usuario.email = emailNormalized
-
-        // Garantir que salvamos como nova entidade (evita merges inesperados)
-        usuario.idUsuario = 0L
-
         try {
             // saveAndFlush força o flush para que violações de constraint (unique) sejam lançadas aqui
             val saved = usuarioRepository.saveAndFlush(usuario)
@@ -116,48 +119,5 @@ class UsuarioService(
         usuarioRepository.save(usuario)
         log.info("Dados básicos atualizados para usuário id=$id")
         return HttpStatus.OK
-    }
-
-    fun compraDeMouseCoin(id: Long, quantidade: Int): Boolean {
-        val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) {
-            log.warn("compraDeMouseCoin: usuário não encontrado id=$id")
-            return false
-        }
-        val usuario = usuarioOpt.get()
-        usuario.mousecoinSaldo = usuario.mousecoinSaldo + quantidade
-        usuarioRepository.save(usuario)
-        log.info("Usuário id=$id comprou $quantidade mousecoins (novo saldo=${usuario.mousecoinSaldo})")
-        return true
-    }
-
-    fun gastoDeMouseCoin(id: Long, quantidade: Int): Boolean {
-        val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) {
-            log.warn("gastoDeMouseCoin: usuário não encontrado id=$id")
-            return false
-        }
-        val usuario = usuarioOpt.get()
-        if (usuario.mousecoinSaldo < quantidade) {
-            log.warn("gastoDeMouseCoin: saldo insuficiente id=$id, saldo=${usuario.mousecoinSaldo}, tentado=$quantidade")
-            return false
-        }
-        usuario.mousecoinSaldo = usuario.mousecoinSaldo - quantidade
-        usuarioRepository.save(usuario)
-        log.info("Usuário id=$id gastou $quantidade mousecoins (novo saldo=${usuario.mousecoinSaldo})")
-        return true
-    }
-
-    fun aumentaUmaVitoriaById(id: Long): Boolean {
-        val usuarioOpt = usuarioRepository.findById(id)
-        if (usuarioOpt.isEmpty) {
-            log.warn("aumentaUmaVitoriaById: usuário não encontrado id=$id")
-            return false
-        }
-        val usuario = usuarioOpt.get()
-        usuario.vitorias = usuario.vitorias + 1
-        usuarioRepository.save(usuario)
-        log.info("Vitória incrementada para usuário id=$id (vitorias=${usuario.vitorias})")
-        return true
     }
 }
