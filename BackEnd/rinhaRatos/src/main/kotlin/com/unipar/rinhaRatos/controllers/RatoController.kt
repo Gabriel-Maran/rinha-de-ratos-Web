@@ -3,6 +3,7 @@ package com.unipar.rinhaRatos.controllers
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
+import com.unipar.rinhaRatos.frontConnection.ConnectionFront
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.service.RatoService
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
-//@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
 @RestController
 @RequestMapping("/rato")
 class RatoController(
@@ -110,9 +111,6 @@ class RatoController(
             "RATO_NOT_FOUND" -> {
                 return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
             }
-            "USER_ALREADY_HAS_3_RATOS" -> {
-                return buildError(HttpStatus.CONFLICT, "Usuário já possui 3 ratos", "USER_ALREADY_HAS_3_RATOS")
-            }
             "NON_EXISTENT_CLASS_OR_HABILIDADE" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade inexistente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
             }
@@ -121,6 +119,9 @@ class RatoController(
             }
             "BAD_REQUEST" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
+            }
+            "USER_HAS_NOT_ENOUGH_MONEY" -> {
+                return buildError(HttpStatus.PAYMENT_REQUIRED, "Não possui mouseCoin suficiente para criação do rato", "PAYMENT_REQUIRED")
             }
             else -> {
                 return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")

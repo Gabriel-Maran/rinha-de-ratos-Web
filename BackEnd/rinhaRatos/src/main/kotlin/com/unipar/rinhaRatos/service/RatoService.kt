@@ -1,12 +1,10 @@
 package com.unipar.rinhaRatos.service
 
-import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
-import com.unipar.rinhaRatos.enums.StatusBatalha
+import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Classe
 import com.unipar.rinhaRatos.models.Rato
-import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.ClasseRepository
 import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
-@Transactional
 class RatoService(
     private val ratoRepository: RatoRepository,
     private val classeRepository: ClasseRepository,
@@ -37,13 +34,17 @@ class RatoService(
         return if (ratoOpt.isPresent) Optional.of(ratoOpt.get().toDto()) else Optional.empty()
     }
 
+    fun getAllRatosByUserId(id: Long): List<RatoDTO> =
+        ratoRepository.findAllByUsuario_IdUsuario(id).map { it.toDto() }
+
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, Any> {
         val donoDoRatoOpt = usuarioRepository.findByIdWithRatos(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
 
         if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
-
+        if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
+        donoDoRato.mousecoinSaldo = donoDoRato.mousecoinSaldo - 5
         val habilidadeOpt = habilidadeRepository.findByNomeHabilidade(ratoBasic.nomeHabilidade)
         if (habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
         val habilidade = habilidadeOpt.get()

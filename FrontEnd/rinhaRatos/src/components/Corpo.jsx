@@ -8,25 +8,26 @@ const ETAPAS = {
   SELECAO_CLASSE: 1,
   DETALHES_CLASSE: 2,
   RATO_CRIADO: 3
+  DETALHES_CLASSE: 2,
 };
 
 export default function Corpo() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
-  const [classeSelecionada, setClasseSelecionada] = useState(null)
+  const [classeSelecionada, setClasseSelecionada] = useState(null);
 
   const mostrarSelecaoClasse = () => {
-    setEtapaModal(ETAPAS.SELECAO_CLASSE)
-  }
+    setEtapaModal(ETAPAS.SELECAO_CLASSE);
+  };
 
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
-    setClasseSelecionada(null)
+    setClasseSelecionada(null);
   };
 
   const selecionarClasse = (classe) => {
-    setClasseSelecionada(classe)
-    setEtapaModal(ETAPAS.DETALHES_CLASSE)
-  }
+    setClasseSelecionada(classe);
+    setEtapaModal(ETAPAS.DETALHES_CLASSE);
+  };
 
   const voltarParaSelecao = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -37,6 +38,8 @@ export default function Corpo() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   }
 
+    setClasseSelecionada(null);
+  };
   return (
     <>
       <div className="corpo-container">
@@ -49,7 +52,11 @@ export default function Corpo() {
           onVoltar={voltarParaSelecao}
           classe={classeSelecionada}
         />
-        <div className={`conteudo-principal ${etapaModal != ETAPAS.FECHADO ? 'escurecer' : ''}`}>
+        <div
+          className={`conteudo-principal ${
+            etapaModal != ETAPAS.FECHADO ? "escurecer" : ""
+          }`}
+        >
           <Botao
             button={{ onClick: mostrarSelecaoClasse }}
             acaoBtn={"Adicionar Rato"}

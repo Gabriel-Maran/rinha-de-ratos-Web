@@ -33,8 +33,6 @@ class Usuario(
 
     @OneToMany(
         mappedBy = "usuario",
-        cascade = [CascadeType.ALL],
-        orphanRemoval = true
     )
     var ratos: MutableList<Rato> = mutableListOf()
 ) : Serializable {

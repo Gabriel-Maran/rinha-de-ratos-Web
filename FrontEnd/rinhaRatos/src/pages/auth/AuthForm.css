@@ -6,7 +6,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    width: 400px;
+    margin-top: 8rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     font-family: 'Inter', sans-serif;
 }
@@ -14,19 +15,6 @@
 .caixaLogin h3 {
     font-size: 2rem;
     font-weight: 1000;
-}
-
-.acesso{
-    width: 80%;
-    font-family: 'Inter', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 1000;
-    background-color: #FFAE52;
-    margin-bottom: 1rem;
-    padding: 0.3rem;
-    border: 0.15rem  solid  #000000;
-    border-radius: 0.8rem;
- 
 }
 
 .inputs {

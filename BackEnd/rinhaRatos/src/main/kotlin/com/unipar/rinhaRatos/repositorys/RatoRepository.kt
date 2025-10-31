@@ -11,4 +11,6 @@ import org.springframework.data.repository.query.Param
 interface RatoRepository: JpaRepository<Rato, Long> {
     @Query("select r from Rato r left join fetch r.usuario where r.idRato = :id")
     fun findByIdWithUsuario(@Param("id") id: Long): Optional<Rato>
+
+    fun findAllByUsuario_IdUsuario(id: Long): List<Rato>
 }
