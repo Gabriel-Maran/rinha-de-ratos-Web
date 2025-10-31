@@ -1,23 +1,24 @@
-.bgSelcClass{
+.bgModal {
     /* Torna o overlay de tela inteira */
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw; 
-    height: 100vh; 
-    
+    width: 100vw;
+    height: 100vh;
+
     /* Serve pra deixar o fundo semi-transparente e preto */
-    background-color: rgba(0, 0, 0, 0.8); 
-    
+    background-color: rgba(0, 0, 0, 0.8);
+
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
-    
-    z-index: 1000; /* Deixar acima dos componentes */
+
+    z-index: 1000;
+    /* Deixar acima dos componentes */
 }
 
-.containerSelcClass {
-    background-image: linear-gradient(rgba(79, 81, 83, 0.3), rgba(79, 81, 83, 0.3)),url('../assets/backgrounds/bgLogin.png');
+.containerModal {
+    background-image: linear-gradient(rgba(79, 81, 83, 0.3), rgba(79, 81, 83, 0.3)), url('../assets/backgrounds/bgLogin.png');
     background-size: cover;
     border-radius: 1rem;
     flex-direction: column;
@@ -26,44 +27,43 @@
     text-align: center;
     font-family: 'Fondamento', 'fantasy';
     font-weight: lighter;
-    
+
     /* Deixar a posição do butão 'sair' certa */
-    position: relative; 
-    
+    position: relative;
+
     /* Pro conteúdo ficar organizado*/
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.titulo{
+.titulo {
     height: 3.5rem;
     width: 20rem;
     padding: auto;
     margin: 1.5rem 5rem;
     background-image: url('../assets/backgrounds/tabuaLabel.svg');
     background-size: cover;
-    text-align: center;
     color: white;
+    font-size: 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     user-select: none;
 }
 
-button{
+button {
     cursor: pointer;
     user-select: none;
     font-family: 'Fondamento', 'fantasy';
 }
 
-div{
+div {
     user-select: none;
 }
 
-.titulo h1{
-    margin: 0;
-    padding: 0.5rem;
-}
-
-.sair{
+.sair {
     background-color: transparent;
     position: absolute;
     top: 0.6rem;
@@ -73,7 +73,7 @@ div{
     border: none;
 }
 
-.opcoesClasse{
+.opcoesClasse {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -81,7 +81,7 @@ div{
     text-align: center
 }
 
-.opcoesClasse button{
+.opcoesClasse button {
     background-image: url('../assets/backgrounds/papelLabel.svg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -95,28 +95,28 @@ div{
     cursor: pointer;
 }
 
-.detalhes-conteudo{
+.detalhes-conteudo {
     width: 95%;
     display: flex;
     align-items: center;
     flex-direction: column;
 }
 
-.inputEFoto{
+.inputEFoto {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.nomeRato{
+.nomeRato {
     width: 100%;
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.nomeRato input{
+.nomeRato input {
     width: 95%;
     height: 3rem;
     border-color: black;
@@ -130,7 +130,7 @@ div{
     padding-left: 1rem;
 }
 
-.inputEFoto .simboloEditar{
+.inputEFoto .simboloEditar {
     position: absolute;
     user-select: none;
     color: black;
@@ -138,13 +138,13 @@ div{
     font-size: 1.5rem;
 }
 
-.inputEFoto img{
+.inputEFoto img {
     width: 10rem;
     height: 10rem;
     margin: 0;
 }
 
-.descRato{
+.descRato {
     max-width: 98%;
     min-height: 3rem;
     padding: 0.5rem 0rem;
@@ -156,20 +156,20 @@ div{
     font-size: 1.2rem;
 }
 
-.slctHabilidade{
+.slctHabilidade {
     font-size: 1.8rem;
     color: white;
     margin: 1.5rem 0rem 1rem
 }
 
-.opcoesHabilidade{
+.opcoesHabilidade {
     width: 99%;
     display: flex;
     justify-content: space-between;
     margin: 0;
 }
 
-.opcoesHabilidade button{
+.opcoesHabilidade button {
     width: 8rem;
     height: 3rem;
     border-color: rgb(255, 255, 255);
@@ -179,10 +179,10 @@ div{
     color: white;
     font-size: 1rem;
     font-family: 'Fondamento', 'fantasy';
-    background-color: rgb(79,81,83);
+    background-color: rgb(79, 81, 83);
 }
 
-.opcoesHabilidade .btnAtivo{
+.opcoesHabilidade .btnAtivo {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     border-color: #000000;
@@ -190,7 +190,7 @@ div{
     border-style: solid;
 }
 
-.descHabilidade{
+.descHabilidade {
     max-width: 98%;
     height: 5rem;
     display: flex;
@@ -205,7 +205,7 @@ div{
     font-size: 1rem;
 }
 
-.socorro{
+.socorro {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -214,19 +214,19 @@ div{
     width: 100%;
 }
 
-.socorro button{
+.btnFinalizar {
     font-family: 'Fondamento', 'fantasy';
     font-size: 1.5rem;
     font-weight: 1000;
     background-color: #FFAE52;
     margin: 0.7rem 0rem 0.5rem 0rem;
     padding: 0.3rem 2rem;
-    border: 0.15rem  solid  #000000;
-    border-radius: 0.8rem ; 
+    border: 0.15rem solid #000000;
+    border-radius: 0.8rem;
     cursor: pointer;
 }
 
-.custo{
+.custo {
     display: flex;
     flex-direction: row;
     position: absolute;
@@ -235,7 +235,7 @@ div{
     gap: 0.3rem
 }
 
-.custo img{
+.custo img {
     align-items: end;
     align-self: flex-end;
     width: 4rem;
@@ -243,9 +243,94 @@ div{
     margin: 0;
 }
 
-.custo p{
+.custo p {
     color: white;
     margin: 0;
     font-size: 3rem;
     margin-bottom: 0.2rem;
+}
+
+.imagemENome {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+}
+
+.imagemENome img {
+    width: 8rem;
+    height: 8rem;
+    margin: 0;
+}
+
+.imagemENome p {
+    width: 15rem;
+    margin: 0;
+    padding: 0rem 1rem;
+    background-color: white;
+    font-size: 2rem;
+}
+
+.infoGeral {
+    width: 80%;
+    min-height: 20%;
+    padding: 1rem 1rem 1rem 1rem;
+    border-color: white;
+    border-width: 0.5rem;
+    border-style: solid;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.infoGeral p {
+    width: 70%;
+    align-self: center;
+}
+
+.geralzao {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem
+}
+
+.estatisticas {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:0.5rem;
+}
+
+.estatisticas p{
+    width: 100%;
+    background-color: rgb(205,194,194);
+}
+
+.estatisticas p+p{
+    width: 100%;
+    text-align: left;
+    background-color: white;
+}
+
+.habilidade{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.habilidade p{
+    width: 100%;
+    background-color: rgb(205,194,194);
+}
+
+.habilidade p+p{
+    width: 100%;
+    height: 100%;
+    background-color: white;
 }
