@@ -21,7 +21,7 @@
 }
 
 .conteudo-principal {
-    background-image: url(../assets/displayMadeira.svg);
+    background-image: url(../assets/backgrounds/displayMadeira.svg);
     background-size: cover;
     width: 115rem;
     min-height: 43rem;

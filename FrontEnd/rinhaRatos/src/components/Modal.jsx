@@ -3,7 +3,7 @@ import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
 import RatoCriado from "./RatoCriado.jsx";
 import "../css/Modal.css";
 
-export default function SelcClassRato({
+export default function Modal({
   etapa,
   etapas,
   onClose,

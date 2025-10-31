@@ -41,7 +41,7 @@
     width: 20rem;
     padding: auto;
     margin: 1.5rem 5rem;
-    background-image: url('../assets/tabuaLabel.svg');
+    background-image: url('../assets/backgrounds/tabuaLabel.svg');
     background-size: cover;
     text-align: center;
     color: white;
@@ -82,7 +82,7 @@ div{
 }
 
 .opcoesClasse button{
-    background-image: url('../assets/papelLabel.svg');
+    background-image: url('../assets/backgrounds/papelLabel.svg');
     background-size: cover;
     background-repeat: no-repeat;
     background-color: transparent;

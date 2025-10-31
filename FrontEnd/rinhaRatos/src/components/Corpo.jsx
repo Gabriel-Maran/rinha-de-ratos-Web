@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Botao from "./Botao";
-import SelcClassRato from "./Modal";
+import Modal from "./Modal";
 import "../css/Corpo.css";
 
 const ETAPAS = {
@@ -8,7 +8,6 @@ const ETAPAS = {
   SELECAO_CLASSE: 1,
   DETALHES_CLASSE: 2,
   RATO_CRIADO: 3
-  DETALHES_CLASSE: 2,
 };
 
 export default function Corpo() {
@@ -38,12 +37,10 @@ export default function Corpo() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   }
 
-    setClasseSelecionada(null);
-  };
   return (
     <>
       <div className="corpo-container">
-        <SelcClassRato
+        <Modal
           etapa={etapaModal}
           etapas={ETAPAS}
           onClose={fecharModal}
