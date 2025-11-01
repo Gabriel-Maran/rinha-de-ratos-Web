@@ -5,6 +5,7 @@ import "./auth.css";
 import "./AuthForm.css";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
 import { useState } from "react";
+import { fazerLogin } from "../../Api/api.js";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -20,7 +21,12 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const nome = "";
+
+  const funMostrarSenha = () => {
+    setMostrarSenha(!mostrarSenha);
+  };
 
   const irLogin = async (evento) => {
     // Impede que o navegador recarregue à página
@@ -33,14 +39,13 @@ export default function Login() {
       const resposta = await fazerLogin(dados);
 
       console.log("Login OK!", resposta.data);
-localStorage.setItem("idUsuario", resposta.data.id); // A chave é 'id' [cite: 191]
-localStorage.setItem("tipoConta", resposta.data['tipo conta']); // A ch
+
+      localStorage.setItem("idUsuario", resposta.data.id);
+      localStorage.setItem("tipoConta", resposta.data.tipo_conta);
+
       navigate("/home");
     } catch (err) {
-      // FALHA!
-      // 'err.response.data' é a mensagem de erro que o seu back-end enviou
-      // (Ex: "Usuário não encontrado" ou "Senha inválida")
-       setErro(err.response.data.message || "Erro...");
+      setErro(err?.response?.data?.message);
     }
   };
 
@@ -49,7 +54,7 @@ localStorage.setItem("tipoConta", resposta.data['tipo conta']); // A ch
       <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
         <h3>Fazer login</h3>
-
+        {erro && <p className="mensagem-erro">{erro}</p>}
         <div className="inputs">
           <Input
             input={{
@@ -62,13 +67,18 @@ localStorage.setItem("tipoConta", resposta.data['tipo conta']); // A ch
           <div className="input-senha">
             <Input
               input={{
-                type: "password",
+                type: mostrarSenha ? "text" : "password",
                 value: senha,
                 onChange: (e) => setSenha(e.target.value),
                 placeholder: "Senha",
               }}
             />
-            <span className="verSenha">👁</span>
+            <span
+              className="verSenha"
+              onClick={(e) => funMostrarSenha(e.target.value)}
+            >
+              {mostrarSenha ? "🙈" : "👁"}
+            </span>
           </div>
         </div>
 
