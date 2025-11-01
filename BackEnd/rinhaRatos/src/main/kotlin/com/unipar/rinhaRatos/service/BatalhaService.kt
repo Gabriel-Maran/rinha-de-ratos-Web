@@ -18,6 +18,6 @@ class BatalhaService(
     }
 
     fun criarBatalha( batalhaBasic: BatalhaBasic ): String{
-        
+        return 
     }
 }
