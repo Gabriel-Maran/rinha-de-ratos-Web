@@ -30,20 +30,25 @@ class UsuarioController(
         if (usuarioPode == "SIM") {
             return ResponseEntity.ok(
                 mapOf(
-                    "message" to "Usuário pode criar mais ratos"
+                    "message" to "Usuário pode criar mais ratos",
+                    "status" to true
                 )
             )
         }
         if (usuarioPode == "SIM") {
 
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.CONFLICT.value(),
-                    error = "Conflict",
-                    message = "Não pode criar mais ratos",
-                    code = "USER_ALREADY_HAS_3_RATOS"
+                mapOf(
+                    "Error" to ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.CONFLICT.value(),
+                        error = "Conflict",
+                        message = "Não pode criar mais ratos",
+                        code = "USER_ALREADY_HAS_3_RATOS"
+                    ),
+                    "status" to true
                 )
+
             )
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
