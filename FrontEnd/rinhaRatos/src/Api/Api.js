@@ -16,4 +16,6 @@ export const fazerLogin = (dadosLogin) => {
   return apiClient.post('/usuario/login', dadosLogin); 
 };
 
-
+export const trocarSenha = (dadosNovaSenha) => {
+  return apiClient.post('/usuario/changeUser/password',dadosNovaSenha)
+}

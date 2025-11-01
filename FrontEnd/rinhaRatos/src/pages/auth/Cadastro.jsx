@@ -5,19 +5,26 @@ import "./AuthForm.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
-import { fazerCadastro } from "../../Api/Api";
+import { fazerCadastro } from "../../Api/api";
 
 export default function Cadastro() {
   const navigate = useNavigate();
+  const possuConta = () => {
+    navigate("/login");
+  }
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [erro, setErro] = useState(null);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const tipoConta = "JOGADOR";
   const mousecoinSaldo = 30;
   const vitorias = 0;
 
+  const funMostrarSenha = () => {
+    setMostrarSenha(!mostrarSenha);
+  };
   const irLogin = async (evento) => {
     evento.preventDefault();
 
@@ -32,14 +39,19 @@ export default function Cadastro() {
     try {
       const resposta = await fazerCadastro(dados);
       console.log("Login OK!", resposta.data);
- 
-      navigate("/login"); 
-    } catch (err){
-
-     setErro(err.response.data.message || "Erro...");
+ /*  "idUsuario": 10,
+    "nome": "Gabriel",
+    "email": "gabriel@example.com",
+    "tipoConta": "JOGADOR",
+    "mousecoinSaldo": 30,
+    "vitorias": 0,
+    "ratos": [] */
+      navigate("/login");
+    } catch (err) {
+      setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
   };
-  
+
   return (
     <div className="acesso-container">
       <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
@@ -65,13 +77,18 @@ export default function Cadastro() {
           <div className="input-senha">
             <Input
               input={{
-                type: "password",
+                type: mostrarSenha ? "text" : "password",
                 value: senha,
                 onChange: (e) => setSenha(e.target.value),
                 placeholder: "Senha",
               }}
             />
-            <span className="verSenha">👁</span>
+            <span
+              className="verSenha"
+              onClick={(e) => funMostrarSenha(e.target.value)}
+            >
+              {mostrarSenha ? "🙈" : "👁"}
+            </span>
           </div>
         </div>
         <Botao
@@ -85,7 +102,7 @@ export default function Cadastro() {
           acaoBtn={"Já tenho conta"}
           button={{
             className: "btnVoltar",
-            onClick: irLogin,
+            onClick: possuConta,
           }}
         />
       </div>
