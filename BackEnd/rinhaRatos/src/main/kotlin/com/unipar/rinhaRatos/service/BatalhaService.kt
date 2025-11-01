@@ -59,6 +59,8 @@ class BatalhaService(
         return saved
     }
 
+    // entrarNaBatalha
+
     fun atualizarInfomacoesBatalha(idBatalha: Long, batalhaBasic: BatalhaBasic): String {
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
