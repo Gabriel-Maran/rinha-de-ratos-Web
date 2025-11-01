@@ -76,6 +76,7 @@ class UsuarioService(
 
     fun validaUsuarioLogin(email: String, senha: String): Optional<Usuario> {
         val usuario = usuarioRepository.findByEmail(email)
+        if(email.isEmpty() || senha.isEmpty()) return Optional.empty()
         if (usuario.isPresent && usuario.get().senha == senha) {
             return Optional.of(usuario.get())
         }
