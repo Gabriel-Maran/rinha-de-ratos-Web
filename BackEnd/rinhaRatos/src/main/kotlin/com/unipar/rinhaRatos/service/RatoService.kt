@@ -18,10 +18,8 @@ import java.util.Optional
 @Service
 class RatoService(
     private val ratoRepository: RatoRepository,
-    private val classeRepository: ClasseRepository,
     private val habilidadeRepository: HabilidadeRepository,
     private val usuarioRepository: UsuarioRepository,
-    private val batalhaRepository: BatalhaRepository
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -34,8 +32,10 @@ class RatoService(
         return if (ratoOpt.isPresent) Optional.of(ratoOpt.get().toDto()) else Optional.empty()
     }
 
-    fun getAllRatosByUserId(id: Long): List<RatoDTO> =
-        ratoRepository.findAllByUsuario_IdUsuario(id).map { it.toDto() }
+    fun getAllRatosByUserId(id: Long): Optional<List<RatoDTO>>{
+        if(usuarioRepository.findById(id).isEmpty) return Optional.empty()
+        return Optional.of(ratoRepository.findAllByUsuario_IdUsuario(id).map { it.toDto() })
+    }
 
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, Any> {
         val donoDoRatoOpt = usuarioRepository.findByIdWithRatos(ratoBasic.idUsuario)

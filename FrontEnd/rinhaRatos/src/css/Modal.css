@@ -51,6 +51,10 @@
     justify-content: center;
     align-items: center;
     user-select: none;
+    text-shadow:
+    0 0 3px #000,
+    0 0 6px #000,
+    0 0 8px #000;
 }
 
 button {
@@ -255,8 +259,9 @@ div {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     text-align: left;
+    margin: 1rem 0rem 1rem 0rem;
 }
 
 .imagemENome img {
@@ -266,71 +271,98 @@ div {
 }
 
 .imagemENome p {
-    width: 15rem;
+    width: 19rem;
+    height: 6rem;
     margin: 0;
-    padding: 0rem 1rem;
-    background-color: white;
+    background-image: url("../assets/backgrounds/pedraLabel.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 2rem;
+    color: wheat;
 }
 
 .infoGeral {
-    width: 80%;
-    min-height: 20%;
-    padding: 1rem 1rem 1rem 1rem;
-    border-color: white;
-    border-width: 0.5rem;
-    border-style: solid;
+    width:95%;
+    height: 40%;
+    background-image: url("../assets/backgrounds/displayMadeira2.png");
+    background-size: 100% 100%;
     text-align: center;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    margin: 1rem 0rem 2rem 0rem;
 }
 
-.infoGeral p {
-    width: 70%;
-    align-self: center;
-}
-
-.geralzao {
+.conteinerTitusEstHabil{
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    gap: 1rem
-}
-
-.estatisticas {
-    width: 80%;
     height: 100%;
+    padding: 0rem 1rem 0rem 1rem;
     display: flex;
-    flex-direction: column;
-    gap:0.5rem;
-}
-
-.estatisticas p{
-    width: 100%;
-    background-color: rgb(205,194,194);
-}
-
-.estatisticas p+p{
-    width: 100%;
-    text-align: left;
-    background-color: white;
-}
-
-.habilidade{
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
     gap: 0.5rem;
+    box-sizing: border-box;
 }
 
-.habilidade p{
+.titusEstHabil{
     width: 100%;
-    background-color: rgb(205,194,194);
+    height: 20%;
+    background-image: url("../assets/backgrounds/tabuaLabel.svg");
+    background-size: 100% 100%;
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.habilidade p+p{
-    width: 100%;
+.caixaEstatisticas {
+    width: 50%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.caixaHabilidadeEsc{
+    width: 50%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-right: 0.5rem;
+}
+
+.estatisticas{
+    background-image: url("../assets/backgrounds/papelLabel2.png");
+    background-size: 100% 100%;
+    width: 80%;
     height: 100%;
-    background-color: white;
+    margin: 0;
+    display: flex;
+    text-align: left;
+    align-items: center;
+    margin: 1rem 0rem 0rem 0rem;
+    padding: 0rem 0rem 0rem 1rem;
+    box-sizing: border-box;
+}
+
+.descHabilEsc{
+    width: 95%;
+    height: 90%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-image: url("../assets/backgrounds/papelLabel2.png");
+    background-size: 100% 100%;
+    padding: 1rem 1rem 1rem 1rem;
+    margin: 1rem 0rem 0rem 0rem;
+    box-sizing: border-box;
 }
