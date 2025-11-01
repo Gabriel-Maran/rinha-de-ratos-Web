@@ -45,6 +45,7 @@ export default function EsqueceuSenha() {
             onClick: irLogin,
           }}
         />
+        
       </div>
     </div>
   );
