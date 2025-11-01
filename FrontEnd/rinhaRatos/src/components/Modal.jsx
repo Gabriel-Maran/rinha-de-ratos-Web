@@ -28,7 +28,7 @@ export default function Modal({
       );
       break;
     case etapas.RATO_CRIADO:
-      conteudoModal = <RatoCriado indexClasse={indexClasse}/>;
+      conteudoModal = <RatoCriado indexClasse={indexClasse} onClose={onClose}/>;
       break;
     default:
       conteudoModal = null;

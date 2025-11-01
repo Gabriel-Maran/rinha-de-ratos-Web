@@ -27,9 +27,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
 
   return (
     <>
-      <div className="titulo">
-        {classe}
-      </div>
+      <div className="titulo">{classe}</div>
       <div className="detalhes-conteudo">
         <div className="inputEFoto">
           <div className="nomeRato">
@@ -59,7 +57,10 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
         </div>
         <div className="descHabilidade">{descHabilidade[habilAtiva]}</div>
         <div className="socorro">
-          <button className="btnFinalizar" onClick={() => onMostrar(imagensRato)}>
+          <button
+            className="btnFinalizar"
+            onClick={() => onMostrar(imagensRato, classe)}
+          >
             Finalizar
           </button>
           <div className="custo">

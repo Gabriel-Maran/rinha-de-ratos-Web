@@ -14,6 +14,7 @@ export default function Corpo() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
   const [indexClasse, setIndexClasse] = useState(null)
+  const [clssRatoCriar, setClssRatoCriar] = useState(null)
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -22,6 +23,8 @@ export default function Corpo() {
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
     setClasseSelecionada(null);
+    setIndexClasse(null);
+    setClssRatoCriar(null);
   };
 
   const selecionarClasse = (classe, index) => {
@@ -32,6 +35,7 @@ export default function Corpo() {
 
   const mostrarRatoCriado = () => {
     setEtapaModal(ETAPAS.RATO_CRIADO);
+    setClssRatoCriar(clssRatoCriar);
   }
 
   return (
