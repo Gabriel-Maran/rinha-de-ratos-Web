@@ -100,12 +100,13 @@ class UsuarioController(
 
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
-        val tipoContaOpt = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
-        return if (tipoContaOpt.isPresent) {
+        val usuario = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
+        return if (usuario.isPresent) {
             ResponseEntity.ok(
                 mapOf(
                     "message" to "Login realizado com sucesso",
-                    "tipo_conta" to tipoContaOpt.get()
+                    "id" to usuario.get().idUsuario,
+                    "tipo_conta" to usuario.get().tipoConta
                 )
             )
         } else {
