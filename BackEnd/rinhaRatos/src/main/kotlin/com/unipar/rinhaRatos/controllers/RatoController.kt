@@ -36,6 +36,13 @@ class RatoController(
         return ResponseEntity.ok(ratoEntity)
     }
 
+    @GetMapping("/dousuario/{id}")
+    fun findAllRatosByUserId(@PathVariable id: Long): ResponseEntity<Any> {
+        val ratos = ratoService.getAllRatosByUserId(id)
+        if(ratos.isEmpty) return buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
+        return ResponseEntity.ok(ratos.get())
+    }
+
     @PostMapping("/cadastro")
     fun cadastrarRato(@RequestBody ratoDTO: RatoBasic): ResponseEntity<Any> {
         val result: Map<String, Any> = ratoService.cadastrarRato(ratoDTO)
