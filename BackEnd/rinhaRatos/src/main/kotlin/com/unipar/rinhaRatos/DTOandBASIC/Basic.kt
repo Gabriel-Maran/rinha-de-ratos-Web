@@ -15,7 +15,6 @@ data class UsuarioBasic(
 )
 
 data class BatalhaBasic(
-    val nome: String,
-    val dataInicio:LocalDateTime,
-    val custoInscricao: Int
+    val nomeBatalha: String,
+    val dataHorarioInicio:LocalDateTime,
 )

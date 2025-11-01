@@ -1,13 +1,12 @@
 package com.unipar.rinhaRatos.repositorys
 
 import com.unipar.rinhaRatos.models.Batalha
-import com.unipar.rinhaRatos.models.Usuario
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface BatalhaRepository: JpaRepository<Batalha, Long> {
-    fun findAllByAdmCriador(admCriador: Usuario): List<Batalha>
+    fun findAllByAdmCriador_IdUsuario(admCriador: Long): List<Batalha>
 
     @Query("""
         SELECT b FROM Batalha b 
