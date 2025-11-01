@@ -35,7 +35,7 @@ class UsuarioController(
                 )
             )
         }
-        if (usuarioPode == "SIM") {
+        if (usuarioPode == "NAO") {
 
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 mapOf(

@@ -47,20 +47,17 @@ class UsuarioService(
     }
 
     fun cadastrarUsuario(usuario: Usuario): Usuario {
-        // Normaliza o e-mail (trim + lowercase opcional)
-        val emailNormalized = usuario.email.trim() // .lowercase(Locale.ROOT) se quiser case-insensitive
+        val emailNormalized = usuario.email.trim()
         if (usuarioRepository.existsByEmail(emailNormalized)) {
             log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
             throw IllegalArgumentException("Email já cadastrado")
         }
         usuario.email = emailNormalized
         try {
-            // saveAndFlush força o flush para que violações de constraint (unique) sejam lançadas aqui
             val saved = usuarioRepository.saveAndFlush(usuario)
             log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
             return saved
         } catch (ex: DataIntegrityViolationException) {
-            // Trata condição de corrida: duas requisições checaram existsByEmail ao mesmo tempo
             log.warn("Falha ao salvar usuário (provável e-mail duplicado): ${usuario.email} - ${ex.message}")
             throw IllegalArgumentException("Email já cadastrado")
         }
