@@ -4,6 +4,8 @@ import Botao from "../../components/Botao.jsx";
 import "./auth.css";
 import "./AuthForm.css";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
+import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
 import { useState } from "react";
 import { fazerLogin } from "../../Api/api.js";
 
@@ -45,7 +47,7 @@ export default function Login() {
 
       navigate("/home");
     } catch (err) {
-      setErro(err?.response?.data?.message);
+      setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
   };
 
@@ -54,7 +56,9 @@ export default function Login() {
       <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
         <h3>Fazer login</h3>
+
         {erro && <p className="mensagem-erro">{erro}</p>}
+
         <div className="inputs">
           <Input
             input={{
@@ -77,7 +81,11 @@ export default function Login() {
               className="verSenha"
               onClick={(e) => funMostrarSenha(e.target.value)}
             >
-              {mostrarSenha ? "🙈" : "👁"}
+              {mostrarSenha ? (
+                <img src={icone_olho_fechado} alt="icone de olho fechado" />
+              ) : (
+                <img src={icone_olho_aberto} alt="icone de olho fechado" />
+              )}
             </span>
           </div>
         </div>

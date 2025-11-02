@@ -44,14 +44,18 @@
     width: 100%;
 }
 
-.input-senha .verSenha {
+.verSenha {
     position: absolute; 
     cursor: pointer;  /* Muda o cursor para a mãozinha apontando */
     user-select: none; /* Não permite o cara selecionar (deixar azul) */
     color: #000000;
-    right: 0.2rem;
-    font-size: 1.5rem;
-    padding-bottom: 0.5rem;
+    right: 0rem;
+    padding-bottom: 1.0rem;
+}
+
+.verSenha img{
+    width: 28px;
+    height: 28px;
 }
 
 
@@ -98,4 +102,8 @@ background-color: #160505;
     border: none;
     background: none;
     text-decoration: underline;
+}
+
+.mensagem-erro{
+    color: red;
 }

@@ -5,13 +5,15 @@ import "./AuthForm.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
+import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
 import { fazerCadastro } from "../../Api/api";
 
 export default function Cadastro() {
   const navigate = useNavigate();
   const possuConta = () => {
     navigate("/login");
-  }
+  };
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -39,13 +41,8 @@ export default function Cadastro() {
     try {
       const resposta = await fazerCadastro(dados);
       console.log("Login OK!", resposta.data);
- /*  "idUsuario": 10,
-    "nome": "Gabriel",
-    "email": "gabriel@example.com",
-    "tipoConta": "JOGADOR",
-    "mousecoinSaldo": 30,
-    "vitorias": 0,
-    "ratos": [] */
+      
+
       navigate("/login");
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
@@ -57,6 +54,7 @@ export default function Cadastro() {
       <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
         <h3>Cadastro</h3>
+        {erro && <p className="mensagem-erro">{erro}</p>}
         <div className="inputs">
           <Input
             input={{
@@ -87,7 +85,11 @@ export default function Cadastro() {
               className="verSenha"
               onClick={(e) => funMostrarSenha(e.target.value)}
             >
-              {mostrarSenha ? "🙈" : "👁"}
+              {mostrarSenha ? (
+                <img src={icone_olho_fechado} alt="icone de olho fechado" />
+              ) : (
+                <img src={icone_olho_aberto} alt="icone de olho fechado" />
+              )}
             </span>
           </div>
         </div>
