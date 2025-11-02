@@ -8,9 +8,13 @@ export default function Modal({
   etapas,
   onClose,
   onSlctClasse,
-  onMostrarRato,
   classe,
   indexClasse,
+  onMostrarRato,
+  nomeRato,
+  habilidades,
+  habilEscolhida,
+  descHabilidade,
 }) {
   if (etapa === etapas.FECHADO) {
     return null;
@@ -24,11 +28,24 @@ export default function Modal({
       break;
     case etapas.DETALHES_CLASSE:
       conteudoModal = (
-        <DetalhesDaClasse classe={classe} onMostrar={onMostrarRato} indexClasse={indexClasse} />
+        <DetalhesDaClasse
+          classe={classe}
+          indexClasse={indexClasse}
+          onMostrar={onMostrarRato}
+        />
       );
       break;
     case etapas.RATO_CRIADO:
-      conteudoModal = <RatoCriado indexClasse={indexClasse} onClose={onClose}/>;
+      conteudoModal = (
+        <RatoCriado
+          indexClasse={indexClasse}
+          onClose={onClose}
+          nomeRato={nomeRato}
+          habilidades={habilidades}
+          habilEscolhida={habilEscolhida}
+          descHabilidade={descHabilidade}
+        />
+      );
       break;
     default:
       conteudoModal = null;

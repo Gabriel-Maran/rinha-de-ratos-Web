@@ -4,12 +4,12 @@ import MouseCoin from "../assets/moedas/MouseCoin.svg";
 import Input from "../components/Input";
 
 export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
-  let nomeRato; /* Parte que pega da api o nome default do id do rato*/
+  /* let nomeRato; */ /* Parte que pega da api o nome default do id do rato*/
   let descRato;
   let habilidades;
   let descHabilidade;
 
-  nomeRato = "Fedoroso";
+  /* nomeRato = "Fedoroso"; */
   descRato =
     "Sobrevive nas sombras, usando lama e toxinas para corroer defesas; brutal e imprevisível.";
   habilidades = ["Leptospirose", "Nuvem de Lama", "Fedor Corrosivo"];
@@ -19,10 +19,13 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
     "75% de chance de causar dano direto igual a 8% do HP máximo do alvo (instantâneo). Falha: perde 6% da DEF apenas nesta rodada.",
   ];
 
+  const [nomeRato, setNomeRato] = useState("Fedoroso");
   const [habilAtiva, setHabilAtiva] = useState(0);
 
   const handleBtnHabil = (index) => {
     setHabilAtiva(index - 1);
+    console.log(habilAtiva);
+    console.log(index);
   };
 
   return (
@@ -36,6 +39,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
                 type: "text",
                 placeholder: nomeRato,
                 maxLength: 15,
+                onChange: (e) => setNomeRato(e.target.value),
               }}
             />
             <span className="simboloEditar">🖊</span>
@@ -51,7 +55,9 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
               key={habilidade}
               onClick={() => handleBtnHabil(index + 1)}
             >
-              Habilidade {index + 1}
+              {habilAtiva == index
+                ? habilidades[index]
+                : `Habilidade ${index + 1}`}
             </button>
           ))}
         </div>
@@ -59,10 +65,13 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
         <div className="socorro">
           <button
             className="btnFinalizar"
-            onClick={() => onMostrar(imagensRato, classe)}
+            onClick={() =>
+              onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade, )
+            }
           >
             Finalizar
           </button>
+          {/* <button onClick={() => console.log(classe, habilidades, habilAtiva, descHabilidade)}>aaaa</button> */}
           <div className="custo">
             <p>5</p>
             <img src={MouseCoin} />
