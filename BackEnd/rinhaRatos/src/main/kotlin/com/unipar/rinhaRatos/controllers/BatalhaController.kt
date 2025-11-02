@@ -1,7 +1,6 @@
 package com.unipar.rinhaRatos.controllers
 
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaDTO
-import com.unipar.rinhaRatos.frontConnection.ConnectionFront
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Batalha
 import com.unipar.rinhaRatos.service.BatalhaService
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/batalha")
 class BatalhaController(

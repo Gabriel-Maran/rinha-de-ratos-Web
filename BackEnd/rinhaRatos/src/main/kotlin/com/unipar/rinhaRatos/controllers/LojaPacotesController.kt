@@ -3,7 +3,6 @@ package com.unipar.rinhaRatos.controllers
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.DTOandBASIC.LojaPacotesDTO
 import com.unipar.rinhaRatos.enums.PurchaseResult
-import com.unipar.rinhaRatos.frontConnection.ConnectionFront
 import com.unipar.rinhaRatos.service.LojaPacotesService
 import com.unipar.rinhaRatos.service.RatoService
 import org.springframework.http.HttpStatus
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
-@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/lojapacotes")
 class LojaPacotesController(

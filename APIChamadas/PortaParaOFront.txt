@@ -1,3 +1,0 @@
-Se deseja trocar a porta para o back conseguir acessar requisições de outra porta
-entre no back end e va por este caminho: com.unipar.rinhaRatos.frontConnection
-Troque a constante URL_ATUAL para uma string da sua Url atual

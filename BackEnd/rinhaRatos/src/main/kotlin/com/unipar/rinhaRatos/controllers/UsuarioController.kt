@@ -1,7 +1,6 @@
 package com.unipar.rinhaRatos.controllers
 
 import com.unipar.rinhaRatos.DTOandBASIC.*
-import com.unipar.rinhaRatos.frontConnection.ConnectionFront
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.service.UsuarioService

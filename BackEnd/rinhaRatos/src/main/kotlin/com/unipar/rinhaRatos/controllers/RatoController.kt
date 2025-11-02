@@ -3,7 +3,6 @@ package com.unipar.rinhaRatos.controllers
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
-import com.unipar.rinhaRatos.frontConnection.ConnectionFront
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.service.RatoService
@@ -12,7 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
-@CrossOrigin(origins = [ConnectionFront.URL_ATUAL])
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/rato")
 class RatoController(

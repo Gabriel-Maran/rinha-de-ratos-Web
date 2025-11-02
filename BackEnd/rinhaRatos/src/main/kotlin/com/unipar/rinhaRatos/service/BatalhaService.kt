@@ -31,7 +31,7 @@ class BatalhaService(
         return if (batalha.jogador1 != null && batalha.jogador2 != null) "BATALHA_CHEIA" else "BATALHA_NAO_CHEIA"
     }
 
-    fun usuarioEstaBatalhandoPeloRato(idBatalha: Long, idUsuario: Long): String {
+    fun usuarioEstaBatalhando(idBatalha: Long, idUsuario: Long): String {
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
@@ -59,7 +59,10 @@ class BatalhaService(
         return saved
     }
 
-    // entrarNaBatalha
+    fun entrarNaBatalha(idBatalha: Batalha, idUsuario: Long): String{
+
+        return "OK"
+    }
 
     fun atualizarInfomacoesBatalha(idBatalha: Long, batalhaBasic: BatalhaBasic): String {
         val batalhaOpt = batalhaRepository.findById(idBatalha)
