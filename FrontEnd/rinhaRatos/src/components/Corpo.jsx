@@ -2,6 +2,7 @@ import { useState } from "react";
 import Botao from "./Botao";
 import Modal from "./Modal";
 import "../css/Corpo.css";
+import DisplayRato from "./DisplayRato";
 
 const ETAPAS = {
   FECHADO: 0,
@@ -19,6 +20,9 @@ export default function Corpo() {
   const [listaHabilidades, setListaHabilidades] = useState(null);
   const [habilEscolhida, setHabilEscolhida] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
+
+  const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
+  const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -59,6 +63,17 @@ export default function Corpo() {
   return (
     <>
       <div className="corpo-container">
+        <div className={"opcoes"}>
+          {botoes.map((botao) => (
+            <button
+              key={botao}
+              className={opcaoAtivada == botao ? "opcaoAtiva" : ""}
+              onClick={() => setOpcaoAtivada(botao)}
+            >
+              {botao}
+            </button>
+          ))}
+        </div>
         <Modal
           etapa={etapaModal}
           etapas={ETAPAS}
@@ -81,6 +96,7 @@ export default function Corpo() {
             button={{ onClick: mostrarSelecaoClasse }}
             acaoBtn={"Adicionar Rato"}
           />
+          <DisplayRato />
         </div>
       </div>
     </>

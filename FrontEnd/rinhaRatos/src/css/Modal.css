@@ -341,7 +341,7 @@ div {
 }
 
 .estatisticas{
-    background-image: url("../assets/backgrounds/papelLabel2.png");
+    background-image: url("../assets/backgrounds/papelLabelPregos.png");
     background-size: 100% 100%;
     width: 80%;
     min-height: 8rem;
@@ -361,7 +361,7 @@ div {
     align-items: center;
     justify-content: center;
     display: flex;
-    background-image: url("../assets/backgrounds/papelLabel2.png");
+    background-image: url("../assets/backgrounds/papelLabelPregos.png");
     background-size: 100% 100%;
     padding: 1rem 1rem 1rem 1rem;
     margin: 0rem 0rem 0rem 0rem;
