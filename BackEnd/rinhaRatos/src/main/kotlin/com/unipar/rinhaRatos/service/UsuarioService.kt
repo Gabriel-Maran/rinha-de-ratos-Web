@@ -84,16 +84,13 @@ class UsuarioService(
     }
 
     fun redefinirUsuarioSenha(email: String, novaSenha: String): String {
+        if(email.trim().isEmpty() || novaSenha.trim().isEmpty()) return "PREENCHA_CAMPOS"
         val usuarioOpt = usuarioRepository.findByEmail(email)
         if (usuarioOpt.isEmpty) {
             log.warn("Redefinir senha: email não encontrado $email")
             return "EMAIL_NOT_FOUND"
         }
         val usuario = usuarioOpt.get()
-        val nome = usuario.nome.trim()
-        val email = usuario.email.trim()
-        val senha = usuario.senha.trim()
-        if(nome.isEmpty() || email.isEmpty() || senha.isEmpty()) return "PREENCHA_CAMPOS"
 
         usuario.senha = novaSenha
         usuarioRepository.save(usuario)
