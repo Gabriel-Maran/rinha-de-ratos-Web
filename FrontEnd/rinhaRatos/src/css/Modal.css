@@ -63,6 +63,11 @@ button {
     font-family: 'Fondamento', 'fantasy';
 }
 
+
+button .addRato{
+    border-radius: 20px;
+    background-color: red;
+}
 div {
     user-select: none;
 }
