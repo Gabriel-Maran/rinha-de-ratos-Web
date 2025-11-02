@@ -116,6 +116,19 @@ class UsuarioController(
 
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
+        val nome = loginRequest.nome.trim()
+        val email = loginRequest.email.trim()
+        val senha = loginRequest.senha.trim()
+        if(nome.isEmpty() || email.isEmpty() || senha.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ErrorResponse(
+                            timestamp = Instant.now().toString(),
+                            status = HttpStatus.UNAUTHORIZED.value(),
+                            error = HttpStatus.UNAUTHORIZED.reasonPhrase,
+                            message = "Preencha os campos necessários",
+                            code = "LOGIN_FAILED"
+                        )
+                    )
         val usuario = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
         if (usuario.isPresent) {
             return ResponseEntity.ok(
