@@ -3,7 +3,7 @@ import ReactDom from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./css/index.css";
 import App from "./App.jsx";
-import Inicio from "./pages/Inicio.jsx";
+import HomeJogador from "./pages/HomeJogador.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Acesso from "./pages/Auth/Acesso.jsx";
 import Cadastro from "./pages/auth/Cadastro.jsx";
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: "home",
-        element: <Inicio />,
+        element: <HomeJogador />,
       },
     ],
   },

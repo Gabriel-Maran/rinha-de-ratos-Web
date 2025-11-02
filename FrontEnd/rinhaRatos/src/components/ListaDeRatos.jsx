@@ -2,7 +2,7 @@ import { useState } from "react";
 import imagensRato from "./ImagensRato";
 import "../css/Corpo.css";
 
-export default function DisplayRato() {
+export default function ListaDeRatos() {
   const [ratosUsuario, setRatosUsuario] = useState(["Robertinho Loco","Destruidor","Sabe-tudo"]);
 
   return (

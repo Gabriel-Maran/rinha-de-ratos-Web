@@ -4,6 +4,7 @@
     font-family: 'Fondamento', 'fantasy';
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 .corpo-container {
@@ -98,4 +99,66 @@
     padding: 0rem 1.5rem 0rem 2rem;
     font-size: 2rem;
     margin-bottom: 1rem;
+}
+
+.addBatalha{
+    width: 20rem;
+    z-index: 1000;
+}
+
+.listaBatalhas{
+    width: 45%;
+    height: 20rem;
+    color: black;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.batalha{
+    width: 87%;
+    height: 12rem;
+    background-image: url("../assets/backgrounds/papelLabelBatalha.png");
+    background-size: 100% 100%;
+    display: flex;
+    align-items: center;
+    padding: 1rem 3rem 1rem 2rem;
+    font-size: 1.3rem;
+}
+
+.batalha p{
+    margin-bottom: 1rem;
+}
+
+.batalha p+p{
+    margin:0;
+}
+
+.infoBatalha{
+    width: 40rem;
+    margin-right: 6rem;
+}
+
+.opcoesBatalha{
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.opcoesBatalha button{
+    width: 10rem;
+    height: 3.5rem;
+    background-image: url("../assets/buttons/btnParticiparBatalha.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.opcoesBatalha button+button{
+ background-image: url("../assets/buttons/btnAssistirBatalha.png");
 }
