@@ -38,29 +38,29 @@ class UsuarioService(
         return usuarioRepository.findTop10WithRatosOrderByVitoriasDesc(page)
     }
 
-    fun getUserPodeCriarNewRato(id: Long): String{
+    fun getUserPodeCriarNewRato(id: Long): String {
         val usuarioOpt = getById(id)
-        if(usuarioOpt.isEmpty) return "SEM_USER"
+        if (usuarioOpt.isEmpty) return "SEM_USER"
         val usuario = usuarioOpt.get()
-        if(usuario.ratos.size == 3) return  "NAO"
+        if (usuario.ratos.size == 3) return "NAO"
         return "SIM"
     }
 
-    fun cadastrarUsuario(usuario: Usuario): Usuario {
+    fun cadastrarUsuario(usuario: Usuario): Map<String, Any> {
         val emailNormalized = usuario.email.trim()
+        if (emailNormalized.isEmpty() || usuario.nome.isEmpty() || usuario.senha.isEmpty())
+            return mapOf(
+                        "user" to "",
+                        "error" to "PREENCHA_CAMPOS"
+                    )
         if (usuarioRepository.existsByEmail(emailNormalized)) {
             log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
-            throw IllegalArgumentException("Email já cadastrado")
+            return mapOf("user" to "", "error" to "EMAIL_ALREADY_EXISTS")
         }
         usuario.email = emailNormalized
-        try {
-            val saved = usuarioRepository.saveAndFlush(usuario)
-            log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
-            return saved
-        } catch (ex: DataIntegrityViolationException) {
-            log.warn("Falha ao salvar usuário (provável e-mail duplicado): ${usuario.email} - ${ex.message}")
-            throw IllegalArgumentException("Email já cadastrado")
-        }
+        val saved = usuarioRepository.saveAndFlush(usuario)
+        log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
+        return mapOf("user" to saved, "error" to "")
     }
 
 
@@ -76,7 +76,7 @@ class UsuarioService(
 
     fun validaUsuarioLogin(email: String, senha: String): Optional<Usuario> {
         val usuario = usuarioRepository.findByEmail(email)
-        if(email.isEmpty() || senha.isEmpty()) return Optional.empty()
+        if (email.isEmpty() || senha.isEmpty()) return Optional.empty()
         if (usuario.isPresent && usuario.get().senha == senha) {
             return Optional.of(usuario.get())
         }

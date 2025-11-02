@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
-    @CrossOrigin(origins = ["http://localhost:5173"])
+@CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/usuario")
 class UsuarioController(
@@ -87,20 +87,31 @@ class UsuarioController(
 
     @PostMapping("/cadastro")
     fun cadastrarUsuario(@RequestBody usuario: Usuario): ResponseEntity<Any> {
-        return try {
-            val saved = usuarioService.cadastrarUsuario(usuario)
-            ResponseEntity(saved.toDto(), HttpStatus.CREATED)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).body(
+        val saved = usuarioService.cadastrarUsuario(usuario)
+        if (saved["error"] == "EMAIL_ALREADY_EXISTS") {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 ErrorResponse(
                     timestamp = Instant.now().toString(),
                     status = HttpStatus.CONFLICT.value(),
                     error = "Conflict",
-                    message = e.message,
+                    message = "Email já está registrado em outro usuário",
                     code = "EMAIL_EXISTS"
                 )
             )
+        } else if (saved["error"] == "PREENCHA_CAMPOS") {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.BAD_REQUEST.value(),
+                    error = "Bad Request",
+                    message = "Preencha os campos necessários",
+                    code = "PREENCHA_CAMPOS"
+                )
+            )
         }
+        val usuario: Usuario = saved["user"] as Usuario
+        return ResponseEntity(usuario.toDto(), HttpStatus.CREATED)
+
     }
 
     @PostMapping("/login")
