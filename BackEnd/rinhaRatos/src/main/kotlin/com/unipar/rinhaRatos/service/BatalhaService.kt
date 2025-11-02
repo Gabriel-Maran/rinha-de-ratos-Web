@@ -59,9 +59,35 @@ class BatalhaService(
         return saved
     }
 
-    fun entrarNaBatalha(idBatalha: Batalha, idUsuario: Long): String{
+    fun entrarNaBatalha(idBatalha: Long, idUsuario: Long, idRato: Long): String{
+        val batalhaOpt = batalhaRepository.findById(idBatalha)
+        val usuarioOpt = usuarioRepository.findById(idUsuario)
+        val ratoOpt = ratoRepository.findById(idRato)
+        if(batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
+        if(usuarioOpt.isEmpty) return "USER_NOT_FOUND"
+        if(ratoOpt.isEmpty) return "RATO_NOT_FOUND"
+        val batalha = batalhaOpt.get()
+        val usuario = usuarioOpt.get()
+        val rato = ratoOpt.get()
+        if(batalha.jogador1 == null){
+            batalha.jogador1 = usuario
+            batalha.rato1 = rato
+            rato.estaTorneio = true
 
-        return "OK"
+            batalhaRepository.save(batalha)
+            ratoRepository.save(rato)
+            return "OK"
+        }
+        if(batalha.jogador2 == null){
+            batalha.jogador2 = usuario
+            batalha.rato2 = rato
+            rato.estaTorneio = true
+
+            batalhaRepository.save(batalha)
+            ratoRepository.save(rato)
+            return "OK"
+        }
+        return "BATALHA_CHEIA"
     }
 
     fun atualizarInfomacoesBatalha(idBatalha: Long, batalhaBasic: BatalhaBasic): String {

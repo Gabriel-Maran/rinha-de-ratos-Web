@@ -1,25 +1,23 @@
-.acesso-container{
-    background-image: url(/src/assets/Backgrounds/bgLogin.png); 
-    background-size: cover;  /* Essa maravilha faz a imagem cobrir todo o site */       
-    background-position: center;  /* Deixa a posição da imagem de fundo no centro */
-    background-attachment: fixed;    /* Faz ela ficar presa */
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* overflow: hidden; */ /* Isso aqui serve pra esconder o scroll */
-    position: relative;
+.acesso-container {
+  background-image: url(/src/assets/Backgrounds/bgLogin.png);
+  background-size: cover; /* Essa maravilha faz a imagem cobrir todo o site */
+  background-position: center; /* Deixa a posição da imagem de fundo no centro */
+  background-attachment: fixed; /* Faz ela ficar presa */
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* overflow: hidden; */ /* Isso aqui serve pra esconder o scroll */
+  position: relative;
 }
 
-
 .logo {
-    width: 18rem;
-    height: auto; 
-    position: absolute;
-    top: 8vh;   
-    left: 50%;
-    transform: translateX(-50%);
-
+  width: 18rem;
+  height: auto;
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
 }
