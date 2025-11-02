@@ -1,5 +1,5 @@
 import Header from "../components/Header";
-import Corpo from "./home";
+import Corpo from "../components/Corpo";
 
 export default function Inicio() {
   return (

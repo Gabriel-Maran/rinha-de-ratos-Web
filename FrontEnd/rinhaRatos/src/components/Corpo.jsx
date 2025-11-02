@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Botao from "../components/Botao";
-import Modal from "../components/Modal";
+import Botao from "./Botao";
+import Modal from "./Modal";
 import "../css/Corpo.css";
 
 const ETAPAS = {
