@@ -118,16 +118,16 @@ class UsuarioController(
         val nome = loginRequest.nome.trim()
         val email = loginRequest.email.trim()
         val senha = loginRequest.senha.trim()
-        if(nome.isEmpty() || email.isEmpty() || senha.isEmpty())
+        if (email.isEmpty() || senha.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 ErrorResponse(
-                            timestamp = Instant.now().toString(),
-                            status = HttpStatus.UNAUTHORIZED.value(),
-                            error = HttpStatus.UNAUTHORIZED.reasonPhrase,
-                            message = "Preencha os campos necessários",
-                            code = "LOGIN_FAILED"
-                        )
-                    )
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.UNAUTHORIZED.value(),
+                    error = HttpStatus.UNAUTHORIZED.reasonPhrase,
+                    message = "Preencha os campos necessários",
+                    code = "LOGIN_FAILED"
+                )
+            )
         val usuario = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
         if (usuario.isPresent) {
             return ResponseEntity.ok(
@@ -153,73 +153,85 @@ class UsuarioController(
     @PostMapping("/changeUser/password")
     fun changePassWord(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val senhaTrocada = usuarioService.redefinirUsuarioSenha(loginRequest.email, loginRequest.senha)
-        return if (senhaTrocada) ResponseEntity.ok(mapOf("message" to "Senha trocada com sucesso"))
-        else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        if (senhaTrocada == "OK") {
+            ResponseEntity.ok(mapOf("message" to "Senha trocada com sucesso"))
+        } else if (senhaTrocada == "EMAIL_NOT_FOUND") {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.NOT_FOUND.value(),
+                    error = HttpStatus.NOT_FOUND.reasonPhrase,
+                    message = "Email inválido",
+                    code = "EMAIL_NOT_FOUND"
+                )
+            )
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse(
                 timestamp = Instant.now().toString(),
-                status = HttpStatus.NOT_FOUND.value(),
-                error = HttpStatus.NOT_FOUND.reasonPhrase,
-                message = "Email inválido",
-                code = "EMAIL_NOT_FOUND"
+                status = HttpStatus.BAD_REQUEST.value(),
+                error = HttpStatus.BAD_REQUEST.reasonPhrase,
+                message = "Preencha os campos necessário",
+                code = "PREENCHA_CAMPOS"
             )
         )
     }
 
 
-    @PutMapping("/{id}/changeUser/basic")
-    fun changeNomeEmailSenhaById(
-        @PathVariable id: Long,
-        @RequestBody usuarioDTO: UsuarioBasic
-    ): ResponseEntity<Any> {
-        val status = usuarioService.changeNomeEmailSenhaById(id, usuarioDTO)
+        @PutMapping("/{id}/changeUser/basic")
+        fun changeNomeEmailSenhaById(
+            @PathVariable id: Long,
+            @RequestBody usuarioDTO: UsuarioBasic
+        ): ResponseEntity<Any> {
+            val status = usuarioService.changeNomeEmailSenhaById(id, usuarioDTO)
 
-        return when (status) {
-            HttpStatus.OK -> ResponseEntity.ok(mapOf("message" to "Dados atualizados com sucesso"))
+            return when (status) {
+                HttpStatus.OK -> ResponseEntity.ok(mapOf("message" to "Dados atualizados com sucesso"))
 
-            HttpStatus.NOT_FOUND -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                HttpStatus.NOT_FOUND -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.NOT_FOUND.value(),
+                        error = "Not Found",
+                        message = "Usuário não encontrado",
+                        code = "USER_NOT_FOUND"
+                    )
+                )
+
+                HttpStatus.BAD_REQUEST -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.BAD_REQUEST.value(),
+                        error = "Bad Request",
+                        message = "Email já em uso ou dados inválidos",
+                        code = "EMAIL_IN_USE_OR_INVALID"
+                    )
+                )
+
+                else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        error = "Internal Server Error",
+                        message = "Erro ao atualizar usuário",
+                        code = "UPDATE_FAILED"
+                    )
+                )
+            }
+        }
+
+        @DeleteMapping("/{id}")
+        fun deletarPessoaPorId(@PathVariable id: Long): ResponseEntity<Any> {
+            val pessoaDeletada = usuarioService.deletarPessoaPorId(id)
+            return if (pessoaDeletada) ResponseEntity.noContent().build()
+            else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 ErrorResponse(
                     timestamp = Instant.now().toString(),
                     status = HttpStatus.NOT_FOUND.value(),
                     error = "Not Found",
                     message = "Usuário não encontrado",
-                    code = "USER_NOT_FOUND"
-                )
-            )
-
-            HttpStatus.BAD_REQUEST -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.BAD_REQUEST.value(),
-                    error = "Bad Request",
-                    message = "Email já em uso ou dados inválidos",
-                    code = "EMAIL_IN_USE_OR_INVALID"
-                )
-            )
-
-            else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    error = "Internal Server Error",
-                    message = "Erro ao atualizar usuário",
-                    code = "UPDATE_FAILED"
+                    code = "USER_NOT_FOUND",
                 )
             )
         }
     }
-
-    @DeleteMapping("/{id}")
-    fun deletarPessoaPorId(@PathVariable id: Long): ResponseEntity<Any> {
-        val pessoaDeletada = usuarioService.deletarPessoaPorId(id)
-        return if (pessoaDeletada) ResponseEntity.noContent().build()
-        else ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.NOT_FOUND.value(),
-                error = "Not Found",
-                message = "Usuário não encontrado",
-                code = "USER_NOT_FOUND",
-            )
-        )
-    }
-}

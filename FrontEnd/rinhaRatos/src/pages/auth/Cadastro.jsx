@@ -41,7 +41,6 @@ export default function Cadastro() {
     try {
       const resposta = await fazerCadastro(dados);
       console.log("Login OK!", resposta.data);
-      
 
       navigate("/login");
     } catch (err) {
