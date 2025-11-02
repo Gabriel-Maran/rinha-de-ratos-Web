@@ -83,17 +83,19 @@ class UsuarioService(
         return Optional.empty()
     }
 
-    fun redefinirUsuarioSenha(email: String, novaSenha: String): Boolean {
+    fun redefinirUsuarioSenha(email: String, novaSenha: String): String {
+        if(email.trim().isEmpty() || novaSenha.trim().isEmpty()) return "PREENCHA_CAMPOS"
         val usuarioOpt = usuarioRepository.findByEmail(email)
-        if (usuarioOpt.isPresent) {
-            val usuario = usuarioOpt.get()
-            usuario.senha = novaSenha
-            usuarioRepository.save(usuario)
-            log.info("Senha redefinida para o email $email")
-            return true
+        if (usuarioOpt.isEmpty) {
+            log.warn("Redefinir senha: email não encontrado $email")
+            return "EMAIL_NOT_FOUND"
         }
-        log.warn("Redefinir senha: email não encontrado $email")
-        return false
+        val usuario = usuarioOpt.get()
+
+        usuario.senha = novaSenha
+        usuarioRepository.save(usuario)
+        log.info("Senha redefinida para o email $email")
+        return "OK"
     }
 
     fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioBasic): HttpStatus {

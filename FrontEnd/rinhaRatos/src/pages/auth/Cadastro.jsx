@@ -41,7 +41,14 @@ export default function Cadastro() {
     try {
       const resposta = await fazerCadastro(dados);
       console.log("Login OK!", resposta.data);
-      
+
+      localStorage.setItem("idUsuario", resposta.data.idUsuario);
+      localStorage.setItem("nome", resposta.data.nome);
+      localStorage.setItem("email", resposta.data.email);
+      localStorage.setItem("tipoConta", resposta.data.tipoConta);
+      localStorage.setItem("mousecoinSaldo", resposta.data.mousecoinSaldo);
+      localStorage.setItem("vitorias", resposta.data.vitorias);
+      localStorage.setItem("ratos", JSON.stringify(resposta.data.ratos));
 
       navigate("/login");
     } catch (err) {

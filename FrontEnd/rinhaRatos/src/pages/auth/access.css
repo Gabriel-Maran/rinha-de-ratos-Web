@@ -1,35 +1,43 @@
-
-.caixa{
-    height: auto; 
-    width: 30rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff;
-    border-radius: 12px;
-    margin-top: 8rem;
-    border: 2px solid #000;
+.caixa {
+  height: auto;
+  width: 30rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 12px;
+  margin-top: 8rem;
+  border: 2px solid #000;
 }
 
 .caixa h3 {
-   font-family: "Inter", sans-serif;
-    text-align: center;
-    font-size: 40px; 
-    font-weight: 600;
-    color: #000;
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 600;
+  color: #000;
 }
 
 .acesso {
-    background-color: #f7a046; 
-    font-size: 1.5rem;
-    border: 2px solid #000;
-    color: #000;            
-    font-weight: 600;
-    border-radius: 0.8rem;
-    padding: 0.75rem 1rem;
-    width: 80%; 
-    cursor: pointer;
+  background-color: #f7a046;
+  font-size: 1.5rem;
+  border: 2px solid #000;
+  color: #000;
+  font-weight: 600;
+  border-radius: 0.8rem;
+  padding: 0.75rem 1rem;
+  width: 80%;
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 2rem;
+  transition: background-color 0.2s;
+}
+
+@media (max-width: 600px) {
+  .caixa {
+    width: 300px;
+  }
+  .caixa h3 {
     text-align: center;
-    margin-bottom: 2rem;
-    transition: background-color 0.2s;
+  }
 }
