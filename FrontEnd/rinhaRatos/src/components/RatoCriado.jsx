@@ -1,14 +1,13 @@
 import imagensRato from "./ImagensRato";
 import "../css/Modal.css";
-export default function RatoCriado({ indexClasse, onClose }) {
-  let nomeRato;
-  let habilEscolhida;
-  let descHabilEscolhida;
-
-  nomeRato = "Roberto Almeida";
-  habilEscolhida = "Leptospirose";
-  descHabilEscolhida =
-    "80% de chance de reduzir a DEF do alvo em 18% — efeito apenas nesta rodada. Falha: perde 4% do HP.";
+export default function RatoCriado({
+  indexClasse,
+  nomeRato,
+  habilidades,
+  habilEscolhida,
+  descHabilidade,
+  onClose,
+}) {
   return (
     <>
       <div className="titulo">Criação concluída!</div>
@@ -33,12 +32,14 @@ export default function RatoCriado({ indexClasse, onClose }) {
             </p>
           </div>
           <div className="caixaHabilidadeEsc">
-            <p className="titusEstHabil">{habilEscolhida}</p>
-            <p className="descHabilEsc">{descHabilEscolhida}</p>
+            <p className="titusEstHabil">{habilidades[habilEscolhida]}</p>
+            <p className="descHabilEsc">{descHabilidade[habilEscolhida]}</p>
           </div>
         </div>
       </div>
-      <button className="btnFinalizar" onClick={onClose}>Ok</button>
+      <button className="btnFinalizar" onClick={onClose}>
+        Ok
+      </button>
     </>
   );
 }
