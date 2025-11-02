@@ -25,6 +25,11 @@ data class HabilidadeSummaryDTO(
     val nomeHabilidade: String
 )
 
+data class BatalhaSummary(
+    val nomeBatalha: String = "",
+    val dataHorarioInicio: String = "",
+)
+
 data class UsuarioDTO(
     val idUsuario: Long,
     val nome: String,
