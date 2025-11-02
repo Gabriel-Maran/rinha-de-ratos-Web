@@ -117,25 +117,25 @@ class UsuarioController(
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val usuario = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
-        return if (usuario.isPresent) {
-            ResponseEntity.ok(
+        if (usuario.isPresent) {
+            return ResponseEntity.ok(
                 mapOf(
                     "message" to "Login realizado com sucesso",
                     "id" to usuario.get().idUsuario,
                     "tipo_conta" to usuario.get().tipoConta
                 )
             )
-        } else {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                ErrorResponse(
-                    timestamp = Instant.now().toString(),
-                    status = HttpStatus.UNAUTHORIZED.value(),
-                    error = HttpStatus.UNAUTHORIZED.reasonPhrase,
-                    message = "Email ou senha inválidos",
-                    code = "LOGIN_FAILED"
-                )
-            )
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            ErrorResponse(
+                timestamp = Instant.now().toString(),
+                status = HttpStatus.UNAUTHORIZED.value(),
+                error = HttpStatus.UNAUTHORIZED.reasonPhrase,
+                message = "Email ou senha inválidos",
+                code = "LOGIN_FAILED"
+            )
+        )
+
     }
 
     @PostMapping("/changeUser/password")
