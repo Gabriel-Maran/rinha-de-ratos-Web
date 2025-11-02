@@ -40,7 +40,7 @@ export default function Cadastro() {
     };
     try {
       const resposta = await fazerCadastro(dados);
-      console.log("Login OK!", resposta.data);
+      console.log("Cadastro OK!", resposta.data);
 
       localStorage.setItem("idUsuario", resposta.data.idUsuario);
       localStorage.setItem("nome", resposta.data.nome);
