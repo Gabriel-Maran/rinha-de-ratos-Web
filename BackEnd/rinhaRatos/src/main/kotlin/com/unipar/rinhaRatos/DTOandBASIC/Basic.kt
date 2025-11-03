@@ -18,6 +18,5 @@ data class BatalhaBasic(
     val nomeBatalha: String = "",
     val dataHorarioInicio: String = "",
     val idAdmCriador: Long,
-    val custoInscricao: Int = 0,
-    val premioTotal: Int = 0
+    val custoInscricao: Int = 0
 )

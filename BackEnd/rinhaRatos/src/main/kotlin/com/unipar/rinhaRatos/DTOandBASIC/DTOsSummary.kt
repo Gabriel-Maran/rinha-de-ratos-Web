@@ -26,6 +26,7 @@ data class HabilidadeSummaryDTO(
 )
 
 data class BatalhaSummary(
+    val idAdm : Long = 0L,
     val nomeBatalha: String = "",
     val dataHorarioInicio: String = "",
 )
