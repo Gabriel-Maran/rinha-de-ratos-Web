@@ -23,6 +23,10 @@ export default function Inicio() {
   const [habilEscolhida, setHabilEscolhida] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
 
+  const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]);
+
+  const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
+
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
@@ -62,6 +66,10 @@ export default function Inicio() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
+  const definirRatoBatalha =(rato) =>{
+    setRatoParaBatalhar(rato);
+  }
+  
   let conteudoCorpo;
 
   switch (opcaoAtivada) {
@@ -81,7 +89,7 @@ export default function Inicio() {
             habilEscolhida={habilEscolhida}
             descHabilidade={descHabilidade}
           />
-          <ListaDeRatos />
+          <ListaDeRatos ratosUsuario={ratosUsuario}/>
           <Botao
             button={{ 
               className: "addRato",
@@ -92,7 +100,7 @@ export default function Inicio() {
       );
       break;
     case "Batalhas":
-      conteudoCorpo = <ListaDeBatalhas />;
+      conteudoCorpo = <ListaDeBatalhas ratosUsuario={ratosUsuario} ratoParaBatalhar={definirRatoBatalha}/>;
       break;
   }
 

@@ -66,12 +66,17 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
           <button
             className="btnFinalizar"
             onClick={() =>
-              onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade, )
+              onMostrar(
+                classe,
+                nomeRato,
+                habilidades,
+                habilAtiva,
+                descHabilidade
+              )
             }
           >
             Finalizar
           </button>
-          {/* <button onClick={() => console.log(classe, habilidades, habilAtiva, descHabilidade)}>aaaa</button> */}
           <div className="custo">
             <p>5</p>
             <img src={MouseCoin} />

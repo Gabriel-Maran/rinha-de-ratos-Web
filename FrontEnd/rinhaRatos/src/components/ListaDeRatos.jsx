@@ -1,10 +1,7 @@
-import { useState } from "react";
 import imagensRato from "./ImagensRato";
 import "../css/Corpo.css";
 
-export default function ListaDeRatos() {
-  const [ratosUsuario, setRatosUsuario] = useState(["Robertinho Loco","Destruidor","Sabe-tudo"]);
-
+export default function ListaDeRatos( {ratosUsuario} ) {
   return (
     <>
       <div className="listaRatos">

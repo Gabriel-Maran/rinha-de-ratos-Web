@@ -74,11 +74,6 @@ button {
     font-size: x-large;
 }
 
-button :hover{
-    background-color: blue;
-
- }
-
 div {
     user-select: none;
 }
