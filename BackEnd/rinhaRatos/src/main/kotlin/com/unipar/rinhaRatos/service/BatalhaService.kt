@@ -1,6 +1,7 @@
 package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaBasic
+import com.unipar.rinhaRatos.DTOandBASIC.BatalhaDTO
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaSummary
 import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.enums.TipoConta
@@ -25,6 +26,9 @@ class BatalhaService(
 ) {
     private val ISO_FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     private val log = LoggerFactory.getLogger(javaClass)
+
+    fun pegarTodasAsBatalhasAbertas(): List<Batalha> =
+        batalhaRepository.findAllByStatusIs(StatusBatalha.InscricoesAbertas)
 
     fun pegarBatalhasFeitasPelaADMPorId(idAdm: Long): List<Batalha> =
         batalhaRepository.findAllByAdmCriador_IdUsuario(idAdm)
@@ -68,21 +72,24 @@ class BatalhaService(
             throw IllegalArgumentException("BAD_DATE_FORMAT: ${e.message}")
         }
 
-        val batalha = Batalha().apply {
+        val batalhaFinal = Batalha().apply {
             nomeBatalha = basic.nomeBatalha.trim().ifEmpty { "Sem nome" }
             dataHorarioInicio = parsedDate ?: LocalDateTime.now()
             custoInscricao = basic.custoInscricao
-            premioTotal = basic.premioTotal
+            premioTotal = basic.custoInscricao * 2
             admCriador = adm
             status = StatusBatalha.InscricoesAbertas
         }
 
-        val saved = batalhaRepository.save(batalha)
+        val saved = batalhaRepository.save(batalhaFinal)
         log.info("Batalha criada id=${saved.idBatalha}, nome='${saved.nomeBatalha}', data='${saved.dataHorarioInicio}'")
         return saved
     }
 
     fun atualizarInfomacoesBatalha(idBatalha: Long, summary: BatalhaSummary): String {
+        val admOpt = usuarioRepository.findById(summary.idAdm)
+        if (admOpt.isEmpty) return "USER_NOT_FOUND"
+        if(admOpt.get().tipoConta != TipoConta.ADM) return "USER_IS_NOT_ADM"
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
@@ -96,7 +103,7 @@ class BatalhaService(
             batalha.nomeBatalha = novoNome
         }
 
-        if (!summary.dataHorarioInicio.isNullOrBlank()) {
+        if (summary.dataHorarioInicio.isNotBlank()) {
             val parsed = try {
                 parseIsoToLocalDateTime(summary.dataHorarioInicio)
             } catch (e: IllegalArgumentException) {

@@ -1,5 +1,6 @@
 package com.unipar.rinhaRatos.repositorys
 
+import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.models.Batalha
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -14,4 +15,6 @@ interface BatalhaRepository: JpaRepository<Batalha, Long> {
         OR b.jogador2.idUsuario = :userId
     """)
     fun pegarTodasBatalhasDoUsuario(@Param("userId") idUsuario: Long): List<Batalha>
+
+    fun findAllByStatusIs(statusBatalha: StatusBatalha): List<Batalha>
 }

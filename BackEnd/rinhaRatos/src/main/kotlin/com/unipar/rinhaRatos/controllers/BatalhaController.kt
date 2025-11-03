@@ -25,6 +25,13 @@ class BatalhaController(
         return ResponseEntity.ok(dtoList)
     }
 
+    @GetMapping("/abertas")
+    fun pegarTodasAsBatalhasAbertas(): ResponseEntity<List<BatalhaDTO>> {
+        val batalhas = batalhaService.pegarTodasAsBatalhasAbertas()
+        val dtoList = batalhas.map { it.toDto() }
+        return ResponseEntity.ok(dtoList)
+    }
+
     @GetMapping("/user/{idUsuario}")
     fun pegarTodasAsBatalhasDoUsuario(@PathVariable idUsuario: Long): ResponseEntity<List<BatalhaDTO>> {
         val batalhas = batalhaService.pegarTodasAsBatalhasDoUsuario(idUsuario)
@@ -91,6 +98,7 @@ class BatalhaController(
             "BATALHA_HAPPENING_OR_OVER" -> buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
             "BAD_DATE_FORMAT" -> buildError(HttpStatus.BAD_REQUEST, "Formato inválido para data/hora. Use ISO-8601: yyyy-MM-dd'T'HH:mm:ss", "BAD_DATE_FORMAT")
             "USER_IS_NOT_ADM" -> buildError(HttpStatus.FORBIDDEN, "Usuário não é ADM", "USER_IS_NOT_ADM")
+            "USER_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
             "OK" -> ResponseEntity.ok(mapOf("message" to "Batalha atualizada com sucesso"))
             else -> buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
         }
