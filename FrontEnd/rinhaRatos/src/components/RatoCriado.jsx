@@ -1,5 +1,5 @@
 import imagensRato from "./ImagensRato";
-import "../css/Modal.css";
+import "../css/ModalCriacaoRato.css";
 export default function RatoCriado({
   indexClasse,
   nomeRato,
