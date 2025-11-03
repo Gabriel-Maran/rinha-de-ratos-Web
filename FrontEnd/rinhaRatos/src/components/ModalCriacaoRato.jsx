@@ -1,9 +1,9 @@
 import SelecaoDeClasse from "./SelecaoDeClasse.jsx";
 import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
 import RatoCriado from "./RatoCriado.jsx";
-import "../css/Modal.css";
+import "../css/ModalCriacaoRato.css";
 
-export default function Modal({
+export default function ModalCriacaoRato({
   etapa,
   etapas,
   onClose,

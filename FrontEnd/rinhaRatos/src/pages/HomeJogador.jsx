@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "../components/Header";
 import Botao from "../components/Botao";
-import Modal from "../components/Modal";
+import ModalCriacaoRato from "../components/ModalCriacaoRato";
 import ListaDeRatos from "../components/ListaDeRatos";
 import ListaDeBatalhas from "../components/ListaDeBatalhas";
 import "../css/Corpo.css";
@@ -68,7 +68,7 @@ export default function Inicio() {
     case "Meus ratos":
       conteudoCorpo = (
         <>
-          <Modal
+          <ModalCriacaoRato
             etapa={etapaModal}
             etapas={ETAPAS}
             onClose={fecharModal}
