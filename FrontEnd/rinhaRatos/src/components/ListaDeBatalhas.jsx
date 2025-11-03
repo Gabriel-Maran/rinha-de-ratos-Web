@@ -1,6 +1,6 @@
 import { useState } from "react";
 import trofeu from "../assets/icones/iconeTrofeu.png";
-import "../css/Corpo.css";
+import "../css/ListaDeBatalhas.css";
 
 export default function ListaDeBatalhas() {
   const [listaBatalhas, setListaBatalhas] = useState([]);
@@ -29,35 +29,61 @@ export default function ListaDeBatalhas() {
     setPremio(0);
   };
 
-  return (
-    <>
-      <div className="addBatalha">
-        <input
-          type="text"
-          value={nomeBatalha}
-          placeholder="Nome da balalha"
-          onChange={(e) => setNomeBatalha(e.target.value)}
-        />
-        <input
-          type="number"
-          value={custoInscricao}
-          placeholder="Custo"
-          onChange={(e) => setCustoInscricao(Number(e.target.value))}
-        />
-        <input
-          type="datetime-local"
-          value={dataHora}
-          placeholder="Data e hora"
-          onChange={(e) => setDataHora(e.target.value)}
-        />
-        <input
-          type="number"
-          value={premio}
-          placeholder="Prêmio"
-          onChange={(e) => setPremio(Number(e.target.value))}
-        />
-        <button onClick={CadastrarBatalha}>Adicionar</button>
-      </div>
+  const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas")
+  const botoesOpcBatalha = ["Todas", "Inscrições"]
+
+  let conteudoOpcaoBatalhas;
+
+  switch (btnOpcBatalhas) {
+    case "Todas": conteudoOpcaoBatalhas = (
+      <>
+        <div className="addBatalha">
+          <input
+            type="text"
+            value={nomeBatalha}
+            placeholder="Nome da balalha"
+            onChange={(e) => setNomeBatalha(e.target.value)}
+          />
+          <input
+            type="number"
+            value={custoInscricao}
+            placeholder="Custo"
+            onChange={(e) => setCustoInscricao(Number(e.target.value))}
+          />
+          <input
+            type="datetime-local"
+            value={dataHora}
+            placeholder="Data e hora"
+            onChange={(e) => setDataHora(e.target.value)}
+          />
+          <input
+            type="number"
+            value={premio}
+            placeholder="Prêmio"
+            onChange={(e) => setPremio(Number(e.target.value))}
+          />
+          <button onClick={CadastrarBatalha}>Adicionar</button>
+        </div>
+        <div className="listaBatalhas">
+          {listaBatalhas.map((batalha) => (
+            <div className="batalha" key={batalha.id}>
+              <img src={trofeu} />
+              <div className="infoBatalha">
+                <p>{batalha.nome}</p>
+                <p>Inscrição: {batalha.custo} MouseCoin</p>
+                <p>Data e Hora: {batalha.dataEHora}</p>
+                <p>Prêmio: {batalha.premio} MouseCoin</p>
+              </div>
+              <div className="opcoesBatalha">
+                <button>Participar</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
+    )
+      break;
+    case "Inscrições": conteudoOpcaoBatalhas = (
       <div className="listaBatalhas">
         {listaBatalhas.map((batalha) => (
           <div className="batalha" key={batalha.id}>
@@ -69,12 +95,29 @@ export default function ListaDeBatalhas() {
               <p>Prêmio: {batalha.premio} MouseCoin</p>
             </div>
             <div className="opcoesBatalha">
-              <button>Participar</button>
-              <button>Assistir</button>
+              <button>Jogar</button>
             </div>
           </div>
         ))}
       </div>
+    )
+  }
+
+
+  return (
+    <>
+      <header className="opcoesAbaBatalha">
+        {botoesOpcBatalha.map((btnOpcBatalha) => (
+          < button
+            key={btnOpcBatalha}
+            className={btnOpcBatalhas == btnOpcBatalha ? "btnOpcaoBatalhasAtivo" : "btnOpcaoBatalhas"}
+            onClick={() => setBtnOpcBatalhas(btnOpcBatalha)}
+          >
+            {btnOpcBatalha}</button>
+        )
+        )}
+      </header >
+      {conteudoOpcaoBatalhas}
     </>
   );
 }
