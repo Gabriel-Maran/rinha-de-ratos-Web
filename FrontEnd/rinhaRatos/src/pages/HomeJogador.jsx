@@ -83,8 +83,10 @@ export default function Inicio() {
           />
           <ListaDeRatos />
           <Botao
-            button={{ onClick: mostrarSelecaoClasse }}
-            acaoBtn={"Adicionar Rato"}
+            button={{ 
+              className: "addRato",
+              onClick: mostrarSelecaoClasse }}
+            acaoBtn= {<strong> .{"Adicionar Rato + "}</strong>}
           />
         </>
       );

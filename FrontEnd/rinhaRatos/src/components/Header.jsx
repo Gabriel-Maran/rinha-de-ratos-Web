@@ -1,5 +1,6 @@
 import RatoEsgoto from "../assets/classeRatos/RatoEsgoto.png";
 import Logo from "../assets/Logo_Coliseu_dos_Ratos.svg";
+import mouseCoin from "../assets/moedas/imgCoin.svg"
 import "../css/Header.css";
 
 export default function Header() {
@@ -13,8 +14,12 @@ export default function Header() {
         <div className="nomeFotoPlayer">
           <img src={RatoEsgoto} />
           <h1>{nomePlayer}</h1>
+           <img 
+           className="mouseCoin"
+           src={mouseCoin} alt="mouseCoin a moeda utilizada em nosso jogo"/>
         </div>
-        <img src={Logo} />
+        <img src={Logo} />  
+       
       </div>
     </>
   );

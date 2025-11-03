@@ -69,6 +69,7 @@
     position: relative;
 }
 
+
 .opcaoAtiva{
     background-image: url("../assets/backgrounds/tabuaLabel.svg");
     background-size: 100% 100%;
@@ -88,7 +89,7 @@
 
 .displayRato{
     min-width: 30%;
-    height: 8rem;
+    height: 7rem;
     display: flex;
     justify-content: space-between;
     align-items: center;

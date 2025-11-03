@@ -17,7 +17,7 @@
     /* Deixar acima dos componentes */
 }
 
-.containerModal {
+.containerModal {   
     background-image: linear-gradient(rgba(79, 81, 83, 0.3), rgba(79, 81, 83, 0.3)), url('../assets/backgrounds/bgLogin.png');
     background-size: cover;
     border-radius: 1rem;
@@ -63,10 +63,22 @@ button {
     font-family: 'Fondamento', 'fantasy';
 }
 
-button .addRato{
+
+.addRato{
+    color: white;
+    background-color: #FFAE52;
+    width: 14rem;
+    height: 5rem;
     border-radius: 20px;
-    background-color: red;
+    border: 3px solid #000 ;
+    font-size: x-large;
 }
+
+button :hover{
+    background-color: blue;
+
+ }
+
 div {
     user-select: none;
 }
