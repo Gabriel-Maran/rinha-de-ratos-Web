@@ -9,7 +9,7 @@ import java.io.Serializable
 class MessageRound (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idMessage: Long = 0L,
+    var idmessage: Long = 0L,
 
     @Column(columnDefinition = "TEXT", nullable = false)
     var descricao: String = "",

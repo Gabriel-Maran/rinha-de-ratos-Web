@@ -14,7 +14,7 @@ import java.io.Serializable
 class Results(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idResult: Long = 0L,
+    var idresult: Long = 0L,
 
     @Column(nullable = false)
     var vencedorUserName: String = "",
