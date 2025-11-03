@@ -1,6 +1,7 @@
 package com.unipar.rinhaRatos.mapper
 
 import com.unipar.rinhaRatos.DTOandBASIC.*
+import com.unipar.rinhaRatos.enums.ClassesRato
 import com.unipar.rinhaRatos.models.*
 
 fun Usuario.toSummaryDto(): UsuarioSummaryDTO {
@@ -120,5 +121,28 @@ fun Batalha.toDto(): BatalhaDTO {
         rato2 = this.rato2?.toSummaryDto(),
         vencedor = this.vencedor?.toSummaryDto(),
         perdedor = this.perdedor?.toSummaryDto()
+    )
+}
+
+fun MessageRound.toDto(): MessageRoundDTO{
+    return MessageRoundDTO(
+        idmessage = this.idmessage,
+        descricao = this.descricao,
+        id_batalha = this.id_batalha,
+        round = this.round
+    )
+}
+
+fun Results.toDto(): ResultsDTO{
+    return ResultsDTO(
+        idresult = this.idresult,
+        vencedorUserName = this.vencedorUserName,
+        perdedorUserName = this.perdedorUserName,
+        vencedorRatoName = this.vencedorRatoName,
+        perdedorRatoName = this.perdedorRatoName,
+        vencedorRatoType = this.vencedorRatoType,
+        perdedorRatoType  = this.perdedorRatoType,
+        vencedorRatoHP = this.vencedorRatoHP,
+        perdedorRatoHP = this.perdedorRatoHP
     )
 }

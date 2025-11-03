@@ -1,6 +1,8 @@
 package com.unipar.rinhaRatos.DTOandBASIC
 
+import com.unipar.rinhaRatos.enums.ClassesRato
 import com.unipar.rinhaRatos.enums.StatusBatalha
+import jakarta.persistence.Column
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -116,4 +118,23 @@ data class ErrorResponse(
     val error: String,
     val message: String?,
     val code: String
+)
+
+data class MessageRoundDTO(
+    val idmessage: Long,
+    val descricao: String,
+    val id_batalha: Long,
+    val round: Long
+)
+
+data class ResultsDTO(
+    var idresult: Long = 0L,
+    var vencedorUserName: String,
+    var perdedorUserName: String,
+    var vencedorRatoName: String,
+    var perdedorRatoName: String,
+    var vencedorRatoType: ClassesRato,
+    var perdedorRatoType: ClassesRato,
+    var vencedorRatoHP: Float,
+    var perdedorRatoHP: Float
 )

@@ -5,14 +5,11 @@ import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Classe
 import com.unipar.rinhaRatos.models.Rato
-import com.unipar.rinhaRatos.repositorys.BatalhaRepository
-import com.unipar.rinhaRatos.repositorys.ClasseRepository
 import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
 import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
