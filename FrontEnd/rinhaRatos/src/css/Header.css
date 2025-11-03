@@ -28,8 +28,17 @@
     margin-left: 2rem;
 }
 
+.quantidadeMoedas{
+    width: 100px;
+    height: 50px;
+    background-color: orange;
+    border-radius: 28px;
+    margin-left: rem;
+    margin-top: 8rem;
+}
+
 .mouseCoin{
-    margin-top: 10rem;
+    height: 3rem;
 }
 
 img {
@@ -37,6 +46,6 @@ img {
     margin-right: 1rem;
 }
 
-div +img{
+div +   img{
     height: 4rem;
 }
