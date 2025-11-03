@@ -25,9 +25,6 @@ class Habilidade(
     @Column(nullable = false)
     var chanceSucesso: Int = 100,
 
-    @Column(nullable = false)
-    var cooldown: Int = 0,
-
     @Column(nullable = true)
     var efeitoSucessoStr: String? = null,
 
@@ -48,7 +45,6 @@ class Habilidade(
         "",
         null,
         100,
-        0,
         null,
         null,
         null,

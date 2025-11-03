@@ -80,7 +80,6 @@ data class HabilidadeDTO(
     val nomeHabilidade: String,
     val descricao: String?,
     val chanceSucesso: Int,
-    val cooldown: Int,
     val efeitoSucessoStr: String?,
     val efeitoFalhaStr: String?,
     val efetivoTxt: String?,

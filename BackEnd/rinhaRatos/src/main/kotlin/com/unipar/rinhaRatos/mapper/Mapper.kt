@@ -89,7 +89,6 @@ fun Habilidade.toDto(): HabilidadeDTO {
         nomeHabilidade = this.nomeHabilidade,
         descricao = this.descricao,
         chanceSucesso = this.chanceSucesso,
-        cooldown = this.cooldown,
         efeitoSucessoStr = this.efeitoSucessoStr,
         efeitoFalhaStr = this.efeitoFalhaStr,
         efetivoTxt = this.efetivoTxt,
