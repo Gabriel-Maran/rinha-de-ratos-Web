@@ -31,7 +31,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, ratosUsuario }) {
     };
     try {
       const resposta = await ratosUsuario(dados);
-      console.log("Cadastro OK!", resposta.data);
+      console.log("Rato Criado!", resposta.data);
       onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidades);
     } catch (err) {
       onsole.error("Falha ao salvar rato:", err); // É bom logar o erro
