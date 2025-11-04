@@ -9,12 +9,8 @@ export default function ModalCriacaoRato({
   onClose,
   onSlctClasse,
   classe,
-  indexClasse,
   onMostrarRato,
-  nomeRato,
-  habilidades,
-  habilEscolhida,
-  descHabilidade,
+  novoRato,
 }) {
   if (etapa === etapas.FECHADO) {
     return null;
@@ -30,7 +26,7 @@ export default function ModalCriacaoRato({
       conteudoModal = (
         <DetalhesDaClasse
           classe={classe}
-          indexClasse={indexClasse}
+          ratosUsuario={novoRato}
           onMostrar={onMostrarRato}
         />
       );
@@ -38,12 +34,8 @@ export default function ModalCriacaoRato({
     case etapas.RATO_CRIADO:
       conteudoModal = (
         <RatoCriado
-          indexClasse={indexClasse}
           onClose={onClose}
-          nomeRato={nomeRato}
-          habilidades={habilidades}
-          habilEscolhida={habilEscolhida}
-          descHabilidade={descHabilidade}
+          novoRato={novoRato}
         />
       );
       break;

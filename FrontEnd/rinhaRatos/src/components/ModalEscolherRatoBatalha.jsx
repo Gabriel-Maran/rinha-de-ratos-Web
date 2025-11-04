@@ -7,10 +7,10 @@ export default function ModalEscolherRatoBatalha({
   ratosUsuario,
   ratoParaBatalhar,
 }) {
-  /* function handleRatoSelecionado(ratosUsuario[index]) {
-    ratoParaBatalhar(ratosUsuario[index]);
+  function handleRatoSelecionado(rato) {
+    ratoParaBatalhar(rato);
     onClose();
-  } */
+  }
   return (
     <>
       <div className="bgModal">
@@ -24,10 +24,10 @@ export default function ModalEscolherRatoBatalha({
               <button
                 className="displayRatoBatalhar"
                 key={rato}
-                onClick={() => handleRatoSelecionado(ratosUsuario[index])}
+                onClick={() => handleRatoSelecionado(rato)}
               >
-                <p>{ratosUsuario[index]}</p>
-                <img src={imagensRato[index]} />
+                <p>{rato.nome}</p>
+                <img src={imagensRato[rato.classeEsc]} />
               </button>
             ))}
           </div>

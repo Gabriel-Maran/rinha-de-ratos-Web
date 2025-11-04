@@ -2,19 +2,16 @@ import imagensRato from "./ImagensRato";
 import "../css/ModalCriacaoRato.css";
 
 export default function RatoCriado({
-  indexClasse,
-  nomeRato,
-  habilidades,
-  habilEscolhida,
-  descHabilidade,
+  novoRato,
   onClose,
 }) {
+
   return (
     <>
       <div className="titulo">Criação concluída!</div>
       <div className="imagemENome">
-        <img src={imagensRato[indexClasse]} />
-        <p>{nomeRato}</p>
+        <img src={imagensRato[novoRato.classeEsc]} />
+        <p>{novoRato.nome}</p>
       </div>
       <div className="infoGeral">
         <div className="conteinerTitusEstHabil">
@@ -33,12 +30,12 @@ export default function RatoCriado({
             </p>
           </div>
           <div className="caixaHabilidadeEsc">
-            <p className="titusEstHabil">{habilidades[habilEscolhida]}</p>
-            <p className="descHabilEsc">{descHabilidade[habilEscolhida]}</p>
+            <p className="titusEstHabil">{novoRato.habilidadeEsc}</p>
+            <p className="descHabilEsc">{novoRato.descHabilidadeEsc}</p>
           </div>
         </div>
       </div>
-      <button className="btnFinalizar" onClick={onClose()}>
+      <button className="btnFinalizar" onClick={onClose}>
         Ok
       </button>
     </>

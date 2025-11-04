@@ -5,13 +5,13 @@ import RatoFazenda from "../assets/classeRatos/RatoFazenda.png"
 import RatoHospital from "../assets/classeRatos/RatoHospital.png"
 import RatoLaboratorio from "../assets/classeRatos/RatoLaboratorio.png"
 
-const imagensRato = [
-    RatoEsgoto,
-    RatoHospital,
-    RatoLaboratorio,
-    RatoFazenda,
-    RatoCassino,
-    RatoBiblioteca,
-]
+const imagensRato = {
+    "Rato de Esgoto": RatoEsgoto,
+    "Rato de Hospital": RatoHospital,
+    "Rato de Laboratório": RatoLaboratorio,
+    "Rato de Fazenda": RatoFazenda,
+    "Rato de Cassino": RatoCassino,
+    "Rato de Biblioteca": RatoBiblioteca,
+};
 
 export default imagensRato;
