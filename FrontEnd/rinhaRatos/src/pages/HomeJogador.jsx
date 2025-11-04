@@ -35,7 +35,7 @@ export default function Inicio() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
-  
+
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
   };
@@ -53,6 +53,7 @@ export default function Inicio() {
   };
 
   const selecionarClasse = (classe, index) => {
+    console.log(etapaModal)
     setEtapaModal(ETAPAS.DETALHES_CLASSE);
     setClasseSelecionada(classe);
     setIndexClasse(index);
