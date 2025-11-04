@@ -13,6 +13,7 @@ const ETAPAS = {
   RATO_CRIADO: 3,
 };
 
+
 export default function Inicio() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
@@ -30,6 +31,7 @@ export default function Inicio() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
+  
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
   };

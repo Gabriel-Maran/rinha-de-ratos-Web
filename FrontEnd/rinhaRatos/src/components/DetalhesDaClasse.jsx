@@ -2,6 +2,7 @@ import { useState } from "react";
 import imagensRato from "./ImagensRato";
 import MouseCoin from "../assets/moedas/MouseCoin.svg";
 import Input from "../components/Input";
+import { ratosUsuario } from "../Api/api.js";
 
 export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
   /* let nomeRato; */ /* Parte que pega da api o nome default do id do rato*/
@@ -19,13 +20,32 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
     "75% de chance de causar dano direto igual a 8% do HP máximo do alvo (instantâneo). Falha: perde 6% da DEF apenas nesta rodada.",
   ];
 
-  const [nomeRato, setNomeRato] = useState("Fedoroso");
+  const [nomeRato, setNomeRato] = useState("Federoso");
   const [habilAtiva, setHabilAtiva] = useState(0);
+  const [erro, setErro] = useState(null);
 
   const handleBtnHabil = (index) => {
     setHabilAtiva(index - 1);
     console.log(habilAtiva);
     console.log(index);
+  };
+
+  const salvarRato = async () => {
+    const idUsuarioLogado = localStorage.getItem("idUsuario");
+
+    const dados = {
+      idUsuario: idUsuarioLogado,
+      nomeCustomizado: nomeRato,
+      nomeHabilidade: habilidades[habilAtiva],
+    };
+    try {
+      const resposta = await ratosUsuario(dados);
+      console.log("Cadastro OK!", resposta.data);
+      onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade);
+    } catch (err) {
+      onsole.error("Falha ao salvar rato:", err); // É bom logar o erro
+      setErro(err?.response?.data?.message || "Erro ao salvar");
+    }
   };
 
   return (
@@ -63,18 +83,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
         </div>
         <div className="descHabilidade">{descHabilidade[habilAtiva]}</div>
         <div className="socorro">
-          <button
-            className="btnFinalizar"
-            onClick={() =>
-              onMostrar(
-                classe,
-                nomeRato,
-                habilidades,
-                habilAtiva,
-                descHabilidade
-              )
-            }
-          >
+          <button className="btnFinalizar" onClick={salvarRato}>
             Finalizar
           </button>
           <div className="custo">

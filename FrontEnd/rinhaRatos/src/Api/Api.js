@@ -22,5 +22,5 @@ export const trocarSenha = (dadosNovaSenha) => {
 };
 
 export const ratosUsuario = (dadosRatos) => {
-  return apiClient.post("/rato/cadastro")
+  return apiClient.post("/rato/cadastro", dadosRatos)
 }

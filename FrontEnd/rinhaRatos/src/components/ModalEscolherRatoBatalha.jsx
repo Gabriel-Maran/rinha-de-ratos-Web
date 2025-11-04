@@ -7,10 +7,10 @@ export default function ModalEscolherRatoBatalha({
   ratosUsuario,
   ratoParaBatalhar,
 }) {
-  function handleRatoSelecionado(ratosUsuario[index]) {
+  /* function handleRatoSelecionado(ratosUsuario[index]) {
     ratoParaBatalhar(ratosUsuario[index]);
     onClose();
-  }
+  } */
   return (
     <>
       <div className="bgModal">
