@@ -8,6 +8,7 @@ import Login from "./pages/auth/Login.jsx";
 import Acesso from "./pages/Auth/Acesso.jsx";
 import Cadastro from "./pages/auth/Cadastro.jsx";
 import EsqueceuSenha from "./pages/Auth/EsqueceuSenha.jsx";
+import Perfil from "./pages/Perfil.jsx"
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,8 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Acesso />,
+        element: <Perfil />
+        /* element: <Acesso />, */
       },
       {
         path: "login",
