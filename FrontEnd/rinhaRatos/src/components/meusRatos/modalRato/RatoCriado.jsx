@@ -1,5 +1,5 @@
 import imagensRato from "../../ImagensRato";
-import "../../../css/meusRatos/modalRato/ModalCriacaoRato"
+import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css"
 
 export default function RatoCriado({ novoRato, onClose }) {
   const forcaRato = localStorage.getItem("strBase");

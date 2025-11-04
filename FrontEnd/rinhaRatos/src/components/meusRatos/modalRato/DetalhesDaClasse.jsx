@@ -1,8 +1,8 @@
 import { useState } from "react";
-import imagensRato from "../ImagensRato.jsx";
-import MouseCoin from "../assets/moedas/MouseCoin.svg";
-import Input from "../components/Input";
-import { ratosUsuario } from "../Api/api.js";
+import imagensRato from "../../ImagensRato.jsx"
+import MouseCoin from "../../../assets/moedas/imgCoin.svg";
+import Input from "../../comuns/Input.jsx";
+import { ratosUsuario } from "../../../Api/Api.js";
 
 export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
   /* let nomeRato; */ /* Parte que pega da api o nome default do id do rato*/
