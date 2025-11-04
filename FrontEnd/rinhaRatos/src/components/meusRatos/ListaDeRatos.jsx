@@ -1,4 +1,6 @@
-import imagensRato from "../ImagensRato";
+import ImagensRato from "../imagensRato";
+
+
 import "../../css/Corpo.css";
 
 export default function ListaDeRatos({ ratosUsuario }) {
@@ -8,7 +10,7 @@ export default function ListaDeRatos({ ratosUsuario }) {
         {ratosUsuario.map((rato) => (
           <div className="displayRato" key={rato.id}>
             <p>{rato.nome}</p>
-            <img src={imagensRato[rato.classeEsc]} />
+            <img src={ImagensRato[rato.classeEsc]} />
           </div>
         ))}
       </div>

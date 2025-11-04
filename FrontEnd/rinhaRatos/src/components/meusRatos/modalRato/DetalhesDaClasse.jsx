@@ -1,5 +1,5 @@
 import { useState } from "react";
-import imagensRato from "../../ImagensRato.jsx"
+import ImagensRato from "../../imagensRato";
 import MouseCoin from "../../../assets/moedas/imgCoin.svg";
 import Input from "../../comuns/Input.jsx";
 import { ratosUsuario } from "../../../Api/Api.js";
@@ -62,7 +62,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
             <span className="simboloEditar">🖊</span>
           </div>
 
-          <img src={imagensRato[indexClasse]} />
+          <img src={ImagensRato[indexClasse]} />
         </div>
 
         <div className="descRato">{descRato}</div>

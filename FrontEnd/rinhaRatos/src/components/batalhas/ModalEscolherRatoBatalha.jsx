@@ -1,4 +1,4 @@
-import imagensRato from "../ImagensRato";
+import imagensRato from "../imagensRato";
 import "../../css/meusRatos/modalRato/ModalCriacaoRato.css";
 import "../../css/batalhas/ModalEscolherRatoBatalha.css";
 

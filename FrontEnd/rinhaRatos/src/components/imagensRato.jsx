@@ -1,4 +1,4 @@
-import RatoBiblioteca from "../assets/classeRatos/RatoBiblioteca.png";
+import RatoBiblioteca    from "../assets/classeRatos/RatoBiblioteca.png";
 import RatoCassino from "../assets/classeRatos/RatoCassino.png"
 import RatoEsgoto from "../assets/classeRatos/RatoEsgoto.png"
 import RatoFazenda from "../assets/classeRatos/RatoFazenda.png"
