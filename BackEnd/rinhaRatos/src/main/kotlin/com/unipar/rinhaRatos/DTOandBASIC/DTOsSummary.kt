@@ -124,7 +124,8 @@ data class MessageRoundDTO(
     val idmessage: Long,
     val descricao: String,
     val id_batalha: Long,
-    val round: Long
+    val round: Long,
+    val player: Long
 )
 
 data class ResultsDTO(

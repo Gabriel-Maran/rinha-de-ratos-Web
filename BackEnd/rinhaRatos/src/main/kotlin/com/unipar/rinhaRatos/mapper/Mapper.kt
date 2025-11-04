@@ -124,16 +124,17 @@ fun Batalha.toDto(): BatalhaDTO {
     )
 }
 
-fun MessageRound.toDto(): MessageRoundDTO{
+fun MessageRound.toDto(): MessageRoundDTO {
     return MessageRoundDTO(
         idmessage = this.idmessage,
         descricao = this.descricao,
         id_batalha = this.id_batalha,
-        round = this.round
+        round = this.round,
+        player = this.player
     )
 }
 
-fun Results.toDto(): ResultsDTO{
+fun Results.toDto(): ResultsDTO {
     return ResultsDTO(
         idresult = this.idresult,
         vencedorUserName = this.vencedorUserName,
@@ -141,7 +142,7 @@ fun Results.toDto(): ResultsDTO{
         vencedorRatoName = this.vencedorRatoName,
         perdedorRatoName = this.perdedorRatoName,
         vencedorRatoType = this.vencedorRatoType,
-        perdedorRatoType  = this.perdedorRatoType,
+        perdedorRatoType = this.perdedorRatoType,
         vencedorRatoHP = this.vencedorRatoHP,
         perdedorRatoHP = this.perdedorRatoHP
     )

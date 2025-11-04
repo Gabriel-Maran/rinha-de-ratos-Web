@@ -22,7 +22,8 @@ import java.time.format.DateTimeParseException
 class BatalhaService(
     private val batalhaRepository: BatalhaRepository,
     private val usuarioRepository: UsuarioRepository,
-    private val ratoRepository: RatoRepository
+    private val ratoRepository: RatoRepository,
+    private val battleManager : GerenciadorBatalhasAutomatica
 ) {
     private val ISO_FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     private val log = LoggerFactory.getLogger(javaClass)
@@ -219,6 +220,29 @@ class BatalhaService(
         }
 
         return false
+    }
+
+    fun iniciarBatalhaAsync(idBatalha: Long): String {
+        val opt = batalhaRepository.findById(idBatalha)
+        if (opt.isEmpty) return "BATALHA_NOT_FOUND"
+        val batalha = opt.get()
+
+        // só pode iniciar quando estiver em inscrições abertas
+        if (batalha.status != StatusBatalha.InscricoesAbertas) {
+            return "BATALHA_HAPPENING_OR_OVER" // usa mesmo código de erro já conhecido
+        }
+
+        // marca como em andamento e salva imediatamente para sinalizar que começou
+        batalha.status = StatusBatalha.EmAndamento
+        batalhaRepository.save(batalha)
+
+        // delega ao gerenciador: ele retorna false se já estiver rodando
+        val iniciou = battleManager.iniciarSimulacaoBatalhaAsync(idBatalha)
+        return if (iniciou) "OK" else "ALREADY_RUNNING"
+    }
+
+    fun estaSimulandoBatalha(idBatalha: Long): Boolean {
+        return battleManager.estaExecutando(idBatalha)
     }
 
     fun parseIsoToLocalDateTime(value: String?): LocalDateTime? {

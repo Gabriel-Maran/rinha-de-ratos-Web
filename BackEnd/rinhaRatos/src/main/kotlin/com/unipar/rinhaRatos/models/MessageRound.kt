@@ -19,11 +19,15 @@ class MessageRound (
 
     @Column()
     var round: Long =  -1,
+
+    @Column()
+    var player: Long =  0, // ou é player 1 ou é player 2
 ): Serializable{
     constructor() : this(
         0L,
         "",
         0L,
-        -1
+        -1,
+        0
     )
 }

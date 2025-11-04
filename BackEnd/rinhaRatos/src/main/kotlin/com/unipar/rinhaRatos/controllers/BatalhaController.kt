@@ -141,6 +141,23 @@ class BatalhaController(
         }
     }
 
+    @PostMapping("/iniciar/{idBatalha}")
+    fun iniciarBatalha(@PathVariable idBatalha: Long): ResponseEntity<Any> {
+        val resp = batalhaService.iniciarBatalhaAsync(idBatalha)
+        return when (resp) {
+            "BATALHA_NOT_FOUND" ->
+                buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
+            "BATALHA_HAPPENING_OR_OVER" ->
+                buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
+            "ALREADY_RUNNING" ->
+                buildError(HttpStatus.CONFLICT, "Simulação já em execução para esta batalha", "BATALHA_JA_EM_EXECUCAO")
+            "OK" ->
+                ResponseEntity.ok(mapOf("message" to "Batalha iniciada com sucesso", "idBatalha" to idBatalha))
+            else ->
+                buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+        }
+    }
+
     @DeleteMapping("/deletar/{idBatalha}")
     fun deletarBatalha(@PathVariable idBatalha: Long): ResponseEntity<Any> {
         val resp = batalhaService.excluirBatalhaPorId(idBatalha)
