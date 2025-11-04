@@ -1,5 +1,5 @@
-import imagensRato from "./ImagensRato";
-import "../css/Corpo.css";
+import imagensRato from "../ImagensRato";
+import "../../css/Corpo.css";
 
 export default function ListaDeRatos({ ratosUsuario }) {
   return (
