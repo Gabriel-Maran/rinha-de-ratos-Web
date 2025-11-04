@@ -1,5 +1,5 @@
-import Botao from "../../components/Botao";
-import Input from "../../components/Input";
+import Botao from "../../components/comuns/Botao";
+import Input from "../../components/comuns/Input";
 import "./auth.css";
 import "./AuthForm.css";
 import { useNavigate } from "react-router-dom";

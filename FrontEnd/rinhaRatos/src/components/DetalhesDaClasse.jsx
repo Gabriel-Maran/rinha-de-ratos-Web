@@ -1,8 +1,9 @@
 import { useState } from "react";
 import imagensRato from "./ImagensRato";
-import MouseCoin from "../assets/moedas/MouseCoin.svg";
-import Input from "../components/Input";
-import { ratosUsuario } from "../Api/api.js";
+import imagensRato from "../../ImagensRato.jsx";
+import MouseCoin from "../../../assets/moedas/imgCoin.svg";
+import Input from "../../comuns/Input.jsx";
+import { ratosUsuario } from "../../../Api/Api.js";
 
 export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
   let descRato =
@@ -23,7 +24,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
 
   const salvarRato = async () => {
     const idUsuarioLogado = localStorage.getItem("idUsuario");
-2
+    2;
     const dados = {
       idUsuario: idUsuarioLogado,
       nomeCustomizado: nomeRato,
@@ -34,7 +35,6 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK!", resposta.data);
 
-    
       localStorage.setItem("ratoCriado", JSON.stringify(resposta.data));
 
       onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade);

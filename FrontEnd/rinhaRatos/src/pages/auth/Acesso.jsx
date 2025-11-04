@@ -1,4 +1,4 @@
-import Botao from "../../components/Botao.jsx";
+import Botao from "../../components/comuns/Botao";
 import "./auth.css"; 
 import "./Access.css";
 import { useNavigate } from "react-router-dom";

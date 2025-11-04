@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import Input from "../../components/Input.jsx";
-import Botao from "../../components/Botao.jsx";
+import Input from "../../components/comuns/Input";
+import Botao from "../../components/comuns/Botao";
 import "./auth.css";
 import "./AuthForm.css";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
