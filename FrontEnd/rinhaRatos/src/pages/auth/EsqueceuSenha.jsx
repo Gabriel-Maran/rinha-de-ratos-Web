@@ -6,7 +6,7 @@ import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
 import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
 import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
 import Input from "../../components/comuns/Input";
-import { trocarSenha } from "../../Api/api.js";
+import { trocarSenha } from "../../Api/Api";
 import { useState } from "react";
 
 export default function EsqueceuSenha() {

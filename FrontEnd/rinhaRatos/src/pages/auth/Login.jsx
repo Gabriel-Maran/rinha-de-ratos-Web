@@ -7,7 +7,7 @@ import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
 import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
 import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
 import { useState } from "react";
-import { fazerLogin } from "../../Api/api.js";
+import { fazerLogin } from "../../Api/Api";
 
 export default function Login() {
   const navigate = useNavigate();

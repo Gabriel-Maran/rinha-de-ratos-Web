@@ -1,5 +1,4 @@
 import { useState } from "react";
-import imagensRato from "./ImagensRato";
 import imagensRato from "../../ImagensRato.jsx";
 import MouseCoin from "../../../assets/moedas/imgCoin.svg";
 import Input from "../../comuns/Input.jsx";
@@ -47,6 +46,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
   return (
     <>
       <div className="titulo">{classe}</div>
+              {erro && <p className="erro ">{erro}</p>}
 
       <div className="detalhes-conteudo">
         <div className="inputEFoto">
@@ -92,7 +92,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
           </div>
         </div>
 
-        {erro && <p className="erro">{erro}</p>}
+
       </div>
     </>
   );

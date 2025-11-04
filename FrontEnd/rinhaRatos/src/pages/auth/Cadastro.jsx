@@ -7,7 +7,7 @@ import { useState } from "react";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
 import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
 import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
-import { fazerCadastro } from "../../Api/api";
+import { fazerCadastro } from "../../Api/Api";
 
 export default function Cadastro() {
   const navigate = useNavigate();
