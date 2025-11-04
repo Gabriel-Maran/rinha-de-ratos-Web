@@ -2,42 +2,55 @@ import imagensRato from "./ImagensRato";
 import "../css/ModalCriacaoRato.css";
 
 export default function RatoCriado({ novoRato, onClose }) {
-  const forcaRato = localStorage.getItem("strBase");
-  const agilidadeRato = localStorage.getItem("agiBase");
-  const vidaRato = localStorage.getItem("hpsBase");
-  const InteligenciaRato = localStorage.getItem("intBase")
-  const defesaRato = localStorage.getItem("defBase")
+  const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};
+
+  const stats = {
+    strength: rato.strBase,
+    agility: rato.agiBase,
+    health: rato.hpsBase,
+    intelligence: rato.intBase,
+    defense: rato.defBase,
+  };
+
+  const handleClose = () => {
+    localStorage.removeItem("ratoCriado");
+    onClose();
+  };
 
   return (
     <>
       <div className="titulo">Criação concluída!</div>
+
       <div className="imagemENome">
-        <img src={imagensRato[novoRato.classeEsc]} />
-        <p>{novoRato.nome}</p>
+        <img src={imagensRato[(rato.classe?.idClasse || 1) - 1]} />
+        <p>{rato.nomeCustomizado}</p>
       </div>
+
       <div className="infoGeral">
         <div className="conteinerTitusEstHabil">
           <div className="caixaEstatisticas">
             <p className="titusEstHabil">Estatísticas Gerais</p>
             <p className="estatisticas">
-              Força: {forcaRato}
+              Força: {stats.strength}
               <br />
-              Agilidade: {agilidadeRato}
+              Agilidade: {stats.agility}
               <br />
-              Vida: {vidaRato}
+              Vida: {stats.health}
               <br />
-              Inteligência: {InteligenciaRato}  
+              Inteligência: {stats.intelligence}
               <br />
-              Defesa: {defesaRato}
+              Defesa: {stats.defense}
             </p>
           </div>
+
           <div className="caixaHabilidadeEsc">
-            <p className="titusEstHabil">{novoRato.habilidadeEsc}</p>
+            <p className="titusEstHabil">{rato.habilidade?.nomeHabilidade}</p>
             <p className="descHabilEsc">{novoRato.descHabilidadeEsc}</p>
           </div>
         </div>
       </div>
-      <button className="btnFinalizar" onClick={onClose}>
+
+      <button className="btnFinalizar" onClick={handleClose}>
         Ok
       </button>
     </>
