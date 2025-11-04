@@ -1,5 +1,5 @@
+import imagensRato from "../../ImagensRato";
 import "../../css/meusRatos/modalRato/ModalCriacaoRato.css";
-import imagensRato from "../assets/classeRatos/ImagensRato";
 
 export default function RatoCriado({ novoRato, onClose }) {
   const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};

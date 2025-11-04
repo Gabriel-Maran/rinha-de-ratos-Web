@@ -1,4 +1,4 @@
-import "../css/ModalCriacaoRato.css";
+import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css";
 
 export default function SelecaoDeClasse({ onSlctClasse }) {
     const classes = [
