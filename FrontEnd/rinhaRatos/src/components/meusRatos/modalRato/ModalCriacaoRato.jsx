@@ -8,6 +8,7 @@ export default function ModalCriacaoRato({
   etapas,
   onClose,
   onSlctClasse,
+  indexClasse,
   classe,
   onMostrarRato,
   novoRato,
@@ -20,7 +21,7 @@ export default function ModalCriacaoRato({
 
   switch (etapa) {
     case etapas.SELECAO_CLASSE:
-      conteudoModal = <SelecaoDeClasse onSlctClasse={onSlctClasse} />;
+      conteudoModal = <SelecaoDeClasse onSlctClasse={onSlctClasse } />;
       break;
     case etapas.DETALHES_CLASSE:
       conteudoModal = (
@@ -28,6 +29,7 @@ export default function ModalCriacaoRato({
           classe={classe}
           ratosUsuario={novoRato}
           onMostrar={onMostrarRato}
+          indexClasse={indexClasse}
         />
       );
       break;

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import ImagensRato from "../../imagensRato";
+import ImagensRato from "../../ImagensRato.jsx";
 import MouseCoin from "../../../assets/moedas/imgCoin.svg";
 import Input from "../../comuns/Input.jsx";
 import { ratosUsuario } from "../../../Api/Api.js";
 
-export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
+export default function DetalhesDaClasse({ classe, onMostrar, }) {
   let descRato =
     "Sobrevive nas sombras, usando lama e toxinas para corroer defesas; brutal e imprevisível.";
 
@@ -34,7 +34,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK!", resposta.data);
 
-    
+
       localStorage.setItem("ratoCriado", JSON.stringify(resposta.data));
 
       onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade);
@@ -62,7 +62,8 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
             <span className="simboloEditar">🖊</span>
           </div>
 
-          <img src={ImagensRato[indexClasse]} />
+          <img src={ImagensRato[classe] || ImagensRato["Rato de Esgoto"]} />
+
         </div>
 
         <div className="descRato">{descRato}</div>

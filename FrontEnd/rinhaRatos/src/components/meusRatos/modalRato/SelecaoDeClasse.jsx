@@ -15,10 +15,10 @@ export default function SelecaoDeClasse({ onSlctClasse }) {
                 Escolha uma Classe
             </div>
             <div className="opcoesClasse">
-                {classes.map((classe, index) => (
+                {classes.map((classe, ) => (
                     <button
                         key={classe}
-                        onClick={() => onSlctClasse(classe, index)}
+                        onClick={() => onSlctClasse(classe, )}
                     >
                         {classe}
                     </button>
