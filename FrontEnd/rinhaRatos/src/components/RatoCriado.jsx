@@ -1,10 +1,12 @@
 import imagensRato from "./ImagensRato";
 import "../css/ModalCriacaoRato.css";
 
-export default function RatoCriado({
-  novoRato,
-  onClose,
-}) {
+export default function RatoCriado({ novoRato, onClose }) {
+  const forcaRato = localStorage.getItem("strBase");
+  const agilidadeRato = localStorage.getItem("agiBase");
+  const vidaRato = localStorage.getItem("hpsBase");
+  const InteligenciaRato = localStorage.getItem("intBase")
+  const defesaRato = localStorage.getItem("defBase")
 
   return (
     <>
@@ -18,15 +20,15 @@ export default function RatoCriado({
           <div className="caixaEstatisticas">
             <p className="titusEstHabil">Estatísticas Gerais</p>
             <p className="estatisticas">
-              Força: {}
+              Força: {forcaRato}
               <br />
-              Agilidade: {}
+              Agilidade: {agilidadeRato}
               <br />
-              Vida: {}
+              Vida: {vidaRato}
               <br />
-              Inteligência: {}
+              Inteligência: {InteligenciaRato}  
               <br />
-              Defesa: {}
+              Defesa: {defesaRato}
             </p>
           </div>
           <div className="caixaHabilidadeEsc">
