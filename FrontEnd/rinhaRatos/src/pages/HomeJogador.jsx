@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Header from "../components/Header";
-import Botao from "../components/Botao";
-import ModalCriacaoRato from "../components/ModalCriacaoRato";
-import ListaDeRatos from "../components/ListaDeRatos";
-import ListaDeBatalhas from "../components/ListaDeBatalhas";
+import Header from "../components/comuns/Header";
+import Botao from "../components/comuns/Botao";
+import ModalCriacaoRato from "../components/meusRatos/modalRato/ModalCriacaoRato";
+import ListaDeRatos from "../components/meusRatos/ListaDeRatos";
+import ListaDeBatalhas from "../components/batalhas/ListaDeBatalhas";
 import "../css/Corpo.css";
 
 const ETAPAS = {

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import trofeu from "../assets/icones/iconeTrofeu.png";
+import trofeu from "../../assets/icones/IconeTrofeu.png"
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
-import "../css/ListaDeBatalhas.css";
+import "../../css/batalhas/ListaDeBatalhas.css";
 
 export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar }) {
   const [listaBatalhas, setListaBatalhas] = useState([]);

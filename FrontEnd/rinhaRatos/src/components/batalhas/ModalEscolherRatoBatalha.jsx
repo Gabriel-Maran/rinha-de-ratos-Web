@@ -1,6 +1,6 @@
-import imagensRato from "./ImagensRato";
+import imagensRato from "../ImagensRato";
 import "../css/ModalCriacaoRato.css";
-import "../css/ModalEscolherRatoBatalha.css";
+import "../css/batalhas/ModalEscolherRatoBatalha.css";
 
 export default function ModalEscolherRatoBatalha({
   onClose,
