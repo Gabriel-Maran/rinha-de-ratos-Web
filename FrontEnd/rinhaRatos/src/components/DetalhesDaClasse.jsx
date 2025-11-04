@@ -3,7 +3,7 @@ import imagensRato from "./ImagensRato";
 import MouseCoin from "../assets/moedas/MouseCoin.svg";
 import Input from "../components/Input";
 
-export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
+export default function DetalhesDaClasse({ classe, onMostrar, ratosUsuario }) {
   /* let nomeRato; */ /* Parte que pega da api o nome default do id do rato*/
   let descRato;
   let habilidades;
@@ -44,7 +44,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, indexClasse }) {
             />
             <span className="simboloEditar">🖊</span>
           </div>
-          <img src={imagensRato[indexClasse]} />
+          <img src={imagensRato[classe]} />
         </div>
         <div className="descRato">{descRato}</div>
         <p className="slctHabilidade">Selecione a habilidade:</p>

@@ -1,44 +1,17 @@
 import imagensRato from "./ImagensRato";
 import "../css/ModalCriacaoRato.css";
-import idUsuario from "../pages/auth/Cadastro"
 
 export default function RatoCriado({
-  indexClasse,
-  nomeRato,
-  habilidades,
-  habilEscolhida,
-  descHabilidade,
+  novoRato,
   onClose,
 }) {
-
-
-  const salvarRato = async () => {
-    evento.preventDefault();
-    const dados = {
-      idUsuario,
-      nomeCustomizado: nomeRatoEsc,
-      nomeHabilidade: habilEscolhida
-    }
-    try {
-      const resposta = await fazerCadastro(dados);
-      console.log("Cadastro OK!", resposta.data);
-      onClose;
-    } catch {
-      setErro(err?.response?.data?.message || "Erro");
-    }
-
-  }
-
-
-
-
 
   return (
     <>
       <div className="titulo">Criação concluída!</div>
       <div className="imagemENome">
-        <img src={imagensRato[indexClasse]} />
-        <p>{nomeRato}</p>
+        <img src={imagensRato[novoRato.classeEsc]} />
+        <p>{novoRato.nome}</p>
       </div>
       <div className="infoGeral">
         <div className="conteinerTitusEstHabil">
@@ -57,12 +30,12 @@ export default function RatoCriado({
             </p>
           </div>
           <div className="caixaHabilidadeEsc">
-            <p className="titusEstHabil">{habilidades[habilEscolhida]}</p>
-            <p className="descHabilEsc">{descHabilidade[habilEscolhida]}</p>
+            <p className="titusEstHabil">{novoRato.habilidadeEsc}</p>
+            <p className="descHabilEsc">{novoRato.descHabilidadeEsc}</p>
           </div>
         </div>
       </div>
-      <button className="btnFinalizar" onClick={salvarRato}>
+      <button className="btnFinalizar" onClick={onClose}>
         Ok
       </button>
     </>

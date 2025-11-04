@@ -16,14 +16,18 @@ const ETAPAS = {
 export default function Inicio() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
-  const [nomeRatoEsc, setNomeRato] = useState(null);
+  const [nomeRatoEsc, setNomeRatoEsc] = useState(null);
   const [indexClasse, setIndexClasse] = useState(null);
   const [clssRatoCriar, setClssRatoCriar] = useState(null);
   const [listaHabilidades, setListaHabilidades] = useState(null);
   const [habilEscolhida, setHabilEscolhida] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
 
-  const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]);
+  const [novoRato, setNovoRato] = useState({})
+
+  /* const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]); */
+
+  const [ratosUsuario, setRatosUsuario] = useState([]);
 
   const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
 
@@ -37,9 +41,10 @@ export default function Inicio() {
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
     setClasseSelecionada(null);
-    setNomeRato(null);
+    setNomeRatoEsc(null);
     setIndexClasse(null);
     setClssRatoCriar(null);
+    setNovoRato(null)
     setListaHabilidades(null);
     setHabilEscolhida(null);
     setDescHabilidade(null);
@@ -58,18 +63,28 @@ export default function Inicio() {
     habilAtiva,
     descHabilidade
   ) => {
+    const ratoCriado = {
+      id: Date.now(),
+      nome: nomeRato,
+      classeEsc: classe,
+      habilidadeEsc: habilidades[habilAtiva],
+      descHabilidadeEsc: descHabilidade[habilAtiva]
+    }
     setClssRatoCriar(classe);
-    setNomeRato(nomeRato);
+    setNomeRatoEsc(nomeRato);
     setListaHabilidades(habilidades);
     setHabilEscolhida(habilAtiva);
     setDescHabilidade(descHabilidade);
+    setNovoRato(ratoCriado)
+    setRatosUsuario([...ratosUsuario, ratoCriado])
     setEtapaModal(ETAPAS.RATO_CRIADO);
+    console.log(novoRato, ratosUsuario)
   };
 
-  const definirRatoBatalha =(rato) =>{
+  const definirRatoBatalha = (rato) => {
     setRatoParaBatalhar(rato);
   }
-  
+
   let conteudoCorpo;
 
   switch (opcaoAtivada) {
@@ -88,19 +103,21 @@ export default function Inicio() {
             habilidades={listaHabilidades}
             habilEscolhida={habilEscolhida}
             descHabilidade={descHabilidade}
+            novoRato={novoRato}
           />
-          <ListaDeRatos ratosUsuario={ratosUsuario}/>
+          <ListaDeRatos ratosUsuario={ratosUsuario} />
           <Botao
-            button={{ 
+            button={{
               className: "addRato",
-              onClick: mostrarSelecaoClasse }}
-            acaoBtn= {<strong> .{"Adicionar Rato + "}</strong>}
+              onClick: mostrarSelecaoClasse
+            }}
+            acaoBtn={<strong> .{"Adicionar Rato + "}</strong>}
           />
         </>
       );
       break;
     case "Batalhas":
-      conteudoCorpo = <ListaDeBatalhas ratosUsuario={ratosUsuario} ratoParaBatalhar={definirRatoBatalha}/>;
+      conteudoCorpo = <ListaDeBatalhas ratosUsuario={ratosUsuario} ratoParaBatalhar={definirRatoBatalha} />;
       break;
   }
 
