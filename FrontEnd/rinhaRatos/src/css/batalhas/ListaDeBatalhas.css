@@ -12,7 +12,7 @@
     width: 10rem;
     height: 4.5rem;
     background-color: transparent;
-    background-image: url("../assets/buttons/btnOpcaoBatalhas.png");
+    background-image: url("../../assets/buttons/btnOpcaoBatalhas.png");
     background-size: 100% 100%;
     border: none;
     font-size: 1.6rem;
@@ -22,7 +22,7 @@
     width: 10rem;
     height: 4.5rem;
     background-color: transparent;
-    background-image: url("../assets/buttons/btnOpcaoBatalhasAtivado.png");
+    background-image: url("../../assets/buttons/btnOpcaoBatalhasAtivado.png");
     background-size: 100% 100%;
     border: none;
     font-size: 1.6rem;
@@ -55,7 +55,7 @@
 .batalha {
     width: 87%;
     height: 12rem;
-    background-image: url("../assets/backgrounds/papelLabelBatalha.png");
+    background-image: url("../../assets/backgrounds/papelLabelBatalha.png");
     background-size: 100% 100%;
     display: flex;
     align-items: center;
@@ -85,7 +85,7 @@
 .opcoesBatalha button {
     width: 10rem;
     height: 3.5rem;
-    background-image: url("../assets/buttons/btnParticiparBatalha.png");
+    background-image: url("../../assets/buttons/btnParticiparBatalha.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     border: none;

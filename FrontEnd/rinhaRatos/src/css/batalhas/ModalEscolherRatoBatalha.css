@@ -18,7 +18,7 @@
 }
 
 .containerModal {   
-    background-image: linear-gradient(rgba(79, 81, 83, 0.3), rgba(79, 81, 83, 0.3)), url('../assets/backgrounds/bgLogin.png');
+    background-image: linear-gradient(rgba(79, 81, 83, 0.3), rgba(79, 81, 83, 0.3)), url('../../assets/backgrounds/bgLogin.png');
     background-size: cover;
     border-radius: 1rem;
     flex-direction: column;
@@ -42,7 +42,7 @@
     width: 20rem;
     padding: auto;
     margin: 1.5rem 5rem;
-    background-image: url('../assets/backgrounds/tabuaLabel.svg');
+    background-image: url('../../assets/backgrounds/tabuaLabel.svg');
     background-size: cover;
     color: white;
     font-size: 2rem;
@@ -72,7 +72,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-image: url("../assets/backgrounds/papelLabelAmarelado.png");
+    background-image: url("../../assets/backgrounds/papelLabelAmarelado.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     box-sizing: border-box;
