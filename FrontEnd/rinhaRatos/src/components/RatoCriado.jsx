@@ -18,15 +18,15 @@ export default function RatoCriado({
           <div className="caixaEstatisticas">
             <p className="titusEstHabil">Estatísticas Gerais</p>
             <p className="estatisticas">
-              Força: { }
+              Força: {}
               <br />
-              Agilidade: { }
+              Agilidade: {}
               <br />
-              Vida: { }
+              Vida: {}
               <br />
-              Inteligência: { }
+              Inteligência: {}
               <br />
-              Defesa: { }
+              Defesa: {}
             </p>
           </div>
           <div className="caixaHabilidadeEsc">
