@@ -54,7 +54,7 @@ class BatalhaController(
     }
 
     @GetMapping("/batalhacheia/{idBatalha}")
-    fun batalhaCheia(@PathVariable idBatalha: Long): ResponseEntity<Any> {
+    fun batalhaCheia(@PathVariable("idBatalha") idBatalha: Long): ResponseEntity<Any> {
         val result = batalhaService.batalhaCheia(idBatalha)
         return when (result) {
             "BATALHA_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")

@@ -8,7 +8,7 @@
 }
 
 .corpo-container {
-    background-image: linear-gradient(rgba(55, 51, 51, 0.5), rgba(55, 51, 51, 0.5)), url(../assets/backgrounds/bgHome.svg);
+    background-image: linear-gradient(rgba(55, 51, 51, 0.5), rgba(55, 51, 51, 0.5)), url('../../assets/backgrounds/bgHome.svg');
     background-size: cover;
     /* Essa maravilha faz a imagem cobrir todo o site */
     background-position: center;
@@ -33,7 +33,7 @@
 .conteudo-principal {
     width: 10rem;
     min-height: 43rem;
-    background-image: url('../assets/backgrounds/displayMadeira.svg');
+    background-image: url('../../assets/backgrounds/displayMadeira.svg');
     background-size: 100% 100%;
     width: 115rem;
 
@@ -44,7 +44,7 @@
      /* Isso aqui serve pra esconder o scroll */
     overflow: hidden;
    
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
 }
 
@@ -58,6 +58,7 @@
 }
 
 .opcoes button{
+    width: 80%;
     flex: 1;
     background-color: transparent;
     display: flex;
@@ -72,7 +73,7 @@
 
 
 .opcaoAtiva{
-    background-image: url("../assets/backgrounds/tabuaLabel.svg");
+    background-image: url("../../assets/backgrounds/tabuaLabel.svg");
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -83,23 +84,44 @@
   transform: scale(0.97);
 }
 
-.listaRatos{
+.dados{
     width: 30rem;
-    height: auto;
-    box-sizing: border-box;
+    height: 22rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 7rem;
+    gap: 0.5rem;
 }
 
-.displayRato{
-    min-width: 30%;
-    height: 7rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-image: url("../assets/backgrounds/papelLabelAmarelado.png");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    box-sizing: border-box;
-    padding: 0rem 1.5rem 0rem 2rem;
-    font-size: 2rem;
-    margin-bottom: 1rem;
+.dados p{
+    width: 100%;
+    font-size: 1.5rem;
+    padding-left: 1rem;
+    color: white;
+}
+
+.dados input{
+    width: 100%;
+    height: 30rem;
+    font-size: 1.5rem;
+    padding: 0rem 1rem 0rem 1rem;
+    border-radius: 1rem;
+    border-style: solid;
+    border-width: 0.2rem;
+    border-color: black;
+    outline: none;
+}
+
+.botaoSalvar{
+    font-family: 'Fondamento', 'fantasy';
+    font-size: 1.5rem;
+    font-weight: 1000;
+    background-color: #FFAE52;
+    margin: 3rem 0rem 0.5rem 0rem;
+    padding: 0.3rem 2rem;
+    border: 0.15rem solid #000000;
+    border-radius: 0.8rem;
+    cursor: pointer;
 }
