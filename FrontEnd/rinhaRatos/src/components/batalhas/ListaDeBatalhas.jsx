@@ -18,7 +18,7 @@ export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar, listaB
   const [inscrito, setInscrito] = useState(false);
 
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
-  const botoesOpcBatalha = ["Todas", "Inscrições"];
+  const botoesOpcBatalha = ["Todas", "Inscritas"];
 
   const [ativarModal, setAtivarModal] = useState(false);
 

@@ -5,10 +5,10 @@
     transform: translateX(-50%);
     display: flex;
     gap: 8rem;
-    z-index: 10;
 }
 
-.btnOpcaoBatalhas {
+.btnOpcaoBatalhas,
+.btnOpcaoBatalhasAtivo {
     width: 10rem;
     height: 4.5rem;
     background-color: transparent;
@@ -16,16 +16,11 @@
     background-size: 100% 100%;
     border: none;
     font-size: 1.6rem;
+    font-weight: 1000;
 }
 
 .btnOpcaoBatalhasAtivo {
-    width: 10rem;
-    height: 4.5rem;
-    background-color: transparent;
     background-image: url("../../assets/buttons/btnOpcaoBatalhasAtivado.png");
-    background-size: 100% 100%;
-    border: none;
-    font-size: 1.6rem;
     pointer-events: none;
 }
 
@@ -69,6 +64,12 @@
 
 .batalha p+p {
     margin: 0;
+}
+
+
+.batalha img{
+    width: 5rem;
+    margin-right: 1rem;
 }
 
 .infoBatalha {

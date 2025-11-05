@@ -4,6 +4,7 @@ import Botao from "../components/comuns/Botao";
 import ModalCriacaoRato from "../components/meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "../components/meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "../components/batalhas/ListaDeBatalhas";
+import Ranking from "../components/ranking/Ranking"
 import "../css/Corpo.css";
 
 import { useNavigate } from "react-router-dom";
@@ -36,12 +37,16 @@ export default function Inicio() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
-  /* Deletar essas três linhas quando for fazer a junção com a API */ 
+  /*---------------------------------------------------------------*/
+  /*---------------------------------------------------------------*/
+  /* Deletar essas três linhas quando for fazer a junção com a API */
   const [listaBatalhas, setListaBatalhas] = useState([]);
   const navigate = useNavigate();
   const irParaPerfil = () => {
     navigate("/perfil", { state: { listaBatalhas } });
   };
+  /*---------------------------------------------------------------*/
+  /*---------------------------------------------------------------*/
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -136,6 +141,10 @@ export default function Inicio() {
         />
       );
       break;
+    case "Ranking":
+      conteudoCorpo = (
+        <Ranking />
+      )
   }
 
   return (
@@ -153,7 +162,6 @@ export default function Inicio() {
             </button>
           ))}
         </div>
-        <button onClick={irParaPerfil}>Ir para Perfil</button>
         <div className="conteudo-principal">{conteudoCorpo}</div>
       </div>
     </>

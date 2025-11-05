@@ -45,7 +45,7 @@ export default function Perfil({ nome, email, senha }) {
                 <p>Prêmio: {batalha.premio} MouseCoin</p>
               </div>
               <div className="opcoesBatalhaFeita">
-                <button>Vencedor: Jão</button>
+                <p>Vencedor: Jão</p>
                 <button>Histórico</button>
               </div>
             </div>
@@ -58,7 +58,7 @@ export default function Perfil({ nome, email, senha }) {
     <>
       <Header />
       <div className="perfil-container">
-        <div className={"opcoes"}>
+        <div className={"opcoesPerfil"}>
           {botoes.map((botao) => (
             <button
               key={botao}
