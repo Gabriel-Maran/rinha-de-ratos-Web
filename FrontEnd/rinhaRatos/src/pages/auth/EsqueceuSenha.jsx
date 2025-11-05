@@ -37,7 +37,7 @@ export default function EsqueceuSenha() {
       console.log("Login OK!", resposta.data);
       navigate("/login");
     } catch (err) {
-      setErro(err?.response?.data?.message || "Email ou senha inválidos.");
+      setErro(err?.response?.data?.message || "Erro ao conectar com o servidor.");
     }
   };
   return (
