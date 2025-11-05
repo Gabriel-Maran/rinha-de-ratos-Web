@@ -42,7 +42,7 @@ INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, 
 INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, efeito_sucesso_str, efeito_falha_str, efetivo_txt, falha_txt) VALUES
 (5, 'Dado Viciado', '68% de chance de ganhar +40% de chance crítica apenas nesta rodada. Falha: perde 10% do PA apenas nesta rodada.', 68, '+40%CRISEU', '-10%PASSEU', 'A sorte sorri! +40% crítico nesta rodada!','Fumble! Os dados saem ruins, -10% PA apenas nesta rodada.'),
 (5, 'Trapaceiro', '70% de chance de roubar 8% do HP do oponente (dano + cura instantânea) — efeito instantâneo. Falha: perde 10% do HP.', 70, '+8%HPSSEU;-8%HPSADV', '-10%HPSSEU', 'Trapaça perfeita! Rato drena 8% do HP do alvo e ganha a mesma quantidade.','Pego no ato! O rato é punido e perde 10% de HP.'),
-(5, 'All-in', '50% de chance de multiplicar o PA por 3 (PA x3) apenas nesta rodada. Falha: sofre -40% PD e perde 10% do HP.', 50, '+300PASSEU', '-40%PDSSEU;-10%HPSSEU', 'Tudo ou nada! PA é multiplicado por 3 apenas nesta rodada!','Aposta perdida! -40% PD e -10% HP.');
+(5, 'All-in', '50% de chance de multiplicar o PA por 3 (PA x3) apenas nesta rodada. Falha: sofre -40% PD e perde 10% do HP.', 50, '+300%PASSEU', '-40%PDSSEU;-10%HPSSEU', 'Tudo ou nada! PA é multiplicado por 4 apenas nesta rodada!','Aposta perdida! -40% PD e -10% HP.');
 
 -- Habilidades Classe 6: Rato de Biblioteca
 INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, efeito_sucesso_str, efeito_falha_str, efetivo_txt, falha_txt) VALUES
