@@ -6,13 +6,14 @@ import ListaDeRatos from "../components/meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "../components/batalhas/ListaDeBatalhas";
 import "../css/Corpo.css";
 
+import { useNavigate } from "react-router-dom";
+
 const ETAPAS = {
   FECHADO: 0,
   SELECAO_CLASSE: 1,
   DETALHES_CLASSE: 2,
   RATO_CRIADO: 3,
 };
-
 
 export default function Inicio() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
@@ -24,7 +25,7 @@ export default function Inicio() {
   const [habilEscolhida, setHabilEscolhida] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
 
-  const [novoRato, setNovoRato] = useState({})
+  const [novoRato, setNovoRato] = useState({});
 
   /* const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]); */
 
@@ -35,6 +36,12 @@ export default function Inicio() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
+  /* Deletar essas três linhas quando for fazer a junção com a API */ 
+  const [listaBatalhas, setListaBatalhas] = useState([]);
+  const navigate = useNavigate();
+  const irParaPerfil = () => {
+    navigate("/perfil", { state: { listaBatalhas } });
+  };
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -46,14 +53,14 @@ export default function Inicio() {
     setNomeRatoEsc(null);
     setIndexClasse(null);
     setClssRatoCriar(null);
-    setNovoRato(null)
+    setNovoRato(null);
     setListaHabilidades(null);
     setHabilEscolhida(null);
     setDescHabilidade(null);
   };
 
   const selecionarClasse = (classe, index) => {
-    console.log(etapaModal)
+    console.log(etapaModal);
     setEtapaModal(ETAPAS.DETALHES_CLASSE);
     setClasseSelecionada(classe);
     setIndexClasse(index);
@@ -71,22 +78,22 @@ export default function Inicio() {
       nome: nomeRato,
       classeEsc: classe,
       habilidadeEsc: habilidades[habilAtiva],
-      descHabilidadeEsc: descHabilidade[habilAtiva]
-    }
+      descHabilidadeEsc: descHabilidade[habilAtiva],
+    };
     setClssRatoCriar(classe);
     setNomeRatoEsc(nomeRato);
     setListaHabilidades(habilidades);
     setHabilEscolhida(habilAtiva);
     setDescHabilidade(descHabilidade);
-    setNovoRato(ratoCriado)
-    setRatosUsuario([...ratosUsuario, ratoCriado])
+    setNovoRato(ratoCriado);
+    setRatosUsuario([...ratosUsuario, ratoCriado]);
     setEtapaModal(ETAPAS.RATO_CRIADO);
-    console.log(novoRato, ratosUsuario)
+    console.log(novoRato, ratosUsuario);
   };
 
   const definirRatoBatalha = (rato) => {
     setRatoParaBatalhar(rato);
-  }
+  };
 
   let conteudoCorpo;
 
@@ -112,7 +119,7 @@ export default function Inicio() {
           <Botao
             button={{
               className: "addRato",
-              onClick: mostrarSelecaoClasse
+              onClick: mostrarSelecaoClasse,
             }}
             acaoBtn={<strong> .{"Adicionar Rato + "}</strong>}
           />
@@ -120,7 +127,14 @@ export default function Inicio() {
       );
       break;
     case "Batalhas":
-      conteudoCorpo = <ListaDeBatalhas ratosUsuario={ratosUsuario} ratoParaBatalhar={definirRatoBatalha} />;
+      conteudoCorpo = (
+        <ListaDeBatalhas
+          ratosUsuario={ratosUsuario}
+          ratoParaBatalhar={definirRatoBatalha}
+          listaBatalhas={listaBatalhas}
+          setListaBatalhas={setListaBatalhas}
+        />
+      );
       break;
   }
 
@@ -139,6 +153,7 @@ export default function Inicio() {
             </button>
           ))}
         </div>
+        <button onClick={irParaPerfil}>Ir para Perfil</button>
         <div className="conteudo-principal">{conteudoCorpo}</div>
       </div>
     </>

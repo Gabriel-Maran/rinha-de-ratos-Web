@@ -1,8 +1,16 @@
+import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import trofeu from "../assets/icones/IconeTrofeu.png"
 import Header from "../components/comuns/Header";
 import "../css/perfil/Perfil.css";
 
 export default function Perfil({ nome, email, senha }) {
+
+  /* Deletar essas duas linhas depois quando for fazer a junção com a API */  
+  const location = useLocation();
+  const listaBatalhas = location.state?.listaBatalhas || [];
+  /* -------------------------------------------------------------------- */
+
   const [opcaoAtivada, setOpcaoAtivada] = useState("Histórico de Batalhas");
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
@@ -24,13 +32,32 @@ export default function Perfil({ nome, email, senha }) {
         </>
       );
       break;
+    default:
+      conteudoPerfil = (
+        <div className="historicoBatalhas">
+          {listaBatalhas.map((batalha) => (
+            <div className="batalhaFeita" key={batalha.id}>
+              <img src={trofeu} />
+              <div className="infoBatalhaFeita">
+                <p>{batalha.nome}</p>
+                <p>Inscrição: {batalha.custo} MouseCoin</p>
+                <p>Data e Hora: {batalha.dataEHora}</p>
+                <p>Prêmio: {batalha.premio} MouseCoin</p>
+              </div>
+              <div className="opcoesBatalhaFeita">
+                <button>Vencedor: Jão</button>
+                <button>Histórico</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
   }
 
-  console.log(conteudoPerfil);
   return (
     <>
       <Header />
-      <div className="corpo-container">
+      <div className="perfil-container">
         <div className={"opcoes"}>
           {botoes.map((botao) => (
             <button
@@ -42,7 +69,7 @@ export default function Perfil({ nome, email, senha }) {
             </button>
           ))}
         </div>
-        <div className="conteudo-principal">{conteudoPerfil}</div>
+        <div className="conteudo-perfil">{conteudoPerfil}</div>
       </div>
     </>
   );

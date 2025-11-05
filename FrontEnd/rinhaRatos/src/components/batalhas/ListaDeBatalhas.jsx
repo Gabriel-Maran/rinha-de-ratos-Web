@@ -3,14 +3,29 @@ import trofeu from "../../assets/icones/IconeTrofeu.png"
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
 import "../../css/batalhas/ListaDeBatalhas.css";
 
-export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar }) {
-  const [listaBatalhas, setListaBatalhas] = useState([]);
+/* Deletar os parâmetros "listaBatalhas" e "setListaBatalhas" quando for fazer a junção com a API */ 
+export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar, listaBatalhas, setListaBatalhas }) {
+  
+  /*---------------------------------------------------------*/
+  /* Descomente isso quando for fazer a junção com a API */ 
+  /*---------------------------------------------------------*/
+  /* const [listaBatalhas, setListaBatalhas] = useState([]); */
 
   const [nomeBatalha, setNomeBatalha] = useState("");
   const [custoInscricao, setCustoInscricao] = useState(0);
   const [dataHora, setDataHora] = useState();
   const [premio, setPremio] = useState(0);
   const [inscrito, setInscrito] = useState(false);
+
+  const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
+  const botoesOpcBatalha = ["Todas", "Inscrições"];
+
+  const [ativarModal, setAtivarModal] = useState(false);
+
+    const fecharSelecaoRato = () => {
+    setAtivarModal(!ativarModal);
+    console.log(ratosUsuario);
+  };
 
   const CadastrarBatalha = () => {
     const batalha = {
@@ -30,16 +45,6 @@ export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar }) {
     setCustoInscricao(0);
     setDataHora("");
     setPremio(0);
-  };
-
-  const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
-  const botoesOpcBatalha = ["Todas", "Inscrições"];
-
-  const [ativarModal, setAtivarModal] = useState(false);
-
-  const fecharSelecaoRato = () => {
-    setAtivarModal(!ativarModal);
-    console.log(ratosUsuario);
   };
 
   let conteudoOpcaoBatalhas;
