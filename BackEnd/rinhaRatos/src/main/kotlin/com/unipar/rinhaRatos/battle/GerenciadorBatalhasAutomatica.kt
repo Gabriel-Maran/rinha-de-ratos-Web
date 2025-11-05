@@ -37,11 +37,4 @@ class GerenciadorBatalhasAutomatica(
         val f = futuros[idBatalha] ?: return false
         return !f.isDone && !f.isCancelled
     }
-
-    fun pararSimulacao(idBatalha: Long): Boolean {
-        val f = futuros.remove(idBatalha) ?: return false
-        val cancelado = f.cancel(true)
-        log.info("Solicitado cancelamento da batalha $idBatalha -> $cancelado")
-        return cancelado
-    }
 }

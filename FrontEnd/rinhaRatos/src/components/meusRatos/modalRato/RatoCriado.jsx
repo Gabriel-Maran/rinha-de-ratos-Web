@@ -1,7 +1,7 @@
 import ImagensRato from "../../ImagensRato";
 import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css";
 
-export default function RatoCriado({ novoRato, onClose }) {
+export default function RatoCriado({ novoRato, onClose}) {
 
 
   const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};
@@ -15,9 +15,6 @@ export default function RatoCriado({ novoRato, onClose }) {
     defense: rato.defBase,
   };
 
-  const imagemRato =
-    ImagensRato[rato.classe?.nomeClasse] ||
-    ImagensRato["Rato de Esgoto"];
 
   const handleClose = () => {
     localStorage.removeItem("ratoCriado");
@@ -29,7 +26,9 @@ export default function RatoCriado({ novoRato, onClose }) {
       <div className="titulo">Criação concluída!</div>
 
       <div className="imagemENome">
-        <img src={imagemRato} alt={rato.classe?.nomeClasse} />
+
+      {/* Acessa o rato  */}
+<img src={ImagensRato[rato.classe?.nomeClasse] || ImagensRato["Rato de Esgoto"]} /> 
         <p>{rato.nomeCustomizado}</p>
       </div>
 
