@@ -6,6 +6,7 @@ import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.models.MessageRound
 import com.unipar.rinhaRatos.models.Results
 import com.unipar.rinhaRatos.enums.ClassesRato
+import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
 import com.unipar.rinhaRatos.repositorys.RatoRepository
@@ -19,6 +20,7 @@ class ServicoBatalhaAutomatica(
     private val repositorioBatalha: BatalhaRepository,
     private val repositorioRato: RatoRepository,
     private val repositorioHabilidade: HabilidadeRepository,
+    private val usuarioRepository: UsuarioRepository,
     private val serviceRato: RatoService,
     private val messageService: MessageService,
     private val resultsService: ResultsService,
@@ -229,7 +231,7 @@ class ServicoBatalhaAutomatica(
         val sucesso = roll < hab.chanceSucesso
 
         mensagens.add(
-            if (sucesso) ("${r.nomeCustomizado} usou a habilidade ${habilidade.get().efetivoTxt}" )
+            if (sucesso) ("${r.nomeCustomizado} usou a habilidade ${habilidade.get().efetivoTxt}")
             else ("${r.nomeCustomizado} falhou durante o usou da habilidade. ${habilidade.get().falhaTxt} ")
         )
         val efeitosStr = if (sucesso) hab.efeitoSucessoStr else hab.efeitoFalhaStr
@@ -256,6 +258,7 @@ class ServicoBatalhaAutomatica(
                     e2.idRato -> batalha.jogador2
                     else -> null
                 }
+
                 val usuarioPerdedor = when (idRatoPerdedor) {
                     e1.idRato -> batalha.jogador1
                     e2.idRato -> batalha.jogador2
@@ -263,6 +266,13 @@ class ServicoBatalhaAutomatica(
                 }
                 batalha.vencedor = usuarioVencedor
                 batalha.perdedor = usuarioPerdedor
+                val userPerdeu = usuarioRepository.findById(usuarioPerdedor!!.idUsuario)
+                if (idRatoVencedor == e1.idRato) {
+                    userPerdeu.get().ratos.removeIf { rato -> rato.idRato == e1.idRato }
+                } else if (idRatoVencedor == e2.idRato) {
+                    userPerdeu.get().ratos.removeIf { rato -> rato.idRato == e2.idRato }
+                }
+                usuarioRepository.save<Usuario>(userPerdeu.get())
             }
             batalha.status = com.unipar.rinhaRatos.enums.StatusBatalha.Concluida
             repositorioBatalha.save(batalha)
@@ -282,6 +292,7 @@ class ServicoBatalhaAutomatica(
                 rdb.estaVivo = e2.hpAtual > 0
                 repositorioRato.save(rdb)
             }
+
             log.info("Batalha ${batalha.idBatalha} persistida: vencedorRato=$idRatoVencedor")
 
             // salva Results (resumo final)

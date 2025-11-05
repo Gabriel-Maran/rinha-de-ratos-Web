@@ -12,13 +12,13 @@ class GerenciadorBatalhasAutomatica(
     private val executor: ExecutorService = Executors.newCachedThreadPool()
     private val futuros = ConcurrentHashMap<Long, Future<*>>() // idBatalha -> future
 
-    /** Inicia execução assíncrona da simulação; retorna false se já estiver rodando */
+    // Inicia execução assíncrona da simulação; retorna false se já estiver rodando
     fun iniciarSimulacaoBatalhaAsync(idBatalha: Long): Boolean {
         if (futuros.containsKey(idBatalha)) {
             log.warn("Batalha $idBatalha já está em execução")
             return false
         }
-        val f = executor.submit {
+        val guardaFuturo = executor.submit {
             try {
                 log.info("Iniciando simulação da batalha $idBatalha")
                 val resultado = servicoBatalhaAutomatica.executarBatalhaSincrona(idBatalha)
@@ -29,12 +29,12 @@ class GerenciadorBatalhasAutomatica(
                 futuros.remove(idBatalha)
             }
         }
-        futuros[idBatalha] = f
+        futuros[idBatalha] = guardaFuturo
         return true
     }
 
     fun estaExecutando(idBatalha: Long): Boolean {
-        val f = futuros[idBatalha] ?: return false
-        return !f.isDone && !f.isCancelled
+        val executandoFuturo = futuros[idBatalha] ?: return false
+        return !executandoFuturo.isDone && !executandoFuturo.isCancelled
     }
 }
