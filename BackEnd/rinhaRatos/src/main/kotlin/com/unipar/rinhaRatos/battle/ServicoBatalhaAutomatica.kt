@@ -18,11 +18,10 @@ import java.util.concurrent.ThreadLocalRandom
 class ServicoBatalhaAutomatica(
     private val repositorioBatalha: BatalhaRepository,
     private val repositorioRato: RatoRepository,
-    private val repositorioUsuario: UsuarioRepository,
     private val repositorioHabilidade: HabilidadeRepository,
     private val serviceRato: RatoService,
     private val messageService: MessageService,
-    private val resultsService: ResultsService
+    private val resultsService: ResultsService,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -31,7 +30,7 @@ class ServicoBatalhaAutomatica(
         val idBatalha: Long,
         val idRatoVencedor: Long?,
         val idRatoPerdedor: Long?,
-        val rounds: List<ResultadoRound>
+        val rounds: List<ResultadoRound>,
     )
 
     /**
@@ -46,54 +45,71 @@ class ServicoBatalhaAutomatica(
         val rato1 = batalha.rato1 ?: throw IllegalArgumentException("RATO1_NAO_CONFIGURADO")
         val rato2 = batalha.rato2 ?: throw IllegalArgumentException("RATO2_NAO_CONFIGURADO")
 
-        val estado1 = criarEstadoDoRato(rato1)
-        val estado2 = criarEstadoDoRato(rato2)
+        val estadoRato1 = criarEstadoDoRato(rato1)
+        val estadoRato2 = criarEstadoDoRato(rato2)
 
         val historicoRounds = mutableListOf<ResultadoRound>()
         var numeroRound = 0
 
-        while (estado1.hpAtual > 0 && estado2.hpAtual > 0) {
+        while (estadoRato1.hpAtual > 0 && estadoRato2.hpAtual > 0) {
             numeroRound += 1
             val mensagens = mutableListOf<String>()
 
             // limpa modifiers do round anterior
-            estado1.percentuais.clear(); estado1.absolutos.clear()
-            estado2.percentuais.clear(); estado2.absolutos.clear()
+            estadoRato1.percentuais.clear(); estadoRato1.absolutos.clear()
+            estadoRato2.percentuais.clear(); estadoRato2.absolutos.clear()
 
-            // 20% de chance de usar habilidade (sorte automática)
+            // 35% de chance de usar habilidade (sorte automática)
             val usouHabilidade1 = decidirUsarHabilidade()
             val usouHabilidade2 = decidirUsarHabilidade()
 
             if (usouHabilidade1) processarHabilidadeDoRato(
                 rato1,
-                estado1,
-                estado2,
+                estadoRato1,
+                estadoRato2,
                 mensagens
-            ) else mensagens.add("Rato ${rato1.idRato} não usou habilidade")
+            ) else mensagens.add("Rato ${rato1.nomeCustomizado} não usou habilidade")
             if (usouHabilidade2) processarHabilidadeDoRato(
                 rato2,
-                estado2,
-                estado1,
+                estadoRato2,
+                estadoRato1,
                 mensagens
-            ) else mensagens.add("Rato ${rato2.idRato} não usou habilidade")
+            ) else mensagens.add("Rato ${rato2.nomeCustomizado} não usou habilidade")
 
             // cada rato tem sua chance crítica base (tenta ler da entidade; se não existir usa 10%)
             val chanceCritico1 = obterChanceCriticaDoRato(rato1)
             val chanceCritico2 = obterChanceCriticaDoRato(rato2)
 
-            val stats1 = calcularEstatisticasCombate(estado1, chanceCritico1)
-            val stats2 = calcularEstatisticasCombate(estado2, chanceCritico2)
+            val stats1 = calcularEstatisticasCombate(estadoRato1, chanceCritico1)
+            val stats2 = calcularEstatisticasCombate(estadoRato2, chanceCritico2)
 
-            // dano aplicado simultaneamente
             val danoParaRato2 = calcularDano(stats1.potencialAtaque, stats2.potencialDefesa, stats1.chanceCritico)
             val danoParaRato1 = calcularDano(stats2.potencialAtaque, stats1.potencialDefesa, stats2.chanceCritico)
 
-            estado2.hpAtual = (estado2.hpAtual - danoParaRato2).coerceAtLeast(0)
-            estado1.hpAtual = (estado1.hpAtual - danoParaRato1).coerceAtLeast(0)
+            estadoRato2.hpAtual = (estadoRato2.hpAtual - danoParaRato2).coerceAtLeast(0)
+            if (estadoRato2.hpAtual > 0) {
+                estadoRato1.hpAtual = (estadoRato1.hpAtual - danoParaRato1).coerceAtLeast(0)
+            }
+            mensagens.add(
+                "${rato1.nomeCustomizado} causou $danoParaRato2 ao ${rato2.nomeCustomizado}" +
+                        if (estadoRato2.hpAtual <= 0) {
+                            ", ganhando a partida!"
+                        } else {
+                            "!"
+                        }
+            )
+            if (estadoRato2.hpAtual >= 0) {
+                mensagens.add(
+                    "${rato2.nomeCustomizado} causou $danoParaRato1 ao ${rato1.nomeCustomizado}" +
+                            if (estadoRato1.hpAtual <= 0) {
+                                ", ganhando a partida!"
+                            } else {
+                                "!"
+                            }
 
-            mensagens.add("Rato ${rato1.idRato} causou $danoParaRato2 ao ${rato2.idRato}")
-            mensagens.add("Rato ${rato2.idRato} causou $danoParaRato1 ao ${rato1.idRato}")
-            mensagens.add("HPs após round: ${rato1.idRato}=${estado1.hpAtual} | ${rato2.idRato}=${estado2.hpAtual}")
+                )
+            }
+            mensagens.add("HPs após round: ${rato1.idRato}=${estadoRato1.hpAtual} | ${rato2.idRato}=${estadoRato2.hpAtual}")
 
             // SALVA mensagens deste round no banco usando MessageService
             salvarMensagensDoRound(batalha, numeroRound, mensagens, rato1.idRato, rato2.idRato)
@@ -102,17 +118,16 @@ class ServicoBatalhaAutomatica(
                 ResultadoRound(
                     numeroRound,
                     mensagens.toList(),
-                    mapOf(rato1.idRato to estado1.hpAtual, rato2.idRato to estado2.hpAtual)
+                    mapOf(rato1.idRato to estadoRato1.hpAtual, rato2.idRato to estadoRato2.hpAtual)
                 )
             )
 
-            if (estado1.hpAtual <= 0 || estado2.hpAtual <= 0) break
+            if (estadoRato1.hpAtual <= 0 || estadoRato2.hpAtual <= 0) break
         }
 
         val idVencedor = when {
-            estado1.hpAtual > 0 && estado2.hpAtual <= 0 -> rato1.idRato
-            estado2.hpAtual > 0 && estado1.hpAtual <= 0 -> rato2.idRato
-            else -> null
+            estadoRato2.hpAtual <= 0 -> rato1.idRato
+            else -> rato2.idRato
         }
         val idPerdedor = when (idVencedor) {
             rato1.idRato -> {
@@ -122,16 +137,17 @@ class ServicoBatalhaAutomatica(
             rato2.idRato -> {
                 rato1.idRato
             }
+
             else -> null
         }
-        if(idPerdedor == rato1.idRato){
+        if (idPerdedor == rato1.idRato) {
             atualizarRatos(vencedorId = rato2.idRato, perdedorId = rato1.idRato)
-        } else if(idPerdedor == rato2.idRato){
+        } else if (idPerdedor == rato2.idRato) {
             atualizarRatos(vencedorId = rato1.idRato, perdedorId = rato2.idRato)
         }
 
         // persiste resultado no banco (status, vencedor/perdedor e flags dos ratos) e salva Results
-        persistirResultadoFinal(batalha, idVencedor, idPerdedor, estado1, estado2)
+        persistirResultadoFinal(batalha, idVencedor, idPerdedor, estadoRato1, estadoRato2)
 
         return ResultadoBatalha(idBatalha, idVencedor, idPerdedor, historicoRounds.toList())
     }
@@ -170,7 +186,7 @@ class ServicoBatalhaAutomatica(
     }
 
     private fun decidirUsarHabilidade(): Boolean {
-        return ThreadLocalRandom.current().nextInt(100) < 20 // 20% chance
+        return ThreadLocalRandom.current().nextInt(100) < 35 // 35% chance
     }
 
     /**
@@ -182,22 +198,23 @@ class ServicoBatalhaAutomatica(
         r: Rato,
         estadoFonte: EstadoRato,
         estadoAlvo: EstadoRato,
-        mensagens: MutableList<String>
+        mensagens: MutableList<String>,
     ) {
         // tenta obter id da habilidade associada ao rato; você pode adaptar se seu model for diferente.
+        val habilidade = repositorioHabilidade.findById(r.habilidadeEscolhida?.idHabilidade ?: 0)
         val idHabilidade = try {
             // tenta campo 'habilidade' na entidade Rato (ajuste se necessário)
             val f = r.javaClass.getDeclaredField("habilidade")
             f.isAccessible = true
             val obj = f.get(r) ?: run {
-                mensagens.add("Rato ${r.idRato} não tem habilidade vinculada")
+                mensagens.add("Rato ${r.nomeCustomizado} não tem habilidade vinculada")
                 return
             }
             val idField = obj.javaClass.getDeclaredField("idHabilidade")
             idField.isAccessible = true
             (idField.get(obj) as Number).toLong()
         } catch (ex: Exception) {
-            mensagens.add("Não foi possível recuperar habilidade do rato ${r.idRato}: ${ex.message}")
+            mensagens.add("Não foi possível recuperar habilidade do rato ${r.nomeCustomizado}: ${ex.message}")
             return
         }
 
@@ -212,8 +229,8 @@ class ServicoBatalhaAutomatica(
         val sucesso = roll < hab.chanceSucesso
 
         mensagens.add(
-            if (sucesso) (hab.efetivoTxt ?: "${hab.nomeHabilidade} teve sucesso") else (hab.falhaTxt
-                ?: "${hab.nomeHabilidade} falhou")
+            if (sucesso) ("${r.nomeCustomizado} usou a habilidade ${habilidade.get().efetivoTxt}" )
+            else ("${r.nomeCustomizado} falhou durante o usou da habilidade. ${habilidade.get().falhaTxt} ")
         )
         val efeitosStr = if (sucesso) hab.efeitoSucessoStr else hab.efeitoFalhaStr
         val listaEfeitos = parseEfeitos(efeitosStr)
@@ -230,7 +247,7 @@ class ServicoBatalhaAutomatica(
         idRatoVencedor: Long?,
         idRatoPerdedor: Long?,
         e1: EstadoRato,
-        e2: EstadoRato
+        e2: EstadoRato,
     ) {
         try {
             if (idRatoVencedor != null) {
@@ -336,7 +353,7 @@ class ServicoBatalhaAutomatica(
         numeroRound: Int,
         mensagens: List<String>,
         idRato1: Long,
-        idRato2: Long
+        idRato2: Long,
     ) {
         for (msg in mensagens) {
             val attacker = extrairAtacanteDeMensagem(msg, idRato1, idRato2) ?: 0L
