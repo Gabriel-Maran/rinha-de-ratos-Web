@@ -1,7 +1,9 @@
-import ImagensRato from "../../imagensRato";
+import ImagensRato from "../../ImagensRato";
 import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css";
 
 export default function RatoCriado({ novoRato, onClose }) {
+
+
   const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};
 
 
@@ -14,8 +16,8 @@ export default function RatoCriado({ novoRato, onClose }) {
   };
 
   const imagemRato =
-  ImagensRato[rato.classe?.nomeClasse] ||
-  ImagensRato["Rato de Esgoto"];
+    ImagensRato[rato.classe?.nomeClasse] ||
+    ImagensRato["Rato de Esgoto"];
 
   const handleClose = () => {
     localStorage.removeItem("ratoCriado");
