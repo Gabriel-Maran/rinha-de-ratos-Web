@@ -1,29 +1,57 @@
+// SelecaoDeClasse.jsx ATUALIZADO
+import { useState, useEffect } from "react"; // 1. Importar hooks
 import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css";
+import { pegarTodasClasses } from "../../../Api/Api.js"; // 2. Importar sua API
 
 export default function SelecaoDeClasse({ onSlctClasse }) {
-    const classes = [
-        "Rato de Esgoto",
-        "Rato de Hospital",
-        "Rato de Laboratório",
-        "Rato de Fazenda",
-        "Rato de Cassino",
-        "Rato de Biblioteca"
-    ];
+
+    // 3. Criar estados para guardar os dados, loading e erro
+    const [classes, setClasses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // 4. useEffect para buscar os dados QUANDO o componente montar
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                setLoading(true);
+                const resposta = await pegarTodasClasses();
+                setClasses(resposta.data); // Guarda o array de objetos
+            } catch (err) {
+                console.error("Erro ao buscar classes:", err);
+                setError("Falha ao carregar as classes.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClasses();
+    }, []); 
+
+
+    if (loading) {
+        return <div className="titulo">Carregando classes...</div>;
+    }
+
+    if (error) {
+        return <div className="titulo">{error}</div>;
+    }
+
     return (
         <>
             <div className="titulo">
                 Escolha uma Classe
             </div>
             <div className="opcoesClasse">
-                {classes.map((classe) => (
+                {classes.map((classeObj) => (
                     <button
-                        key={classe}
-                        onClick={() => onSlctClasse(classe)}
+                        key={classeObj.idClasse}
+                        onClick={() => onSlctClasse(classeObj)}
                     >
-                        {classe}
+                        {classeObj.nomeClasse}
                     </button>
                 ))}
             </div>
         </>
     )
-}
+} 
