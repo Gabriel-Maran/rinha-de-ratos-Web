@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 data class RatoBasic(
     val nomeCustomizado: String?,
     val idUsuario: Long,
-    val nomeHabilidade: String,
+    val idHabilidade: Long,
 )
 
 data class UsuarioBasic(

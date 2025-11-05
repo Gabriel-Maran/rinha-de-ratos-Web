@@ -41,8 +41,8 @@ class RatoService(
 
         if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
         if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
-        donoDoRato.mousecoinSaldo = donoDoRato.mousecoinSaldo - 5
-        val habilidadeOpt = habilidadeRepository.findByNomeHabilidade(ratoBasic.nomeHabilidade)
+        donoDoRato.mousecoinSaldo -= 5
+        val habilidadeOpt = habilidadeRepository.findById(ratoBasic.idHabilidade)
         if (habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
         val habilidade = habilidadeOpt.get()
         val classe = habilidade.classe

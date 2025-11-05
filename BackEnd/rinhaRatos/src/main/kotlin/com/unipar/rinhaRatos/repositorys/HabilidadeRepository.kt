@@ -18,4 +18,8 @@ interface HabilidadeRepository : JpaRepository<Habilidade, Long> {
     @EntityGraph(attributePaths = ["classe"])
     @Query("select h from Habilidade h where h.idHabilidade = :id")
     fun findByIdWithClasse(@Param("id") id: Long): Optional<Habilidade>
+
+    @Query("select h from Habilidade h where h.classe.idClasse = :idClasse")
+    fun findByIdClasse(@Param("idClasse") idClasse: Long): Optional<List<Habilidade>>
+
 }

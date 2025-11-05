@@ -1,6 +1,6 @@
 package com.unipar.rinhaRatos.service
 
-import com.unipar.rinhaRatos.DTOandBASIC.HabilidadeDTO
+import com.unipar.rinhaRatos.DTOandBASIC.*
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
 import org.springframework.stereotype.Service
