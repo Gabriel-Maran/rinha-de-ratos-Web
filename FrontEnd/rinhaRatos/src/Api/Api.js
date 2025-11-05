@@ -26,3 +26,7 @@ export const ratosUsuario = (dadosRatos) => {
 export const pegarTodasClasses = async () => {
   return await apiClient.get("/classe/todos");
 };
+
+/* export const pegarDescricaoHabilidades = async () => {
+  return await apiClient.get("habilidade/todos")
+}; */

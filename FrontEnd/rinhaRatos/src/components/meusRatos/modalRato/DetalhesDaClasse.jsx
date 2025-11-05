@@ -5,8 +5,8 @@ import Input from "../../comuns/Input.jsx";
 import { ratosUsuario } from "../../../Api/Api.js";
 
 export default function DetalhesDaClasse({ classe, onMostrar, }) {
-
-  const [nomeRato, setNomeRato] = useState("Federoso");
+  console.log(classe)
+  const [nomeRato, setNomeRato] = useState(classe.apelido);
   const [habilAtiva, setHabilAtiva] = useState(0);
   const [erro, setErro] = useState(null);
 
@@ -21,10 +21,11 @@ export default function DetalhesDaClasse({ classe, onMostrar, }) {
     const dados = {
       idUsuario: idUsuarioLogado,
       nomeCustomizado: nomeRato,
-      idHabilidade: habilidadeSelecionada.idHabilidade,
+      idHabilidade: String(habilidadeSelecionada.idHabilidade),
     };
-     
+
     try {
+      console.log("Enviando para API:", dados);
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK!", resposta.data);
 
@@ -32,7 +33,13 @@ export default function DetalhesDaClasse({ classe, onMostrar, }) {
       localStorage.setItem("ratoCriado", JSON.stringify(resposta.data));
       console.log("DADOS DO RATO SALVO:", resposta.data);
 
-      onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade);
+      onMostrar(
+        classe,
+        nomeRato,
+        classe.habilidades,
+        habilAtiva,
+        habilidadeSelecionada.descricao
+      );
     } catch (err) {
       console.error("Falha ao salvar rato:", err);
       setErro(err?.response?.data?.message || "Erro ao salvar");
@@ -57,11 +64,11 @@ export default function DetalhesDaClasse({ classe, onMostrar, }) {
             <span className="simboloEditar">🖊</span>
           </div>
 
-          <img src={ImagensRato[classe] || ImagensRato["Rato de Esgoto"]} />
+          <img src={ImagensRato[classe.nomeClasse] || ImagensRato["Rato de Esgoto"]} />
 
         </div>
 
-        <div className="descRato">{descRato}</div>
+        <div className="descRato">{classe.descricao}</div>
 
         <p className="slctHabilidade">Selecione a habilidade:</p>
         <div className="opcoesHabilidade">

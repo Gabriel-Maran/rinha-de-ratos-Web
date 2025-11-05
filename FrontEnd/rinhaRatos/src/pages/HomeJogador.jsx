@@ -83,7 +83,7 @@ export default function Inicio() {
       nome: nomeRato,
       classeEsc: classe,
       habilidadeEsc: habilidades[habilAtiva],
-      descHabilidadeEsc: descHabilidade[habilAtiva],
+      descHabilidadeEsc: descHabilidade,
     };
     setClssRatoCriar(classe);
     setNomeRatoEsc(nomeRato);
