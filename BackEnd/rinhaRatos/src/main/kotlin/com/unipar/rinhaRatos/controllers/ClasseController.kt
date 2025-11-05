@@ -3,6 +3,7 @@ package com.unipar.rinhaRatos.controllers
 import com.unipar.rinhaRatos.DTOandBASIC.ClasseDTO
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.mapper.toDto
+import com.unipar.rinhaRatos.models.Classe
 import com.unipar.rinhaRatos.service.ClasseService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

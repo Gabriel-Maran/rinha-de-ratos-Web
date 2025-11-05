@@ -188,7 +188,7 @@ class ServicoBatalhaAutomatica(
     }
 
     private fun decidirUsarHabilidade(): Boolean {
-        return ThreadLocalRandom.current().nextInt(100) < 35 // 35% chance
+        return ThreadLocalRandom.current().nextInt(100) < 99 // 35% chance
     }
 
     /**
