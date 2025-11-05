@@ -36,6 +36,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, }) {
 
 
       localStorage.setItem("ratoCriado", JSON.stringify(resposta.data));
+   console.log("DADOS DO RATO SALVO:", resposta.data);
 
       onMostrar(classe, nomeRato, habilidades, habilAtiva, descHabilidade);
     } catch (err) {
