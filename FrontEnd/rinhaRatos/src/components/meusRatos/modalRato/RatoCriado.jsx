@@ -27,7 +27,7 @@ export default function RatoCriado({ novoRato, onClose}) {
 
       <div className="imagemENome">
 
-      {/* Acessa o rato  */}
+      
 <img src={ImagensRato[rato.classe?.nomeClasse] || ImagensRato["Rato de Esgoto"]} /> 
         <p>{rato.nomeCustomizado}</p>
       </div>
