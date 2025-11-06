@@ -76,8 +76,8 @@ class BatalhaService(
         val batalhaFinal = Batalha().apply {
             nomeBatalha = basic.nomeBatalha.trim().ifEmpty { "Sem nome" }
             dataHorarioInicio = parsedDate ?: LocalDateTime.now()
-            custoInscricao = basic.custoInscricao
-            premioTotal = basic.custoInscricao * 2
+            custoInscricao = if(basic.custoInscricao <= 0) 5 else basic.custoInscricao
+            premioTotal = if(basic.custoInscricao <= 0) 5 else basic.custoInscricao * 2
             admCriador = adm
             status = StatusBatalha.InscricoesAbertas
         }

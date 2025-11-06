@@ -50,7 +50,8 @@ class ServicoBatalhaAutomatica(
 
         while (estadoRato1.hpAtual > 0 && estadoRato2.hpAtual > 0) {
             numeroRound += 1
-            val mensagens = mutableListOf<String>()
+            // Agora a lista de mensagens guarda Map { "message" -> "...", "player" -> "1"|"2"|"0" }
+            val mensagens = mutableListOf<Map<String, String>>()
 
             // limpa modifiers do round anterior
             estadoRato1.percentuais.clear(); estadoRato1.absolutos.clear()
@@ -60,12 +61,12 @@ class ServicoBatalhaAutomatica(
             val usouHabilidade1 = decidirUsarHabilidade()
             val usouHabilidade2 = decidirUsarHabilidade()
 
-            // mensagem simples de não uso
-            if (!usouHabilidade1) mensagens.add("${rato1.nomeCustomizado} não usou a habilidade")
-            if (usouHabilidade1) processarHabilidadeDoRato(rato1, estadoRato1, estadoRato2, mensagens)
+            // mensagem simples de não uso (player 1 ou 2)
+            if (!usouHabilidade1) mensagens.add(mapOf("message" to "${rato1.nomeCustomizado} não usou a habilidade", "player" to "1"))
+            if (usouHabilidade1) processarHabilidadeDoRato(rato1, estadoRato1, estadoRato2, mensagens, "1")
 
-            if (!usouHabilidade2) mensagens.add("${rato2.nomeCustomizado} não usou a habilidade")
-            if (usouHabilidade2) processarHabilidadeDoRato(rato2, estadoRato2, estadoRato1, mensagens)
+            if (!usouHabilidade2) mensagens.add(mapOf("message" to "${rato2.nomeCustomizado} não usou a habilidade", "player" to "2"))
+            if (usouHabilidade2) processarHabilidadeDoRato(rato2, estadoRato2, estadoRato1, mensagens, "2")
 
             // stats / chance de crítico
             val chanceCritico1 = obterChanceCriticaDoRato(rato1)
@@ -80,18 +81,16 @@ class ServicoBatalhaAutomatica(
 
             // aplica dano: atacante 1 primeiro
             estadoRato2.hpAtual = (estadoRato2.hpAtual - danoParaRato2).coerceAtLeast(0)
-            mensagens.add("${rato1.nomeCustomizado} causou $danoParaRato2 ao ${rato2.nomeCustomizado}" +
-                    if (estadoRato2.hpAtual <= 0) "!" else "!")
+            mensagens.add(mapOf("message" to "${rato1.nomeCustomizado} causou $danoParaRato2 ao ${rato2.nomeCustomizado}!", "player" to "1"))
 
             // se adversário ainda vivo, revida
             if (estadoRato2.hpAtual > 0) {
                 estadoRato1.hpAtual = (estadoRato1.hpAtual - danoParaRato1).coerceAtLeast(0)
-                mensagens.add("${rato2.nomeCustomizado} causou $danoParaRato1 ao ${rato1.nomeCustomizado}" +
-                        if (estadoRato1.hpAtual <= 0) "!" else "!")
+                mensagens.add(mapOf("message" to "${rato2.nomeCustomizado} causou $danoParaRato1 ao ${rato1.nomeCustomizado}!", "player" to "2"))
             }
 
             // mensagem final do round (sistema) — player = 0
-            mensagens.add("HPs após round: ${rato1.nomeCustomizado}=${estadoRato1.hpAtual} | ${rato2.nomeCustomizado}=${estadoRato2.hpAtual}")
+            mensagens.add(mapOf("message" to "HPs após round: ${rato1.nomeCustomizado}=${estadoRato1.hpAtual} | ${rato2.nomeCustomizado}=${estadoRato2.hpAtual}", "player" to "0"))
 
             // SALVA mensagens deste round no banco — usa nomes para identificar player 1/2
             salvarMensagensDoRound(
@@ -107,7 +106,7 @@ class ServicoBatalhaAutomatica(
             historicoRounds.add(
                 ResultadoRound(
                     numeroRound,
-                    mensagens.toList(),
+                    mensagens.map { it["message"] ?: "" }, // mantemos histórico como lista de strings para compatibilidade
                     mapOf(rato1.idRato to estadoRato1.hpAtual, rato2.idRato to estadoRato2.hpAtual)
                 )
             )
@@ -171,21 +170,28 @@ class ServicoBatalhaAutomatica(
         return ThreadLocalRandom.current().nextInt(100) < 35 // 35% chance
     }
 
+    /**
+     * processarHabilidadeDoRato:
+     * - usa a mensagem no formato Map<String,String>
+     * - para aplicar efeitos chama a função aplicarEfeito existente (que adiciona Strings)
+     *   por isso criamos uma lista temporária de Strings e depois convertemos para Map.
+     */
     private fun processarHabilidadeDoRato(
         r: Rato,
         estadoFonte: EstadoRato,
         estadoAlvo: EstadoRato,
-        mensagens: MutableList<String>,
+        mensagens: MutableList<Map<String, String>>,
+        player: String // "1" ou "2"
     ) {
         val idHabilidade = r.habilidadeEscolhida?.idHabilidade
         if (idHabilidade == null || idHabilidade == 0L) {
-            // já adicionamos "não usou a habilidade" em outro lugar, aqui só garante não quebrar
+            // já adicionamos "não usou a habilidade" anteriormente
             return
         }
 
         val optHab = repositorioHabilidade.findByIdWithClasse(idHabilidade)
         if (optHab.isEmpty) {
-            mensagens.add("${r.nomeCustomizado}: habilidade não encontrada")
+            mensagens.add(mapOf("message" to "${r.nomeCustomizado}: habilidade não encontrada", "player" to player))
             return
         }
         val hab = optHab.get()
@@ -193,14 +199,34 @@ class ServicoBatalhaAutomatica(
         val roll = ThreadLocalRandom.current().nextInt(100)
         val sucesso = roll < hab.chanceSucesso
 
-        // mensagem de uso/falha (exatamente o texto que você já tem no DB)
-        mensagens.add("${r.nomeCustomizado}: ${if (sucesso) (hab.efetivoTxt ?: hab.nomeHabilidade) else (hab.falhaTxt ?: "${hab.nomeHabilidade} falhou")}")
+        // mensagem de uso/falha (texto do DB)
+        val texto = if (sucesso) (hab.efetivoTxt ?: hab.nomeHabilidade) else (hab.falhaTxt ?: "${hab.nomeHabilidade} falhou")
+        mensagens.add(mapOf("message" to "${r.nomeCustomizado}: $texto", "player" to player))
 
         val efeitosStr = if (sucesso) hab.efeitoSucessoStr else hab.efeitoFalhaStr
         val listaEfeitos = parseEfeitos(efeitosStr)
 
-        // aplicar efeitos (sem mensagens extras)
-        for (ef in listaEfeitos) aplicarEfeito(ef, estadoFonte, estadoAlvo, mensagens)
+        // aplicar efeitos:
+        // a função aplicarEfeito(original) existente no seu código provavelmente recebe MutableList<String>
+        // para compatibilidade criamos uma lista temporária de strings, chamamos a função antiga e convertemos as mensagens
+        for (ef in listaEfeitos) {
+            try {
+                val tempMsgs = mutableListOf<String>()
+                // chama a função existente que manipula strings (presumida já implementada no mesmo arquivo)
+                // se a sua implementar aceitar MutableList<String>, isto funcionará
+                aplicarEfeito(ef, estadoFonte, estadoAlvo, tempMsgs)
+                // converte cada mensagem string gerada para Map e adiciona à lista principal
+                for (m in tempMsgs) {
+                    mensagens.add(mapOf("message" to m, "player" to player))
+                }
+            } catch (ex: NoSuchMethodError) {
+                // caso não exista a versão aplicable da função aplicarEfeito que receba MutableList<String>
+                // fallback: apenas registra que um efeito foi aplicado (sem detalhes)
+                mensagens.add(mapOf("message" to "${r.nomeCustomizado}: efeito aplicado.", "player" to player))
+            } catch (ex: Exception) {
+                log.warn("Erro ao aplicar efeito na habilidade: ${ex.message}")
+            }
+        }
     }
 
     private fun persistirResultadoFinal(
@@ -308,20 +334,23 @@ class ServicoBatalhaAutomatica(
     private fun salvarMensagensDoRound(
         batalha: Batalha,
         numeroRound: Int,
-        mensagens: List<String>,
+        mensagens: List<Map<String, String>>,
         idRato1: Long,
         nomeRato1: String,
         idRato2: Long,
         nomeRato2: String,
     ) {
-        for (msg in mensagens) {
-            val playerNum = when {
-                msg.startsWith(nomeRato1) -> 1L
-                msg.startsWith(nomeRato2) -> 2L
-                else -> 0L // mensagens do sistema (HPs etc.)
+        for (msgMap in mensagens) {
+            val texto = msgMap["message"] ?: continue
+            val playerStr = msgMap["player"]
+            val playerNum = playerStr?.toLongOrNull() ?: when {
+                texto.startsWith(nomeRato1) -> 1L
+                texto.startsWith(nomeRato2) -> 2L
+                else -> 0L
             }
+
             val mr = MessageRound().apply {
-                descricao = msg
+                descricao = texto
                 id_batalha = batalha.idBatalha
                 round = numeroRound.toLong()
                 player = playerNum

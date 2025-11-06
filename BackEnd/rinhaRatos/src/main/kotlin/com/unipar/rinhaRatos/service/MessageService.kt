@@ -1,5 +1,7 @@
 package com.unipar.rinhaRatos.service
 
+import com.unipar.rinhaRatos.DTOandBASIC.MessageRoundDTO
+import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.MessageRound
 import com.unipar.rinhaRatos.repositorys.MessageRoundRepository
 import com.unipar.rinhaRatos.repositorys.ResultsRepository
@@ -21,10 +23,10 @@ class MessageService(
         return Optional.of(mensagemPront)
     }
 
-    fun pegarTodasAsMensagensPorBatalha(idBatalha: Long): Optional<List<MessageRound>> {
+    fun pegarTodasAsMensagensPorBatalha(idBatalha: Long): Optional<List<MessageRoundDTO>> {
         val batalha = batalhaRepository.findById(idBatalha)
         log.warn(batalha.toString())
         if (batalha.isEmpty) return Optional.empty()
-        return Optional.of(messageRoundRepository.findByIdBatalha(idBatalha))
+        return Optional.of(messageRoundRepository.findByIdBatalha(idBatalha).map { it.toDto() })
     }
 }
