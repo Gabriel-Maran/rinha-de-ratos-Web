@@ -21,7 +21,7 @@ export default function DetalhesDaClasse({ classe, onMostrar, }) {
     const dados = {
       idUsuario: idUsuarioLogado,
       nomeCustomizado: nomeRato,
-      idHabilidade: String(habilidadeSelecionada.idHabilidade),
+      idHabilidade: habilidadeSelecionada.idHabilidade,
     };
 
     try {

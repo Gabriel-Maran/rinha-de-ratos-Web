@@ -45,8 +45,7 @@ export default function Inicio() {
   const irParaPerfil = () => {
     navigate("/perfil", { state: { listaBatalhas } });
   };
-  /*---------------------------------------------------------------*/
-  /*---------------------------------------------------------------*/
+
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);

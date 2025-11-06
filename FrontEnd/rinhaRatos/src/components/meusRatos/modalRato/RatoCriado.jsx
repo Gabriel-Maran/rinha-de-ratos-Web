@@ -47,7 +47,7 @@ export default function RatoCriado({ novoRato, onClose}) {
 
           <div className="caixaHabilidadeEsc">
             <p className="titusEstHabil">{rato.habilidade?.nomeHabilidade}</p>
-            <p className="descHabilEsc">{novoRato.descHabilidadeEsc}</p>
+            <p className="descHabilEsc">{novoRato.descricao}</p>
           </div>
         </div>
       </div>
