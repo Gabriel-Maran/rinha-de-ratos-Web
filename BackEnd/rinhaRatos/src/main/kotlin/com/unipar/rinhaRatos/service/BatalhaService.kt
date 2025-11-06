@@ -235,6 +235,7 @@ class BatalhaService(
         // marca como em andamento e salva imediatamente para sinalizar que começou
         batalha.status = StatusBatalha.EmAndamento
         batalhaRepository.save(batalha)
+        if(batalha.jogador1 == null || batalha.jogador2 == null) return "NOT_ENOUGH_USERS"
 
         // delega ao gerenciador: ele retorna false se já estiver rodando
         val iniciou = battleManager.iniciarSimulacaoBatalhaAsync(idBatalha)

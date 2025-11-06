@@ -15,7 +15,7 @@ data class Efeito(
     val valor: Double,
     val ehPercentual: Boolean,
     val atributo: AtributoEfeito,
-    val alvo: AlvoEfeito
+    val alvo: AlvoEfeito,
 )
 
 
@@ -30,7 +30,7 @@ data class EstadoRato(
     val defesaBase: Int,
     val ratoOriginal: Rato,
     val percentuais: MutableMap<AtributoEfeito, Double> = mutableMapOf(),
-    val absolutos: MutableMap<AtributoEfeito, Double> = mutableMapOf()
+    val absolutos: MutableMap<AtributoEfeito, Double> = mutableMapOf(),
 )
 
 // Regex para pegar token do que a habilidade faz
@@ -97,33 +97,35 @@ fun parseEfeitos(strEfeitos: String?): List<Efeito> {
 // Aplica um único efeito no estado (apenas para o round corrente). Gera mensagens explicativas.
 fun aplicarEfeito(efeito: Efeito, fonte: EstadoRato, alvoEstado: EstadoRato, mensagens: MutableList<String>) {
     val destino = if (efeito.alvo == AlvoEfeito.SEU) fonte else alvoEstado
+
     when (efeito.atributo) {
         AtributoEfeito.HPS -> {
-            val delta = if (efeito.ehPercentual) (destino.hpMaximo * efeito.valor * efeito.sinal).roundToInt()
-            else (efeito.valor * efeito.sinal).roundToInt()
-            destino.hpAtual = (destino.hpAtual + delta).coerceIn(0, destino.hpMaximo)
-            mensagens.add(
-                "${if (destino === fonte) "Seu rato" else "Oponente"} ${if (delta >= 0) "recuperou" else "sofreu"} ${
-                    delta.toString()
-                } HP"
-            )
-        }
-
-        AtributoEfeito.STR, AtributoEfeito.AGI, AtributoEfeito.INT, AtributoEfeito.DEF,
-        AtributoEfeito.PAS, AtributoEfeito.PDS, AtributoEfeito.CRI -> {
-            if (efeito.ehPercentual) {
-                val prev = destino.percentuais.getOrDefault(efeito.atributo, 0.0)
-                destino.percentuais[efeito.atributo] = prev + efeito.valor * efeito.sinal
+            // aplica alteração de HP (instantânea) — NÃO adiciona mensagem aqui
+            val delta = if (efeito.ehPercentual) {
+                (destino.hpMaximo * efeito.valor * efeito.sinal).roundToInt()
             } else {
-                val prev = destino.absolutos.getOrDefault(efeito.atributo, 0.0)
-                destino.absolutos[efeito.atributo] = prev + efeito.valor * efeito.sinal
+                (efeito.valor * efeito.sinal).roundToInt()
             }
-            val texto =
-                if (efeito.ehPercentual) "${(efeito.valor * 100).roundToInt()}%" else "${efeito.valor.roundToInt()}"
-            mensagens.add("${if (destino === fonte) "Seu rato" else "Oponente"} recebeu ${if (efeito.sinal > 0) "+" else "-"}$texto em ${efeito.atributo}")
+            destino.hpAtual = (destino.hpAtual + delta).coerceIn(0, destino.hpMaximo)
+        }
+        AtributoEfeito.STR, AtributoEfeito.AGI, AtributoEfeito.INT, AtributoEfeito.DEF, AtributoEfeito.PAS,
+        AtributoEfeito.PDS, AtributoEfeito.CRI,
+            -> {
+            // aplica modificadores percentuais ou absolutos ao destino (válidos apenas para o round atual)
+            if (efeito.ehPercentual) {
+                val anterior = destino.percentuais.getOrDefault(efeito.atributo, 0.0)
+                destino.percentuais[efeito.atributo] = anterior + efeito.valor * efeito.sinal
+            } else {
+                val anterior = destino.absolutos.getOrDefault(efeito.atributo, 0.0)
+                destino.absolutos[efeito.atributo] = anterior + efeito.valor * efeito.sinal
+            }
+            // sem mensagem aqui — histórico será apenas uso/erro de habilidade, danos e HPs finais
         }
 
-        else -> mensagens.add("Efeito desconhecido ignorado")
+        else -> {
+            log.warn("aplicarEfeito: atributo desconhecido. Ignorando -> $efeito")
+            // não adiciona mensagem no histórico do round
+        }
     }
 }
 

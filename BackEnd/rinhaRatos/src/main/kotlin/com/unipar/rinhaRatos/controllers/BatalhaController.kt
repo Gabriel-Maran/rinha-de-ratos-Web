@@ -145,6 +145,8 @@ class BatalhaController(
     fun iniciarBatalha(@PathVariable idBatalha: Long): ResponseEntity<Any> {
         val resp = batalhaService.iniciarBatalhaAsync(idBatalha)
         return when (resp) {
+            "NOT_ENOUGH_USERS" ->
+                buildError(HttpStatus.BAD_REQUEST, "Sem usuários suficientes para iniciar a batalha", "NOT_ENOUGH_USERS")
             "BATALHA_NOT_FOUND" ->
                 buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
             "BATALHA_HAPPENING_OR_OVER" ->

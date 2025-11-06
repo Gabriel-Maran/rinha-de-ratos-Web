@@ -68,6 +68,7 @@ fun Classe.toDto(): ClasseDTO {
     return ClasseDTO(
         idClasse = this.idClasse,
         nomeClasse = this.nomeClasse,
+        descricao = this.descricao ?: "",
         apelido = this.apelido,
         strMin = this.strMin,
         strMax = this.strMax,

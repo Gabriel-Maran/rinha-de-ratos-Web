@@ -43,6 +43,12 @@ class Results(
     @Column(nullable = false)
     var id_batalha: Long = 0L,
 
+    @Column(nullable = false)
+    var id_vencedor: Long = 0L,
+
+    @Column(nullable = false)
+    var id_perdedor: Long = 0L,
+
     ) : Serializable {
     constructor() : this(
         0L,
@@ -55,5 +61,7 @@ class Results(
         0.0F,
         0.0F,
         0L,
+        0L,
+        0L
     )
 }

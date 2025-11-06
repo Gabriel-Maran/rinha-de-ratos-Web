@@ -62,6 +62,7 @@ data class RatoDTO(
 data class ClasseDTO(
     val idClasse: Long,
     val nomeClasse: String,
+    val descricao: String,
     val apelido: String?,
     val strMin: Int,
     val strMax: Int,

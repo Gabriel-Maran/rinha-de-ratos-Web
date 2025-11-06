@@ -5,7 +5,7 @@ import { pegarTodasClasses } from "../../../Api/Api.js"; // 2. Importar sua API
 
 export default function SelecaoDeClasse({ onSlctClasse }) {
 
-    // 3. Criar estados para guardar os dados, loading e erro
+
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ export default function SelecaoDeClasse({ onSlctClasse }) {
             try {
                 setLoading(true);
                 const resposta = await pegarTodasClasses();
-                setClasses(resposta.data); // Guarda o array de objetos
+                setClasses(resposta.data);
             } catch (err) {
                 console.error("Erro ao buscar classes:", err);
                 setError("Falha ao carregar as classes.");
