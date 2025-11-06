@@ -38,12 +38,12 @@
 }
 
 .titulo {
-    height: 3.5rem;
-    width: 20rem;
+    min-height: 3.5rem;
+    min-width: 20rem;
     padding: auto;
     margin: 1.5rem 5rem;
-    background-image: url('../../assets/backgrounds/tabuaLabel.svg');
-    background-size: cover;
+    background-image: url('../../assets/backgrounds/tabuaLabel.png');
+    background-size: 100% 100%;
     color: white;
     font-size: 2rem;
     text-align: center;

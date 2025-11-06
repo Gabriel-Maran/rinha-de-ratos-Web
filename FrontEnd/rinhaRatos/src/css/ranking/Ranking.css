@@ -5,7 +5,7 @@
     transform: translateX(-50%);
     width: 20rem;
     height: 5rem;
-    background-image: url("../../assets/buttons/btnOpcaoBatalhas.png");
+    background-image: url("../../assets/backgrounds/papelLblTitulo.png");
     background-size: 100% 100%;
     display: flex;
     justify-content: center;
@@ -20,34 +20,46 @@
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
+    scrollbar-width: none;
+    gap: 1rem;
 }
 
 .jogador {
-    width: 87%;
-    height: 12rem;
-    background-image: url("../../assets/backgrounds/papelLabel.svg");
+    width: 65%;
+    height: 5rem;
+    background-image: url("../../assets/backgrounds/papelLblJogador.png");
     background-size: 100% 100%;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 1rem 3rem 1rem 2rem;
+    padding: 1rem 1rem 1rem 1.3rem;
     font-size: 1.3rem;
 }
 
-.jogador p {
-    margin-bottom: 1rem;
+.posicaoJogador p{
+    width: 1rem;
+    padding-right: 4rem;
 }
-
-.jogador p+p {
-    margin: 0;
-}
-
 
 .jogador img{
-    width: 5rem;
-    margin-right: 1rem;
+    width: 4rem;
 }
 
-.infoJogador {
-    width: 40rem;
-    margin-right: 6rem;
+.nomeEVitorias{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nomeJogador{
+    margin-left: 1rem;
+}
+
+.vitorias{
+    width: 4rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    text-align: center;
 }

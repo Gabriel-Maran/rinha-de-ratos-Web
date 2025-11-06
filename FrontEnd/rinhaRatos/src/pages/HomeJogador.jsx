@@ -4,7 +4,8 @@ import Botao from "../components/comuns/Botao";
 import ModalCriacaoRato from "../components/meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "../components/meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "../components/batalhas/ListaDeBatalhas";
-import Ranking from "../components/ranking/Ranking"
+import Ranking from "../components/ranking/Ranking";
+import Loja from "../components/loja/Loja";
 import "../css/Corpo.css";
 
 import { useNavigate } from "react-router-dom";
@@ -142,9 +143,11 @@ export default function Inicio() {
       );
       break;
     case "Ranking":
-      conteudoCorpo = (
-        <Ranking />
-      )
+      conteudoCorpo = <Ranking />;
+      break;
+    case "Loja":
+      conteudoCorpo = <Loja />;
+      break;
   }
 
   return (
