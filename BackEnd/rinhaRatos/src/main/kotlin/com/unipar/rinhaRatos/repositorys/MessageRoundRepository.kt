@@ -13,4 +13,5 @@ interface MessageRoundRepository: JpaRepository<MessageRound, Long>  {
         nativeQuery = true
     )
     fun findByIdBatalha(@Param("idBatalha") idBatalha: Long): List<MessageRound>
+
 }
