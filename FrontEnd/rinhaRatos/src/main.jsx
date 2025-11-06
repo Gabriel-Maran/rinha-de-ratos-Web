@@ -3,12 +3,14 @@ import ReactDom from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./css/index.css";
 import App from "./App.jsx";
-import HomeJogador from "./pages/HomeJogador.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Acesso from "./pages/Auth/Acesso.jsx";
 import Cadastro from "./pages/auth/Cadastro.jsx";
 import EsqueceuSenha from "./pages/Auth/EsqueceuSenha.jsx";
+import HomeJogador from "./pages/HomeJogador.jsx";
+import HomeADM from "./pages/home/HomeADM.jsx";
 import Perfil from "./pages/Perfil.jsx"
+
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <HomeJogador />,
+      },
+      {
+        path: "homeAdm",
+        element: <HomeADM />
       },
       {
         path: "perfil",

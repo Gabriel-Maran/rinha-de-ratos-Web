@@ -1,0 +1,15 @@
+.btnGerenciar{
+    width: 20rem;
+    height: 3.5rem;
+    background-image: url("../../assets/buttons/btnVerHistorico.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.btnGerenciar:active{
+    transform: scale(0.97);
+}
