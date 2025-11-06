@@ -48,9 +48,12 @@ class RatoService(
         val classe = habilidade.classe
 
         val descricao = classe.descricao ?: "Sem descrição"
-
+        var nome = ratoBasic.nomeCustomizado?.trim() ?: ""
+        if(nome.isEmpty()){
+            nome = classe.apelido.toString()
+        }
         val rato = Rato(
-            nomeCustomizado = ratoBasic.nomeCustomizado ?: classe.nomeClasse,
+            nomeCustomizado = nome,
             descricao = descricao,
             usuario = donoDoRato,
             classe = classe,
