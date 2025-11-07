@@ -1,0 +1,168 @@
+.abasModal {
+    width: 26rem;
+    height: 3rem;
+    display: flex;
+    margin-top: 1.7rem;
+    gap: 1rem
+}
+
+.btnNavModal,
+.btnNavModalAtivado {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    font-size: 1.7rem;
+    font-weight: 1000;
+    color: white;
+    border: 0.25rem solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(102, 102, 102, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+.btnNavModalAtivado {
+    background-color: #64fd3e;
+    color: #004d00;
+    box-shadow:
+        0 0 10px #64fd3e,
+        0 0 20px #64fd3e;
+    border-color: #3b9b25;
+}
+
+.excluirEFechar h1 {
+    color: white;
+}
+
+.editInfoBatalha {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+.tituloAba {
+    width: 70%;
+    height: 10%;
+    margin: 2rem 0 0.5rem 0;
+    color: white;
+    background-image: url("../../../assets/backgrounds/tabuaLabel.png");
+    background-size: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editInfoBatalha h3 {
+    width: 100%;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    color: white;
+    text-align: left;
+}
+
+.editInfoBatalha input {
+    width: 100%;
+    height: 4rem;
+    font-size: 1.5rem;
+    padding: 0rem 1rem 0rem 1rem;
+    margin-bottom: 1rem;
+    border: 0.2rem solid black;
+    border-radius: 1rem;
+    outline: none;
+}
+
+input[type="datetime-local"] {
+    width: 25.646rem;
+}
+
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type="number"] {
+    appearance: textfield;
+}
+
+.quadroJogadoresBatalha {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.5rem 1.8rem;
+    margin-top: 3rem;
+    background-image: url('../../../assets/backgrounds/displayMadeira2.png');
+    background-size: 100% 100%;
+}
+
+.qJogadorBatalha {
+    width: 100%;
+    height: 45%;
+    background-color: #D9D9D9;
+    display: flex;
+    align-items: center;
+    border-radius: 1.67rem;
+    border: 0.2rem solid black
+}
+
+.qFotoENomeJogador {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+}
+
+.nomeJogadorBatalha {
+    width: 10rem;
+}
+
+.fotoJogadorBatalha {
+    width: 6rem;
+    padding: 0.5rem;
+}
+
+.quadroJogadoresBatalha button {
+    width: 5rem;
+    height: 100%;
+    margin-left: 4.7rem;
+    background-color: red;
+    border: none;
+    border-left: 0.2rem solid black;
+    border-radius: 0 1.5rem 1.5rem 0;
+    font-size: 2rem;
+}
+
+.btnExcluir,
+.btnAtualizarInfo {
+    width: 11rem;
+    height: 3rem;
+    font-size: 1.2rem;
+    color: white;
+    font-family: 'Ballo Bhaijaan 2', cursive;
+    font-weight: 900;
+    padding: 0.5rem;
+    border: 0.15rem solid black;
+    border-radius: 0.5rem;
+}
+
+.botoesOpcBatalha {
+    width: 100%;
+    height: 20%;
+    gap: 4rem;
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: center;
+}
+
+.btnAtualizarInfo {
+    background-color: #4F5AD5;
+}
+
+.btnExcluir {
+    background-color: red;
+}

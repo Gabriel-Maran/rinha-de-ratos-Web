@@ -3,7 +3,8 @@ import Header from "../../components/comuns/Header";
 import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png"
 import trofeu from "../../assets/icones/IconeTrofeu.png"
 import ModalEditarBatalha from "./ModalEditarBatalha";
-import "../../css/home/homeADM.css";
+import ModalCriarBatalha from "./ModalCriarBatalha"
+import "../../css/home/ADM/homeADM.css";
 
 export default function HomeADM() {
     const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
@@ -15,14 +16,16 @@ export default function HomeADM() {
     const [custoInscricao, setCustoInscricao] = useState(0);
     const [dataHora, setDataHora] = useState();
     const [premio, setPremio] = useState(0);
-    const [jogador1, setJogador1] = useState (null);
-    const [jogador2, setJogador2] = useState (null);
+    const [jogador1, setJogador1] = useState(null);
+    const [jogador2, setJogador2] = useState(null);
     const [iniciar, setIniciar] = useState(false);
 
-    const [ativarModal, setAtivarModal] = useState(false);
+    const [editarBatalha, setEditarBatalha] = useState(false);
+    const [criarBatalha, setCriarBatalha] = useState(false)
 
     const fecharModal = () => {
-        setAtivarModal(!ativarModal);
+        setEditarBatalha(false);
+        setCriarBatalha(false);
     };
 
     const CadastrarBatalha = () => {
@@ -33,7 +36,7 @@ export default function HomeADM() {
             dataEHora: dataHora,
             premio: premio,
             jogador1: jogador1,
-            jogador2: jogador2,  
+            jogador2: jogador2,
             iniciar: iniciar,
         };
 
@@ -114,16 +117,29 @@ export default function HomeADM() {
         default:
             conteudoHomeAdm = conteudoHomeAdm = (
                 <>
-                    {ativarModal && (
+                    {criarBatalha && (
+                        <ModalCriarBatalha
+                        nomeBatalha = {nomeBatalha}
+                        custoInscricao = {custoInscricao}
+                        dataEHora = {dataHora}
+                        premio = {premio}
+                        setNomeBatalha = {setNomeBatalha}
+                        setCustoInscricao = {setCustoInscricao}
+                        setDataHora = {setDataHora}
+                        setPremio = {setPremio}
+                        onClose={fecharModal}
+                        />
+                    )}
+                    {editarBatalha && (
                         <ModalEditarBatalha
                             onClose={fecharModal}
                             setNomeBatalha={setNomeBatalha}
                             setCustoInscricao={setCustoInscricao}
                             setDataHora={setDataHora}
                             setPremio={setPremio}
-                            setInscrito={setInscrito}
                         />
                     )}
+                    <button onClick={() => setCriarBatalha(true)}>Adicionar</button>
                     <div className="addBatalha">
                         <input
                             type="text"
@@ -149,7 +165,6 @@ export default function HomeADM() {
                             placeholder="Prêmio"
                             onChange={(e) => setPremio(Number(e.target.value))}
                         />
-                        <button onClick={CadastrarBatalha}>Adicionar</button>
                     </div>
                     <div className="listaBatalhas">
                         {listaBatalhas.map((batalha) => (
@@ -161,13 +176,14 @@ export default function HomeADM() {
                                     <p>Data e Hora: {batalha.dataEHora}</p>
                                     <p>Prêmio: {batalha.premio} MouseCoin</p>
                                 </div>
-                                <button className="btnGerenciar" onClick={() => setAtivarModal(true)}>
+                                <button className="btnGerenciar" onClick={() => setEditarBatalha(true)}>
                                     Gerenciar
                                 </button>
                             </div>
                         ))}
                     </div>
-                    {ativarModal}
+                    {criarBatalha}
+                    {editarBatalha}
                 </>
             );
     }
