@@ -20,7 +20,7 @@ export const trocarSenha = (dadosNovaSenha) => {
 };
 
 export const ratosUsuario = (dadosRatos) => {
-  return apiClient.post("/rato/cadastro", dadosRatos)
+  return apiClient.post("/rato/cadastro", dadosRatos);
 };
 
 export const pegarTodasClasses = async () => {
@@ -28,5 +28,16 @@ export const pegarTodasClasses = async () => {
 };
 
 export const pegarDescricaoHabilidades = async () => {
-  return await apiClient.get("habilidade/todos")
+  return await apiClient.get("habilidade/todos");
+};
+
+// pego todo os pacotes da loja
+export const pegarMoedas = async () => {
+  return await apiClient.get("lojapacotes/todos");
+};
+
+// faz a compra do pacote o 2 é o id do pacote e o 1 o id do usuariao, não irá ficar assim só adicionei por enquanto.
+// Terei que pensar como irei implementar, mas já tenho uma ideia.
+export const compraPacote = async () => {
+  return await apiClient.post("lojapacotes/comprar/2/1");
 };

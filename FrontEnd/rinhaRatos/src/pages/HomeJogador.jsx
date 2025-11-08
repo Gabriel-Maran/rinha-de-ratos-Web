@@ -5,7 +5,7 @@ import ModalCriacaoRato from "../components/meusRatos/modalRato/ModalCriacaoRato
 import ListaDeRatos from "../components/meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "../components/batalhas/ListaDeBatalhas";
 import Ranking from "../components/ranking/Ranking";
-import Loja from "../components/loja/Loja";
+import Loja from "./Loja";
 import "../css/Corpo.css";
 
 const ETAPAS = {
