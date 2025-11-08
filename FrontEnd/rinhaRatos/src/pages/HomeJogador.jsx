@@ -27,6 +27,8 @@ export default function Inicio() {
 
   const [novoRato, setNovoRato] = useState({});
 
+  const [qtdeMoedas, setQtdeMoedas] = useState(0)
+
   /* const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]); */
 
   const idUsuarioLogado = localStorage.getItem("idUsuario");
