@@ -109,3 +109,9 @@
     font-size: 2rem;
     margin-bottom: 1rem;
 }
+
+.imagem-rato-lista {
+  width: 6rem;
+  height: auto;
+  max-width: 100%;
+}   

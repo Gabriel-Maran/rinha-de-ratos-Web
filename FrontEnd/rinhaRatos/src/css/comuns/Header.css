@@ -2,7 +2,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    height: 7rem;       
+    height: 5em;       
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -20,12 +20,12 @@
 
 .infoHeader h1 {
     margin-left: 1.5rem;
-    font-size: 30px;
+    font-size: 22px;
     cursor: pointer;
 }
 
 .infoHeader img {
-    height: 6rem;
+    height: 4rem;
     margin-left: 2rem;
     cursor: pointer;
 }
@@ -58,8 +58,8 @@
 }
 
 .logoColiseu{
-    width: 13rem;
-    height: 13rem;
+    width: 9rem;
+    height: 10rem;
     margin-right: 2rem;
     cursor: pointer;
 }

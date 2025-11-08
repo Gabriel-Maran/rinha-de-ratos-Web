@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react"; 
 import SelecaoDeClasse from "./SelecaoDeClasse.jsx";
 import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
 import RatoCriado from "./RatoCriado.jsx";
 import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css";
+import { pegarTodasClasses, pegarDescricaoHabilidades } from "../../../Api/Api.js";
 
 export default function ModalCriacaoRato({
   etapa,
@@ -13,6 +15,35 @@ export default function ModalCriacaoRato({
   onMostrarRato,
   novoRato,
 }) {
+
+  const [classes, setClasses] = useState([]);
+  const [descricaoHabilidades, setDescHabilidades] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Apenas busca os dados se o modal for aberto na etapa de seleção
+    if (etapa === etapas.SELECAO_CLASSE) {
+      const fetchDados = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const [resposta, respostaDescHabil] = await Promise.all([
+            pegarTodasClasses(),
+            pegarDescricaoHabilidades() 
+          ]);
+          setClasses(resposta.data);
+          setDescHabilidades(respostaDescHabil.data);
+        } catch (err) {
+          console.error("Erro ao buscar dados:", err);
+          setError("Falha ao carregar os dados.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchDados();
+    }
+  }, [etapa, etapas.SELECAO_CLASSE]); 
   if (etapa === etapas.FECHADO) {
     return null;
   }
@@ -21,7 +52,14 @@ export default function ModalCriacaoRato({
 
   switch (etapa) {
     case etapas.SELECAO_CLASSE:
-      conteudoModal = <SelecaoDeClasse onSlctClasse={onSlctClasse } />;
+      conteudoModal = (
+        <SelecaoDeClasse 
+          onSlctClasse={onSlctClasse}
+          classes={classes}
+          loading={loading}
+          error={error}
+        />
+      );
       break;
     case etapas.DETALHES_CLASSE:
       conteudoModal = (
@@ -30,6 +68,7 @@ export default function ModalCriacaoRato({
           ratosUsuario={novoRato}
           onMostrar={onMostrarRato}
           indexClasse={indexClasse}
+          descricaoHabilidades={descricaoHabilidades} 
         />
       );
       break;
