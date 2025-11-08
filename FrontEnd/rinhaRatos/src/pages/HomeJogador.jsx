@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ADICIONADO: useEffect para sincronizar com localStorage
 import Header from "../components/comuns/Header";
 import Botao from "../components/comuns/Botao";
 import ModalCriacaoRato from "../components/meusRatos/modalRato/ModalCriacaoRato";
@@ -31,9 +31,17 @@ export default function Inicio() {
 
   /* const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]); */
 
-  const [ratosUsuario, setRatosUsuario] = useState([]);
 
-  const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
+ const idUsuarioLogado = localStorage.getItem("idUsuario"); 
+
+const [ratosUsuario, setRatosUsuario] = useState(() => {
+  return JSON.parse(localStorage.getItem(`ratos_${idUsuarioLogado}`)) || [];
+});
+
+const [ratoParaBatalhar, setRatoParaBatalhar] = useState(
+  () => JSON.parse(localStorage.getItem(`ratoSelecionado_${idUsuarioLogado}`)) || null
+);
+
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
@@ -47,6 +55,11 @@ export default function Inicio() {
     navigate("/perfil", { state: { listaBatalhas } });
   };
 
+  // ADICIONADO: sincroniza automaticamente a lista de ratos para o localStorage
+useEffect(() => {
+  const idUsuarioLogado = localStorage.getItem("idUsuario"); 
+  localStorage.setItem(`ratos_${idUsuarioLogado}`, JSON.stringify(ratosUsuario));
+}, [ratosUsuario]);
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -81,7 +94,9 @@ export default function Inicio() {
     const ratoCriado = {
       id: Date.now(),
       nome: nomeRato,
+      nomeCustomizado: nomeRato, 
       classeEsc: classe,
+      classe: classe,
       habilidadeEsc: habilidades[habilAtiva],
       descHabilidadeEsc: descHabilidade,
     };
@@ -91,14 +106,19 @@ export default function Inicio() {
     setHabilEscolhida(habilAtiva);
     setDescHabilidade(descHabilidade);
     setNovoRato(ratoCriado);
-    setRatosUsuario([...ratosUsuario, ratoCriado]);
+
+    // ADICIONADO: atualiza estado e persistence via useEffect acima
+    setRatosUsuario((prev) => [...prev, ratoCriado]); // ADICIONADO
+
     setEtapaModal(ETAPAS.RATO_CRIADO);
     console.log(novoRato, ratosUsuario);
   };
 
+  // MODIFICADO: agora só guarda seleção em localStorage e no estado; não navega
   const definirRatoBatalha = (rato) => {
-    setRatoParaBatalhar(rato);
-  };
+    localStorage.setItem("ratoSelecionado", JSON.stringify(rato)); 
+    setRatoParaBatalhar(rato); // ADICIONADO: atualiza estado local com o rato selecionado
+  }; 
 
   let conteudoCorpo;
 
@@ -120,7 +140,11 @@ export default function Inicio() {
             descHabilidade={descHabilidade}
             novoRato={novoRato}
           />
-          <ListaDeRatos ratosUsuario={ratosUsuario} />
+          <ListaDeRatos
+            ratosUsuario={ratosUsuario}
+            onSelectRato={definirRatoBatalha} // ADICIONADO: passa callback para seleção
+            ratoSelecionado={ratoParaBatalhar} // ADICIONADO: passa seleção atual para destacar
+          />
           <Botao
             button={{
               className: "addRato",

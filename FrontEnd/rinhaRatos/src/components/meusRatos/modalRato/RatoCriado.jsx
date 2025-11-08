@@ -1,10 +1,10 @@
 import ImagensRato from "../../ImagensRato";
 import "../../../css/meusRatos/modalRato/ModalCriacaoRato.css";
 
-export default function RatoCriado({ novoRato, onClose}) {
-
+export default function RatoCriado({onClose}) {
 
   const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};
+  const textoDescricao = localStorage.getItem("descricaoRatoCriado");
 
 
   const stats = {
@@ -18,6 +18,7 @@ export default function RatoCriado({ novoRato, onClose}) {
 
   const handleClose = () => {
     localStorage.removeItem("ratoCriado");
+    localStorage.removeItem("descricaoRatoCriado");
     onClose();
   };
 
@@ -47,7 +48,7 @@ export default function RatoCriado({ novoRato, onClose}) {
 
           <div className="caixaHabilidadeEsc">
             <p className="titusEstHabil">{rato.habilidade?.nomeHabilidade}</p>
-            <p className="descHabilEsc">{novoRato.descricao}</p>
+            <p className="descHabilEsc">{textoDescricao || "Descrição não encontrada."}</p>
           </div>
         </div>
       </div>
