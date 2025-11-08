@@ -8,8 +8,6 @@ import Ranking from "../components/ranking/Ranking";
 import Loja from "../components/loja/Loja";
 import "../css/Corpo.css";
 
-import { useNavigate } from "react-router-dom";
-
 const ETAPAS = {
   FECHADO: 0,
   SELECAO_CLASSE: 1,
@@ -29,24 +27,14 @@ export default function Inicio() {
 
   const [novoRato, setNovoRato] = useState({});
 
-  /* const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]); */
-
   const [ratosUsuario, setRatosUsuario] = useState([]);
 
   const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
 
+  const [qtdeMoedas, setQtdeMoedas] = useState(0);
+
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
-
-  /*---------------------------------------------------------------*/
-  /*---------------------------------------------------------------*/
-  /* Deletar essas três linhas quando for fazer a junção com a API */
-  const [listaBatalhas, setListaBatalhas] = useState([]);
-  const navigate = useNavigate();
-  const irParaPerfil = () => {
-    navigate("/perfil", { state: { listaBatalhas } });
-  };
-
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -136,8 +124,6 @@ export default function Inicio() {
         <ListaDeBatalhas
           ratosUsuario={ratosUsuario}
           ratoParaBatalhar={definirRatoBatalha}
-          listaBatalhas={listaBatalhas}
-          setListaBatalhas={setListaBatalhas}
         />
       );
       break;
@@ -145,19 +131,21 @@ export default function Inicio() {
       conteudoCorpo = <Ranking />;
       break;
     case "Loja":
-      conteudoCorpo = <Loja />;
+      conteudoCorpo = (
+        <Loja setQtdeMoedas={setQtdeMoedas} qtdeMoedas={qtdeMoedas} />
+      );
       break;
   }
 
   return (
     <>
-      <Header />
+      <Header home="home" qtdeMoedas={qtdeMoedas} />
       <div className="corpo-container">
         <div className={"opcoes"}>
           {botoes.map((botao) => (
             <button
               key={botao}
-              className={opcaoAtivada == botao ? "opcaoAtiva" : ""}
+              className={opcaoAtivada == botao ? "opcaoAtiva" : "btnOpcao"}
               onClick={() => setOpcaoAtivada(botao)}
             >
               {botao}

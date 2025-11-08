@@ -4,11 +4,12 @@ import trofeu from "../assets/icones/IconeTrofeu.png"
 import Header from "../components/comuns/Header";
 import "../css/perfil/Perfil.css";
 
-export default function Perfil({ nome, email, senha }) {
+export default function Perfil({qtdeMoedas}) {
 
-  /* Deletar essas duas linhas depois quando for fazer a junção com a API */  
+  /* Deletar essas três linhas depois quando for fazer a junção com a API */  
   const location = useLocation();
   const listaBatalhas = location.state?.listaBatalhas || [];
+  let loginADM = false
   /* -------------------------------------------------------------------- */
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Histórico de Batalhas");
@@ -56,7 +57,7 @@ export default function Perfil({ nome, email, senha }) {
 
   return (
     <>
-      <Header />
+      <Header home={loginADM == true ? "homeadm" : "home"} qtdeMoedas={qtdeMoedas}/>
       <div className="perfil-container">
         <div className={"opcoesPerfil"}>
           {botoes.map((botao) => (

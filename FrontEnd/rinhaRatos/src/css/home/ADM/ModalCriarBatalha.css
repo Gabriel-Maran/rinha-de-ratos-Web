@@ -1,0 +1,51 @@
+.criarBatalha {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+.criarBatalha h3 {
+    width: 100%;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    color: white;
+    text-align: left;
+}
+
+.criarBatalha input {
+    width: 25.646rem;
+    height: 4rem;
+    font-size: 1.5rem;
+    padding: 0rem 1rem 0rem 1rem;
+    margin-bottom: 1rem;
+    border: 0.2rem solid black;
+    border-radius: 1rem;
+    outline: none;
+}
+
+input[type="datetime-local"] {
+    width: 25.646rem;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type="number"] {
+    appearance: textfield;
+}
+
+.btnCriarBatalha{
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 1000;
+  background-color: #ffae52;
+  margin-top: 0.5rem;
+  padding: 0.3rem 2rem;
+  border: 0.15rem solid #000000;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}

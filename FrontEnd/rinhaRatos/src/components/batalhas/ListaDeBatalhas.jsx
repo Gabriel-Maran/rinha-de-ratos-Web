@@ -1,50 +1,22 @@
 import { useState } from "react";
-import trofeu from "../../assets/icones/IconeTrofeu.png"
+import trofeu from "../../assets/icones/IconeTrofeu.png";
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
 import "../../css/batalhas/ListaDeBatalhas.css";
 
-/* Deletar os parâmetros "listaBatalhas" e "setListaBatalhas" quando for fazer a junção com a API */ 
-export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar, listaBatalhas, setListaBatalhas }) {
-  
-  /*---------------------------------------------------------*/
-  /* Descomente isso quando for fazer a junção com a API */ 
-  /*---------------------------------------------------------*/
-  /* const [listaBatalhas, setListaBatalhas] = useState([]); */
-
-  const [nomeBatalha, setNomeBatalha] = useState("");
-  const [custoInscricao, setCustoInscricao] = useState(0);
-  const [dataHora, setDataHora] = useState();
-  const [premio, setPremio] = useState(0);
-  const [inscrito, setInscrito] = useState(false);
-
+/* Deletar os parâmetros "listaBatalhas" e "setListaBatalhas" quando for fazer a junção com a API */
+export default function ListaDeBatalhas({
+  ratosUsuario,
+  ratoParaBatalhar,
+}) {
+  const [listaBatalhas, setListaBatalhas] = useState([]);
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
   const [ativarModal, setAtivarModal] = useState(false);
 
-    const fecharSelecaoRato = () => {
+  const fecharSelecaoRato = () => {
     setAtivarModal(!ativarModal);
     console.log(ratosUsuario);
-  };
-
-  const CadastrarBatalha = () => {
-    const batalha = {
-      id: Date.now(),
-      nome: nomeBatalha,
-      custo: custoInscricao,
-      dataEHora: dataHora,
-      premio: premio,
-      inscrito: inscrito,
-    };
-
-    setListaBatalhas([...listaBatalhas, batalha]);
-
-    console.log(listaBatalhas);
-
-    setNomeBatalha("");
-    setCustoInscricao(0);
-    setDataHora("");
-    setPremio(0);
   };
 
   let conteudoOpcaoBatalhas;
@@ -60,33 +32,6 @@ export default function ListaDeBatalhas({ ratosUsuario, ratoParaBatalhar, listaB
               ratoParaBatalhar={ratoParaBatalhar}
             />
           )}
-          <div className="addBatalha">
-            <input
-              type="text"
-              value={nomeBatalha}
-              placeholder="Nome da balalha"
-              onChange={(e) => setNomeBatalha(e.target.value)}
-            />
-            <input
-              type="number"
-              value={custoInscricao}
-              placeholder="Custo"
-              onChange={(e) => setCustoInscricao(Number(e.target.value))}
-            />
-            <input
-              type="datetime-local"
-              value={dataHora}
-              placeholder="Data e hora"
-              onChange={(e) => setDataHora(e.target.value)}
-            />
-            <input
-              type="number"
-              value={premio}
-              placeholder="Prêmio"
-              onChange={(e) => setPremio(Number(e.target.value))}
-            />
-            <button onClick={CadastrarBatalha}>Adicionar</button>
-          </div>
           <div className="listaBatalhas">
             {listaBatalhas.map((batalha) => (
               <div className="batalha" key={batalha.id}>

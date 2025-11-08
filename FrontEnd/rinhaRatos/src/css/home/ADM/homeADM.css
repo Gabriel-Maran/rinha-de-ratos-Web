@@ -1,3 +1,20 @@
+.btnIniciarCriacao{
+    position: absolute;
+    top: 0.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12rem;
+    height: 4.5rem;
+    background-image: url("../../../assets/buttons/btnParticiparBatalha.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
 .btnGerenciar{
     width: 20rem;
     height: 3.5rem;

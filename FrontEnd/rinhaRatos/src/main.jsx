@@ -9,6 +9,7 @@ import Cadastro from "./pages/auth/Cadastro.jsx";
 import EsqueceuSenha from "./pages/Auth/EsqueceuSenha.jsx";
 import HomeJogador from "./pages/HomeJogador.jsx";
 import HomeADM from "./pages/home/HomeADM.jsx";
+import HomeConvidado from "./pages/home/HomeConvidado.jsx"
 import Perfil from "./pages/Perfil.jsx"
 
 
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "perfil",
         element: <Perfil />
+      },
+      {
+        path: "homeConvidado",
+        element: <HomeConvidado />
       }
     ],
   },

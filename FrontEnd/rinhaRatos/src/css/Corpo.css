@@ -27,6 +27,7 @@
     overflow: hidden;
     
     justify-content: center;
+    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 
@@ -46,6 +47,7 @@
    
     justify-content: center;
     position: relative;
+    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .opcoes {
@@ -57,9 +59,15 @@
     margin: 10rem 0rem 2rem 0rem;
 }
 
-.opcoes button{
+.btnOpcao,
+.opcaoAtiva{
     flex: 1;
     background-color: transparent;
+    background-image: url("../assets/backgrounds/tabuaLabel.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,13 +78,11 @@
     position: relative;
 }
 
-
 .opcaoAtiva{
-    background-image: url("../assets/backgrounds/tabuaLabel.png");
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-image: linear-gradient(rgb(255, 0, 0), rgba(255, 255, 255, 0.238)),url("../assets/backgrounds/tabuaLabel.png");
+    opacity: 1;
     pointer-events: none;
+    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .opcoes button:active {

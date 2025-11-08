@@ -1,25 +1,15 @@
 import PacotePequeno from "../../assets/moedas/MontePequenoMouseCoin.png";
 import PacoteMedio from "../../assets/moedas/MonteMedioMouseCoin.png";
 import PacoteGrande from "../../assets/moedas/MonteGrandeMouseCoin.png";
-import { useState } from "react";
 import "../../css/loja/loja.css";
 
-export default function Loja() {
-  const [valorConta, setValorConta] = useState(0);
-
+export default function Loja({ qtdeMoedas, setQtdeMoedas }) {
   const addValorNaConta = (valor) => {
-    setValorConta((prev) => prev + valor);
+    setQtdeMoedas(qtdeMoedas + valor);
   };
   return (
     <>
       <h1 className="subTituloLoja">Compre aqui suas MouseCoin</h1>
-      
-      {/* ------------------------------------ */}
-      {/* Apagar isso na implementação da API */}
-      <h1 className="contagem">{valorConta}</h1>
-      {/* ------------------------------------ */}
-      {/* ------------------------------------ */}
-
       <div className="pacotesMoedas">
         <div onClick={() => addValorNaConta(15)} className="pacote">
           <p>15 Moedas</p>

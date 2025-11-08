@@ -79,8 +79,8 @@
   border-radius: 0.8rem;
   cursor: pointer;
 }
-.botao :hover {
-  background-color: #160505;
+button:active {
+  transform: scale(0.97);
 }
 
 .linkCadastro {
