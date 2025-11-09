@@ -30,7 +30,7 @@
   /* Isso aqui serve pra esconder o scroll */
   overflow: hidden;
 
-  transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  transition: opacity 500s ease, visibility 500s ease;
 }
 
 .conteudo-principal {
@@ -49,7 +49,7 @@
   overflow: hidden;
 
   position: relative;
-  transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  transition: opacity 500s ease, visibility 500s ease;
 }
 
 .opcoes {
@@ -94,7 +94,7 @@
 
 .listaRatos {
   width: 50rem;
-  height: auto;
+  height: 40rem;
   margin-top: 11rem;
   box-sizing: border-box;
 }
@@ -120,6 +120,45 @@
   max-width: 100%;
 }
 
+@media (max-height: 1050px) {
+  .displayRato {
+    height: 9rem;
+  }
+  .imagem-rato-lista {
+    width: 8rem;
+  }
+}
+
+@media (max-height: 910px) {
+  .displayRato {
+    height: 7rem;
+  }
+  .imagem-rato-lista {
+    width: 6rem;
+  }
+}
+
+@media (max-height: 800px) {
+  .displayRato {
+    height: 6rem;
+  }
+  .imagem-rato-lista {
+    width: 5.5rem;
+  }
+}
+
+@media (max-height: 720px) {
+  .listaRatos {
+    margin-top: 10rem;
+  }
+  .displayRato {
+    height: 5rem;
+  }
+  .imagem-rato-lista {
+    width: 4rem;
+  }
+}
+
 @media (max-width: 970px) {
   .opcoes {
     width: 90%;
@@ -137,10 +176,10 @@
 }
 
 @media (max-width: 690px) {
-    .listaRatos {
+  .listaRatos {
     width: 22rem;
   }
-    .displayRato {
+  .displayRato {
     height: 8rem;
     font-size: 2rem;
     padding: 0rem 0.5rem 0rem 1rem;
