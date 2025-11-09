@@ -21,6 +21,7 @@ export default function HomeConvidado() {
     case "Ranking":
       conteudoHomeConvidado = (
         <>
+          <h1 className="subTitulo">Batalhas Vencidas</h1>
           <div className="listaJogadores">
             {listaJogadores.map((jogador) => (
               <div className="jogador" key={jogador.id}>

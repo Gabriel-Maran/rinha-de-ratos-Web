@@ -1,117 +1,148 @@
 *,
 *::before,
-*::after{
-    font-family: 'Fondamento', 'fantasy';
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*::after {
+  font-family: "Fondamento", "fantasy";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .corpo-container {
-    background-image: linear-gradient(rgba(55, 51, 51, 0.5), rgba(55, 51, 51, 0.5)), url(../assets/backgrounds/bgHome.svg);
-    background-size: cover;
-    /* Essa maravilha faz a imagem cobrir todo o site */
-    background-position: center;
-    /* Deixa a posição da imagem de fundo no centro */
-    background-attachment: fixed;
-    /* Faz ela ficar presa */
+  background-image: linear-gradient(
+      rgba(55, 51, 51, 0.5),
+      rgba(55, 51, 51, 0.5)
+    ),
+    url(../assets/backgrounds/bgHome.png);
+  background-size: cover;
+  /* Essa maravilha faz a imagem cobrir todo o site */
+  background-position: center;
+  /* Deixa a posição da imagem de fundo no centro */
+  background-attachment: fixed;
+  /* Faz ela ficar presa */
 
-    height: 100vh;
-    width: 100%;
+  height: 100vh;
+  width: 100%;
 
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 
-    /* Isso aqui serve pra esconder o scroll */
-    overflow: hidden;
-    
-    justify-content: center;
-    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  /* Isso aqui serve pra esconder o scroll */
+  overflow: hidden;
+
+  transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-
 .conteudo-principal {
-    width: 10rem;
-    min-height: 43rem;
-    background-image: url('../assets/backgrounds/displayMadeira.svg');
-    background-size: 100% 100%;
-    width: 115rem;
+  width: 100%;
+  max-width: 115rem;
+  min-height: 60rem;
+  background-image: url("../assets/backgrounds/displayMadeira.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 
-     /* Isso aqui serve pra esconder o scroll */
-    overflow: hidden;
-   
-    justify-content: center;
-    position: relative;
-    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  /* Isso aqui serve pra esconder o scroll */
+  overflow: hidden;
+
+  position: relative;
+  transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .opcoes {
-    width: 60rem;
-    min-height: 5rem;
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    margin: 10rem 0rem 2rem 0rem;
+  width: 60rem;
+  min-height: 5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin: 10rem 0rem 2rem 0rem;
 }
 
 .btnOpcao,
-.opcaoAtiva{
-    flex: 1;
-    background-color: transparent;
-    background-image: url("../assets/backgrounds/tabuaLabel.png");
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    font-size: 2rem;
-    color: white;
-    height: 100%;
-    position: relative;
+.opcaoAtiva {
+  width: 100%;
+  background-color: transparent;
+  background-image: url("../assets/backgrounds/tabuaLabel.png");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  height: 100%;
+  position: relative;
 }
 
-.opcaoAtiva{
-    background-image: linear-gradient(rgb(255, 0, 0), rgba(255, 255, 255, 0.238)),url("../assets/backgrounds/tabuaLabel.png");
-    opacity: 1;
-    pointer-events: none;
-    transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+.opcaoAtiva {
+  background-image: linear-gradient(rgb(255, 0, 0), rgba(255, 255, 255, 0.238)),
+    url("../assets/backgrounds/tabuaLabel.png");
+  opacity: 1;
+  pointer-events: none;
+  transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .opcoes button:active {
   transform: scale(0.97);
 }
 
-.listaRatos{
-    width: 30rem;
-    height: auto;
-    box-sizing: border-box;
+.listaRatos {
+  width: 30rem;
+  height: auto;
+  box-sizing: border-box;
 }
 
-.displayRato{
-    min-width: 30%;
-    height: 7rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-image: url("../assets/backgrounds/papelLabelAmarelado.png");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    box-sizing: border-box;
-    padding: 0rem 1.5rem 0rem 2rem;
-    font-size: 2rem;
-    margin-bottom: 1rem;
+.displayRato {
+  min-width: 30%;
+  height: 7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-image: url("../assets/backgrounds/papelLabelAmarelado.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  padding: 0rem 1.5rem 0rem 2rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .imagem-rato-lista {
   width: 6rem;
   height: auto;
   max-width: 100%;
-}   
+}
+
+@media (max-width: 970px) {
+  .opcoes {
+    width: 90%;
+    height: 10rem;
+  }
+
+  .btnOpcao,
+  .opcaoAtiva {
+    width: 30%;
+    height: 10rem;
+  }
+}
+
+@media (max-width: 375px) and (max-height: 667px) {
+  .opcoes {
+    width: 90%;
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+
+  .btnOpcao,
+  .opcaoAtiva {
+    width: 20%;
+    height: 60%;
+    font-size: 1rem;
+  }
+}

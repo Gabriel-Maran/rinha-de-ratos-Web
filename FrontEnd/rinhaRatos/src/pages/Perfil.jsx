@@ -69,7 +69,7 @@ export default function Perfil({ qtdeMoedas }) {
           {botoes.map((botao) => (
             <button
               key={botao}
-              className={opcaoAtivada == botao ? "opcaoAtiva" : ""}
+              className={opcaoAtivada == botao ? "opcaoAtiva" : "btnOpcao"}
               onClick={() => setOpcaoAtivada(botao)}
             >
               {botao}
