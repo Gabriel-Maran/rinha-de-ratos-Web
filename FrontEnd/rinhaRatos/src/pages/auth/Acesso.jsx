@@ -1,5 +1,5 @@
 import Botao from "../../components/comuns/Botao";
-import "./auth.css"; 
+import "./auth.css";
 import "./Access.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
@@ -9,6 +9,10 @@ export default function Acesso() {
 
   const irLogin = () => {
     navigate("/login");
+  };
+
+  const irHomeConvidado = () => {
+    navigate("/homeConvidado");
   };
 
   return (
@@ -25,7 +29,10 @@ export default function Acesso() {
           }}
         />
 
-        <Botao acaoBtn={"Convidado"} button={{ className: "acesso" }} />
+        <Botao
+          acaoBtn={"Convidado"}
+          button={{ className: "acesso", onClick: irHomeConvidado }}
+        />
       </div>
     </div>
   );

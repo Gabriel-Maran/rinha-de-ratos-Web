@@ -85,7 +85,7 @@ export default function ModalCriacaoRato({
 
   return (
     <>
-      <div className="bgModal">
+      <div className={etapa == etapa.FECHADO ? "bgModal" : "bgModalAtivo"}>
         <div className="containerModal">
           <button className="sair" onClick={onClose}>
             ✖

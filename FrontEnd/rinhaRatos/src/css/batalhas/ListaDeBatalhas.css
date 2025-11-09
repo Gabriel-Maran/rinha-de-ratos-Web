@@ -42,7 +42,8 @@
 
 .listaBatalhas {
   width: 45%;
-  height: 20rem;
+  height: 40rem;
+  margin-top: 10rem;
   color: black;
   display: flex;
   flex-direction: column;
