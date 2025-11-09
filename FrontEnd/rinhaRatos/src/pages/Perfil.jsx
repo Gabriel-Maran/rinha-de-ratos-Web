@@ -1,19 +1,22 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import trofeu from "../assets/icones/IconeTrofeu.png"
+import trofeu from "../assets/icones/IconeTrofeu.png";
 import Header from "../components/comuns/Header";
 import "../css/perfil/Perfil.css";
 
-export default function Perfil({qtdeMoedas}) {
-
-  /* Deletar essas três linhas depois quando for fazer a junção com a API */  
+export default function Perfil({ qtdeMoedas }) {
+  /* Deletar essas três linhas depois quando for fazer a junção com a API */
   const location = useLocation();
   const listaBatalhas = location.state?.listaBatalhas || [];
-  let loginADM = false
+  let loginADM = false;
   /* -------------------------------------------------------------------- */
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Histórico de Batalhas");
   const botoes = ["Histórico de Batalhas", "Perfil"];
+
+  const [nome, setNome] = useState("Joginhos");
+  const [email, setEmail] = useState("Jorginhos@gmail.com");
+  const [senha, setSenha] = useState("1234");
 
   let conteudoPerfil;
 
@@ -23,11 +26,11 @@ export default function Perfil({qtdeMoedas}) {
         <>
           <div className="dados">
             <p>Nome:</p>
-            <input value="Jorginhos" />
+            <input value={nome} onChange={(e) => setNome(e.target.value)} />
             <p>E-mail:</p>
-            <input value="Jorginhos@gmail.com" />
+            <input value={email} onChange={(e) => setEmail(e.target.value)} />
             <p>Senha:</p>
-            <input value="1234" />
+            <input value={senha} onChange={(e) => setSenha(e.target.value)} />
           </div>
           <button className="botaoSalvar">Salvar alterações</button>
         </>
@@ -57,7 +60,10 @@ export default function Perfil({qtdeMoedas}) {
 
   return (
     <>
-      <Header home={loginADM == true ? "homeadm" : "home"} qtdeMoedas={qtdeMoedas}/>
+      <Header
+        home={loginADM == true ? "homeadm" : "home"}
+        qtdeMoedas={qtdeMoedas}
+      />
       <div className="perfil-container">
         <div className={"opcoesPerfil"}>
           {botoes.map((botao) => (
