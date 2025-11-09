@@ -3,11 +3,15 @@ import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
 import MouseCoin from "../../assets/moedas/MouseCoin.png";
 import { useNavigate } from "react-router-dom";
 import "../../css/comuns/Header.css";
+import { useMoedas } from "../../context/MoedasContext"; // 1. Importe o nosso hook
 
-export default function Header({ home, qtdeMoedas }) {
-  let nomePlayer; /* Parte que vai receber o nome do player da api */
+// 2. Já não precisamos de 'qtdeMoedas' ou 'saldoMouseCoins' nas props
+export default function Header({ home }) {
 
-  nomePlayer = "João";
+  // 3. Pedimos o valor das moedas diretamente ao Contexto
+  const { qtdeMoedas } = useMoedas();
+
+  const nomePlayer  = localStorage.getItem("nome");
 
   const navigate = useNavigate();
 

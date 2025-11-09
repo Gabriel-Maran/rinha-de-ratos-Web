@@ -1,27 +1,53 @@
+import { useState, useEffect } from "react";
 import PacotePequeno from "../assets/moedas/MontePequenoMouseCoin.png";
 import PacoteMedio from "../assets/moedas/MonteMedioMouseCoin.png";
 import PacoteGrande from "../assets/moedas/MonteGrandeMouseCoin.png";
 import "../css/loja/loja.css";
+import { compraPacote, pegarPacotes } from "../Api/Api";
+import { useMoedas } from "../context/MoedasContext";
 
-export default function Loja({ qtdeMoedas, setQtdeMoedas }) {
-  const addValorNaConta = (valor) => {
-    setQtdeMoedas(qtdeMoedas + valor);
-  };
-
+export default function Loja() {
   const [pacotes, setPacotes] = useState([]);
+
+  // Pedimos o valor E a função de alterar ao Contexto
+  const { qtdeMoedas, setQtdeMoedas } = useMoedas();
 
   useEffect(() => {
     const fetchDados = async () => {
       try {
-        const resposta = await pegarMoedas();
+        const resposta = await pegarPacotes();
         setPacotes(resposta.data);
       } catch (err) {
         console.error("Erro ao buscar pacotes:", err);
       }
     };
-
     fetchDados();
   }, []);
+
+  const addValorNaConta = async (pacoteClicado) => {
+    try {
+      const idUsuario = localStorage.getItem("idUsuario");
+      console.log("Enviando para o banco:", {
+        idPacote: pacoteClicado.idPacote,
+        idUsuario: idUsuario,
+      });
+      await compraPacote(pacoteClicado.idPacote, idUsuario);
+
+      const novoSaldo = qtdeMoedas + pacoteClicado.mousecoinQuantidade;
+
+      setQtdeMoedas(novoSaldo);
+
+      localStorage.setItem("mousecoinSaldo", novoSaldo);
+    } catch (err) {
+      console.error("Erro ao comprar pacote:", err);
+    }
+  };
+
+  const imagensPacotes = {
+    15: PacotePequeno,
+    30: PacoteMedio,
+    60: PacoteGrande,
+  };
 
   return (
     <>
@@ -30,38 +56,20 @@ export default function Loja({ qtdeMoedas, setQtdeMoedas }) {
         {pacotes.map((pacote) => (
           <div
             key={pacote.idPacote}
-            onClick={() => addValorNaConta(pacote.mousecoinQuantidade)}
+            onClick={() => addValorNaConta(pacote)}
             className="pacote"
           >
+            <p className="pacote-quantidade">{pacote.mousecoinQuantidade}</p>
             <div className="infoPacote">
               <img
-                src={PacotePequeno}
+                src={
+                  imagensPacotes[pacote.mousecoinQuantidade] || PacotePequeno
+                }
               />
               <div className="valor">R$ {pacote.precoBrl.toFixed(2)}</div>
             </div>
           </div>
         ))}
-
-        <div
-          onClick={() => addValorNaConta(pacote.mousecoinQuantidade)}
-          className="pacote"
-        >
-          <p>{pacote.mousecoinQuantidade}</p>
-          <div className="infoPacote">
-            <img src={PacoteMedio} />
-            <div className="valor">{pacote.precoBrl}</div>
-          </div>
-        </div>
-        <div
-          onClick={() => addValorNaConta(pacote.mousecoinQuantidade)}
-          className="pacote"
-        >
-          <p>{pacote.mousecoinQuantidade}</p>
-          <div className="infoPacote">
-            <img src={PacoteGrande} />
-            <div className="valor">{pacote.precoBrl}</div>
-          </div>
-        </div>
       </div>
     </>
   );
