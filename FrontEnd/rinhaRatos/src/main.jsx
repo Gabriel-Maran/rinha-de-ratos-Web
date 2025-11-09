@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDom from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { MoedasProvider } from "./context/MoedasContext";
 import "./css/index.css";
 import App from "./App.jsx";
 import Login from "./pages/auth/Login.jsx";
@@ -9,9 +10,8 @@ import Cadastro from "./pages/auth/Cadastro.jsx";
 import EsqueceuSenha from "./pages/Auth/EsqueceuSenha.jsx";
 import HomeJogador from "./pages/HomeJogador.jsx";
 import HomeADM from "./pages/home/HomeADM.jsx";
-import HomeConvidado from "./pages/home/HomeConvidado.jsx"
-import Perfil from "./pages/Perfil.jsx"
-
+import HomeConvidado from "./pages/home/HomeConvidado.jsx";
+import Perfil from "./pages/Perfil.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: "cadastro",
-        element:<Cadastro/>
+        element: <Cadastro />,
       },
       {
         path: "home",
@@ -40,21 +40,24 @@ const router = createBrowserRouter([
       },
       {
         path: "homeAdm",
-        element: <HomeADM />
+        element: <HomeADM />,
       },
       {
         path: "perfil",
-        element: <Perfil />
+        element: <Perfil />,
       },
       {
         path: "homeConvidado",
-        element: <HomeConvidado />
-      }
+        element: <HomeConvidado />,
+      },
     ],
   },
 ]);
+
 ReactDom.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MoedasProvider>
+      <RouterProvider router={router} />
+    </MoedasProvider>
   </React.StrictMode>
 );

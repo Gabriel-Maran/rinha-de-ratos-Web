@@ -3,6 +3,7 @@ import ImagensRato from "../../ImagensRato.jsx";
 import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import Input from "../../comuns/Input.jsx";
 import { ratosUsuario } from "../../../Api/Api.js";
+import { useMoedas } from "../../../context/MoedasContext";
 
 export default function DetalhesDaClasse({
   classe,
@@ -13,6 +14,7 @@ export default function DetalhesDaClasse({
   const [nomeRato, setNomeRato] = useState(classe.apelido);
   const [habilAtiva, setHabilAtiva] = useState(0);
   const [erro, setErro] = useState(null);
+  const { qtdeMoedas, setQtdeMoedas } = useMoedas();
 
   const handleBtnHabil = (index) => setHabilAtiva(index);
   const habilidadeAtiva = classe.habilidades[habilAtiva];
@@ -28,6 +30,13 @@ export default function DetalhesDaClasse({
   const textoDescricao = descObj?.descricao;
 
   const salvarRato = async () => {
+    const custoRato = 5;
+
+    if (qtdeMoedas < custoRato) {
+      setErro("Moedas insuficientes para criar o rato.");
+      return; 
+    }
+
     const idUsuarioLogado = localStorage.getItem("idUsuario");
 
     const habilidadeSelecionada = classe.habilidades[habilAtiva];
@@ -43,27 +52,26 @@ export default function DetalhesDaClasse({
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK! (Resposta da API):", resposta.data);
 
-      // --- INÍCIO DA CORREÇÃO ("GAMBIARRA") ---
-      
-      // 1. Pega o rato que a API retornou (que está incompleto)
+      // Pega o rato que a API retornou (que está incompleto)
       const ratoSalvo = resposta.data;
 
-      // 2. INJETA manualmente o objeto 'classe' que temos na prop
-      //(Já que a API não o enviou)
-      ratoSalvo.classe = classe; 
+      //  INJETA manualmente o objeto 'classe' que temos na prop
+      ratoSalvo.classe = classe;
 
       localStorage.setItem("ratoCriado", JSON.stringify(ratoSalvo));
-  
       localStorage.setItem("descricaoRatoCriado", textoDescricao);
-      
-      console.log("DADOS DO RATO SALVO (Corrigido):", ratoSalvo); 
 
+      console.log("DADOS DO RATO SALVO :", ratoSalvo);
+      const novoSaldo = qtdeMoedas - 5;
+      localStorage.setItem("mousecoinSaldo", novoSaldo);
+
+      setQtdeMoedas(novoSaldo);
       onMostrar(
         classe,
         nomeRato,
         classe.habilidades,
         habilAtiva,
-        textoDescricao 
+        textoDescricao
       );
     } catch (err) {
       console.error("Falha ao salvar rato:", err);
