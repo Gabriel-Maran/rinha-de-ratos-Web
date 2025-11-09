@@ -1,7 +1,7 @@
-import PacotePequeno from "../../assets/moedas/MontePequenoMouseCoin.png";
-import PacoteMedio from "../../assets/moedas/MonteMedioMouseCoin.png";
-import PacoteGrande from "../../assets/moedas/MonteGrandeMouseCoin.png";
-import "../../css/loja/loja.css";
+import PacotePequeno from "../assets/moedas/MontePequenoMouseCoin.png";
+import PacoteMedio from "../assets/moedas/MonteMedioMouseCoin.png";
+import PacoteGrande from "../assets/moedas/MonteGrandeMouseCoin.png";
+import "../css/loja/loja.css";
 
 export default function Loja({ qtdeMoedas, setQtdeMoedas }) {
   const addValorNaConta = (valor) => {

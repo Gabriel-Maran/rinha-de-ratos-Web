@@ -1,6 +1,6 @@
 import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png";
 import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
-import mouseCoinImg from "../../assets/moedas/imgCoin.png";
+import MouseCoin from "../../assets/moedas/MouseCoin.png";
 import { useNavigate } from "react-router-dom";
 import "../../css/comuns/Header.css";
 
@@ -21,7 +21,7 @@ export default function Header({ home, qtdeMoedas }) {
             <div className="quantidadeMoedas">
               <img
                 className="mouseCoin"
-                src={mouseCoinImg}
+                src={MouseCoin}
                 alt="mouseCoin a moeda utilizada em nosso jogo"
               />
               <h3>{qtdeMoedas}</h3>

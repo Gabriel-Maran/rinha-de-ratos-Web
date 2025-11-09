@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ImagensRato from "../../ImagensRato.jsx";
-import MouseCoin from "../../../assets/moedas/imgCoin.svg";
+import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import Input from "../../comuns/Input.jsx";
 import { ratosUsuario } from "../../../Api/Api.js";
 
