@@ -22,7 +22,6 @@ export default function ModalCriacaoRato({
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Apenas busca os dados se o modal for aberto na etapa de seleção
     if (etapa === etapas.SELECAO_CLASSE) {
       const fetchDados = async () => {
         setLoading(true);

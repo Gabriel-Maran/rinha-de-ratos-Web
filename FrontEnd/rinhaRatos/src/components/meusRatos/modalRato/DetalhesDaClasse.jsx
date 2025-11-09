@@ -42,8 +42,6 @@ export default function DetalhesDaClasse({
       console.log("Enviando para API:", dados);
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK! (Resposta da API):", resposta.data);
-
-      // --- INÍCIO DA CORREÇÃO ("GAMBIARRA") ---
       
       // 1. Pega o rato que a API retornou (que está incompleto)
       const ratoSalvo = resposta.data;

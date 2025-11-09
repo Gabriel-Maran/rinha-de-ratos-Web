@@ -35,9 +35,15 @@ export default function EsqueceuSenha() {
     try {
       const resposta = await trocarSenha(dados);
       console.log("Login OK!", resposta.data);
+
+      localStorage.setItem("nome", resposta.data.nome);
+      localStorage.setItem("email", resposta.data.email);
+      localStorage
       navigate("/login");
     } catch (err) {
-      setErro(err?.response?.data?.message || "Erro ao conectar com o servidor.");
+      setErro(
+        err?.response?.data?.message || "Erro ao conectar com o servidor."
+      );
     }
   };
   return (
