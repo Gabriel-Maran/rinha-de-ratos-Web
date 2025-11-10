@@ -50,9 +50,13 @@ export default function Cadastro() {
       localStorage.setItem("vitorias", resposta.data.vitorias);
       localStorage.setItem("ratos", JSON.stringify(resposta.data.ratos));
 
+    
+
       navigate("/login");
     } catch (err) {
-      setErro(err?.response?.data?.message || "Erro ao conectar com o servidor.");
+      setErro(
+        err?.response?.data?.message || "Erro ao conectar com o servidor."
+      );
     }
   };
 

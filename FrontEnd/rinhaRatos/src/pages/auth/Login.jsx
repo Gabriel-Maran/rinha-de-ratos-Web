@@ -8,9 +8,11 @@ import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
 import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
 import { useState } from "react";
 import { fazerLogin } from "../../Api/Api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setTipoConta } = useAuth();
 
   const irCadastro = () => {
     navigate("/cadastro");
@@ -42,10 +44,15 @@ export default function Login() {
 
       console.log("Login OK!", resposta.data);
 
+      const tipoContaDaAPI = resposta.data.tipo_conta;
+
       localStorage.setItem("idUsuario", resposta.data.id);
       localStorage.setItem("tipoConta", resposta.data.tipo_conta);
 
-      navigate("/home");
+      setTipoConta(tipoContaDaAPI);
+
+      tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
+      
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
