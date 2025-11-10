@@ -1,0 +1,224 @@
+*,
+*::before,
+*::after {
+  font-family: "Fondamento", "fantasy";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.corpo-container {
+  background-image: linear-gradient(
+      rgba(55, 51, 51, 0.5),
+      rgba(55, 51, 51, 0.5)
+    ),
+    url("../../../../assets/backgrounds/bgHome.png");
+  background-size: cover;
+  /* Essa maravilha faz a imagem cobrir todo o site */
+  background-position: center;
+  /* Deixa a posição da imagem de fundo no centro */
+  background-attachment: fixed;
+  /* Faz ela ficar presa */
+
+  height: 100vh;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  /* Isso aqui serve pra esconder o scroll */
+  overflow: hidden;
+
+  transition: opacity 500s ease, visibility 500s ease;
+}
+
+.conteudo-principal {
+  width: 100%;
+  max-width: 115rem;
+  min-height: 80rem;
+  background-image: url("../../../../assets/backgrounds/displayMadeira.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  /* Isso aqui serve pra esconder o scroll */
+  overflow: hidden;
+
+  position: relative;
+  transition: opacity 500s ease, visibility 500s ease;
+}
+
+.opcoes {
+  width: 60rem;
+  min-height: 5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin: 10rem 0rem 2rem 0rem;
+}
+
+.btnOpcao,
+.opcaoAtiva {
+  width: 100%;
+  background-color: transparent;
+  background-image: url("../../../../assets/backgrounds/tabuaLabel.png");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  height: 100%;
+  position: relative;
+}
+
+.opcaoAtiva {
+  background-image: url("../../../../assets/backgrounds/tabuaLabel.png");
+  opacity: 1;
+  pointer-events: none;
+  transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.opcoes button:active {
+  transform: scale(0.97);
+}
+
+.listaRatos {
+  width: 50rem;
+  height: 40rem;
+  margin-top: 12rem;
+  box-sizing: border-box;
+}
+
+.displayRato {
+  min-width: 30%;
+  height: 12rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-image: url("../../../../assets/backgrounds/papelLabelAmarelado.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  padding: 0rem 1.5rem 0rem 2rem;
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.imagem-rato-lista {
+  width: 10rem;
+  height: auto;
+  max-width: 100%;
+}
+
+@media (max-height: 1050px) {
+  .displayRato {
+    height: 9rem;
+  }
+  .imagem-rato-lista {
+    width: 8rem;
+  }
+}
+
+@media (max-height: 910px) {
+  .displayRato {
+    height: 7rem;
+  }
+  .imagem-rato-lista {
+    width: 6rem;
+  }
+}
+
+@media (max-height: 800px) {
+  .displayRato {
+    height: 6rem;
+  }
+  .imagem-rato-lista {
+    width: 5.5rem;
+  }
+}
+
+@media (max-height: 720px) {
+  .listaRatos {
+    margin-top: 10rem;
+  }
+  .displayRato {
+    height: 5rem;
+  }
+  .imagem-rato-lista {
+    width: 4rem;
+  }
+}
+
+@media (max-width: 970px) {
+  .opcoes {
+    width: 90%;
+    height: 10rem;
+  }
+  .btnOpcao,
+  .opcaoAtiva {
+    width: 30%;
+    height: 10rem;
+  }
+  .listaRatos {
+    width: 33rem;
+  }
+}
+
+@media (max-width: 690px) {
+  .addRato{
+    width: 15rem;
+    height: 7rem;
+    font-size: 1.7rem;
+  }
+  .listaRatos {
+    width: 22rem;
+  }
+  .displayRato {
+    height: 8rem;
+    font-size: 2rem;
+    padding: 0rem 0.5rem 0rem 1rem;
+  }
+  .imagem-rato-lista {
+    width: 6rem;
+  }
+}
+
+@media (max-width: 375px) and (max-height: 667px) {
+  .opcoes {
+    width: 90%;
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+  .btnOpcao,
+  .opcaoAtiva {
+    width: 20%;
+    height: 60%;
+    font-size: 1rem;
+  }
+    .addRato{
+    width: 10rem;
+    height: 4.5rem;
+    font-size: 1.2rem;
+  }
+  .listaRatos {
+    margin-top: 8rem;
+    width: 13rem;
+  }
+  .displayRato {
+    height: 5rem;
+    font-size: 1rem;
+    padding: 0rem 0.5rem 0rem 1rem;
+  }
+  .imagem-rato-lista {
+    width: 4rem;
+  }
+}

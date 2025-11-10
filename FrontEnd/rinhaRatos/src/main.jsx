@@ -2,16 +2,16 @@ import React from "react";
 import ReactDom from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { MoedasProvider } from "./context/MoedasContext";
-import "./css/index.css";
 import App from "./App.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Acesso from "./pages/Auth/Acesso.jsx";
 import Cadastro from "./pages/auth/Cadastro.jsx";
 import EsqueceuSenha from "./pages/Auth/EsqueceuSenha.jsx";
-import HomeJogador from "./pages/HomeJogador.jsx";
-import HomeADM from "./pages/home/HomeADM.jsx";
+import HomeJogador from "./pages/home/jogador/HomeJogador.jsx";
+import HomeADM from "./pages/home/adm/HomeADM.jsx";
 import HomeConvidado from "./pages/home/HomeConvidado.jsx";
-import Perfil from "./pages/Perfil.jsx";
+import Perfil from "./pages/perfil/Perfil.jsx";
+import "./index.css";
 
 const router = createBrowserRouter([
   {

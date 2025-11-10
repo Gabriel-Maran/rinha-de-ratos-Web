@@ -1,8 +1,8 @@
 import { useState } from "react";
-import HeaderConvidado from "../../components/comuns/HeaderConvidado";
+import HeaderConvidado from "../../components/comuns/Header/HeaderConvidado";
 import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png";
-import trofeu from "../../assets/icones/IconeTrofeu.png";
-import "../../css/home/ADM/homeADM.css";
+import Trofeu from "../../assets/icones/IconeTrofeu.png";
+import "../home/adm/HomeADM";
 
 export default function HomeConvidado() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
@@ -47,7 +47,7 @@ export default function HomeConvidado() {
           <div className="listaBatalhas">
             {listaBatalhas.map((batalha) => (
               <div className="batalha" key={batalha.id}>
-                <img src={trofeu} />
+                <img src={Trofeu} />
                 <div className="infoBatalha">
                   <p>{batalha.nome}</p>
                   <p>Inscrição: {batalha.custo} MouseCoin</p>
