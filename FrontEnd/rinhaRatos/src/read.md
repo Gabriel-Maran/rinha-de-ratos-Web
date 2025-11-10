@@ -1,0 +1,1 @@
+Para cria uma conta ADM você deve ir em Cadastro.jsx ir até a const tipoConta = "JOGADOR" e muda-lá para "ADM"

@@ -12,6 +12,7 @@ export function MoedasProvider({ children }) {
     return parseInt(localStorage.getItem("mousecoinSaldo")) || 0;
   });
 
+  
   // O valor que vamos partilhar (o estado e a função para o alterar)
   const value = { qtdeMoedas, setQtdeMoedas };
 

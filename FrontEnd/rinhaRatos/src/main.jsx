@@ -2,6 +2,7 @@ import React from "react";
 import ReactDom from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { MoedasProvider } from "./context/MoedasContext";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import App from "./App.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Acesso from "./pages/Auth/Acesso.jsx";
@@ -56,8 +57,10 @@ const router = createBrowserRouter([
 
 ReactDom.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <MoedasProvider>
-      <RouterProvider router={router} />
-    </MoedasProvider>
+    <AuthProvider>
+      <MoedasProvider>
+        <RouterProvider router={router} />
+      </MoedasProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
