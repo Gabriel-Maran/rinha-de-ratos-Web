@@ -9,14 +9,14 @@
 
 .btnOpcaoBatalhas,
 .btnOpcaoBatalhasAtivo {
-  width: 12rem;
-  height: 7rem;
+  width: 18rem;
+  height: 9.5rem;
   background-color: transparent;
   background-image: url("../../assets/buttons/btnOpcaoBatalhas.png");
   background-size: 100% 100%;
   border: none;
   opacity: 0.5;
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 1000;
 }
 
@@ -41,9 +41,9 @@
 }
 
 .listaBatalhas {
-  width: 45%;
+  width: 55%;
   height: 40rem;
-  margin-top: 10rem;
+  margin-top: 13rem;
   color: black;
   display: flex;
   flex-direction: column;
@@ -59,8 +59,8 @@
   background-size: 100% 100%;
   display: flex;
   align-items: center;
-  padding: 1rem 3rem 1rem 2rem;
-  font-size: 1.3rem;
+  padding: 1rem 4rem 1rem 2rem;
+  font-size: 1.5rem;
 }
 
 .batalha p {
@@ -72,7 +72,7 @@
 }
 
 .batalha img {
-  width: 5rem;
+  width: 7rem;
   margin-right: 1rem;
 }
 
@@ -103,6 +103,18 @@
   transform: scale(0.97);
 }
 
+@media (max-width: 1758px) {
+  .batalha {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 1540px) {
+  .batalha {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 970px) {
   .opcoesAbaBatalha {
     gap: 5rem;
@@ -111,14 +123,14 @@
 
 @media (max-width: 690px) {
   .opcoesAbaBatalha {
-      top: 0.6rem;
+    top: 0.6rem;
     gap: 2rem;
   }
   .btnOpcaoBatalhas,
   .btnOpcaoBatalhasAtivo {
-  
     width: 12rem;
     height: 8rem;
+    font-size: 2.5rem;
   }
 }
 

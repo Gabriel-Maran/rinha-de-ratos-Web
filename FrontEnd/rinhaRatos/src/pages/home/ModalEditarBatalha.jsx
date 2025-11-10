@@ -3,6 +3,7 @@ import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png";
 import "../../css/home/ADM/ModalEditarBatalha.css";
 
 export default function ModalEditarBatalha({
+  estadoModal,
   onClose,
   batalhaSendoEditada,
   listaBatalhas,
@@ -119,7 +120,7 @@ export default function ModalEditarBatalha({
 
   return (
     <>
-      <div className="bgModal">
+      <div className={estadoModal}>
         <div className="containerModal">
           <div className="abasModal">
             {botoesNavModal.map((textoBtn) => (

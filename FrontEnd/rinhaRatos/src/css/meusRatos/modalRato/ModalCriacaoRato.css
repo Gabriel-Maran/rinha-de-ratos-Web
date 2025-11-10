@@ -15,7 +15,6 @@
   align-items: center;
 
   opacity: 0;
-  transition: opacity 500s ease, visibility 500s ease;
 
   z-index: 1000;
   /* Deixar acima dos componentes */
@@ -32,25 +31,25 @@
 }
 
 @keyframes modalDesaparecendo {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .bgModalAtivo .containerModal {
-    animation: modalAparecendo 500ms ease-in-out forwards;
+  animation: modalAparecendo 500ms ease-in-out forwards;
 }
 
 @keyframes modalAparecendo {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .containerModal {
@@ -108,11 +107,12 @@ button {
   top: 1.2rem;
   color: white;
   background-color: #ffae52;
-  width: 14rem;
-  height: 6rem;
+  width: 21rem;
+  height: 9rem;
   border-radius: 20px;
   border: 3px solid #000;
-  font-size: x-large;
+  font-size: 2.5rem;
+  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
   z-index: 10;
 }
 
@@ -426,13 +426,34 @@ div {
   .addRato {
     top: 0.5rem;
     height: 4.5rem;
+    width: 12.5rem;
+    font-size: 1.5rem;
+  }
+  .bgModal {
+    width: 375px;
+    height: 667px;
   }
   .containerModal {
     width: 375px;
     height: 667px;
   }
   .titulo {
-    margin: 1.5rem 3.1rem 0rem 0rem;
+    margin: 1.5rem 3.1rem 2rem 0rem;
+  }
+  .nomeRato input {
+    width: 99%;
+    padding-left: 0.3rem;
+    padding-right: 0;
+  }
+  .inputEFoto img {
+    width: 8rem;
+    height: 8rem;
+  }
+  .descRato{
+    margin-top: 1rem;
+  }
+  .slctHabilidade{
+    margin-top: 3rem;
   }
   .sair {
     top: 0.6rem;

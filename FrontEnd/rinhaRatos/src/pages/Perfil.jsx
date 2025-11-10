@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import trofeu from "../assets/icones/IconeTrofeu.png";
 import Header from "../components/comuns/Header";
+import TelaHistorico from "./perfil/TelaHistorico";
 import "../css/perfil/Perfil.css";
 
 export default function Perfil({ qtdeMoedas }) {
@@ -17,6 +18,12 @@ export default function Perfil({ qtdeMoedas }) {
   const [nome, setNome] = useState("Joginhos");
   const [email, setEmail] = useState("Jorginhos@gmail.com");
   const [senha, setSenha] = useState("1234");
+
+  const [mostrarHistorico, setMostrarHistorico] = useState(false);
+
+  const fecharHistorico = () =>{
+    setMostrarHistorico(false)
+  }
 
   let conteudoPerfil;
 
@@ -38,23 +45,26 @@ export default function Perfil({ qtdeMoedas }) {
       break;
     default:
       conteudoPerfil = (
-        <div className="historicoBatalhas">
-          {listaBatalhas.map((batalha) => (
-            <div className="batalhaFeita" key={batalha.id}>
-              <img src={trofeu} />
-              <div className="infoBatalhaFeita">
-                <p>{batalha.nome}</p>
-                <p>Inscrição: {batalha.custo} MouseCoin</p>
-                <p>Data e Hora: {batalha.dataEHora}</p>
-                <p>Prêmio: {batalha.premio} MouseCoin</p>
+        <>
+          {mostrarHistorico && <TelaHistorico onClose={fecharHistorico}/>}
+          <div className="opcoesBatalhaFeita">
+            <p>Vencedor: Jão</p>
+            <button onClick={() => setMostrarHistorico(true)}>Histórico</button>
+          </div>
+          <div className="historicoBatalhas">
+            {listaBatalhas.map((batalha) => (
+              <div className="batalhaFeita" key={batalha.id}>
+                <img src={trofeu} />
+                <div className="infoBatalhaFeita">
+                  <p>{batalha.nome}</p>
+                  <p>Inscrição: {batalha.custo} MouseCoin</p>
+                  <p>Data e Hora: {batalha.dataEHora}</p>
+                  <p>Prêmio: {batalha.premio} MouseCoin</p>
+                </div>
               </div>
-              <div className="opcoesBatalhaFeita">
-                <p>Vencedor: Jão</p>
-                <button>Histórico</button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       );
   }
 

@@ -36,7 +36,7 @@
 .conteudo-principal {
   width: 100%;
   max-width: 115rem;
-  min-height: 60rem;
+  min-height: 80rem;
   background-image: url("../assets/backgrounds/displayMadeira.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -81,8 +81,7 @@
 }
 
 .opcaoAtiva {
-  background-image: linear-gradient(rgb(255, 0, 0), rgba(255, 255, 255, 0.238)),
-    url("../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../assets/backgrounds/tabuaLabel.png");
   opacity: 1;
   pointer-events: none;
   transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
@@ -95,7 +94,7 @@
 .listaRatos {
   width: 50rem;
   height: 40rem;
-  margin-top: 11rem;
+  margin-top: 12rem;
   box-sizing: border-box;
 }
 
@@ -164,7 +163,6 @@
     width: 90%;
     height: 10rem;
   }
-
   .btnOpcao,
   .opcaoAtiva {
     width: 30%;
@@ -176,6 +174,11 @@
 }
 
 @media (max-width: 690px) {
+  .addRato{
+    width: 15rem;
+    height: 7rem;
+    font-size: 1.7rem;
+  }
   .listaRatos {
     width: 22rem;
   }
@@ -195,12 +198,16 @@
     margin-right: 1rem;
     margin-bottom: 0;
   }
-
   .btnOpcao,
   .opcaoAtiva {
     width: 20%;
     height: 60%;
     font-size: 1rem;
+  }
+    .addRato{
+    width: 10rem;
+    height: 4.5rem;
+    font-size: 1.2rem;
   }
   .listaRatos {
     margin-top: 8rem;

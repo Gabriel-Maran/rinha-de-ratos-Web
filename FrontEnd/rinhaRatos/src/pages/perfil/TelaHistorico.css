@@ -1,0 +1,51 @@
+.conteinerHistorico {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.conteudoHistorico {
+  width: 50rem;
+  height: 60rem;
+  background-image: linear-gradient(
+      rgba(79, 81, 83, 0.3),
+      rgba(79, 81, 83, 0.3)
+    ),
+    url("../../assets/backgrounds/bgBatalhaMenor.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+
+  border-radius: 1rem;
+
+  text-align: center;
+  font-family: "Fondamento", "fantasy";
+  font-weight: lighter;
+
+  /* Deixar a posição do butão 'sair' certa */
+  position: relative;
+
+  /* Pro conteúdo ficar organizado*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+h1 {
+  color: white;
+}
+
+button {
+  width: 10rem;
+  height: 5rem;
+  font-size: 2rem;
+}

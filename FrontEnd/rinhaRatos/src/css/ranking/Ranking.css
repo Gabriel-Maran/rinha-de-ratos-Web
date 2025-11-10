@@ -3,14 +3,14 @@
   top: 0.6rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 20rem;
-  height: 7rem;
+  width: 25rem;
+  height: 10rem;
   background-image: url("../../assets/backgrounds/papelLblTitulo.png");
   background-size: 100% 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2.2rem;
+  font-size: 2.8rem;
 }
 
 .listaJogadores {
@@ -70,6 +70,7 @@
     top: 0.5rem;
     width: 20rem;
     height: 8rem;
+    font-size: 2.3rem;
   }
 }
 

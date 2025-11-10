@@ -3,6 +3,7 @@ import "../../css/home/ADM/ModalEditarBatalha.css";
 import "../auth/AuthForm.css";
 
 export default function ModalCriarBatalhas({
+  estadoModal,
   nomeBatalha,
   custoInscricao,
   dataHora,
@@ -45,7 +46,7 @@ export default function ModalCriarBatalhas({
 
   return (
     <>
-      <div className="bgModal">
+      <div className={estadoModal}>
         <div className="containerModal">
           <button className="sair" onClick={onClose}>
             ✖

@@ -5,6 +5,7 @@ import trofeu from "../../assets/icones/IconeTrofeu.png";
 import ModalEditarBatalha from "./ModalEditarBatalha";
 import ModalCriarBatalha from "./ModalCriarBatalha";
 import "../../css/home/ADM/homeADM.css";
+import "../../css/batalhas/ListaDeBatalhas.css";
 
 export default function HomeADM() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
@@ -22,13 +23,20 @@ export default function HomeADM() {
 
   const [batalhaSendoEditada, setBatalhaSendoEditada] = useState();
 
+  const [editarBatalha, setEditarBatalha] = useState(false);
+  const [criarBatalha, setCriarBatalha] = useState(false);
+  const [estadoModal, setEstadoModal] = useState("bgModal");
+
   const [listaJogadores, setListaJogadores] = useState([]);
   const [nome, setNome] = useState("");
   const [vitorias, setVitorias] = useState(0);
   const [posicoes, setPosicoes] = useState(1);
 
-  const [editarBatalha, setEditarBatalha] = useState(false);
-  const [criarBatalha, setCriarBatalha] = useState(false);
+  const CriacaoBatalha = () => {
+    setCriarBatalha(true);
+    setEstadoModal("bgModalAtivo");
+  };
+
   const EdicaoDeBatalha = (batalha) => {
     setEditarBatalha(true);
     setBatalhaSendoEditada(batalha);
@@ -37,6 +45,19 @@ export default function HomeADM() {
   const fecharModal = () => {
     setEditarBatalha(false);
     setCriarBatalha(false);
+  };
+
+  const formatarDataEHora = (data) => {
+    if (!data) return "Data Indisponível";
+
+    try {
+      const [parteDaData, parteDaHora] = data.split("T"); // ["2025-10-30", "22:54"]
+      const [ano, mes, dia] = parteDaData.split("-"); // ["2025", "10", "30"]
+      return `${dia}/${mes}, ${parteDaHora}`; // "30/10, 22:54"
+    } catch (erro) {
+      console.error("Erro ao formatar data:", erro);
+      return data;
+    }
   };
 
   let conteudoHomeAdm;
@@ -69,6 +90,7 @@ export default function HomeADM() {
         <>
           {criarBatalha && (
             <ModalCriarBatalha
+              estadoModal={estadoModal}
               nomeBatalha={nomeBatalha}
               custoInscricao={custoInscricao}
               dataHora={dataHora}
@@ -87,6 +109,7 @@ export default function HomeADM() {
           )}
           {editarBatalha && (
             <ModalEditarBatalha
+              estadoModal={estadoModal}
               onClose={fecharModal}
               batalhaSendoEditada={batalhaSendoEditada}
               setNomeBatalha={setNomeBatalha}
@@ -97,10 +120,7 @@ export default function HomeADM() {
               listaBatalhas={listaBatalhas}
             />
           )}
-          <button
-            className="btnIniciarCriacao"
-            onClick={() => setCriarBatalha(true)}
-          >
+          <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
             Criar Batalha
           </button>
           <div className="listaBatalhas">
@@ -110,7 +130,7 @@ export default function HomeADM() {
                 <div className="infoBatalha">
                   <p>{batalha.nome}</p>
                   <p>Inscrição: {batalha.custo} MouseCoin</p>
-                  <p>Data e Hora: {batalha.dataEHora}</p>
+                  <p>Data e Hora: {formatarDataEHora(batalha.dataEHora)}</p>
                   <p>Prêmio: {batalha.premio} MouseCoin</p>
                 </div>
                 <button
