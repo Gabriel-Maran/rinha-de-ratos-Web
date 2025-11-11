@@ -1,47 +1,48 @@
 import "./ModalCriarBatalha.css";
 import "./ModalEditarBatalha.css";
 import "../../auth/AuthForm.css";
+import { useState } from "react";
+import { criarBatalha } from "../../../Api/Api";
 
 export default function ModalCriarBatalhas({
   estadoModal,
   nomeBatalha,
   custoInscricao,
   dataHora,
-  premio,
-  jogador1,
-  jogador2,
-  iniciar,
   listaBatalhas,
   setNomeBatalha,
   setCustoInscricao,
   setDataHora,
-  setPremio,
   setListaBatalhas,
   onClose,
 }) {
-  const CadastrarBatalha = () => {
-    const batalha = {
-      id: Date.now(),
-      nome: nomeBatalha,
-      custo: custoInscricao,
-      dataEHora: dataHora,
-      premio: premio,
-      jogador1: jogador1,
-      jogador2: jogador2,
-      iniciar: iniciar,
+  const [erro, setErro] = useState(null);
+
+  const CadastrarBatalha = async () => {
+    setErro(null);
+    const idAdm = localStorage.getItem("idUsuario");
+
+    const dados = {
+      nomeBatalha: nomeBatalha,
+      dataHorarioInicio: dataHora,
+      idAdmCriador: idAdm,
+      custoInscricao: custoInscricao,
     };
 
-    console.log(dataHora);
+    try {
+      const resposta = await criarBatalha(dados);
+      localStorage.setItem("dadosDaBatalha", JSON.stringify(resposta.data));
 
-    setListaBatalhas([...listaBatalhas, batalha]);
-    onClose();
-
-    console.log(listaBatalhas);
-
-    setNomeBatalha("");
-    setCustoInscricao(0);
-    setDataHora("");
-    setPremio(0);
+      const novaBatalha = resposta.data;
+     console.log("Cadastro OK!", resposta.data);
+     
+      setListaBatalhas([...listaBatalhas, novaBatalha]);
+      onClose();
+    } catch (err) {
+      setErro(
+        err?.response?.data?.message || "Erro ao conectar com o servidor."
+      );
+    }
   };
 
   return (
@@ -52,6 +53,8 @@ export default function ModalCriarBatalhas({
             ✖
           </button>
           <h1 className="tituloAba">Criação da Batalha</h1>
+          {erro && <p className="mensagem-erro">{erro}</p>}
+
           <div className="criarBatalha">
             <div>
               <h3>Nome</h3>
@@ -75,14 +78,6 @@ export default function ModalCriarBatalhas({
                 type="datetime-local"
                 value={dataHora}
                 onChange={(e) => setDataHora(e.target.value)}
-              />
-            </div>
-            <div>
-              <h3>Prêmio</h3>
-              <input
-                type="number"
-                value={premio}
-                onChange={(e) => setPremio(Number(e.target.value))}
               />
             </div>
           </div>

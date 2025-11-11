@@ -40,3 +40,7 @@ export const pegarPacotes = async () => {
 export const compraPacote = async (idPacote, idUsuario) => {
   return await apiClient.post(`lojapacotes/comprar/${idPacote}/${idUsuario}`);
 };
+
+export const criarBatalha = async (dadosBatalha) => {
+  return await apiClient.post("batalha/cadastro", dadosBatalha);
+};
