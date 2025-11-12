@@ -6,6 +6,7 @@ import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
+import { useAuth } from "../../context/AuthContext";
 import "./meusRatos/Corpo.css";
 
 const ETAPAS = {
@@ -24,12 +25,11 @@ export default function Inicio() {
   const [listaHabilidades, setListaHabilidades] = useState(null);
   const [habilEscolhida, setHabilEscolhida] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
+  const { setUser } = useAuth();
 
   const [novoRato, setNovoRato] = useState({});
 
-  const [qtdeMoedas, setQtdeMoedas] = useState(0)
-
-  /* const [ratosUsuario, seRatosUsuario] = useState(["Robertinho Loco", "Destruidor", "Sabe-tudo"]); */
+  const [qtdeMoedas, setQtdeMoedas] = useState(0);
 
   const idUsuarioLogado = localStorage.getItem("idUsuario");
 
@@ -45,7 +45,6 @@ export default function Inicio() {
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
-  // ADICIONADO: sincroniza automaticamente a lista de ratos para o localStorage
   useEffect(() => {
     const idUsuarioLogado = localStorage.getItem("idUsuario");
     localStorage.setItem(
