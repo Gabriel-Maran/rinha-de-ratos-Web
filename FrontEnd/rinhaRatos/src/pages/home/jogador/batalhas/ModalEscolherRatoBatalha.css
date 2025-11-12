@@ -46,7 +46,7 @@
   min-width: 20rem;
   padding: auto;
   margin: 1.5rem 5rem;
-  background-image: url("../../../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   color: white;
   font-size: 2rem;
@@ -73,7 +73,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url("../../assets/backgrounds/papelLabelAmarelado.png");
+  background-image: url("../../assets/assets/labels/lblPapelAmarelado.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   box-sizing: border-box;

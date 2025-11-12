@@ -84,7 +84,7 @@
   width: 20rem;
   padding: auto;
   margin: 1.5rem 5rem;
-  background-image: url("../../../../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../../../../assets/labels/lblTabua.png");
   background-size: cover;
   color: white;
   font-size: 2rem;
@@ -139,7 +139,7 @@ div {
 }
 
 .opcoesClasse button {
-  background-image: url("../../../../assets/backgrounds/papelLabel.svg");
+  background-image: url("../../../../assets/labels/lblPapel.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -327,7 +327,7 @@ div {
   width: 19rem;
   height: 6rem;
   margin: 0;
-  background-image: url("../../../assets/backgrounds/pedraLabel.png");
+  background-image: url("../../../assets/labels/lblPedra.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   display: flex;
@@ -340,7 +340,7 @@ div {
 .infoGeral {
   width: 95%;
   min-height: 42%;
-  background-image: url("../../../assets/backgrounds/displayMadeira2.png");
+  background-image: url("../../../assets/displays/displayMadeira2.png");
   background-size: 100% 100%;
   text-align: center;
   display: flex;
@@ -363,7 +363,7 @@ div {
 .titusEstHabil {
   width: 100%;
   min-height: 2.2rem;
-  background-image: url("../../../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   margin: 0rem 0rem 0.5rem 0rem;
   color: white;
@@ -391,7 +391,7 @@ div {
 }
 
 .estatisticas {
-  background-image: url("../../../assets/backgrounds/papelLabelPregos.png");
+  background-image: url("../../../assets/labels/lblPapelPregos.png");
   background-size: 100% 100%;
   width: 80%;
   min-height: 8rem;
@@ -411,7 +411,7 @@ div {
   align-items: center;
   justify-content: center;
   display: flex;
-  background-image: url("../../../assets/backgrounds/papelLabelPregos.png");
+  background-image: url("../../../assets/labels/lblPapelPregos.png");
   background-size: 100% 100%;
   padding: 1rem 1rem 1rem 1rem;
   margin: 0rem 0rem 0rem 0rem;

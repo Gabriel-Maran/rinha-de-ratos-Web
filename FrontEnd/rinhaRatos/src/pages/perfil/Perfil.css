@@ -35,7 +35,7 @@
   width: 100%;
   max-width: 115rem;
   min-height: 60rem;
-  background-image: url("../../assets/backgrounds/displayMadeira.png");
+  background-image: url("../../assets/displays/displayMadeira.png");
   background-size: 100% 100%;
 
   display: flex;
@@ -61,7 +61,7 @@
 .opcaoAtiva {
   width: 80%;
   flex: 1;
-  background-image: url("../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -144,7 +144,7 @@
 .batalhaFeita {
   width: 87%;
   height: 12rem;
-  background-image: url("../../assets/backgrounds/papelLabelBatalha.png");
+  background-image: url("../../assets/labels/lblPapelBatalha.png");
   background-size: 100% 100%;
   display: flex;
   align-items: center;

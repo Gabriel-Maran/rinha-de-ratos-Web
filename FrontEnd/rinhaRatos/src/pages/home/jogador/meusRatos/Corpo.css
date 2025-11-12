@@ -37,7 +37,7 @@
   width: 100%;
   max-width: 115rem;
   min-height: 80rem;
-  background-image: url("../../../../assets/backgrounds/displayMadeira.png");
+  background-image: url("../../../../assets/displays/displayMadeira.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
 
@@ -65,7 +65,7 @@
 .opcaoAtiva {
   width: 100%;
   background-color: transparent;
-  background-image: url("../../../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -81,7 +81,7 @@
 }
 
 .opcaoAtiva {
-  background-image: url("../../../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../../../assets/labels/lblTabua.png");
   opacity: 1;
   pointer-events: none;
   transition: background-image 0.3s ease, color 0.3s ease, transform 0.2s ease;
@@ -104,7 +104,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url("../../../../assets/backgrounds/papelLabelAmarelado.png");
+  background-image: url("../../../../assets/labels/lblPapelAmarelado.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   box-sizing: border-box;

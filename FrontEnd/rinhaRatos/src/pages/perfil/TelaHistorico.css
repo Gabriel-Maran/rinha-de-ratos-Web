@@ -81,7 +81,7 @@
   height: 5rem;
   color: yellow;
   font-size: 3rem;
-  background-image: url("../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   display: flex;
   justify-content: center;
@@ -146,7 +146,7 @@
 .historicoBatalha {
   width: 35rem;
   height: 22rem;
-  background-image: url("../../assets/backgrounds/displayMadeira2.png");
+  background-image: url("../../assets/displays/displayMadeira2.png");
   background-size: 100% 100%;
   margin-top: 2rem;
   display: flex;
@@ -163,7 +163,7 @@
   align-items: center;
   color: white;
   font-size: 2rem;
-  background-image: url("../../assets/backgrounds/tabuaLabel.png");
+  background-image: url("../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   box-sizing: content-box;
   position: absolute;
@@ -172,7 +172,7 @@
 
 .bgConteinerHist {
   height: 100%;
-  background-image: url("../../assets/backgrounds/papelLabelPregos.png");
+  background-image: url("../../assets/labels/lblPapelPregos.png");
   background-size: 110% 110%;
   background-position: center;
 }
@@ -202,11 +202,11 @@
 
 .regHistEsq {
   color: white;
-  background-image: url("../../assets/backgrounds/lblCouroReg.png");
+  background-image: url("../../assets/labels/lblCouroReg.png");
 }
 
 .regHistDir {
-  background-image: url("../../assets/backgrounds/lblPapiroReg.png");
+  background-image: url("../../assets/labels/lblPapiroReg.png");
 }
 
 .regHistEsq p,
