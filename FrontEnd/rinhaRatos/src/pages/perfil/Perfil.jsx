@@ -21,9 +21,9 @@ export default function Perfil({ qtdeMoedas }) {
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
 
-  const fecharHistorico = () =>{
-    setMostrarHistorico(false)
-  }
+  const fecharHistorico = () => {
+    setMostrarHistorico(false);
+  };
 
   let conteudoPerfil;
 
@@ -46,7 +46,12 @@ export default function Perfil({ qtdeMoedas }) {
     default:
       conteudoPerfil = (
         <>
-          {mostrarHistorico && <TelaHistorico onClose={fecharHistorico}/>}
+          {mostrarHistorico && (
+            <TelaHistorico
+              onClose={fecharHistorico}
+              mostrarHistorico={mostrarHistorico}
+            />
+          )}
           <div className="opcoesBatalhaFeita">
             <p>Vencedor: Jão</p>
             <button onClick={() => setMostrarHistorico(true)}>Histórico</button>

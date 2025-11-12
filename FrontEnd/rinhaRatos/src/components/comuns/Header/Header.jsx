@@ -7,11 +7,10 @@ import "./Header.css";
 
 // 2. Já não precisamos de 'qtdeMoedas' ou 'saldoMouseCoins' nas props
 export default function Header({ home }) {
-
   // 3. Pedimos o valor das moedas diretamente ao Contexto
   const { qtdeMoedas } = useMoedas();
 
-  const nomePlayer  = localStorage.getItem("nome");
+  const nomePlayer = localStorage.getItem("nome");
 
   const navigate = useNavigate();
 
@@ -19,7 +18,11 @@ export default function Header({ home }) {
     <>
       <div className="header">
         <div className="infoHeader">
-          <img onClick={() => navigate("/perfil")} src={RatoEsgoto} />
+          <img
+            className="fotoJogador"
+            onClick={() => navigate("/perfil")}
+            src={RatoEsgoto}
+          />
           <h1 onClick={() => navigate("/perfil")}>{nomePlayer}</h1>
           {home == "home" && (
             <div className="quantidadeMoedas">

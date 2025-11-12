@@ -24,9 +24,10 @@
   cursor: pointer;
 }
 
-.infoHeader img {
+.fotoJogador {
   height: 4rem;
   margin-left: 2rem;
+  transform: scaleX(-1);
   cursor: pointer;
 }
 
@@ -75,7 +76,7 @@
   }
 }
 
-@media (max-width: 1325px){
+@media (max-width: 1325px) {
   .quantidadeMoedas {
     top: 5.5rem;
     height: 4rem;
@@ -84,4 +85,3 @@
     height: 4rem;
   }
 }
-
