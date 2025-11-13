@@ -1,4 +1,4 @@
-/* ------------- PRIMEIRO EXECUTE O BACK END, DEPOIS DE ESTES INSERTS NO PGADMIN -------------*/
+/* ------------- PRIMEIRO EXECUTE O BACK END, DEPOIS FAÇA ESTES INSERTS NO PGADMIN -------------*/
 
 -- Classes de rato
 INSERT INTO classes (nome_classe, descricao, apelido, str_min, str_max, agi_min, agi_max, hps_min, hps_max, int_min, int_max, def_min, def_max) VALUES
