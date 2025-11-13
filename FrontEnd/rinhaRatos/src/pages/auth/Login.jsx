@@ -1,14 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import Input from "../../components/comuns/Input";
-import Botao from "../../components/comuns/Botao";
-import "./auth.css";
-import "./AuthForm.css";
-import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
-import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
-import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fazerLogin } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
+import Input from "../../components/comuns/Input";
+import Botao from "../../components/comuns/Botao";
+import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
+import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
+import "./LogoEFundo.css";
+import "./CaixaAcesso.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -43,14 +43,14 @@ export default function Login() {
     try {
       const resposta = await fazerLogin(dados);
       console.log("Login OK!", resposta.data);
-      
+
       const tipoContaDaAPI = resposta.data.tipo_conta;
       const idUsuarioAPI = resposta.data.id;
-      
+
       // 3. Atualiza o estado global (Contexto) com o objeto 'user'
       setUser(resposta.data);
       sessionStorage.setItem("idUsuario", idUsuarioAPI);
-      
+
       tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
 
     } catch (err) {
@@ -59,12 +59,12 @@ export default function Login() {
   };
   return (
     <div className="acesso-container">
-      <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
+      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
-        <h3>Fazer login</h3>
-
-        {erro && <p className="mensagem-erro">{erro}</p>}
-
+        <div className="tituloEErro">
+          <h3>Fazer login</h3>
+          {erro && <p className="mensagem-erro">{erro}</p>}
+        </div>
         <div className="inputs">
           <Input
             input={{
@@ -88,9 +88,9 @@ export default function Login() {
               onClick={funMostrarSenha} // Corrigido
             >
               {mostrarSenha ? (
-                <img src={icone_olho_fechado} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
               ) : (
-                <img src={icone_olho_aberto} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
               )}
             </span>
           </div>

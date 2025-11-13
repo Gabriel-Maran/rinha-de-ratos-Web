@@ -1,5 +1,5 @@
 import ImagensRato from "../../../../components/ImagensRato";
-import "./Corpo.css";
+import "../HomeJogador.css";
 
 export default function ListaDeRatos({
   ratosUsuario,

@@ -1,21 +1,33 @@
 .caixaLogin {
+  width: 28rem;
   padding: 1rem;
   background-color: white;
   border-radius: 12px;
-  border: solid 000000;
+  border: solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 400px;
   margin-top: 8rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   font-family: "Inter", sans-serif;
+  transform: scale(1.2);
 }
 
-.caixaLogin h3 {
+.tituloEErro {
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tituloEErro h3 {
   font-size: 2rem;
   font-weight: 1000;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
+}
+
+.mensagem-erro {
+  font-size: 1.5rem;
+  color: red;
 }
 
 .inputs {
@@ -47,8 +59,10 @@
 
 .verSenha {
   position: absolute;
-  cursor: pointer; /* Muda o cursor para a mãozinha apontando */
-  user-select: none; /* Não permite o cara selecionar (deixar azul) */
+  cursor: pointer;
+  /* Muda o cursor para a mãozinha apontando */
+  user-select: none;
+  /* Não permite o cara selecionar (deixar azul) */
   color: #000000;
   right: 0rem;
   padding-bottom: 1rem;
@@ -79,6 +93,7 @@
   border-radius: 0.8rem;
   cursor: pointer;
 }
+
 button:active {
   transform: scale(0.97);
 }
@@ -104,14 +119,13 @@ button:active {
   text-decoration: underline;
 }
 
-.mensagem-erro {
-  color: red;
-}
+
 
 @media (max-width: 600px) {
   .caixaLogin {
     width: 300px;
   }
+
   .caixaLogin h3 {
     text-align: center;
   }

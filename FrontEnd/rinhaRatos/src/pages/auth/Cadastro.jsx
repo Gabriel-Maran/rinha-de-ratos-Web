@@ -1,13 +1,13 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { fazerCadastro } from "../../Api/Api";
 import Botao from "../../components/comuns/Botao";
 import Input from "../../components/comuns/Input";
-import "./auth.css";
-import "./AuthForm.css";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
-import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
-import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
-import { fazerCadastro } from "../../Api/Api";
+import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
+import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
+import "./LogoEFundo.css";
+import "./CaixaAcesso.css";
 
 export default function Cadastro() {
   const navigate = useNavigate();
@@ -15,13 +15,13 @@ export default function Cadastro() {
     navigate("/login");
   };
 
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
   const [erro, setErro] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const tipoConta = "JOGADOR"; 
+  const tipoConta = "ADM";
   const mousecoinSaldo = 30;
   const vitorias = 0;
 
@@ -30,6 +30,10 @@ export default function Cadastro() {
   };
 
   const irLogin = async (evento) => {
+    if (email === "" || email === "") {
+      setErro("Preencha os campos necessários")
+      return
+    }
     evento.preventDefault();
     setErro(null);
 
@@ -56,10 +60,12 @@ export default function Cadastro() {
 
   return (
     <div className="acesso-container">
-      <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
+      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
-        <h3>Cadastro</h3>
-        {erro && <p className="mensagem-erro">{erro}</p>}
+        <div className="tituloEErro">
+          <h3>Cadastro</h3>
+          {erro && <p className="mensagem-erro">{erro}</p>}
+        </div>
         <div className="inputs">
           <Input
             input={{
@@ -88,9 +94,9 @@ export default function Cadastro() {
             />
             <span className="verSenha" onClick={funMostrarSenha}>
               {mostrarSenha ? (
-                <img src={icone_olho_fechado} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
               ) : (
-                <img src={icone_olho_aberto} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
               )}
             </span>
           </div>

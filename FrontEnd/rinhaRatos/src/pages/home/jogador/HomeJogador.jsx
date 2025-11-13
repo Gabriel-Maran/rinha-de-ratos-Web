@@ -7,7 +7,7 @@ import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
-import "./meusRatos/Corpo.css";
+import "./HomeJogador.css";
 
 const ETAPAS = {
   FECHADO: 0,
@@ -16,7 +16,7 @@ const ETAPAS = {
   RATO_CRIADO: 3,
 };
 
-export default function Inicio() {
+export default function HomeJogador() {
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
   const [nomeRatoEsc, setNomeRatoEsc] = useState(null);

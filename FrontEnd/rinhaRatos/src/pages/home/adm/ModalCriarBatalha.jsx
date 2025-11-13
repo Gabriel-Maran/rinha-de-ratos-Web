@@ -1,8 +1,7 @@
-import "./ModalCriarBatalha.css";
-import "./ModalEditarBatalha.css";
-import "../../auth/AuthForm.css";
 import { useState } from "react";
 import { criarBatalha } from "../../../Api/Api";
+import "./ModalCriarBatalha.css";
+import "./ModalEditarBatalha.css";
 
 export default function ModalCriarBatalhas({
   estadoModal,
@@ -19,6 +18,10 @@ export default function ModalCriarBatalhas({
   const [erro, setErro] = useState(null);
 
   const CadastrarBatalha = async () => {
+    if (nomeBatalha === "" || custoInscricao === "" || dataHora === "") {
+      setErro("Por favor, preencha todos os campos")
+      return
+    }
     setErro(null);
     const idAdm = localStorage.getItem("idUsuario");
 
@@ -34,8 +37,8 @@ export default function ModalCriarBatalhas({
       localStorage.setItem("dadosDaBatalha", JSON.stringify(resposta.data));
 
       const novaBatalha = resposta.data;
-     console.log("Cadastro OK!", resposta.data);
-     
+      console.log("Batalha Criada!", resposta.data);
+
       setListaBatalhas([...listaBatalhas, novaBatalha]);
       onClose();
     } catch (err) {
@@ -53,7 +56,7 @@ export default function ModalCriarBatalhas({
             ✖
           </button>
           <h1 className="tituloAba">Criação da Batalha</h1>
-          {erro && <p className="mensagem-erro">{erro}</p>}
+          {erro && <p className="mensagem-erro-batalha">{erro}</p>}
 
           <div className="criarBatalha">
             <div>
