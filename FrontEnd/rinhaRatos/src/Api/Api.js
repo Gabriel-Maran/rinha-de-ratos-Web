@@ -23,6 +23,10 @@ export const ratosUsuario = (dadosRatos) => {
   return apiClient.post("/rato/cadastro", dadosRatos);
 };
 
+export const pegarUsuarioPorId = (id) => {
+  apiClient.get(`/usuario/${id}`);
+};
+
 export const pegarTodasClasses = async () => {
   return await apiClient.get("/classe/todos");
 };

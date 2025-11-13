@@ -20,15 +20,18 @@ export default function Cadastro() {
   const [nome, setNome] = useState("");
   const [erro, setErro] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const tipoConta = "JOGADOR";
+
+  const tipoConta = "JOGADOR"; 
   const mousecoinSaldo = 30;
   const vitorias = 0;
 
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
+
   const irLogin = async (evento) => {
     evento.preventDefault();
+    setErro(null);
 
     const dados = {
       nome,
@@ -38,19 +41,10 @@ export default function Cadastro() {
       mousecoinSaldo,
       vitorias,
     };
+
     try {
-      const resposta = await fazerCadastro(dados);
-      console.log("Cadastro OK!", resposta.data);
-
-      localStorage.setItem("idUsuario", resposta.data.idUsuario);
-      localStorage.setItem("nome", resposta.data.nome);
-      localStorage.setItem("email", resposta.data.email);
-      localStorage.setItem("tipoConta", resposta.data.tipoConta);
-      localStorage.setItem("mousecoinSaldo", resposta.data.mousecoinSaldo);
-      localStorage.setItem("vitorias", resposta.data.vitorias);
-      localStorage.setItem("ratos", JSON.stringify(resposta.data.ratos));
-
-    
+      await fazerCadastro(dados);
+      console.log("Cadastro OK!");
 
       navigate("/login");
     } catch (err) {
@@ -92,10 +86,7 @@ export default function Cadastro() {
                 placeholder: "Senha",
               }}
             />
-            <span
-              className="verSenha"
-              onClick={(e) => funMostrarSenha(e.target.value)}
-            >
+            <span className="verSenha" onClick={funMostrarSenha}>
               {mostrarSenha ? (
                 <img src={icone_olho_fechado} alt="icone de olho fechado" />
               ) : (

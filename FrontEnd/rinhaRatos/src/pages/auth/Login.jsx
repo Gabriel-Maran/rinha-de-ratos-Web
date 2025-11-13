@@ -12,7 +12,8 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { setTipoConta } = useAuth();
+  // 2. Pegue o 'setUser' do contexto (chamado no TOPO)
+  const { setUser } = useAuth();
 
   const irCadastro = () => {
     navigate("/cadastro");
@@ -25,39 +26,37 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
   const nome = "";
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
 
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
 
   const irLogin = async (evento) => {
-    // Impede que o navegador recarregue à página
     evento.preventDefault();
+    setErro(null);
 
     const dados = { email, senha, nome };
 
     try {
-      // Entrega o pacote de dados para a Api e espera o back
       const resposta = await fazerLogin(dados);
-
       console.log("Login OK!", resposta.data);
-
-      const tipoContaDaAPI = resposta.data.tipo_conta;
-
-      localStorage.setItem("idUsuario", resposta.data.id);
-      localStorage.setItem("tipoConta", resposta.data.tipo_conta);
-
-      setTipoConta(tipoContaDaAPI);
-
-      tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
       
+      const tipoContaDaAPI = resposta.data.tipo_conta;
+      const idUsuarioAPI = resposta.data.id;
+      
+      // 3. Atualiza o estado global (Contexto) com o objeto 'user'
+      setUser(resposta.data);
+      sessionStorage.setItem("idUsuario", idUsuarioAPI);
+      
+      tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
+
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
   };
-
   return (
     <div className="acesso-container">
       <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
@@ -86,7 +85,7 @@ export default function Login() {
             />
             <span
               className="verSenha"
-              onClick={(e) => funMostrarSenha(e.target.value)}
+              onClick={funMostrarSenha} // Corrigido
             >
               {mostrarSenha ? (
                 <img src={icone_olho_fechado} alt="icone de olho fechado" />

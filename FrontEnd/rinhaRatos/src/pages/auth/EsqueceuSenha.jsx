@@ -9,12 +9,13 @@ import Input from "../../components/comuns/Input";
 import { trocarSenha } from "../../Api/Api";
 import { useState } from "react";
 
+
 export default function EsqueceuSenha() {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [senha, setSenha] = useState(""); 
   const [erro, setErro] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const nome = "";
+  const nome = ""
 
   const navigate = useNavigate();
   const lembreiSenha = () => {
@@ -24,28 +25,27 @@ export default function EsqueceuSenha() {
     setMostrarSenha(!mostrarSenha);
   };
 
-  const irLogin = async (evento) => {
+  const redefinirSenha = async (evento) => {
     evento.preventDefault();
-    const dados = {
+    setErro(null);
+
+   const dados = {
       email,
       senha,
-      nome,
+      nome
     };
 
     try {
-      const resposta = await trocarSenha(dados);
-      console.log("Login OK!", resposta.data);
-
-      localStorage.setItem("nome", resposta.data.nome);
-      localStorage.setItem("email", resposta.data.email);
-      localStorage
+      await trocarSenha(dados);     
       navigate("/login");
+
     } catch (err) {
       setErro(
         err?.response?.data?.message || "Erro ao conectar com o servidor."
       );
     }
   };
+  
   return (
     <div className="acesso-container">
       <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
@@ -74,7 +74,7 @@ export default function EsqueceuSenha() {
             />
             <span
               className="verSenha"
-              onClick={(e) => funMostrarSenha(e.target.value)}
+              onClick={funMostrarSenha} 
             >
               {mostrarSenha ? (
                 <img src={icone_olho_fechado} alt="icone de olho fechado" />
@@ -89,7 +89,7 @@ export default function EsqueceuSenha() {
           acaoBtn={"Redefinir"}
           button={{
             className: "botao",
-            onClick: irLogin,
+            onClick: redefinirSenha,
           }}
         />
         <Botao
