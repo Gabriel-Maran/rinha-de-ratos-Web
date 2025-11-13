@@ -1,4 +1,4 @@
-/* ------------------------------------------------------- PRIMEIRO EXECUTE O BACK END, DEPOIS DE ESTES INSERTS NO PGADMIN -------------------------------------------------------*/
+/* ------------- PRIMEIRO EXECUTE O BACK END, DEPOIS DE ESTES INSERTS NO PGADMIN -------------*/
 
 -- Classes de rato
 INSERT INTO classes (nome_classe, descricao, apelido, str_min, str_max, agi_min, agi_max, hps_min, hps_max, int_min, int_max, def_min, def_max) VALUES
@@ -23,9 +23,6 @@ INSERT INTO loja_Pacotes (nome_pacote, mousecoin_quantidade, preco_brl) VALUES
 ('Pacote de Moedas Pequeno', 15, 30.00),
 ('Pacote de Moedas Médio', 30, 60.00),
 ('Pacote de Moedas Grande', 60, 100.00);
-
-
-
 
 -- Habilidades Classe 1: Rato de Esgoto
 INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, efeito_sucesso_str, efeito_falha_str, efetivo_txt, falha_txt) VALUES
