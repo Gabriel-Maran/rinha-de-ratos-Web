@@ -31,8 +31,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-image: url("../../../../assets/labels/lblPapelMoeda.png");
+  background-image: url("../../../../assets/labels/lblPapelPacoteMoeda.png");
   background-size: 100% 100%;
+  cursor: pointer;
 }
 
 .pacote p {

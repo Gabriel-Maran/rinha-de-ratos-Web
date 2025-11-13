@@ -1,7 +1,7 @@
 import ImagensRato from "../../../../../components/ImagensRato";
-import "./ModalCriacaoRato.css";
+import "./RatoCriado.css";
 
-export default function RatoCriado({onClose}) {
+export default function RatoCriado({ onClose }) {
 
   const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};
   const textoDescricao = localStorage.getItem("descricaoRatoCriado");
@@ -27,9 +27,7 @@ export default function RatoCriado({onClose}) {
       <div className="titulo">Criação concluída!</div>
 
       <div className="imagemENome">
-
-      
-<img src={ImagensRato[rato.classe?.nomeClasse] || ImagensRato["Rato de Esgoto"]} /> 
+        <img src={ImagensRato[rato.classe?.nomeClasse] || ImagensRato["Rato de Esgoto"]} />
         <p>{rato.nomeCustomizado}</p>
       </div>
 

@@ -4,6 +4,7 @@ import { ratosUsuario } from "../../../../../Api/Api.js";
 import ImagensRato from "../../../../../components/ImagensRato";
 import MouseCoin from "../../../../../assets/moedas/MouseCoin.png";
 import Input from "../../../../../components/comuns/Input";
+import "./DetalhesDaClasse.css"
 
 export default function DetalhesDaClasse({
   classe,

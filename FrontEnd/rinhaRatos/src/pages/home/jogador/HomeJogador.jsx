@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"; // ADICIONADO: useEffect para sincronizar com localStorage
+import { useAuth } from "../../../context/AuthContext";
 import Header from "../../../components/comuns/Header/Header";
 import Botao from "../../../components/comuns/Botao";
 import ModalCriacaoRato from "./meusRatos/modalRato/ModalCriacaoRato";
@@ -6,7 +7,6 @@ import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
-import { useAuth } from "../../context/AuthContext";
 import "./meusRatos/Corpo.css";
 
 const ETAPAS = {

@@ -1,4 +1,4 @@
-import "./ModalCriacaoRato.css";
+import "./SelecaoDeClasse.css";
 
 export default function SelecaoDeClasse({ onSlctClasse, classes, loading, error }) {
 

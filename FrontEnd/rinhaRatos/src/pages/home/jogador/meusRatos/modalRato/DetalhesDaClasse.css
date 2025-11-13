@@ -1,0 +1,171 @@
+.titulo {
+  min-height: 3.5rem;
+  width: 20rem;
+  padding: auto;
+  margin: 1.5rem 5rem;
+  background-image: url("../../../../../assets/labels/lblTabua.png");
+  background-size: cover;
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
+}
+
+.detalhes-conteudo {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.inputEFoto {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nomeRato {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nomeRato input {
+  width: 95%;
+  height: 3rem;
+  border-color: black;
+  border-style: solid;
+  border-radius: 0.5rem;
+  border-width: 0.2rem;
+  outline: none;
+  background-color: white;
+  font-family: "Fondamento", "fantasy";
+  font-size: 2rem;
+  padding-left: 1rem;
+}
+
+.inputEFoto .simboloEditar {
+  position: absolute;
+  user-select: none;
+  color: black;
+  right: 1rem;
+  font-size: 1.5rem;
+}
+
+.inputEFoto img {
+  width: 10rem;
+  height: 10rem;
+  margin: 0;
+}
+
+.descRato {
+  max-width: 98%;
+  min-height: 3rem;
+  padding: 0.5rem 0rem;
+  background-color: white;
+  border-color: black;
+  border-style: solid;
+  border-radius: 0.5rem;
+  border-width: 0.2rem;
+  font-size: 1.2rem;
+}
+
+.slctHabilidade {
+  font-size: 1.8rem;
+  color: white;
+  margin: 1.5rem 0rem 1rem;
+}
+
+.opcoesHabilidade {
+  width: 99%;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.opcoesHabilidade button {
+  width: 8rem;
+  height: 3rem;
+  border-color: rgb(255, 255, 255);
+  border-style: solid;
+  border-radius: 0.5rem;
+  border-width: 0.2rem;
+  color: white;
+  font-size: 1rem;
+  font-family: "Fondamento", "fantasy";
+  background-color: rgb(79, 81, 83);
+}
+
+.opcoesHabilidade .btnAtivo {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  border-color: #000000;
+  border-width: 0.2rem;
+  border-style: solid;
+}
+
+.descHabilidade {
+  max-width: 98%;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  margin: 1rem 0rem 0rem 0rem;
+  padding: 0rem 0.5rem;
+  background-color: white;
+  border-color: black;
+  border-style: solid;
+  border-radius: 0.5rem;
+  border-width: 0.2rem;
+  font-size: 1rem;
+}
+
+.socorro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+}
+
+.btnFinalizar {
+  font-family: "Fondamento", "fantasy";
+  font-size: 1.5rem;
+  font-weight: 1000;
+  background-color: #ffae52;
+  margin: 0.7rem 0rem 0.5rem 0rem;
+  padding: 0.3rem 2rem;
+  border: 0.15rem solid #000000;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.custo {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  bottom: 1;
+  right: 0;
+  gap: 0.3rem;
+}
+
+.custo img {
+  align-items: end;
+  align-self: flex-end;
+  width: 4rem;
+  height: 4rem;
+  margin: 0;
+}
+
+.custo p {
+  color: white;
+  margin: 0;
+  font-size: 3rem;
+  margin-bottom: 0.2rem;
+}
