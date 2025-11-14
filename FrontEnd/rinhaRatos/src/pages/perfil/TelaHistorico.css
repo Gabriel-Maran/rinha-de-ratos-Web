@@ -36,6 +36,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -44,10 +45,8 @@
 .modalResultado {
   width: 45rem;
   height: 55rem;
-  background-image: linear-gradient(
-      rgba(79, 81, 83, 0.3),
-      rgba(79, 81, 83, 0.3)
-    ),
+  background-image: linear-gradient(rgba(79, 81, 83, 0.3),
+      rgba(79, 81, 83, 0.3)),
     url("../../assets/backgrounds/bgBatalhaMenor.jpg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -71,9 +70,12 @@
 
   box-sizing: border-box;
 
-  padding: 2rem 1rem 1rem 1rem;
+  padding: 1rem 1rem 1rem 1rem;
 
   transition: opacity 500s ease, visibility 500s ease;
+
+  transform: scale(1.30);
+
 }
 
 .tituloResultado {
@@ -86,20 +88,81 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  z-index: 10;
   text-shadow: 0rem 0rem 1rem black, 0rem 0rem 1rem black, 0rem 0rem 1rem black;
 }
 
+.brasaoResultado,
 .Vitoria,
 .Derrota {
-  width: 25rem;
-  height: 25rem;
+  width: 35rem;
+  height: 35rem;
   background-size: 100% 100%;
+  margin: 5.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.brasaoResultado {
+  width: 35rem;
+  height: 45rem;
+  background-image: url("../../assets/icones/iconeResultBatalha.png");
+  display: inline;
+  padding: 6rem 3rem 0rem 3rem;
+  margin: 0;
+  z-index: 1;
+}
+
+.secaoVitorioso,
+.secaoDerrotado {
+  width: 90%;
+  margin-left: 1.5rem;
+}
+
+.secaoDerrotado {
   margin-top: 1rem;
 }
+
+.secaoVitorioso div div p,
+.secaoDerrotado div div p,
+.statusJogadorVencedor,
+.statusJogadorDerrotado,
+.resultNomeJogador {
+  font-size: 2.5rem;
+  color: white;
+  align-self: center;
+  background-image: url();
+  text-shadow: 0rem 0rem 1rem black, 0rem 0rem 1rem black, 0rem 0rem 1rem black;
+}
+
+.statusJogadorVencedor {
+  color: rgb(0, 255, 0)
+}
+
+.statusJogadorDerrotado {
+  color: red;
+}
+
+.resultNomeJogador {
+  color: rgb(0, 102, 255);
+}
+
+.brasaoResultado img {
+  width: 5rem;
+  margin-right: 1rem;
+  padding: 0.5rem;
+}
+
+.brasaoResultado .infoRatoResultBatalha {
+  display: flex;
+  flex-direction: row;
+  background-image: url("../../assets/labels/lblPapelAmarelado.png");
+  background-size: 100% 100%;
+}
+
 
 .Vitoria {
   background-image: url("../../assets/icones/IconeVitoria.png");
@@ -112,7 +175,7 @@
 .Vitoria h2,
 .Derrota h2 {
   margin: 5rem 0.5rem 0rem 0rem;
-  font-size: 1.7rem;
+  font-size: 2.2rem;
   color: white;
   text-shadow: 0.3rem 0.3rem 0.2rem black, 0.3rem 0.3rem 0.2rem black,
     0.3rem 0.3rem 0.2rem black;
@@ -145,13 +208,15 @@
 
 .historicoBatalha {
   width: 35rem;
-  height: 22rem;
+  height: 20rem;
   background-image: url("../../assets/displays/displayMadeira2.png");
   background-size: 100% 100%;
-  margin-top: 2rem;
+  position: absolute;
+  bottom: 1rem;
   display: flex;
   flex-direction: column;
   padding: 1.1rem 1.5rem 1.2rem 1.6rem;
+  z-index: 3000;
 }
 
 .historicoBatalha h3 {
@@ -167,7 +232,7 @@
   background-size: 100% 100%;
   box-sizing: content-box;
   position: absolute;
-  bottom: 21rem;
+  bottom: 17.5rem;
 }
 
 .bgConteinerHist {
