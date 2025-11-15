@@ -3,7 +3,6 @@ import "./RatoCriado.css";
 
 // Refatorado para receber props (Missão 4)
 export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
-  
   // Lê das props, não do localStorage
   const rato = novoRato || {};
   const textoDescricao = descHabilidade;
@@ -16,15 +15,9 @@ export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
     defense: rato.defBase,
   };
 
-  const handleClose = () => {
-    // Limpeza do localStorage removida
-    onClose();
-  };
-
   return (
     <>
       <div className="titulo">Criação concluída!</div>
-
       <div className="imagemENome">
         <img
           src={
@@ -34,7 +27,6 @@ export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
         />
         <p>{rato.nomeCustomizado}</p>
       </div>
-
       <div className="infoGeral">
         <div className="conteinerTitusEstHabil">
           <div className="caixaEstatisticas">
@@ -47,7 +39,6 @@ export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
               Defesa: {stats.defense}
             </p>
           </div>
-
           <div className="caixaHabilidadeEsc">
             <p className="titusEstHabil">{rato.habilidade?.nomeHabilidade}</p>
             <p className="descHabilEsc">
@@ -56,8 +47,7 @@ export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
           </div>
         </div>
       </div>
-
-      <button className="btnFinalizar" onClick={handleClose}>
+      <button className="btnFinalizar" onClick={onClose}>
         Ok
       </button>
     </>

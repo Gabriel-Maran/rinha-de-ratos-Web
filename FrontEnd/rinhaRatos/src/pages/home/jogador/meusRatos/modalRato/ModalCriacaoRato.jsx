@@ -15,16 +15,11 @@ export default function ModalCriacaoRato({
   onMostrarRato,
   novoRato,
   descHabilidade,
-
-  // Props de pré-carregamento (Missão 5)
   classes,
   descricaoHabilidades,
   loadingModal,
   erroModal,
 }) {
-  
-  // States internos e useEffect foram removidos
-
   if (etapa === etapas.FECHADO) {
     return null;
   }
@@ -46,7 +41,6 @@ export default function ModalCriacaoRato({
       conteudoModal = (
         <DetalhesDaClasse
           classe={classe}
-          // ratosUsuario={novoRato} // Prop 'ratosUsuario' não parecia ser usada
           onMostrar={onMostrarRato}
           indexClasse={indexClasse}
           descricaoHabilidades={descricaoHabilidades || []} // Garante que é um array
