@@ -15,17 +15,17 @@ export function AuthProvider({ children }) {
       if (storedId) {
         try {
           const resposta = await pegarUsuarioPorId(storedId);
-          setUser(resposta.data); 
+          setUser(resposta.data);
         } catch (err) {
           console.error("Falha ao carregar usuário:", err);
           sessionStorage.removeItem("idUsuario");
         }
       }
       setLoading(false);
-    }
+    };
 
     loadUser();
-  }, []); 
+  }, []);
 
   // O 'value' partilha o objeto 'user', a função 'setUser', e o 'loading'
   const value = { user, setUser, loading };

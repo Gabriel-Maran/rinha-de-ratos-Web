@@ -102,20 +102,6 @@ button {
   font-family: "Fondamento", "fantasy";
 }
 
-.addRato {
-  position: absolute;
-  top: 1.2rem;
-  color: white;
-  background-color: #ffae52;
-  width: 21rem;
-  height: 9rem;
-  border-radius: 20px;
-  border: 3px solid #000;
-  font-size: 2.5rem;
-  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
-  z-index: 10;
-}
-
 div {
   user-select: none;
 }

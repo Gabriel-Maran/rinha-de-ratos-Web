@@ -30,10 +30,10 @@ export default function HomeJogador() {
 
   const [novoRato, setNovoRato] = useState(null);
 
-  const qtdeMoedas = user.mousecoinSaldo;
+  const qtdeMoedas = user?.mousecoinSaldo ?? 0;
 
   // CORREÇÃO FINAL (Missão 7): Lida com os dois formatos de ID
-  const idUsuarioLogado = user.idUsuario || user.id;
+  const idUsuarioLogado = (user?.idUsuario || user?.id) ?? 0;
 
   // States dos Ratos
   const [ratosUsuario, setRatosUsuario] = useState([]);
@@ -152,7 +152,7 @@ export default function HomeJogador() {
             }}
             acaoBtn={
               <strong>
-                {contagemRatosVivos >= limiteRatos 
+                {contagemRatosVivos >= limiteRatos
                   ? "Limite Atingido"
                   : loadingRatos
                   ? "Carregando..."

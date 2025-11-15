@@ -57,7 +57,7 @@ export default function Perfil({ qtdeMoedas }) {
     case "Perfil":
       conteudoPerfil = (
         <>
-          <h1 className="subTitulo">Redefina suas informações</h1>
+          <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">
             <p className="lblInfoPerfil">E-mail:</p>
             <Input

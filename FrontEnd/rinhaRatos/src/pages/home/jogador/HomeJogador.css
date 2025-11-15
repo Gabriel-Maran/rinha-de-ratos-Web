@@ -91,6 +91,20 @@
   transform: scale(0.97);
 }
 
+.addRato {
+  position: absolute;
+  top: 1.2rem;
+  color: white;
+  background-color: #ffae52;
+  width: 21rem;
+  height: 9rem;
+  border-radius: 20px;
+  border: 3px solid #000;
+  font-size: 2.5rem;
+  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
+  z-index: 10;
+}
+
 .listaRatos {
   width: 50rem;
   height: 40rem;
@@ -125,6 +139,23 @@
   }
   .imagem-rato-lista {
     width: 8rem;
+  }
+}
+
+@media (max-width: 1289px) and (max-height: 620px) {
+  .opcoes {
+    width: 60%;
+    margin-top: 6rem;
+    margin-bottom: 1rem;
+  }
+  .conteudo-principal {
+    min-height: 40rem;
+  }
+  .addRato {
+    top: 0.5rem;
+    width: 15rem;
+    height: 4.5rem;
+    font-size: 2rem;
   }
 }
 
@@ -174,7 +205,7 @@
 }
 
 @media (max-width: 690px) {
-  .addRato{
+  .addRato {
     width: 15rem;
     height: 7rem;
     font-size: 1.7rem;
@@ -204,7 +235,7 @@
     height: 60%;
     font-size: 1rem;
   }
-    .addRato{
+  .addRato {
     width: 10rem;
     height: 4.5rem;
     font-size: 1.2rem;

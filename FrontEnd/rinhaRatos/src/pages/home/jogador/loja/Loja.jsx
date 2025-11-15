@@ -8,7 +8,7 @@ import "./Loja.css";
 
 export default function Loja() {
   const { user, setUser } = useAuth();
-  const idUsuarioLogado = user.idUsuario || user.id;
+  const idUsuarioLogado = (user?.idUsuario || user?.id) ?? 0;
   const [pacotes, setPacotes] = useState([]);
 
   useEffect(() => {
@@ -28,13 +28,12 @@ export default function Loja() {
     try {
       await compraPacote(pacoteClicado.idPacote, idUsuarioLogado);
 
-     const novoSaldo = user.mousecoinSaldo + pacoteClicado.mousecoinQuantidade;
+      const novoSaldo = user.mousecoinSaldo + pacoteClicado.mousecoinQuantidade;
 
-     // Atualiza o estado global com o novo objeto de usuário
+      // Atualiza o estado global com o novo objeto de usuário
       setUser((userAntigo) => ({
         ...userAntigo, // Copia todos os dados antigos
-        mousecoinSaldo: novoSaldo, 
-
+        mousecoinSaldo: novoSaldo,
       }));
     } catch (err) {
       console.error("Erro ao comprar pacote:", err);
