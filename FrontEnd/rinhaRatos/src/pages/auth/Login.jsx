@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fazerLogin } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
+import { pegarUsuarioPorId } from "../../Api/Api";
 import Input from "../../components/comuns/Input";
 import Botao from "../../components/comuns/Botao";
 import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
@@ -12,7 +13,6 @@ import "./CaixaAcesso.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  // 2. Pegue o 'setUser' do contexto (chamado no TOPO)
   const { setUser } = useAuth();
 
   const irCadastro = () => {
@@ -26,9 +26,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
-  const nome = "";
+  const nome = ""; 
   const [mostrarSenha, setMostrarSenha] = useState(false);
-
 
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
@@ -44,15 +43,16 @@ export default function Login() {
       const resposta = await fazerLogin(dados);
       console.log("Login OK!", resposta.data);
 
+      // Assumindo que a resposta do login tem 'id'
+      const idUsuarioAPI = resposta.data.id; 
       const tipoContaDaAPI = resposta.data.tipo_conta;
-      const idUsuarioAPI = resposta.data.id;
-
-      // 3. Atualiza o estado global (Contexto) com o objeto 'user'
-      setUser(resposta.data);
+  
       sessionStorage.setItem("idUsuario", idUsuarioAPI);
 
-      tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
+      const respostaUsuario = await pegarUsuarioPorId(idUsuarioAPI);
+      setUser(respostaUsuario.data);
 
+      tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
@@ -83,10 +83,7 @@ export default function Login() {
                 placeholder: "Senha",
               }}
             />
-            <span
-              className="verSenha"
-              onClick={funMostrarSenha} // Corrigido
-            >
+            <span className="verSenha" onClick={funMostrarSenha}>
               {mostrarSenha ? (
                 <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
               ) : (

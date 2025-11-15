@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useMoedas } from "../../../../context/MoedasContext";
+import { useAuth } from "../../../../context/AuthContext";
 import { compraPacote, pegarPacotes } from "../../../../Api/Api";
 import PacotePequeno from "../../../../assets/moedas/MontePequenoMouseCoin.png";
 import PacoteMedio from "../../../../assets/moedas/MonteMedioMouseCoin.png";
@@ -7,12 +7,12 @@ import PacoteGrande from "../../../../assets/moedas/MonteGrandeMouseCoin.png";
 import "./Loja.css";
 
 export default function Loja() {
+  const { user, setUser } = useAuth();
+  const idUsuarioLogado = user.idUsuario || user.id;
   const [pacotes, setPacotes] = useState([]);
 
-  // Pedimos o valor E a função de alterar ao Contexto
-  const { qtdeMoedas, setQtdeMoedas } = useMoedas();
-
   useEffect(() => {
+    if (!user) return;
     const fetchDados = async () => {
       try {
         const resposta = await pegarPacotes();
@@ -22,22 +22,20 @@ export default function Loja() {
       }
     };
     fetchDados();
-  }, []);
+  }, [user]);
 
   const addValorNaConta = async (pacoteClicado) => {
     try {
-      const idUsuario = localStorage.getItem("idUsuario");
-      console.log("Enviando para o banco:", {
-        idPacote: pacoteClicado.idPacote,
-        idUsuario: idUsuario,
-      });
-      await compraPacote(pacoteClicado.idPacote, idUsuario);
+      await compraPacote(pacoteClicado.idPacote, idUsuarioLogado);
 
-      const novoSaldo = qtdeMoedas + pacoteClicado.mousecoinQuantidade;
+     const novoSaldo = user.mousecoinSaldo + pacoteClicado.mousecoinQuantidade;
 
-      setQtdeMoedas(novoSaldo);
+     // Atualiza o estado global com o novo objeto de usuário
+      setUser((userAntigo) => ({
+        ...userAntigo, // Copia todos os dados antigos
+        mousecoinSaldo: novoSaldo, 
 
-      localStorage.setItem("mousecoinSaldo", novoSaldo);
+      }));
     } catch (err) {
       console.error("Erro ao comprar pacote:", err);
     }

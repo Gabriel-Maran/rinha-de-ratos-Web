@@ -1,21 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import { useMoedas } from "../../../context/MoedasContext"; // 1. Importe o nosso hook
+import { useAuth } from "../../../context/AuthContext";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import Logo from "../../../assets/Logo_Coliseu_dos_Ratos.svg";
 import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import "./Header.css";
 
-// 2. Já não precisamos de 'qtdeMoedas' ou 'saldoMouseCoins' nas props
-export default function Header({ home }) {
-  // 3. Pedimos o valor das moedas diretamente ao Contexto
-  const { qtdeMoedas } = useMoedas();
 
-  const nomePlayer = localStorage.getItem("nome");
+export default function Header({ home }) {
+
+
+
+const { user, setUser } = useAuth();
+
+
+console.log("O objeto USER no Header é:", user);
 
   const navigate = useNavigate();
 
   return (
     <>
+
       <div className="header">
         <div className="infoHeader">
           <img
@@ -23,7 +27,7 @@ export default function Header({ home }) {
             onClick={() => navigate("/perfil")}
             src={RatoEsgoto}
           />
-          <h1 onClick={() => navigate("/perfil")}>{nomePlayer}</h1>
+         {user ? <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1> : <p>Carregando...</p>}
           {home == "home" && (
             <div className="quantidadeMoedas">
               <img
@@ -31,7 +35,7 @@ export default function Header({ home }) {
                 src={MouseCoin}
                 alt="mouseCoin a moeda utilizada em nosso jogo"
               />
-              <h3>{qtdeMoedas}</h3>
+              {user ? <h3>{user.mousecoinSaldo}</h3> : <p>carregando...</p>}
             </div>
           )}
         </div>

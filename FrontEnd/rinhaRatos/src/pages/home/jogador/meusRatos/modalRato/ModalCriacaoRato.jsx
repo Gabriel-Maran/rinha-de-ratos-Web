@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { pegarTodasClasses, pegarDescricaoHabilidades } from "../../../../../Api/Api.js";
+// APIs não são mais importadas aqui
 import SelecaoDeClasse from "./SelecaoDeClasse.jsx";
 import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
 import RatoCriado from "./RatoCriado.jsx";
@@ -14,35 +14,17 @@ export default function ModalCriacaoRato({
   classe,
   onMostrarRato,
   novoRato,
+  descHabilidade,
+
+  // Props de pré-carregamento (Missão 5)
+  classes,
+  descricaoHabilidades,
+  loadingModal,
+  erroModal,
 }) {
+  
+  // States internos e useEffect foram removidos
 
-  const [classes, setClasses] = useState([]);
-  const [descricaoHabilidades, setDescHabilidades] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (etapa === etapas.SELECAO_CLASSE) {
-      const fetchDados = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const [resposta, respostaDescHabil] = await Promise.all([
-            pegarTodasClasses(),
-            pegarDescricaoHabilidades() 
-          ]);
-          setClasses(resposta.data);
-          setDescHabilidades(respostaDescHabil.data);
-        } catch (err) {
-          console.error("Erro ao buscar dados:", err);
-          setError("Falha ao carregar os dados.");
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchDados();
-    }
-  }, [etapa, etapas.SELECAO_CLASSE]); 
   if (etapa === etapas.FECHADO) {
     return null;
   }
@@ -52,11 +34,11 @@ export default function ModalCriacaoRato({
   switch (etapa) {
     case etapas.SELECAO_CLASSE:
       conteudoModal = (
-        <SelecaoDeClasse 
+        <SelecaoDeClasse
           onSlctClasse={onSlctClasse}
-          classes={classes}
-          loading={loading}
-          error={error}
+          classes={classes || []} // Garante que é um array
+          loading={loadingModal}
+          error={erroModal}
         />
       );
       break;
@@ -64,10 +46,10 @@ export default function ModalCriacaoRato({
       conteudoModal = (
         <DetalhesDaClasse
           classe={classe}
-          ratosUsuario={novoRato}
+          // ratosUsuario={novoRato} // Prop 'ratosUsuario' não parecia ser usada
           onMostrar={onMostrarRato}
           indexClasse={indexClasse}
-          descricaoHabilidades={descricaoHabilidades} 
+          descricaoHabilidades={descricaoHabilidades || []} // Garante que é um array
         />
       );
       break;
@@ -76,6 +58,7 @@ export default function ModalCriacaoRato({
         <RatoCriado
           onClose={onClose}
           novoRato={novoRato}
+          descHabilidade={descHabilidade}
         />
       );
       break;

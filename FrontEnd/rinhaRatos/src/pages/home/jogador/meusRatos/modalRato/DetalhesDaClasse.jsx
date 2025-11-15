@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useMoedas } from "../../../../../context/MoedasContext";
+import { useAuth } from "../../../../../context/AuthContext";
 import { ratosUsuario } from "../../../../../Api/Api.js";
 import ImagensRato from "../../../../../components/ImagensRato";
 import MouseCoin from "../../../../../assets/moedas/MouseCoin.png";
 import Input from "../../../../../components/comuns/Input";
-import "./DetalhesDaClasse.css"
+import "./DetalhesDaClasse.css";
 
 export default function DetalhesDaClasse({
   classe,
@@ -15,30 +15,28 @@ export default function DetalhesDaClasse({
   const [nomeRato, setNomeRato] = useState(classe.apelido);
   const [habilAtiva, setHabilAtiva] = useState(0);
   const [erro, setErro] = useState(null);
-  const { qtdeMoedas, setQtdeMoedas } = useMoedas();
+  
+  const { user, setUser } = useAuth();
 
   const handleBtnHabil = (index) => setHabilAtiva(index);
   const habilidadeAtiva = classe.habilidades[habilAtiva];
 
-  // Procura no array 'descricaoHabilidades' e retorna o primeiro objeto
-  // onde o 'idHabilidade' bate com o ID da habilidade atualmente ativa.
   const descObj = descricaoHabilidades.find(
     (itemDesc) => itemDesc.idHabilidade === habilidadeAtiva.idHabilidade
   );
-
-  // Pega o texto da descrição (usamos '?' por segurança)
-  // O '?' (optional chaining) evita um erro caso descObj seja 'undefined'
   const textoDescricao = descObj?.descricao;
 
   const salvarRato = async () => {
     const custoRato = 5;
 
-    if (qtdeMoedas < custoRato) {
+    // 1. Lê o saldo do 'user' do context
+    if (user.mousecoinSaldo < custoRato) {
       setErro("Moedas insuficientes para criar o rato.");
-      return; 
+      return;
     }
 
-    const idUsuarioLogado = localStorage.getItem("idUsuario");
+    // 2. Pega o ID do 'user' do context (usando a mesma lógica do Home)
+    const idUsuarioLogado = user.idUsuario || user.id;
 
     const habilidadeSelecionada = classe.habilidades[habilAtiva];
 
@@ -53,25 +51,21 @@ export default function DetalhesDaClasse({
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK! (Resposta da API):", resposta.data);
 
-      // Pega o rato que a API retornou (que está incompleto)
       const ratoSalvo = resposta.data;
 
-      //  INJETA manualmente o objeto 'classe' que temos na prop
-      ratoSalvo.classe = classe;
+      // 3. Removemos toda a lógica de localStorage
 
-      localStorage.setItem("ratoCriado", JSON.stringify(ratoSalvo));
-      localStorage.setItem("descricaoRatoCriado", textoDescricao);
+      const novoSaldo = user.mousecoinSaldo - 5;
 
-      console.log("DADOS DO RATO SALVO :", ratoSalvo);
-      const novoSaldo = qtdeMoedas - 5;
-      localStorage.setItem("mousecoinSaldo", novoSaldo);
+      // 4. ATUALIZA o 'user' no AuthContext globalmente
+      setUser((prevUser) => ({
+        ...prevUser,
+        mousecoinSaldo: novoSaldo,
+      }));
 
-      setQtdeMoedas(novoSaldo);
+      // 5. CHAMA a função 'onMostrar' (Missão 4)
       onMostrar(
-        classe,
-        nomeRato,
-        classe.habilidades,
-        habilAtiva,
+        ratoSalvo, // O rato completo vindo da API
         textoDescricao
       );
     } catch (err) {

@@ -1,7 +1,11 @@
 import "./SelecaoDeClasse.css";
 
-export default function SelecaoDeClasse({ onSlctClasse, classes, loading, error }) {
-
+export default function SelecaoDeClasse({
+  onSlctClasse,
+  classes,
+  loading,
+  error,
+}) {
   if (loading) {
     return <div className="titulo">Carregando classes...</div>;
   }

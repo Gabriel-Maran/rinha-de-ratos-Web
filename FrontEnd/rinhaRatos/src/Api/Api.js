@@ -16,15 +16,19 @@ export const fazerLogin = (dadosLogin) => {
 };
 
 export const trocarSenha = (dadosNovaSenha) => {
-  return apiClient.put("/usuario/changeUser/password", dadosNovaSenha);
+  return apiClient.post("/usuario/changeUser/password", dadosNovaSenha);
 };
 
 export const ratosUsuario = (dadosRatos) => {
   return apiClient.post("/rato/cadastro", dadosRatos);
 };
 
-export const pegarUsuarioPorId = (id) => {
-  apiClient.get(`/usuario/${id}`);
+export const pegarRatosDoUsuario = async (idUsuario) => {
+  return await apiClient.get(`/rato/dousuario/${idUsuario}`);
+};
+
+export const pegarUsuarioPorId =  async (id) => {
+  return await apiClient.get(`/usuario/${id}`);
 };
 
 export const pegarTodasClasses = async () => {

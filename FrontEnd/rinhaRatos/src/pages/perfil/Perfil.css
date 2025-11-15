@@ -14,20 +14,13 @@
     ),
     url("../../assets/backgrounds/bgHome.png");
   background-size: cover;
-  /* Essa maravilha faz a imagem cobrir todo o site */
   background-position: center;
-  /* Deixa a posição da imagem de fundo no centro */
   background-attachment: fixed;
-  /* Faz ela ficar presa */
-
   height: 100vh;
   width: 100%;
-
   display: flex;
   align-items: center;
   flex-direction: column;
-
-  /* Isso aqui serve pra esconder o scroll */
   overflow: hidden;
 }
 
@@ -37,13 +30,9 @@
   min-height: 60rem;
   background-image: url("../../assets/displays/displayMadeira.png");
   background-size: 100% 100%;
-
   display: flex;
   align-items: center;
-
-  /* Isso aqui serve pra esconder o scroll */
   overflow: hidden;
-
   flex-direction: column;
   position: relative;
 }
@@ -105,9 +94,14 @@
   color: white;
 }
 
+/* AQUI ESTÁ A CORREÇÃO PRINCIPAL:
+  O 'height' foi mudado de 30rem para 3rem.
+  Eu também assumi que o componente <Input> renderiza um <input>
+  que pode ser estilizado por esta regra.
+*/
 .dados input {
   width: 100%;
-  height: 30rem;
+  height: 3rem; /* <-- CORRIGIDO */
   font-size: 1.5rem;
   padding: 0rem 1rem 0rem 1rem;
   border-radius: 1rem;
@@ -118,9 +112,16 @@
 }
 
 .botaoSalvar {
-  position: absolute;
-  height: 6rem;
-  top: 1.1rem;
+  /*
+    Mudei de 'absolute' para 'relative' e adicionei 'margin-top'
+    para que ele fique *abaixo* do formulário.
+    O seu 'absolute' [cite: 120] estava a fazer ele sobrepor-se
+    a outros elementos.
+  */
+  position: relative;
+  height: 4rem; /* Ajustado */
+  top: auto; /* Ajustado */
+  margin-top: 2rem; /* Novo */
   font-family: "Fondamento", "fantasy";
   font-size: 1.8rem;
   font-weight: 1000;
@@ -152,6 +153,7 @@
   font-size: 1.3rem;
 }
 
+/* ... (resto do seu CSS de batalhaFeita) ... */
 .batalhaFeita p {
   margin-bottom: 1rem;
 }
@@ -208,6 +210,45 @@
   transform: scale(0.97);
 }
 
+/* --- CÓDIGO CSS NOVO ADICIONADO ABAIXO --- */
+
+/* Isto faz o ícone do olho caber dentro do campo */
+.input-senha {
+  position: relative;
+  width: 100%;
+}
+
+/* Isto posiciona o ícone */
+.verSenha {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.verSenha img {
+  width: 1.8rem;
+  height: auto;
+}
+
+/* Estilos para as mensagens de feedback */
+.mensagem-erro {
+  color: #ff6b6b; /* Vermelho */
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.mensagem-sucesso {
+  color: #7bed9f; /* Verde */
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ... (resto das suas media queries) ... */
 @media (max-width: 970px) {
   .opcoesPerfil {
     width: 90%;

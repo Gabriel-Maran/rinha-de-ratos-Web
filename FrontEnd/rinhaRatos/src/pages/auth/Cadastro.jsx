@@ -21,7 +21,7 @@ export default function Cadastro() {
   const [erro, setErro] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const tipoConta = "ADM";
+  const tipoConta = "JOGADOR";
   const mousecoinSaldo = 30;
   const vitorias = 0;
 

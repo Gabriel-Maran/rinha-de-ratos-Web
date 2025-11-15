@@ -1,11 +1,12 @@
 import ImagensRato from "../../../../../components/ImagensRato";
 import "./RatoCriado.css";
 
-export default function RatoCriado({ onClose }) {
-
-  const rato = JSON.parse(localStorage.getItem("ratoCriado")) || {};
-  const textoDescricao = localStorage.getItem("descricaoRatoCriado");
-
+// Refatorado para receber props (Missão 4)
+export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
+  
+  // Lê das props, não do localStorage
+  const rato = novoRato || {};
+  const textoDescricao = descHabilidade;
 
   const stats = {
     strength: rato.strBase,
@@ -15,10 +16,8 @@ export default function RatoCriado({ onClose }) {
     defense: rato.defBase,
   };
 
-
   const handleClose = () => {
-    localStorage.removeItem("ratoCriado");
-    localStorage.removeItem("descricaoRatoCriado");
+    // Limpeza do localStorage removida
     onClose();
   };
 
@@ -27,7 +26,12 @@ export default function RatoCriado({ onClose }) {
       <div className="titulo">Criação concluída!</div>
 
       <div className="imagemENome">
-        <img src={ImagensRato[rato.classe?.nomeClasse] || ImagensRato["Rato de Esgoto"]} />
+        <img
+          src={
+            ImagensRato[rato.classe?.nomeClasse] ||
+            ImagensRato["Rato de Esgoto"]
+          }
+        />
         <p>{rato.nomeCustomizado}</p>
       </div>
 
@@ -46,7 +50,9 @@ export default function RatoCriado({ onClose }) {
 
           <div className="caixaHabilidadeEsc">
             <p className="titusEstHabil">{rato.habilidade?.nomeHabilidade}</p>
-            <p className="descHabilEsc">{textoDescricao || "Descrição não encontrada."}</p>
+            <p className="descHabilEsc">
+              {textoDescricao || "Descrição não encontrada."}
+            </p>
           </div>
         </div>
       </div>

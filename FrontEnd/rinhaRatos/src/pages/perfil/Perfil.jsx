@@ -1,45 +1,100 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { trocarSenha } from "../../Api/Api";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import Header from "../../components/comuns/Header/Header";
 import TelaHistorico from "./TelaHistorico";
+import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
+import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
+import Input from "../../components/comuns/Input";
 import "./Perfil.css";
 
 export default function Perfil({ qtdeMoedas }) {
-  /* Deletar essas três linhas depois quando for fazer a junção com a API */
   const location = useLocation();
   const listaBatalhas = location.state?.listaBatalhas || [];
   let loginADM = false;
-  /* -------------------------------------------------------------------- */
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Histórico de Batalhas");
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
-  const [nome, setNome] = useState("Joginhos");
-  const [email, setEmail] = useState("Jorginhos@gmail.com");
-  const [senha, setSenha] = useState("1234");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState(null);
+  const nome = "";
+  const [mensagemSucesso, setMensagemSucesso] = useState(null);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const funMostrarSenha = () => {
+    setMostrarSenha(!mostrarSenha);
+  };
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
+
+  const senhaTrocada = async (evento) => {
+    evento.preventDefault();
+    setErro(null);
+    setMensagemSucesso(null); 
+
+    const dados = { email, senha, nome };
+
+    try {
+      const resposta = await trocarSenha(dados);
+      console.log("Senha trocada OK!", resposta.data);
+      setMensagemSucesso(resposta.data.message || "Senha alterada com sucesso!");
+    } catch (err) {
+      setErro(err?.response?.data?.message || "Email ou senha inválidos.");
+    }
+  };
 
   const fecharHistorico = () => {
     setMostrarHistorico(false);
   };
-
   let conteudoPerfil;
 
   switch (opcaoAtivada) {
     case "Perfil":
       conteudoPerfil = (
         <>
+          {/* Esta é a estrutura correta para o layout da imagem */}
           <div className="dados">
-            <p>Nome:</p>
-            <input value={nome} onChange={(e) => setNome(e.target.value)} />
             <p>E-mail:</p>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              input={{
+                type: "text",
+                value: email,
+                onChange: (e) => setEmail(e.target.value),
+                placeholder: "",
+              }}
+            />
             <p>Senha:</p>
-            <input value={senha} onChange={(e) => setSenha(e.target.value)} />
+            <div className="input-senha">
+              <Input
+                input={{
+                  type: mostrarSenha ? "text" : "password",
+                  value: senha,
+                  onChange: (e) => setSenha(e.target.value),
+                  placeholder: "",
+                }}
+              />
+              <span className="verSenha" onClick={funMostrarSenha}>
+                {mostrarSenha ? (
+                  <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
+                ) : (
+                  <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
+                )}
+              </span>
+            </div>
+
+            {/* Mensagens de feedback movidas para antes do botão */}
+            {erro && <p className="mensagem-erro">{erro}</p>}
+            {mensagemSucesso && (
+              <p className="mensagem-sucesso">{mensagemSucesso}</p>
+            )}
           </div>
-          <button className="botaoSalvar">Salvar alterações</button>
+
+          <button className="botaoSalvar" onClick={senhaTrocada}>
+            Salvar
+          </button>
         </>
       );
       break;
