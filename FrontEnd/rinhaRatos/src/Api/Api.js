@@ -15,10 +15,10 @@ export const fazerLogin = (dadosLogin) => {
   return apiClient.post("/usuario/login", dadosLogin);
 };
 
-export const trocarSenha = (dadosNovaSenha) => {
-  return apiClient.post("/usuario/changeUser/password", dadosNovaSenha);
+export const trocarSenha = (dadosNovaSenha, idUsuario) => {
+  return apiClient.put(`usuario/${idUsuario}/changeUser/basic`, dadosNovaSenha);
 };
-
+ 
 export const ratosUsuario = (dadosRatos) => {
   return apiClient.post("/rato/cadastro", dadosRatos);
 };

@@ -1,6 +1,8 @@
+// 1. Importámos o 'useEffect'
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trocarSenha } from "../../Api/Api";
+import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import Header from "../../components/comuns/Header/Header";
 import TelaHistorico from "./TelaHistorico";
@@ -17,10 +19,10 @@ export default function Perfil({ qtdeMoedas }) {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Histórico de Batalhas");
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
+  const { user, setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
-  const nome = "";
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
@@ -29,8 +31,16 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email);
+    }
+  }, [user]);
 
   const senhaTrocada = async (evento) => {
+    const idUsuarioLogado = user.idUsuario || user.id;
+    const nome = user.nome;
+    
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
@@ -38,7 +48,7 @@ export default function Perfil({ qtdeMoedas }) {
     const dados = { email, senha, nome };
 
     try {
-      const resposta = await trocarSenha(dados);
+      const resposta = await trocarSenha(dados, idUsuarioLogado);
       console.log("Senha trocada OK!", resposta.data);
       setMensagemSucesso(
         resposta.data.message || "Senha alterada com sucesso!"
@@ -68,14 +78,14 @@ export default function Perfil({ qtdeMoedas }) {
                 placeholder: "",
               }}
             />
-            <p className="lblInfoPerfil">Senha:</p>
+            <p className="lblInfoPerfil">Nova Senha:</p>
             <div className="input-senha">
               <Input
                 input={{
                   type: mostrarSenha ? "text" : "password",
                   value: senha,
                   onChange: (e) => setSenha(e.target.value),
-                  placeholder: "",
+                  placeholder: "Coloque sua nova senha",
                 }}
               />
               <span className="verSenhaRedefinida" onClick={funMostrarSenha}>
