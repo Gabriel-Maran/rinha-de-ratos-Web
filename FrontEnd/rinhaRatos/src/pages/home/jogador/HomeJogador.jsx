@@ -35,12 +35,12 @@ export default function HomeJogador() {
   // CORREÇÃO FINAL (Missão 7): Lida com os dois formatos de ID
   const idUsuarioLogado = (user?.idUsuario || user?.id) ?? 0;
 
-  // States dos Ratos
-  const [ratosUsuario, setRatosUsuario] = useState([]);
-  const [loadingRatos, setLoadingRatos] = useState(true); // Controla todos os loads
-  const [erroRatos, setErroRatos] = useState(null); // Controla todos os erros
 
-  // States para os dados do modal (pré-carregamento)
+  const [ratosUsuario, setRatosUsuario] = useState([]);
+  const [loadingRatos, setLoadingRatos] = useState(true); 
+  const [erroRatos, setErroRatos] = useState(null); 
+
+
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
 
@@ -52,9 +52,7 @@ export default function HomeJogador() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
 
-  // UseEffect que carrega TUDO em paralelo (Missão 5)
   useEffect(() => {
-    // Só roda se o ID do usuário (de qualquer fonte) estiver disponível
     if (!idUsuarioLogado) return;
 
     const buscarDadosIniciais = async () => {
@@ -81,7 +79,7 @@ export default function HomeJogador() {
     };
 
     buscarDadosIniciais();
-  }, [idUsuarioLogado]); // Depende do ID do usuário
+  }, [idUsuarioLogado]);
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
