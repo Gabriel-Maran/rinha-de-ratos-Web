@@ -33,14 +33,16 @@ export default function Perfil({ qtdeMoedas }) {
   const senhaTrocada = async (evento) => {
     evento.preventDefault();
     setErro(null);
-    setMensagemSucesso(null); 
+    setMensagemSucesso(null);
 
     const dados = { email, senha, nome };
 
     try {
       const resposta = await trocarSenha(dados);
       console.log("Senha trocada OK!", resposta.data);
-      setMensagemSucesso(resposta.data.message || "Senha alterada com sucesso!");
+      setMensagemSucesso(
+        resposta.data.message || "Senha alterada com sucesso!"
+      );
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
@@ -55,9 +57,9 @@ export default function Perfil({ qtdeMoedas }) {
     case "Perfil":
       conteudoPerfil = (
         <>
-          {/* Esta é a estrutura correta para o layout da imagem */}
+          <h1 className="subTitulo">Redefina suas informações</h1>
           <div className="dados">
-            <p>E-mail:</p>
+            <p className="lblInfoPerfil">E-mail:</p>
             <Input
               input={{
                 type: "text",
@@ -66,7 +68,7 @@ export default function Perfil({ qtdeMoedas }) {
                 placeholder: "",
               }}
             />
-            <p>Senha:</p>
+            <p className="lblInfoPerfil">Senha:</p>
             <div className="input-senha">
               <Input
                 input={{
@@ -76,7 +78,7 @@ export default function Perfil({ qtdeMoedas }) {
                   placeholder: "",
                 }}
               />
-              <span className="verSenha" onClick={funMostrarSenha}>
+              <span className="verSenhaRedefinida" onClick={funMostrarSenha}>
                 {mostrarSenha ? (
                   <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
                 ) : (
@@ -84,14 +86,11 @@ export default function Perfil({ qtdeMoedas }) {
                 )}
               </span>
             </div>
-
-            {/* Mensagens de feedback movidas para antes do botão */}
             {erro && <p className="mensagem-erro">{erro}</p>}
             {mensagemSucesso && (
               <p className="mensagem-sucesso">{mensagemSucesso}</p>
             )}
           </div>
-
           <button className="botaoSalvar" onClick={senhaTrocada}>
             Salvar
           </button>

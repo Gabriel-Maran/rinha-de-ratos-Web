@@ -5,21 +5,15 @@ import Logo from "../../../assets/Logo_Coliseu_dos_Ratos.svg";
 import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import "./Header.css";
 
-
 export default function Header({ home }) {
+  const { user, setUser } = useAuth();
 
-
-
-const { user, setUser } = useAuth();
-
-
-console.log("O objeto USER no Header é:", user);
+  console.log("O objeto USER no Header é:", user);
 
   const navigate = useNavigate();
 
   return (
     <>
-
       <div className="header">
         <div className="infoHeader">
           <img
@@ -27,7 +21,11 @@ console.log("O objeto USER no Header é:", user);
             onClick={() => navigate("/perfil")}
             src={RatoEsgoto}
           />
-         {user ? <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1> : <p>Carregando...</p>}
+          {user ? (
+            <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1>
+          ) : (
+            <p>Carregando...</p>
+          )}
           {home == "home" && (
             <div className="quantidadeMoedas">
               <img
