@@ -1,11 +1,11 @@
 import ImagensRato from "../../../../components/ImagensRato";
-import "../HomeJogador.css";
+import "./ListaDeRatos.css";
 
 export default function ListaDeRatos({
   ratosUsuario,
   onSelectRato,
   ratoSelecionado,
-  mostrarDetalhesRato
+  mostrarDetalhesRato,
 }) {
   return (
     <>

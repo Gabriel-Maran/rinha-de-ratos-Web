@@ -91,103 +91,6 @@
   transform: scale(0.97);
 }
 
-.addRato {
-  position: absolute;
-  top: 1.2rem;
-  color: white;
-  background-color: #ffae52;
-  width: 21rem;
-  height: 9rem;
-  border-radius: 20px;
-  border: 3px solid #000;
-  font-size: 2.5rem;
-  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
-  z-index: 10;
-}
-
-.listaRatos {
-  width: 50rem;
-  height: 40rem;
-  margin-top: 12rem;
-  box-sizing: border-box;
-}
-
-.displayRato {
-  min-width: 30%;
-  height: 12rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-image: url("../../../assets/labels/lblPapelAmarelado.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  box-sizing: border-box;
-  padding: 0rem 1.5rem 0rem 2rem;
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-}
-
-.imagem-rato-lista {
-  width: 10rem;
-  height: auto;
-  max-width: 100%;
-}
-
-/* ------------------------------- */
-/* Medias Query para tratar altura */
-/* ------------------------------- */
-@media (max-height: 1070px) {
-  .listaRatos {
-    width: 38rem;
-  }
-  .displayRato {
-    height: 9rem;
-    font-size: 2.8rem;
-  }
-  .imagem-rato-lista {
-    width: 8rem;
-  }
-}
-
-@media (max-height: 930px) {
-  .listaRatos {
-    width: 32rem;
-  }
-  .displayRato {
-    height: 7rem;
-    font-size: 2.5rem;
-  }
-  .imagem-rato-lista {
-    width: 6rem;
-  }
-}
-
-@media (max-height: 830px) {
-  .listaRatos {
-    width: 28rem;
-  }
-  .displayRato {
-    height: 6rem;
-    font-size: 2.2rem;
-  }
-  .imagem-rato-lista {
-    width: 5rem;
-  }
-}
-
-@media (max-height: 784px) {
-  .listaRatos {
-    width: 25rem;
-  }
-  .displayRato {
-    height: 5rem;
-    font-size: 2rem;
-  }
-  .imagem-rato-lista {
-    width: 4rem;
-  }
-}
-
 /* ------------------------------------ */
 /* Medias Query para tratar comprimento */
 /* ------------------------------------ */
@@ -201,35 +104,8 @@
     width: 30%;
     height: 10rem;
   }
-  .listaRatos {
-    width: 33rem;
-  }
-  .displayRato {
-    font-size: 2.2rem;
-  }
-  .imagem-rato-lista {
-    width: 8rem;
-  }
 }
 
-@media (max-width: 690px) {
-  .addRato {
-    width: 15rem;
-    height: 7rem;
-    font-size: 1.7rem;
-  }
-  .listaRatos {
-    width: 22rem;
-  }
-  .displayRato {
-    height: 8rem;
-    font-size: 2rem;
-    padding: 0rem 0.5rem 0rem 1rem;
-  }
-  .imagem-rato-lista {
-    width: 6rem;
-  }
-}
 
 /* --------------------------------------------- */
 /* Medias Query para tratar comprimento e altura */
@@ -242,12 +118,6 @@
   }
   .conteudo-principal {
     min-height: 40rem;
-  }
-  .addRato {
-    top: 0.5rem;
-    width: 15rem;
-    height: 4.5rem;
-    font-size: 2rem;
   }
 }
 
@@ -262,22 +132,5 @@
     width: 20%;
     height: 60%;
     font-size: 1rem;
-  }
-  .addRato {
-    width: 10rem;
-    height: 4.5rem;
-    font-size: 1.2rem;
-  }
-  .listaRatos {
-    margin-top: 8rem;
-    width: 13rem;
-  }
-  .displayRato {
-    height: 5rem;
-    font-size: 1rem;
-    padding: 0rem 0.5rem 0rem 1rem;
-  }
-  .imagem-rato-lista {
-    width: 4rem;
   }
 }
