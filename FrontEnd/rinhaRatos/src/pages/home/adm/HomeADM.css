@@ -32,3 +32,15 @@
 .btnGerenciar:active {
   transform: scale(0.97);
 }
+
+/* ----------------------------------------- */
+/* Medias Query para tratar altura e largura */
+/* ----------------------------------------- */
+@media (max-width: 375px) and (max-height: 667px) {
+  .btnIniciarCriacao {
+    top: 0.5rem;
+    width: 10rem;
+    height: 5rem;
+    font-size: 1.4rem;
+  }
+}
