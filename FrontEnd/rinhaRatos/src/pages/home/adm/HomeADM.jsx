@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { pegarBatalhasAbertas } from "../../../Api/Api";
-import { ranking } from "../../../Api/Api"; 
+import { top10UsuariosVitorias } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
-import trofeu from "../../../assets/icones/IconeTrofeu.png";  
+import trofeu from "../../../assets/icones/IconeTrofeu.png";
 import ModalEditarBatalha from "./ModalEditarBatalha";
 import ModalCriarBatalha from "./ModalCriarBatalha";
 import "./HomeADM.css";
@@ -15,7 +15,7 @@ export default function HomeADM() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
-  
+
   const [listaBatalhas, setListaBatalhas] = useState([]);
   const [listaJogadores, setListaJogadores] = useState([]);
   const [batalhaSendoEditada, setBatalhaSendoEditada] = useState();
@@ -68,8 +68,9 @@ export default function HomeADM() {
     if (!data) return "Data Indisponível";
     try {
       const [parteDaData, parteDaHora] = data.split("T");
+      const [hora, minuto, segundo] = parteDaHora.split(":");
       const [ano, mes, dia] = parteDaData.split("-");
-      return `${dia}/${mes}, ${parteDaHora}`;
+      return `${dia}/${mes}, ${hora}:${minuto}`;
     } catch (erro) {
       console.error("Erro ao formatar data:", erro);
       return data;
@@ -86,11 +87,12 @@ export default function HomeADM() {
       case "Ranking":
         conteudoHomeAdm = (
           <>
+            <h1 className="subTitulo">Batalhas Vencidas</h1>
             <div className="listaJogadores">
               {listaJogadores.map((jogador, index) => (
                 <div className="jogador" key={jogador.idUsuario}>
                   <div className="posicaoJogador">
-                    <p>{index + 1}º</p> 
+                    <p>{index + 1}º</p>
                   </div>
                   <img src={RatoEsgoto} />
                   <div className="nomeEVitorias">
@@ -128,7 +130,6 @@ export default function HomeADM() {
             <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
               Criar Batalha
             </button>
-
             <div className="listaBatalhas">
               {listaBatalhas.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha}>
