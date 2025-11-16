@@ -1,16 +1,18 @@
 import ImagensRato from "../../../../components/ImagensRato";
-import "../HomeJogador.css";
+import "./ListaDeRatos.css";
 
 export default function ListaDeRatos({
   ratosUsuario,
   onSelectRato,
   ratoSelecionado,
+  mostrarDetalhesRato,
 }) {
   return (
     <>
       <div className="listaRatos">
         {ratosUsuario.map((rato) => (
           <div
+            onClick={mostrarDetalhesRato}
             className={
               "displayRato" +
               (ratoSelecionado && ratoSelecionado.id === rato.id

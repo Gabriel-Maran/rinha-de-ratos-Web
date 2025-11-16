@@ -9,6 +9,7 @@ import Header from "../../../components/comuns/Header/Header";
 import Botao from "../../../components/comuns/Botao";
 import ModalCriacaoRato from "./meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "./meusRatos/ListaDeRatos";
+import RatoCriado from "./meusRatos/modalRato/RatoCriado";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
@@ -32,14 +33,11 @@ export default function HomeJogador() {
 
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
 
-  // CORREÇÃO FINAL (Missão 7): Lida com os dois formatos de ID
   const idUsuarioLogado = (user?.idUsuario || user?.id) ?? 0;
 
-
   const [ratosUsuario, setRatosUsuario] = useState([]);
-  const [loadingRatos, setLoadingRatos] = useState(true); 
-  const [erroRatos, setErroRatos] = useState(null); 
-
+  const [loadingRatos, setLoadingRatos] = useState(true);
+  const [erroRatos, setErroRatos] = useState(null);
 
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
@@ -99,7 +97,6 @@ export default function HomeJogador() {
     setIndexClasse(index);
   };
 
-  // Função limpa (Missão 4)
   const mostrarRatoCriado = (ratoCompletoDaApi, descHabilidadeDaClasse) => {
     setRatosUsuario((prevRatos) => [...prevRatos, ratoCompletoDaApi]);
     setNovoRato(ratoCompletoDaApi);
@@ -107,8 +104,11 @@ export default function HomeJogador() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
+  const mostrarDetalhesRato = () => {
+    setEtapaModal(ETAPAS.RATO_CRIADO);
+  }
+
   const definirRatoBatalha = (rato) => {
-    // Isso ainda usa localStorage, mas é para seleção, não para fonte da verdade
     localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
     setRatoParaBatalhar(rato);
   };
@@ -129,18 +129,17 @@ export default function HomeJogador() {
             indexClasse={indexClasse}
             descHabilidade={descHabilidade}
             novoRato={novoRato}
-            // Dados pré-carregados (Missão 5)
             classes={classes}
             descricaoHabilidades={descricaoHabilidades}
             loadingModal={loadingRatos}
             erroModal={erroRatos}
           />
-
           {/* TODO: Tratar 'loadingRatos' e 'erroRatos' aqui */}
           <ListaDeRatos
             ratosUsuario={ratosUsuario}
             onSelectRato={definirRatoBatalha}
             ratoSelecionado={ratoParaBatalhar}
+            mostrarDetalhesRato={mostrarDetalhesRato}
           />
           <Botao
             button={{

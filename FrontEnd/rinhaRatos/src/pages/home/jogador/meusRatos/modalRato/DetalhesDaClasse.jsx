@@ -53,17 +53,15 @@ export default function DetalhesDaClasse({
 
       const ratoSalvo = resposta.data;
 
-      // 3. Removemos toda a lógica de localStorage
-
       const novoSaldo = user.mousecoinSaldo - 5;
 
-      // 4. ATUALIZA o 'user' no AuthContext globalmente
+      // 3. ATUALIZA o 'user' no AuthContext globalmente
       setUser((prevUser) => ({
         ...prevUser,
         mousecoinSaldo: novoSaldo,
       }));
 
-      // 5. CHAMA a função 'onMostrar' (Missão 4)
+      // 4. CHAMA a função 'onMostrar'
       onMostrar(
         ratoSalvo, // O rato completo vindo da API
         textoDescricao

@@ -19,8 +19,8 @@ export default function ModalCriarBatalhas({
 
   const CadastrarBatalha = async () => {
     if (nomeBatalha === "" || custoInscricao === "" || dataHora === "") {
-      setErro("Por favor, preencha todos os campos")
-      return
+      setErro("Por favor, os campos necessários.");
+      return;
     }
     setErro(null);
     const idAdm = localStorage.getItem("idUsuario");
@@ -57,7 +57,6 @@ export default function ModalCriarBatalhas({
           </button>
           <h1 className="tituloAba">Criação da Batalha</h1>
           {erro && <p className="mensagem-erro-batalha">{erro}</p>}
-
           <div className="criarBatalha">
             <div>
               <h3>Nome</h3>

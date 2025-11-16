@@ -1,6 +1,6 @@
-// 1. Importámos o 'useEffect'
-import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { trocarSenha } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
@@ -13,6 +13,7 @@ import "./Perfil.css";
 
 export default function Perfil({ qtdeMoedas }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const listaBatalhas = location.state?.listaBatalhas || [];
   let loginADM = false;
 
@@ -20,6 +21,7 @@ export default function Perfil({ qtdeMoedas }) {
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
   const { user, setUser } = useAuth();
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
@@ -40,7 +42,7 @@ export default function Perfil({ qtdeMoedas }) {
   const senhaTrocada = async (evento) => {
     const idUsuarioLogado = user.idUsuario || user.id;
     const nome = user.nome;
-    
+
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
@@ -69,6 +71,15 @@ export default function Perfil({ qtdeMoedas }) {
         <>
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">
+            <p className="lblInfoPerfil">Nome:</p>
+            <Input
+              input={{
+                type: "text",
+                value: nome,
+                onChange: (e) => setNome(e.target.value),
+                placeholder: "",
+              }}
+            />
             <p className="lblInfoPerfil">E-mail:</p>
             <Input
               input={{
@@ -101,9 +112,14 @@ export default function Perfil({ qtdeMoedas }) {
               <p className="mensagem-sucesso">{mensagemSucesso}</p>
             )}
           </div>
-          <button className="botaoSalvar" onClick={senhaTrocada}>
-            Salvar
-          </button>
+          <div className="acoesPerfil">
+            <button className="btnSalvar" onClick={senhaTrocada}>
+              Salvar
+            </button>
+            <button className="btnDeslogar" onClick={() => navigate("/login")}>
+              Deslogar
+            </button>
+          </div>
         </>
       );
       break;

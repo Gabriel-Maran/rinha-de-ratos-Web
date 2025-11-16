@@ -4,15 +4,15 @@ import RL from "../../assets/classeRatos/RatoLaboratorio.png";
 import "../../pages/perfil/TelaHistorico.css";
 
 export default function TelaHistorico({ onClose, mostrarHistorico }) {
-  const [participou, setParticipou] = useState(true)
+  const [participou, setParticipou] = useState(false);
   const [venceu, setVenceu] = useState(false);
   const [linhasHistorico, setLinhasHistorico] = useState([]);
 
-  const [nomeJogadorVenc, setNomeJogadorVenc] = useState("Gabriel")
-  const [nomeRatoVenc, setNomeRatoVenc] = useState("Roberto Antonio")
+  const [nomeJogadorVenc, setNomeJogadorVenc] = useState("Gabriel");
+  const [nomeRatoVenc, setNomeRatoVenc] = useState("Roberto Antonio");
 
-  const [nomeJogadorPerd, setNomeJogadorPerd] = useState("Gustavo")
-  const [nomeRatoPerd, setNomeRatoPerd] = useState("Fedoroso")
+  const [nomeJogadorPerd, setNomeJogadorPerd] = useState("Gustavo");
+  const [nomeRatoPerd, setNomeRatoPerd] = useState("Fedoroso");
 
   const [imgRato, setImgRato] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -30,7 +30,9 @@ export default function TelaHistorico({ onClose, mostrarHistorico }) {
 
   return (
     <>
-      <div className={mostrarHistorico === false ? "bgEscuroOff" : "bgEscuroOn"}>
+      <div
+        className={mostrarHistorico === false ? "bgEscuroOff" : "bgEscuroOn"}
+      >
         <div className="modalResultado">
           <button className="fecharMdResultado" onClick={onClose}>
             ✖
@@ -42,7 +44,7 @@ export default function TelaHistorico({ onClose, mostrarHistorico }) {
                 <p className="statusJogadorVencedor">Vencedor:</p>
                 <div>
                   <p className="resultNomeJogador">{nomeJogadorVenc}</p>
-                  <div className="infoRatoResultBatalha"> 
+                  <div className="infoRatoResultBatalha">
                     <img src={RL} />
                     <p>{nomeRatoVenc}</p>
                   </div>
@@ -64,16 +66,16 @@ export default function TelaHistorico({ onClose, mostrarHistorico }) {
             <div className={venceu === true ? "Vitoria" : "Derrota"}>
               <h2>{venceu === true ? "Você venceu!!!" : "Você perdeu..."}</h2>
               {/*             <input
-              placeholder="Img"
-              value={imgRato}
-              onChange={(e) => setImgRato(e.target.value)}
-            />
-            <input
-              placeholder="Mensagem"
-              value={mensagem}
-              onChange={(e) => setMensagem(e.target.value)}
-            />
-            <button onClick={addHistorico}>Add Histórico</button> */}
+                placeholder="Img"
+                value={imgRato}
+                onChange={(e) => setImgRato(e.target.value)}
+              />
+              <input
+                placeholder="Mensagem"
+                value={mensagem}
+                onChange={(e) => setMensagem(e.target.value)}
+              />
+              <button onClick={addHistorico}>Add Histórico</button> */}
             </div>
           )}
           <div className="historicoBatalha">
