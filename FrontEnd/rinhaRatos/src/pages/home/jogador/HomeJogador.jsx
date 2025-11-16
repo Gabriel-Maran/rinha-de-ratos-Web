@@ -4,6 +4,7 @@ import {
   pegarRatosDoUsuario,
   pegarTodasClasses,
   pegarDescricaoHabilidades,
+  pegarBatalhasAbertas,
 } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
 import Botao from "../../../components/comuns/Botao";
@@ -62,6 +63,7 @@ export default function HomeJogador() {
             pegarRatosDoUsuario(idUsuarioLogado),
             pegarTodasClasses(),
             pegarDescricaoHabilidades(),
+            pegarBatalhasAbertas()
           ]);
 
         setRatosUsuario(respostaRatos.data);
@@ -134,7 +136,6 @@ export default function HomeJogador() {
             erroModal={erroRatos}
           />
 
-          {/* TODO: Tratar 'loadingRatos' e 'erroRatos' aqui */}
           <ListaDeRatos
             ratosUsuario={ratosUsuario}
             onSelectRato={definirRatoBatalha}

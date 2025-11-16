@@ -22,7 +22,7 @@ export const esqueceuSenha = (dadosNovaSenha) => {
 export const trocarSenha = (dadosNovaSenha, idUsuario) => {
   return apiClient.put(`usuario/${idUsuario}/changeUser/basic`, dadosNovaSenha);
 };
- 
+
 export const ratosUsuario = (dadosRatos) => {
   return apiClient.post("/rato/cadastro", dadosRatos);
 };
@@ -31,7 +31,7 @@ export const pegarRatosDoUsuario = async (idUsuario) => {
   return await apiClient.get(`/rato/dousuario/${idUsuario}`);
 };
 
-export const pegarUsuarioPorId =  async (id) => {
+export const pegarUsuarioPorId = async (id) => {
   return await apiClient.get(`/usuario/${id}`);
 };
 
@@ -57,14 +57,18 @@ export const criarBatalha = async (dadosBatalha) => {
   return await apiClient.post("batalha/cadastro", dadosBatalha);
 };
 
-  export const pegarBatalhasAbertas = async () => {
-      return await apiClient.get("batalha/abertas"); 
-  }
+export const pegarBatalhasAbertas = async () => {
+  return await apiClient.get("batalha/abertas");
+};
 
-    export const vefificarPlayerInscrito = async (idBatalha, idUsuario) => {
-      return await apiClient.get(`batalha/verificaplayer/${idBatalha}/${idUsuario}`)
-    }
+export const vefificarPlayerInscrito = async (idBatalha, idUsuario) => {
+  return await apiClient.get(
+    `batalha/verificaplayer/${idBatalha}/${idUsuario}`
+  );
+};
 
-  export const top10UsuariosVitorias = async () => {
-    return await apiClient.get("usuario/top10Vitorias")
-  }
+export const ranking = async () => {
+  return await apiClient.get("usuario/top10Vitorias");
+};
+
+

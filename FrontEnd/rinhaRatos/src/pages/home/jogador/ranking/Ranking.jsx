@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../../../context/AuthContext";
+import { ranking } from "../../../../Api/Api";
 import RatoEsgoto from "../../../../assets/classeRatos/RatoEsgoto.png";
 import "./Ranking.css";
 
 export default function Ranking() {
-  const [listaJogadores, setListaJogadores] = useState([]);
-  const [nome, setNome] = useState("");
-  const [vitorias, setVitorias] = useState(0);
-  const [posicoes, setPosicoes] = useState(1);
+  const { user } = useAuth();
+  const idUsuarioLogado = user ? user.idUsuario || user.id : null;
+
+ const [listaJogadores, setListaJogadores] = useState([]);
+
+  const [loadingDados, setLoadingDados] = useState(true);
+  const [erroDados, setErroDados] = useState(null);
+
+  useEffect(() => {
+    if (!idUsuarioLogado) return;
+
+    const buscarDadosIniciais = async () => {
+      setLoadingDados(true);
+      setErroDados(null);
+      try {
+        const respostaRanking = await ranking();
+        setListaJogadores(respostaRanking.data);
+      } catch (err) {
+        console.error("Erro ao buscar dados iniciais:", err);
+        setErroDados("Falha ao carregar dados. Tente atualizar a página.");
+      } finally {
+        setLoadingDados(false);
+      }
+    };
+
+    buscarDadosIniciais();
+  }, [idUsuarioLogado]);
 
   return (
     <>
       <h1 className="subTitulo">Batalhas Vencidas</h1>
       <div className="listaJogadores">
-        {listaJogadores.map((jogador) => (
-          <div className="jogador" key={jogador.id}>
+        {listaJogadores.map((jogador, index) => (
+          <div className="jogador" key={jogador.idUsuario}>
             <div className="posicaoJogador">
-              <p>{jogador.posicao}º</p>
+              <p>{index + 1}º</p>
             </div>
             <img src={RatoEsgoto} />
             <div className="nomeEVitorias">
