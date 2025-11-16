@@ -154,7 +154,7 @@ class UsuarioController(
     fun changePassWord(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val senhaTrocada = usuarioService.redefinirUsuarioSenha(loginRequest.email, loginRequest.senha)
         if (senhaTrocada == "OK") {
-            ResponseEntity.ok(mapOf("message" to "Senha trocada com sucesso"))
+            return ResponseEntity.ok(mapOf("message" to "Senha trocada com sucesso"))
         }
         if (senhaTrocada == "EMAIL_NOT_FOUND") {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
