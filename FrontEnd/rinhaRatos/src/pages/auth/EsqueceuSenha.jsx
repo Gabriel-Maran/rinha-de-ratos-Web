@@ -40,6 +40,7 @@ export default function EsqueceuSenha() {
 
     try {
       await esqueceuSenha(dados);
+      console.log("Senha redefinida!");
       navigate("/login");
     } catch (err) {
       setErro(
