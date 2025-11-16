@@ -14,7 +14,7 @@ export default function EsqueceuSenha() {
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const nome = ""
+  const nome = "";
 
   const navigate = useNavigate();
   const lembreiSenha = () => {
@@ -25,23 +25,22 @@ export default function EsqueceuSenha() {
   };
 
   const redefinirSenha = async (evento) => {
-    if (email === "" || senha === "") {
-      setErro("Preencha os campos necessários")
-      return
-    }
     evento.preventDefault();
+    if (email === "" || senha === "") {
+      setErro("Preencha os campos necessários");
+      return;
+    }
     setErro(null);
 
     const dados = {
       email,
       senha,
-      nome
+      nome,
     };
 
     try {
       await esqueceuSenha(dados);
       navigate("/login");
-
     } catch (err) {
       setErro(
         err?.response?.data?.message || "Erro ao conectar com o servidor."
@@ -75,10 +74,7 @@ export default function EsqueceuSenha() {
                 placeholder: "Nova Senha",
               }}
             />
-            <span
-              className="verSenha"
-              onClick={funMostrarSenha}
-            >
+            <span className="verSenha" onClick={funMostrarSenha}>
               {mostrarSenha ? (
                 <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
               ) : (
