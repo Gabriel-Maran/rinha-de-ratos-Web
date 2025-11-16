@@ -15,6 +15,10 @@ export const fazerLogin = (dadosLogin) => {
   return apiClient.post("/usuario/login", dadosLogin);
 };
 
+export const esqueceuSenha = (dadosNovaSenha) => {
+  return apiClient.post("/usuario/changeUser/password", dadosNovaSenha);
+};
+
 export const trocarSenha = (dadosNovaSenha, idUsuario) => {
   return apiClient.put(`usuario/${idUsuario}/changeUser/basic`, dadosNovaSenha);
 };
@@ -52,3 +56,15 @@ export const compraPacote = async (idPacote, idUsuario) => {
 export const criarBatalha = async (dadosBatalha) => {
   return await apiClient.post("batalha/cadastro", dadosBatalha);
 };
+
+  export const pegarBatalhasAbertas = async () => {
+      return await apiClient.get("batalha/abertas"); 
+  }
+
+    export const vefificarPlayerInscrito = async (idBatalha, idUsuario) => {
+      return await apiClient.get(`batalha/verificaplayer/${idBatalha}/${idUsuario}`)
+    }
+
+  export const top10UsuariosVitorias = async () => {
+    return await apiClient.get("usuario/top10Vitorias")
+  }

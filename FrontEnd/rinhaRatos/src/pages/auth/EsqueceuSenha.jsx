@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { trocarSenha } from "../../Api/Api";
+import { esqueceuSenha } from "../../Api/Api";
 import Botao from "../../components/comuns/Botao";
 import Input from "../../components/comuns/Input";
 import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
@@ -39,7 +39,7 @@ export default function EsqueceuSenha() {
     };
 
     try {
-      await trocarSenha(dados);
+      await esqueceuSenha(dados);
       navigate("/login");
 
     } catch (err) {
