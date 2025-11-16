@@ -150,7 +150,7 @@ class UsuarioController(
 
     }
 
-    @PostMapping("/changeUser/password")
+    @PostMapping(",")
     fun changePassWord(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val senhaTrocada = usuarioService.redefinirUsuarioSenha(loginRequest.email, loginRequest.senha)
         if (senhaTrocada == "OK") {

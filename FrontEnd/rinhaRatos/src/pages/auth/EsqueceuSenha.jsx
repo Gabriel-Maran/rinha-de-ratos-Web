@@ -41,7 +41,6 @@ export default function EsqueceuSenha() {
     try {
       await esqueceuSenha(dados);
       navigate("/login");
-
     } catch (err) {
       setErro(
         err?.response?.data?.message || "Erro ao conectar com o servidor."

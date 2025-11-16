@@ -1,45 +1,49 @@
 import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 import { criarBatalha } from "../../../Api/Api";
 import "./ModalCriarBatalha.css";
 import "./ModalEditarBatalha.css";
 
 export default function ModalCriarBatalhas({
   estadoModal,
-  nomeBatalha,
-  custoInscricao,
-  dataHora,
   listaBatalhas,
-  setNomeBatalha,
-  setCustoInscricao,
-  setDataHora,
   setListaBatalhas,
   onClose,
 }) {
+  const { user } = useAuth();
   const [erro, setErro] = useState(null);
+  const [mensagemSucesso, setMensagemSucesso] = useState(null);
+
+  const [nomeBatalha, setNomeBatalha] = useState("");
+  const [dataHorarioInicio, setDataHorarioInicio] = useState("");
+  const [custoInscricao, setCustoInscricao] = useState(0);
 
   const CadastrarBatalha = async () => {
-    if (nomeBatalha === "" || custoInscricao === "" || dataHora === "") {
-      setErro("Por favor, os campos necessários.");
+    if (nomeBatalha === "" || custoInscricao <= 0 || dataHorarioInicio === "") {
+      setErro("Por favor, preencha todos os campos corretamente.");
       return;
     }
     setErro(null);
-    const idAdm = localStorage.getItem("idUsuario");
+    setMensagemSucesso(null); 
+    const idAdmCriador = user.idUsuario || user.id;
 
     const dados = {
-      nomeBatalha: nomeBatalha,
-      dataHorarioInicio: dataHora,
-      idAdmCriador: idAdm,
-      custoInscricao: custoInscricao,
+      nomeBatalha,
+      dataHorarioInicio,
+      idAdmCriador,
+      custoInscricao,
     };
 
     try {
       const resposta = await criarBatalha(dados);
-      localStorage.setItem("dadosDaBatalha", JSON.stringify(resposta.data));
+      setMensagemSucesso(
+        resposta.data.message || "Batalha criada com sucesso!"
+      );
 
       const novaBatalha = resposta.data;
-      console.log("Batalha Criada!", resposta.data);
-
+      console.log("Batalha Criada!", novaBatalha);
       setListaBatalhas([...listaBatalhas, novaBatalha]);
+      
       onClose();
     } catch (err) {
       setErro(
@@ -56,7 +60,12 @@ export default function ModalCriarBatalhas({
             ✖
           </button>
           <h1 className="tituloAba">Criação da Batalha</h1>
+
           {erro && <p className="mensagem-erro-batalha">{erro}</p>}
+          {mensagemSucesso && (
+            <p className="mensagem-sucesso-batalha">{mensagemSucesso}</p>
+          )}
+
           <div className="criarBatalha">
             <div>
               <h3>Nome</h3>
@@ -78,8 +87,8 @@ export default function ModalCriarBatalhas({
               <h3>Data e Hora de Início</h3>
               <input
                 type="datetime-local"
-                value={dataHora}
-                onChange={(e) => setDataHora(e.target.value)}
+                value={dataHorarioInicio}
+                onChange={(e) => setDataHorarioInicio(e.target.value)}
               />
             </div>
           </div>

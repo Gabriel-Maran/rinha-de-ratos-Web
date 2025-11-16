@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // 1. Importámos o 'useEffect'
+import { useAuth } from "../../../context/AuthContext";
+import { pegarBatalhasAbertas } from "../../../Api/Api";
+import { top10UsuariosVitorias } from "../../../Api/Api"; // 2. Precisamos disto AQUI
 import Header from "../../../components/comuns/Header/Header";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import trofeu from "../../../assets/icones/IconeTrofeu.png";
@@ -8,33 +11,47 @@ import "./HomeADM.css";
 import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
+  const { user } = useAuth();
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
-
+  const idUsuarioLogado = user ? user.idUsuario || user.id : null;
+  
   const [listaBatalhas, setListaBatalhas] = useState([]);
-
-  const [nomeBatalha, setNomeBatalha] = useState("");
-  const [custoInscricao, setCustoInscricao] = useState(0);
-  const [dataHora, setDataHora] = useState("");
-  const [premio, setPremio] = useState(0);
-  const [jogador1, setJogador1] = useState(null);
-  const [jogador2, setJogador2] = useState(null);
-  const [iniciar, setIniciar] = useState(false);
-
+  const [listaJogadores, setListaJogadores] = useState([]);
   const [batalhaSendoEditada, setBatalhaSendoEditada] = useState();
-
   const [editarBatalha, setEditarBatalha] = useState(false);
   const [criarBatalha, setCriarBatalha] = useState(false);
-  const [estadoModal, setEstadoModal] = useState("bgModal");
 
-  const [listaJogadores, setListaJogadores] = useState([]);
-  const [nome, setNome] = useState("");
-  const [vitorias, setVitorias] = useState(0);
-  const [posicoes, setPosicoes] = useState(1);
+  const [loadingDados, setLoadingDados] = useState(true);
+  const [erroDados, setErroDados] = useState(null);
+
+  useEffect(() => {
+    if (!idUsuarioLogado) return;
+
+    const buscarDadosIniciais = async () => {
+      setLoadingDados(true);
+      setErroDados(null);
+      try {
+        const [respostaBatalhas, respostaRanking] = await Promise.all([
+          pegarBatalhasAbertas(),
+          top10UsuariosVitorias(),
+        ]);
+
+        setListaBatalhas(respostaBatalhas.data);
+        setListaJogadores(respostaRanking.data);
+      } catch (err) {
+        console.error("Erro ao buscar dados iniciais:", err);
+        setErroDados("Falha ao carregar dados. Tente atualizar a página.");
+      } finally {
+        setLoadingDados(false);
+      }
+    };
+
+    buscarDadosIniciais();
+  }, [idUsuarioLogado]);
 
   const CriacaoBatalha = () => {
     setCriarBatalha(true);
-    setEstadoModal("bgModalAtivo");
   };
 
   const EdicaoDeBatalha = (batalha) => {
@@ -49,11 +66,10 @@ export default function HomeADM() {
 
   const formatarDataEHora = (data) => {
     if (!data) return "Data Indisponível";
-
     try {
-      const [parteDaData, parteDaHora] = data.split("T"); // ["2025-10-30", "22:54"]
-      const [ano, mes, dia] = parteDaData.split("-"); // ["2025", "10", "30"]
-      return `${dia}/${mes}, ${parteDaHora}`; // "30/10, 22:54"
+      const [parteDaData, parteDaHora] = data.split("T");
+      const [ano, mes, dia] = parteDaData.split("-");
+      return `${dia}/${mes}, ${parteDaHora}`;
     } catch (erro) {
       console.error("Erro ao formatar data:", erro);
       return data;
@@ -61,92 +77,85 @@ export default function HomeADM() {
   };
 
   let conteudoHomeAdm;
-
-  switch (opcaoAtivada) {
-    case "Ranking":
-      conteudoHomeAdm = (
-        <>
-          <div className="listaJogadores">
-            {listaJogadores.map((jogador) => (
-              <div className="jogador" key={jogador.id}>
-                <div className="posicaoJogador">
-                  <p>{jogador.posicao}º</p>
-                </div>
-                <img src={RatoEsgoto} />
-                <div className="nomeEVitorias">
-                  <p className="nomeJogador">{jogador.nome}</p>
-                  <div className="vitorias">
-                    <p>{jogador.vitorias}</p>
+  if (loadingDados) {
+    conteudoHomeAdm = <p className="loading-mensagem">A carregar dados...</p>;
+  } else if (erroDados) {
+    conteudoHomeAdm = <p className="erro-mensagem">{erroDados}</p>;
+  } else {
+    switch (opcaoAtivada) {
+      case "Ranking":
+        conteudoHomeAdm = (
+          <>
+            <div className="listaJogadores">
+              {listaJogadores.map((jogador, index) => (
+                <div className="jogador" key={jogador.idUsuario}>
+                  <div className="posicaoJogador">
+                    <p>{index + 1}º</p> {/* Gera a posição dinamicamente */}
+                  </div>
+                  <img src={RatoEsgoto} />
+                  <div className="nomeEVitorias">
+                    <p className="nomeJogador">{jogador.nome}</p>
+                    <div className="vitorias">
+                      <p>{jogador.vitorias}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </>
-      );
-      break;
-    default:
-      conteudoHomeAdm = (
-        <>
-          {criarBatalha && (
-            <ModalCriarBatalha
-              estadoModal={estadoModal}
-              nomeBatalha={nomeBatalha}
-              custoInscricao={custoInscricao}
-              dataHora={dataHora}
-              premio={premio}
-              jogador1={jogador1}
-              jogador2={jogador2}
-              iniciar={iniciar}
-              listaBatalhas={listaBatalhas}
-              setNomeBatalha={setNomeBatalha}
-              setCustoInscricao={setCustoInscricao}
-              setDataHora={setDataHora}
-              setPremio={setPremio}
-              setListaBatalhas={setListaBatalhas}
-              onClose={fecharModal}
-            />
-          )}
-          {editarBatalha && (
-            <ModalEditarBatalha
-              estadoModal={estadoModal}
-              onClose={fecharModal}
-              batalhaSendoEditada={batalhaSendoEditada}
-              setNomeBatalha={setNomeBatalha}
-              setCustoInscricao={setCustoInscricao}
-              setDataHora={setDataHora}
-              setPremio={setPremio}
-              setListaBatalhas={setListaBatalhas}
-              listaBatalhas={listaBatalhas}
-            />
-          )}
-          <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
-            Criar Batalha
-          </button>
-          <div className="listaBatalhas">
-            {listaBatalhas.map((batalha) => (
-              <div className="batalha" key={batalha.id}>
-                <img src={trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nome}</p>
-                  <p>Inscrição: {batalha.custo} MouseCoin</p>
-                  <p>Data e Hora: {formatarDataEHora(batalha.dataEHora)}</p>
-                  <p>Prêmio: {batalha.premio} MouseCoin</p>
+              ))}
+            </div>
+          </>
+        );
+        break;
+      default:
+        conteudoHomeAdm = (
+          <>
+            {criarBatalha && (
+              <ModalCriarBatalha
+                estadoModal={criarBatalha ? "bgModalAtivo" : "bgModal"}
+                listaBatalhas={listaBatalhas}
+                setListaBatalhas={setListaBatalhas}
+                onClose={fecharModal}
+              />
+            )}
+            {editarBatalha && (
+              <ModalEditarBatalha
+                estadoModal={editarBatalha ? "bgModalAtivo" : "bgModal"}
+                onClose={fecharModal}
+                batalhaSendoEditada={batalhaSendoEditada}
+                setListaBatalhas={setListaBatalhas}
+                listaBatalhas={listaBatalhas}
+              />
+            )}
+            <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
+              Criar Batalha
+            </button>
+
+            <div className="listaBatalhas">
+              {listaBatalhas.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={trofeu} />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>
+                      Data e Hora:{" "}
+                      {formatarDataEHora(batalha.dataHorarioInicio)}
+                    </p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  </div>
+                  <button
+                    className="btnGerenciar"
+                    onClick={() => EdicaoDeBatalha(batalha)}
+                  >
+                    Gerenciar
+                  </button>
                 </div>
-                <button
-                  className="btnGerenciar"
-                  onClick={() => EdicaoDeBatalha(batalha)}
-                >
-                  Gerenciar
-                </button>
-              </div>
-            ))}
-          </div>
-          {criarBatalha}
-          {editarBatalha}
-        </>
-      );
+              ))}
+            </div>
+          </>
+        );
+    }
   }
+
   return (
     <>
       <Header home="home" />
@@ -155,7 +164,7 @@ export default function HomeADM() {
           {botoes.map((botao) => (
             <button
               key={botao}
-              className={opcaoAtivada == botao ? "opcaoAtiva" : "btnOpcao"}
+              className={opcaoAtivada === botao ? "opcaoAtiva" : "btnOpcao"}
               onClick={() => setOpcaoAtivada(botao)}
             >
               {botao}

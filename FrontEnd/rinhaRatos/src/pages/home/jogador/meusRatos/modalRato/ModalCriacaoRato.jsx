@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-// APIs não são mais importadas aqui
 import SelecaoDeClasse from "./SelecaoDeClasse.jsx";
 import DetalhesDaClasse from "./DetalhesDaClasse.jsx";
 import RatoCriado from "./RatoCriado.jsx";
@@ -20,6 +18,7 @@ export default function ModalCriacaoRato({
   loadingModal,
   erroModal,
 }) {
+  
   if (etapa === etapas.FECHADO) {
     return null;
   }
@@ -31,7 +30,7 @@ export default function ModalCriacaoRato({
       conteudoModal = (
         <SelecaoDeClasse
           onSlctClasse={onSlctClasse}
-          classes={classes || []} // Garante que é um array
+          classes={classes || []} 
           loading={loadingModal}
           error={erroModal}
         />
@@ -43,7 +42,7 @@ export default function ModalCriacaoRato({
           classe={classe}
           onMostrar={onMostrarRato}
           indexClasse={indexClasse}
-          descricaoHabilidades={descricaoHabilidades || []} // Garante que é um array
+          descricaoHabilidades={descricaoHabilidades || []}
         />
       );
       break;

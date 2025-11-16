@@ -23,32 +23,31 @@ const ETAPAS = {
 };
 
 export default function HomeJogador() {
+  const { user } = useAuth();
+
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
   const [indexClasse, setIndexClasse] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
-  const { user } = useAuth();
+  const [classes, setClasses] = useState(null);
+  const [descricaoHabilidades, setDescHabilidades] = useState(null);
 
   const [novoRato, setNovoRato] = useState(null);
-
-  const qtdeMoedas = user?.mousecoinSaldo ?? 0;
-
-  const idUsuarioLogado = (user?.idUsuario || user?.id) ?? 0;
 
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [loadingRatos, setLoadingRatos] = useState(true);
   const [erroRatos, setErroRatos] = useState(null);
 
-  const [classes, setClasses] = useState(null);
-  const [descricaoHabilidades, setDescHabilidades] = useState(null);
-
   const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
-  const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
-  const contagemRatosVivos = ratosVivos.length;
+  const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
+
+  const idUsuarioLogado = (user?.idUsuario || user?.id) ?? 0;
+  const qtdeMoedas = user?.mousecoinSaldo ?? 0;
+  const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
 
-  const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
-  const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
+  const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
+  const contagemRatosVivos = ratosVivos.length;
 
   useEffect(() => {
     if (!idUsuarioLogado) return;
@@ -106,7 +105,7 @@ export default function HomeJogador() {
 
   const mostrarDetalhesRato = () => {
     setEtapaModal(ETAPAS.RATO_CRIADO);
-  }
+  };
 
   const definirRatoBatalha = (rato) => {
     localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
@@ -134,6 +133,7 @@ export default function HomeJogador() {
             loadingModal={loadingRatos}
             erroModal={erroRatos}
           />
+
           {/* TODO: Tratar 'loadingRatos' e 'erroRatos' aqui */}
           <ListaDeRatos
             ratosUsuario={ratosUsuario}
@@ -172,7 +172,6 @@ export default function HomeJogador() {
       conteudoCorpo = <Ranking />;
       break;
     case "Loja":
-      // A Loja também precisará usar o useAuth() para atualizar o saldo
       conteudoCorpo = <Loja qtdeMoedas={qtdeMoedas} />;
       break;
   }

@@ -11,34 +11,31 @@ export default function DetalhesDaClasse({
   onMostrar,
   descricaoHabilidades,
 }) {
-  console.log(classe);
   const [nomeRato, setNomeRato] = useState(classe.apelido);
   const [habilAtiva, setHabilAtiva] = useState(0);
   const [erro, setErro] = useState(null);
-  
-  const { user, setUser } = useAuth();
-
+  const {user, setUser } = useAuth();
   const handleBtnHabil = (index) => setHabilAtiva(index);
   const habilidadeAtiva = classe.habilidades[habilAtiva];
-
+  
+  
+  const textoDescricao = descObj?.descricao;
   const descObj = descricaoHabilidades.find(
     (itemDesc) => itemDesc.idHabilidade === habilidadeAtiva.idHabilidade
   );
-  const textoDescricao = descObj?.descricao;
 
   const salvarRato = async () => {
     const custoRato = 5;
 
-    // 1. Lê o saldo do 'user' do context
     if (user.mousecoinSaldo < custoRato) {
       setErro("Moedas insuficientes para criar o rato.");
       return;
     }
 
-    // 2. Pega o ID do 'user' do context (usando a mesma lógica do Home)
+    //Pega o ID do 'user' do context (usando a mesma lógica do Home)
     const idUsuarioLogado = user.idUsuario || user.id;
-
     const habilidadeSelecionada = classe.habilidades[habilAtiva];
+
 
     const dados = {
       idUsuario: idUsuarioLogado,
@@ -55,17 +52,13 @@ export default function DetalhesDaClasse({
 
       const novoSaldo = user.mousecoinSaldo - 5;
 
-      // 3. ATUALIZA o 'user' no AuthContext globalmente
+      // ATUALIZA o 'user' no AuthContext globalmente
       setUser((prevUser) => ({
         ...prevUser,
         mousecoinSaldo: novoSaldo,
       }));
 
-      // 4. CHAMA a função 'onMostrar'
-      onMostrar(
-        ratoSalvo, // O rato completo vindo da API
-        textoDescricao
-      );
+      onMostrar(ratoSalvo, textoDescricao);
     } catch (err) {
       console.error("Falha ao salvar rato:", err);
       setErro(err?.response?.data?.message || "Erro ao salvar");

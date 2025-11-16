@@ -1,7 +1,6 @@
 import ImagensRato from "../../../../../components/ImagensRato";
 import "./RatoCriado.css";
 
-// Refatorado para receber props (Missão 4)
 export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
   // Lê das props, não do localStorage
   const rato = novoRato || {};
@@ -13,6 +12,10 @@ export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
     health: rato.hpsBase,
     intelligence: rato.intBase,
     defense: rato.defBase,
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   return (
