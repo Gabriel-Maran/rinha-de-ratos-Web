@@ -84,6 +84,33 @@ class UsuarioController(
         return ResponseEntity.ok(topMapped)
     }
 
+    @PostMapping("/changeFoto/{idUsuario}/{idFoto}")
+    fun changeFotoPerfil(@PathVariable("idUsuario") idUsuario:Long, @PathVariable("idFoto") idFoto:Long  ): ResponseEntity<Any> {
+        val retornoChangeFoto = usuarioService.changeFotoPerfil(idUsuario = idUsuario, idFoto = idFoto)
+        if(retornoChangeFoto == HttpStatus.BAD_REQUEST){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.BAD_REQUEST.value(),
+                    error = "Bad Request",
+                    message = "Sem permissão para tal foto",
+                    code = "FOTO_NOT_FOUND"
+                )
+            )
+        }else if(retornoChangeFoto == HttpStatus.NOT_FOUND){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.NOT_FOUND.value(),
+                    error = "Not Found",
+                    message = "Usuário não encontrado",
+                    code = "USER_NOT_FOUND"
+                )
+            )
+        }
+        return ResponseEntity.ok().build()
+    }
+
     @PostMapping("/cadastro")
     fun cadastrarUsuario(@RequestBody usuario: Usuario): ResponseEntity<Any> {
         val saved = usuarioService.cadastrarUsuario(usuario)

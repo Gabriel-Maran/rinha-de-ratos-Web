@@ -120,4 +120,14 @@ class UsuarioService(
         log.info("Dados básicos atualizados para usuário id=$id")
         return HttpStatus.OK
     }
+
+    fun changeFotoPerfil(idUsuario: Long, idFoto: Long): HttpStatus{
+        if(idFoto < 0 || idFoto > 10) return HttpStatus.BAD_REQUEST
+        val usuario: Optional<Usuario> = usuarioRepository.findById(idUsuario)
+        if(usuario.isEmpty) return HttpStatus.NOT_FOUND
+        usuario.get().idFotoPerfil = idFoto
+        usuarioRepository.save(usuario.get())
+        log.info("Deu certo")
+        return HttpStatus.OK
+    }
 }

@@ -7,6 +7,7 @@ import com.unipar.rinhaRatos.models.*
 fun Usuario.toSummaryDto(): UsuarioSummaryDTO {
     return UsuarioSummaryDTO(
         idUsuario = this.idUsuario,
+        idFotoPerfil = this.idFotoPerfil,
         nome = this.nome,
         email = this.email
     )
@@ -37,6 +38,7 @@ fun Usuario.toDto(): UsuarioDTO {
     val ratosSummary = this.ratos.map { it.toSummaryDto() }
     return UsuarioDTO(
         idUsuario = this.idUsuario,
+        idFotoPerfil = this.idFotoPerfil,
         nome = this.nome,
         email = this.email,
         tipoConta = this.tipoConta.name,
