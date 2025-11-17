@@ -42,7 +42,7 @@ export default function ModalCriarBatalhas({
 
       const novaBatalha = resposta.data;
       console.log("Batalha Criada!", novaBatalha);
-      setListaBatalhas([...listaBatalhas, novaBatalha]);
+      setListaBatalhas([ novaBatalha, ...listaBatalhas]);
       
       onClose();
     } catch (err) {

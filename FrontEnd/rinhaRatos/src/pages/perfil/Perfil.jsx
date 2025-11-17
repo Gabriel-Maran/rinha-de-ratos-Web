@@ -21,7 +21,7 @@ export default function Perfil({ qtdeMoedas }) {
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
   const { user, setUser } = useAuth();
-  const [nome, setNome] = useState("");
+  const [nome, setNome] = useState(user.nome);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
@@ -42,7 +42,6 @@ export default function Perfil({ qtdeMoedas }) {
   const senhaTrocada = async (evento) => {
     const idUsuarioLogado = user.idUsuario || user.id;
 
-
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
@@ -55,6 +54,13 @@ export default function Perfil({ qtdeMoedas }) {
       setMensagemSucesso(
         resposta.data.message || "Senha alterada com sucesso!"
       );
+
+      setUser((userAntigo) => ({
+        ...userAntigo,
+        nome: nome,
+        email: email,
+      }));
+
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }

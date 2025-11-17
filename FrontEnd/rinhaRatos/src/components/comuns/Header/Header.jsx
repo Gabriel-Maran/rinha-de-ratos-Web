@@ -6,6 +6,8 @@ import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import "./Header.css";
 
 export default function Header({ home }) {
+
+  
   const { user, setUser } = useAuth();
 
   console.log("O objeto USER no Header é:", user);

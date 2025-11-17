@@ -2,7 +2,6 @@ import ImagensRato from "../../../../../components/ImagensRato";
 import "./RatoCriado.css";
 
 export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
-  // Lê das props, não do localStorage
   const rato = novoRato || {};
   const textoDescricao = descHabilidade;
 

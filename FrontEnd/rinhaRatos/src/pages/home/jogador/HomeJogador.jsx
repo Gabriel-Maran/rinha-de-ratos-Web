@@ -112,7 +112,7 @@ export default function HomeJogador() {
   };
 
   const mostrarRatoCriado = (ratoCompletoDaApi, descHabilidadeDaClasse) => {
-    setRatosUsuario((prevRatos) => [...prevRatos, ratoCompletoDaApi]);
+    setRatosUsuario((prevRatos) => [ratoCompletoDaApi, ...prevRatos]);
     setNovoRato(ratoCompletoDaApi);
     setDescHabilidade(descHabilidadeDaClasse);
     setEtapaModal(ETAPAS.RATO_CRIADO);
