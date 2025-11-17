@@ -1,8 +1,8 @@
-import Botao from "../../components/comuns/Botao";
-import "./auth.css"; 
-import "./Access.css";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import Botao from "../../components/comuns/Botao";
+import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import "./LogoEFundo.css";
+import "./Acesso.css";
 
 export default function Acesso() {
   const navigate = useNavigate();
@@ -11,9 +11,13 @@ export default function Acesso() {
     navigate("/login");
   };
 
+  const irHomeConvidado = () => {
+    navigate("/homeConvidado");
+  };
+
   return (
     <div className="acesso-container">
-      <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
+      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
       <div className="caixa">
         <h3>Você é...</h3>
 
@@ -25,7 +29,10 @@ export default function Acesso() {
           }}
         />
 
-        <Botao acaoBtn={"Convidado"} button={{ className: "acesso" }} />
+        <Botao
+          acaoBtn={"Convidado"}
+          button={{ className: "acesso", onClick: irHomeConvidado }}
+        />
       </div>
     </div>
   );

@@ -1,14 +1,17 @@
 import React from "react";
 import ReactDom from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./css/index.css";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import App from "./App.jsx";
-import HomeJogador from "./pages/HomeJogador.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Acesso from "./pages/Auth/Acesso.jsx";
 import Cadastro from "./pages/auth/Cadastro.jsx";
 import EsqueceuSenha from "./pages/Auth/EsqueceuSenha.jsx";
-import Perfil from "./pages/Perfil.jsx"
+import HomeJogador from "./pages/home/jogador/HomeJogador.jsx";
+import HomeADM from "./pages/home/adm/HomeADM.jsx";
+import HomeConvidado from "./pages/home/HomeConvidado.jsx";
+import Perfil from "./pages/perfil/Perfil.jsx";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -29,21 +32,32 @@ const router = createBrowserRouter([
       },
       {
         path: "cadastro",
-        element:<Cadastro/>
+        element: <Cadastro />,
       },
       {
         path: "home",
         element: <HomeJogador />,
       },
       {
+        path: "homeAdm",
+        element: <HomeADM />,
+      },
+      {
         path: "perfil",
-        element: <Perfil />
-      }
+        element: <Perfil />,
+      },
+      {
+        path: "homeConvidado",
+        element: <HomeConvidado />,
+      },
     ],
   },
 ]);
+
 ReactDom.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>  
+        <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

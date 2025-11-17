@@ -1,0 +1,132 @@
+.caixaLogin {
+  width: 28rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  border: solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  font-family: "Inter", sans-serif;
+  transform: scale(1.2);
+}
+
+.tituloEErro {
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tituloEErro h3 {
+  font-size: 2rem;
+  font-weight: 1000;
+  margin-bottom: 1rem;
+}
+
+.mensagem-erro {
+  font-size: 1.5rem;
+  color: red;
+}
+
+.inputs {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+  width: 90%;
+}
+
+.inputs input {
+  font-size: 1rem;
+  border: none;
+  border-bottom: 0.15rem solid black;
+  outline: none;
+  background: transparent;
+  padding-bottom: 0.5rem;
+}
+
+.input-senha {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-senha input {
+  width: 100%;
+}
+
+.verSenha {
+  position: absolute;
+  cursor: pointer;
+  /* Muda o cursor para a mãozinha apontando */
+  user-select: none;
+  /* Não permite o cara selecionar (deixar azul) */
+  color: #000000;
+  right: 0rem;
+  padding-bottom: 1rem;
+}
+
+.verSenha img {
+  width: 28px;
+  height: 28px;
+}
+
+.resetSenha {
+  cursor: pointer;
+  align-self: flex-end;
+  width: 34%;
+  margin-right: 0.8rem;
+  border: none;
+  background: none;
+}
+
+.botao {
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 1000;
+  background-color: #ffae52;
+  margin: 1.5rem 0rem 0.5rem 0rem;
+  padding: 0.3rem 2rem;
+  border: 0.15rem solid #000000;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.linkCadastro {
+  cursor: pointer;
+  width: 33%;
+  align-self: flex-start;
+  margin-top: 1rem;
+  text-align: center;
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
+
+.btnVoltar {
+  margin-top: 1rem;
+  cursor: pointer;
+  align-self: flex-start;
+  text-align: center;
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
+
+
+
+@media (max-width: 600px) {
+  .caixaLogin {
+    width: 300px;
+  }
+
+  .caixaLogin h3 {
+    text-align: center;
+  }
+}

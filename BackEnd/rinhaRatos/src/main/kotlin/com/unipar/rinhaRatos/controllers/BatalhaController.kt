@@ -118,7 +118,7 @@ class BatalhaController(
             "USER_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
             "RATO_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
             "BATALHA_NOT_OPEN" -> buildError(HttpStatus.CONFLICT, "Inscrições fechadas", "BATALHA_NOT_OPEN")
-            "RATO_NOT_ELIGIBLE" -> buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível (morto ou já em torneio)", "RATO_NOT_ELIGIBLE")
+            "RATO_NOT_ELIGIBLE" -> buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não elegível", "RATO_NOT_ELIGIBLE")
             "BAD_REQUEST" -> buildError(HttpStatus.BAD_REQUEST, "Requisição inválida", "BAD_REQUEST")
             "BATALHA_CHEIA" -> buildError(HttpStatus.CONFLICT, "Batalha cheia", "BATALHA_CHEIA")
             "OK" -> ResponseEntity.ok(mapOf("message" to "Rato inscrito na batalha"))

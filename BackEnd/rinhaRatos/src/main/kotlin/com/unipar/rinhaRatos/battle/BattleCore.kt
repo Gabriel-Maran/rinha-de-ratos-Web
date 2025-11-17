@@ -158,9 +158,12 @@ fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 
     val flatPas = estado.absolutos.getOrDefault(AtributoEfeito.PAS, 0.0)
     val flatPds = estado.absolutos.getOrDefault(AtributoEfeito.PDS, 0.0)
 
-    // PAS e PDS finais
-    val pas = (basePas * (1.0 + pctPas) + flatPas).coerceAtLeast(0.0)
-    val pds = (basePds * (1.0 + pctPds) + flatPds).coerceAtLeast(0.0)
+    // cálculo base
+    val pasRaw = (basePas * (1.0 + pctPas) + flatPas).coerceAtLeast(0.0)
+    val pdsRaw = (basePds * (1.0 + pctPds) + flatPds).coerceAtLeast(0.0)
+
+    val pas = (pasRaw * (1.0 + kotlin.random.Random.nextDouble(-0.05, 0.05))).coerceAtLeast(1.0)
+    val pds = (pdsRaw * (1.0 + kotlin.random.Random.nextDouble(-0.05, 0.05))).coerceAtLeast(1.0)
 
     // CRI: soma percentual de habilidade ao crítico base, limitando a um máximo razoável (ex.: 0.75)
     val cri = (chanceCriticoBase + pctCri).coerceIn(0.0, 0.75)
@@ -175,7 +178,7 @@ fun calcularDano(pasAtacante: Double, pdsDefensor: Double, chanceCritico: Double
     if (dano < 1) dano = 1
     val roll = Random.nextDouble()
     val ehCritico = roll < chanceCritico
-    if (ehCritico) dano = (dano * 2.0).roundToInt() // crit aumenta pra 2x (antes 1.8)
+    if (ehCritico) dano = (dano * 2.0).roundToInt()
     return dano
 }
 //fun calcularDano(pasAtacante: Double, pdsDefensor: Double, chanceCritico: Double): Int {

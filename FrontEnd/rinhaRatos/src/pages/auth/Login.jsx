@@ -1,16 +1,19 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { fazerLogin } from "../../Api/Api";
+import { useAuth } from "../../context/AuthContext";
+import { pegarUsuarioPorId } from "../../Api/Api";
 import Input from "../../components/comuns/Input";
 import Botao from "../../components/comuns/Botao";
-import "./auth.css";
-import "./AuthForm.css";
-import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
-import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
-import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
-import { useState } from "react";
-import { fazerLogin } from "../../Api/Api";
+import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
+import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
+import "./LogoEFundo.css";
+import "./CaixaAcesso.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const irCadastro = () => {
     navigate("/cadastro");
@@ -23,42 +26,45 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
+  const nome = ""; 
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const nome = "";
 
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
 
   const irLogin = async (evento) => {
-    // Impede que o navegador recarregue à página
     evento.preventDefault();
+    setErro(null);
 
     const dados = { email, senha, nome };
 
     try {
-      // Entrega o pacote de dados para a Api e espera o back
       const resposta = await fazerLogin(dados);
-
       console.log("Login OK!", resposta.data);
 
-      localStorage.setItem("idUsuario", resposta.data.id);
-      localStorage.setItem("tipoConta", resposta.data.tipo_conta);
+      // Assumindo que a resposta do login tem 'id'
+      const idUsuarioAPI = resposta.data.id; 
+      const tipoContaDaAPI = resposta.data.tipo_conta;
+  
+      sessionStorage.setItem("idUsuario", idUsuarioAPI);
 
-      navigate("/home");
+      const respostaUsuario = await pegarUsuarioPorId(idUsuarioAPI);
+      setUser(respostaUsuario.data);
+
+      tipoContaDaAPI === "ADM" ? navigate("/homeADM") : navigate("/home");
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
   };
-
   return (
     <div className="acesso-container">
-      <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
+      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
-        <h3>Fazer login</h3>
-
-        {erro && <p className="mensagem-erro">{erro}</p>}
-
+        <div className="tituloEErro">
+          <h3>Fazer login</h3>
+          {erro && <p className="mensagem-erro">{erro}</p>}
+        </div>
         <div className="inputs">
           <Input
             input={{
@@ -77,14 +83,11 @@ export default function Login() {
                 placeholder: "Senha",
               }}
             />
-            <span
-              className="verSenha"
-              onClick={(e) => funMostrarSenha(e.target.value)}
-            >
+            <span className="verSenha" onClick={funMostrarSenha}>
               {mostrarSenha ? (
-                <img src={icone_olho_fechado} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
               ) : (
-                <img src={icone_olho_aberto} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
               )}
             </span>
           </div>

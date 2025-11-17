@@ -1,13 +1,13 @@
-import Botao from "../../components/comuns/Botao";
-import "./auth.css";
-import "./AuthForm.css";
-import { useNavigate } from "react-router-dom";
-import logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
-import icone_olho_aberto from "../../assets/icones/icone_olho_aberto.png";
-import icone_olho_fechado from "../../assets/icones/icone_olho_fechado.png";
-import Input from "../../components/comuns/Input";
-import { trocarSenha } from "../../Api/Api";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { esqueceuSenha } from "../../Api/Api";
+import Botao from "../../components/comuns/Botao";
+import Input from "../../components/comuns/Input";
+import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
+import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
+import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
+import "./LogoEFundo.css";
+import "./CaixaAcesso.css";
 
 export default function EsqueceuSenha() {
   const [email, setEmail] = useState("");
@@ -24,8 +24,14 @@ export default function EsqueceuSenha() {
     setMostrarSenha(!mostrarSenha);
   };
 
-  const irLogin = async (evento) => {
+  const redefinirSenha = async (evento) => {
     evento.preventDefault();
+    if (email === "" || senha === "") {
+      setErro("Preencha os campos necessários");
+      return;
+    }
+    setErro(null);
+
     const dados = {
       email,
       senha,
@@ -33,21 +39,24 @@ export default function EsqueceuSenha() {
     };
 
     try {
-      const resposta = await trocarSenha(dados);
-      console.log("Login OK!", resposta.data);
+      await esqueceuSenha(dados);
+      console.log("Senha redefinida!");
       navigate("/login");
     } catch (err) {
-      setErro(err?.response?.data?.message || "Erro ao conectar com o servidor.");
+      setErro(
+        err?.response?.data?.message || "Erro ao conectar com o servidor."
+      );
     }
   };
+
   return (
     <div className="acesso-container">
-      <img src={logo} alt="logo chamada coliseu dos ratos" className="logo" />
+      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
       <div className="caixaLogin">
-        <h3>Redefinição de senha</h3>
-
-        {erro && <p className="mensagem-erro">{erro}</p>}
-
+        <div className="tituloEErro">
+          <h3>Redefinição de senha</h3>
+          {erro && <p className="mensagem-erro">{erro}</p>}
+        </div>
         <div className="inputs">
           <Input
             input={{
@@ -66,14 +75,11 @@ export default function EsqueceuSenha() {
                 placeholder: "Nova Senha",
               }}
             />
-            <span
-              className="verSenha"
-              onClick={(e) => funMostrarSenha(e.target.value)}
-            >
+            <span className="verSenha" onClick={funMostrarSenha}>
               {mostrarSenha ? (
-                <img src={icone_olho_fechado} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
               ) : (
-                <img src={icone_olho_aberto} alt="icone de olho fechado" />
+                <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
               )}
             </span>
           </div>
@@ -83,7 +89,7 @@ export default function EsqueceuSenha() {
           acaoBtn={"Redefinir"}
           button={{
             className: "botao",
-            onClick: irLogin,
+            onClick: redefinirSenha,
           }}
         />
         <Botao

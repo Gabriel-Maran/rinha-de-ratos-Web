@@ -1,0 +1,46 @@
+.btnIniciarCriacao {
+  position: absolute;
+  top: 0.8rem;
+  width: 20rem;
+  height: 10rem;
+  background-image: url("../../../assets/buttons/btnParticiparBatalha.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: transparent;
+  border: none;
+  font-size: 2.5rem;
+  color: white;
+  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
+}
+
+.btnIniciarCriacao BUTTON:active {
+  transform: scale(0.97);
+}
+
+.btnGerenciar {
+  width: 20rem;
+  height: 5rem;
+  background-image: url("../../../assets/buttons/btnVerHistorico.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border: none;
+  background-color: transparent;
+  font-size: 2rem;
+  color: white;
+}
+
+.btnGerenciar:active {
+  transform: scale(0.97);
+}
+
+/* ----------------------------------------- */
+/* Medias Query para tratar altura e largura */
+/* ----------------------------------------- */
+@media (max-width: 375px) and (max-height: 667px) {
+  .btnIniciarCriacao {
+    top: 0.5rem;
+    width: 10rem;
+    height: 5rem;
+    font-size: 1.4rem;
+  }
+}

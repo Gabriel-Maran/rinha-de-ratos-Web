@@ -1,0 +1,19 @@
+.headerConvidado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 7rem;       
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-family: 'Fondamento', 'cursive';
+    z-index: 1;
+}
+
+.logoColiseuConvidado{
+    width: 13rem;
+    height: 13rem;
+}
