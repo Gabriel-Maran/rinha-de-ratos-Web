@@ -26,8 +26,9 @@ export default function ListaDeBatalhas({
     if (!data) return "Data Indisponível";
     try {
       const [parteDaData, parteDaHora] = data.split("T");
+      const [hora, minuto, segundo] = parteDaHora.split(":");
       const [ano, mes, dia] = parteDaData.split("-");
-      return `${dia}/${mes}, ${parteDaHora}`;
+      return `${dia}/${mes}, ${hora}:${minuto}`;
     } catch (erro) {
       console.error("Erro ao formatar data:", erro);
       return data;

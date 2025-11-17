@@ -70,7 +70,6 @@ export default function HomeADM() {
       const [parteDaData, parteDaHora] = data.split("T");
       const [hora, minuto, segundo] = parteDaHora.split(":");
       const [ano, mes, dia] = parteDaData.split("-");
-      return `${dia}/${mes}, ${parteDaHora}`;
       return `${dia}/${mes}, ${hora}:${minuto}`;
     } catch (erro) {
       console.error("Erro ao formatar data:", erro);
@@ -88,6 +87,7 @@ export default function HomeADM() {
       case "Ranking":
         conteudoHomeAdm = (
           <>
+            <h1 className="subTitulo">Batalhas Vencidas</h1>
             <div className="listaJogadores">
               {listaJogadores.map((jogador, index) => (
                 <div className="jogador" key={jogador.idUsuario}>
