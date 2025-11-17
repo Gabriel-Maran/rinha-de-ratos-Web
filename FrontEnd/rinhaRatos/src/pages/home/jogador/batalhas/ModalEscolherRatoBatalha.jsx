@@ -14,7 +14,7 @@ export default function ModalEscolherRatoBatalha({
     onConfirmar(rato.idRato); 
   }
 
-  const ratosVivos = ratosUsuario.filter(rato => rato.estaVivo);
+  const ratosDisponiveis = ratosUsuario.filter(rato => rato.estaVivo && !rato.estaTorneio);
 
   return (
     <>
@@ -24,12 +24,13 @@ export default function ModalEscolherRatoBatalha({
             ✖
           </button>
           <div className="titulo">Escolha um Rato</div>
-
           {isLoading && <p className="loading-mensagem">A inscrever rato...</p>}
           {erroModal && <p className="mensagem-erro-batalha">{erroModal}</p>}
-
+          {ratosDisponiveis.length === 0 && !isLoading && (
+            <p className="mensagem-erro-batalha">Nenhum rato disponível para batalhar.</p>
+          )}
           <div className="listaRatosBatalhar">
-            {ratosVivos.map((rato) => (
+            {ratosDisponiveis.map((rato) => (
               <button
                 className="displayRatoBatalhar"
                 key={rato.idRato} 
