@@ -41,7 +41,7 @@ export default function Perfil({ qtdeMoedas }) {
 
   const senhaTrocada = async (evento) => {
     const idUsuarioLogado = user.idUsuario || user.id;
-    const nome = user.nome;
+
 
     evento.preventDefault();
     setErro(null);

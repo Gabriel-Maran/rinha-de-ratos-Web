@@ -8,7 +8,6 @@
 
   /* Serve pra deixar o fundo semi-transparente e preto */
   background-color: rgba(0, 0, 0, 0.8);
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,7 +72,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url("../../assets/assets/labels/lblPapelAmarelado.png");
+  
+  
+  background-image: url("../../../../assets/labels/lblPapelAmarelado.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   box-sizing: border-box;
@@ -95,4 +96,12 @@
     top: 0.6rem;
     right: 0.2rem;
   }
+}
+
+
+
+.displayRatoBatalhar img {
+  height: 6rem; 
+  width: auto;  
+  margin-left: 1rem;
 }

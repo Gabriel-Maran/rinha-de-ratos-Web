@@ -8,10 +8,10 @@ export default function TelaHistorico({ onClose, mostrarHistorico }) {
   const [venceu, setVenceu] = useState(false);
   const [linhasHistorico, setLinhasHistorico] = useState([]);
 
-  const [nomeJogadorVenc, setNomeJogadorVenc] = useState("Gabriel");
+  const [nomeJogadorVenc, setNomeJogadorVenc] = useState("Gustavo");
   const [nomeRatoVenc, setNomeRatoVenc] = useState("Roberto Antonio");
 
-  const [nomeJogadorPerd, setNomeJogadorPerd] = useState("Gustavo");
+  const [nomeJogadorPerd, setNomeJogadorPerd] = useState("Gabriel");
   const [nomeRatoPerd, setNomeRatoPerd] = useState("Fedoroso");
 
   const [imgRato, setImgRato] = useState("");
@@ -41,7 +41,7 @@ export default function TelaHistorico({ onClose, mostrarHistorico }) {
           {!participou && (
             <div className="brasaoResultado">
               <div className="secaoVitorioso">
-                <p className="statusJogadorVencedor">Vencedor:</p>
+                <p className="statusJogadorVencedor">Sigma🗿</p>
                 <div>
                   <p className="resultNomeJogador">{nomeJogadorVenc}</p>
                   <div className="infoRatoResultBatalha">
@@ -51,7 +51,7 @@ export default function TelaHistorico({ onClose, mostrarHistorico }) {
                 </div>
               </div>
               <div className="secaoDerrotado">
-                <p className="statusJogadorDerrotado">Comedor de bola:</p>
+                <p className="statusJogadorDerrotado">Betinha</p>
                 <div>
                   <p className="resultNomeJogador">{nomeJogadorPerd}</p>
                   <div className="infoRatoResultBatalha">

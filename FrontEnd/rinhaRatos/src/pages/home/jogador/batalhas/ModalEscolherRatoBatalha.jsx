@@ -5,29 +5,42 @@ import "./ModalEscolherRatoBatalha.css";
 export default function ModalEscolherRatoBatalha({
   onClose,
   ratosUsuario,
-  ratoParaBatalhar,
+  onConfirmar, 
+  isLoading,  
+  erroModal,    
 }) {
+
   function handleRatoSelecionado(rato) {
-    ratoParaBatalhar(rato);
-    onClose();
+    onConfirmar(rato.idRato); 
   }
+
+  const ratosVivos = ratosUsuario.filter(rato => rato.estaVivo);
+
   return (
     <>
-      <div className="bgModal">
+      <div className="bgModalAtivo">
         <div className="containerModal">
-          <button className="sair" onClick={onClose}>
+          <button className="sair" onClick={onClose} disabled={isLoading}>
             ✖
           </button>
           <div className="titulo">Escolha um Rato</div>
+
+          {isLoading && <p className="loading-mensagem">A inscrever rato...</p>}
+          {erroModal && <p className="mensagem-erro-batalha">{erroModal}</p>}
+
           <div className="listaRatosBatalhar">
-            {ratosUsuario.map((rato, index) => (
+            {ratosVivos.map((rato) => (
               <button
                 className="displayRatoBatalhar"
-                key={rato}
+                key={rato.idRato} 
                 onClick={() => handleRatoSelecionado(rato)}
+                disabled={isLoading} 
               >
-                <p>{rato.nome}</p>
-                <img src={ImagensRato[rato.classeEsc]} />
+                <p>{rato.nomeCustomizado || "Rato sem nome"}</p>
+                <img 
+                  src={ImagensRato[rato.classe?.nomeClasse || rato.classeEsc?.nomeClasse] || ImagensRato["Rato de Esgoto"]} 
+                  alt={rato.nomeCustomizado}
+                />
               </button>
             ))}
           </div>

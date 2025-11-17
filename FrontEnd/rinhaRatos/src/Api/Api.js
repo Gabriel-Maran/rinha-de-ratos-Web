@@ -63,12 +63,16 @@ export const pegarBatalhasAbertas = async () => {
 
 export const vefificarPlayerInscrito = async (idBatalha, idUsuario) => {
   return await apiClient.get(
-    `batalha/verificaplayer/${idBatalha}/${idUsuario}`
-  );
+    `batalha/verificaplayer/${idBatalha}/${idUsuario}`);
 };
 
 export const ranking = async () => {
   return await apiClient.get("usuario/top10Vitorias");
 };
 
-
+export const entrarBatalha = (dadosBatalha) => {
+  return apiClient.post("batalha/entrar", dadosBatalha);
+};
+export const pegarBatalhasIncrito = async (idUsuario) => { 
+  return await apiClient.get(`batalha/user/${idUsuario}`);
+};

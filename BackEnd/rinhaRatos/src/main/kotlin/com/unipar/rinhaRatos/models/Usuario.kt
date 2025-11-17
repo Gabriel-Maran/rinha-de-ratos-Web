@@ -23,7 +23,7 @@ class Usuario(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var tipoConta: TipoConta = TipoConta.JOGADOR,
+      var tipoConta: TipoConta = TipoConta.JOGADOR,
 
     @Column(nullable = false)
     var mousecoinSaldo: Int = 30,

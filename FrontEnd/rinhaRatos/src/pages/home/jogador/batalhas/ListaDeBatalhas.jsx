@@ -1,22 +1,79 @@
 import { useState } from "react";
 import Trofeu from "../../../../assets/icones/IconeTrofeu.png";
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
+import { entrarBatalha } from "../../../../Api/Api";
 import "./ListaDeBatalhas.css";
 
-/* Deletar os parâmetros "listaBatalhas" e "setListaBatalhas" quando for fazer a junção com a API */
+
 export default function ListaDeBatalhas({
   ratosUsuario,
-  ratoParaBatalhar,
+  batalhasAbertas,
+  batalhasInscrito, 
+  idUsuarioLogado,
+  onBatalhaInscrita, 
 }) {
-  const [listaBatalhas, setListaBatalhas] = useState([]);
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
   const [ativarModal, setAtivarModal] = useState(false);
 
-  const fecharSelecaoRato = () => {
-    setAtivarModal(!ativarModal);
-    console.log(ratosUsuario);
+
+  const [batalhaSelecionadaId, setBatalhaSelecionadaId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [erroModal, setErroModal] = useState(null);
+
+  const formatarDataEHora = (data) => {
+    if (!data) return "Data Indisponível";
+    try {
+      const [parteDaData, parteDaHora] = data.split("T");
+      const [ano, mes, dia] = parteDaData.split("-");
+      return `${dia}/${mes}, ${parteDaHora}`;
+    } catch (erro) {
+      console.error("Erro ao formatar data:", erro);
+      return data;
+    }
+  };
+
+  const handleAbrirModal = (idBatalha) => {
+    setBatalhaSelecionadaId(idBatalha); 
+    setAtivarModal(true);
+    setErroModal(null);
+  };
+
+  const handleFecharModal = () => {
+    setAtivarModal(false);
+    setErroModal(null);
+    setBatalhaSelecionadaId(null);
+  };
+
+  const handleEntrarBatalha = async (idRato) => {
+    if (!idRato || !idUsuarioLogado || !batalhaSelecionadaId) {
+      setErroModal(
+        "Erro: Não foi possível identificar o rato, usuário ou batalha."
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    setErroModal(null);
+
+    const dadosEntraBatalha = {
+      idBatalha: batalhaSelecionadaId,
+      idUsuario: idUsuarioLogado,
+      idRato: idRato,
+    };
+
+    try {
+      await entrarBatalha(dadosEntraBatalha);
+      setIsLoading(false);
+      handleFecharModal();
+      onBatalhaInscrita();
+    } catch (err) {
+      setIsLoading(false);
+      setErroModal(
+        err?.response?.data?.message || "Erro ao entrar na batalha."
+      );
+    }
   };
 
   let conteudoOpcaoBatalhas;
@@ -27,52 +84,63 @@ export default function ListaDeBatalhas({
         <>
           {ativarModal && (
             <ModalEscolherRatoBatalha
-              onClose={fecharSelecaoRato}
+              onClose={handleFecharModal}
               ratosUsuario={ratosUsuario}
-              ratoParaBatalhar={ratoParaBatalhar}
+              onConfirmar={handleEntrarBatalha} 
+              isLoading={isLoading}
+              erroModal={erroModal}
             />
           )}
           <div className="listaBatalhas">
-            {listaBatalhas.map((batalha) => (
-              <div className="batalha" key={batalha.id}>
-                <img src={Trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nome}</p>
-                  <p>Inscrição: {batalha.custo} MouseCoin</p>
-                  <p>Data e Hora: {batalha.dataEHora}</p>
-                  <p>Prêmio: {batalha.premio} MouseCoin</p>
+            {batalhasAbertas &&
+              batalhasAbertas.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>
+                      Data e Hora:{" "}
+                      {formatarDataEHora(batalha.dataHorarioInicio)}
+                    </p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  </div>
+                  <div className="opcoesBatalha">
+                    <button onClick={() => handleAbrirModal(batalha.idBatalha)}>
+                      Participar
+                    </button>
+                  </div>
                 </div>
-                <div className="opcoesBatalha">
-                  <button onClick={() => setAtivarModal(true)}>
-                    Participar
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
-          {ativarModal}
         </>
       );
       break;
-    case "Inscrições":
+    case "Inscritas":
       conteudoOpcaoBatalhas = (
         <div className="listaBatalhas">
-          {listaBatalhas.map((batalha) => (
-            <div className="batalha" key={batalha.id}>
-              <img src={trofeu} />
-              <div className="infoBatalha">
-                <p>{batalha.nome}</p>
-                <p>Inscrição: {batalha.custo} MouseCoin</p>
-                <p>Data e Hora: {batalha.dataEHora}</p>
-                <p>Prêmio: {batalha.premio} MouseCoin</p>
+          {batalhasInscrito &&
+            batalhasInscrito.map((batalha) => (
+              <div className="batalha" key={batalha.idBatalha}>
+                <img src={Trofeu} />
+                <div className="infoBatalha">
+                  <p>{batalha.nomeBatalha}</p>
+                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                  <p>
+                    Data e Hora: {formatarDataEHora(batalha.dataHorarioInicio)}
+                  </p>
+                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                </div>
+                <div className="opcoesBatalha">
+                  <button>Jogar</button>
+                </div>
               </div>
-              <div className="opcoesBatalha">
-                <button>Jogar</button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       );
+      break;
+    default:
+      conteudoOpcaoBatalhas = null;
   }
 
   return (
@@ -82,7 +150,7 @@ export default function ListaDeBatalhas({
           <button
             key={btnOpcBatalha}
             className={
-              btnOpcBatalhas == btnOpcBatalha
+              btnOpcBatalhas === btnOpcBatalha
                 ? "btnOpcaoBatalhasAtivo"
                 : "btnOpcaoBatalhas"
             }

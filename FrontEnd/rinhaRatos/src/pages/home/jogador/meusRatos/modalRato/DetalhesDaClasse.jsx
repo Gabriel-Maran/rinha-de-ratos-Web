@@ -19,11 +19,11 @@ export default function DetalhesDaClasse({
   const habilidadeAtiva = classe.habilidades[habilAtiva];
   
   
-  const textoDescricao = descObj?.descricao;
   const descObj = descricaoHabilidades.find(
     (itemDesc) => itemDesc.idHabilidade === habilidadeAtiva.idHabilidade
   );
-
+  const textoDescricao = descObj?.descricao;
+  
   const salvarRato = async () => {
     const custoRato = 5;
 
@@ -32,7 +32,7 @@ export default function DetalhesDaClasse({
       return;
     }
 
-    //Pega o ID do 'user' do context (usando a mesma lógica do Home)
+
     const idUsuarioLogado = user.idUsuario || user.id;
     const habilidadeSelecionada = classe.habilidades[habilAtiva];
 
