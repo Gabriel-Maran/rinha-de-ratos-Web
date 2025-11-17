@@ -15,7 +15,7 @@ interface UsuarioRepository: JpaRepository<Usuario, Long> {
     fun existsByEmail(email: String): Boolean
 
     @EntityGraph(attributePaths = ["ratos"])
-    @Query("select distinct u from Usuario u order by u.vitorias desc")
+    @Query("select distinct u from Usuario u where u.tipoConta = 'JOGADOR' order by u.vitorias desc")
     fun findTop10WithRatosOrderByVitoriasDesc(pageable: Pageable): List<Usuario>
 
     @Query("select distinct u from Usuario u left join fetch u.ratos")
