@@ -9,6 +9,7 @@ import TelaHistorico from "./TelaHistorico";
 import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
 import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
 import Input from "../../components/comuns/Input";
+import ModalOpcFoto from "./ModalOpcFotosPerfil";
 import "./Perfil.css";
 
 export default function Perfil({ qtdeMoedas }) {
@@ -28,9 +29,15 @@ export default function Perfil({ qtdeMoedas }) {
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const funMostrarSenha = () => {
+   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
+
+  const [modalOpcFoto, setModalOpcFoto] = useState(false);
+
+  const fecharModalOpcFoto = () => {
+    setModalOpcFoto(false);
+  }
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
   useEffect(() => {
@@ -60,7 +67,6 @@ export default function Perfil({ qtdeMoedas }) {
         nome: nome,
         email: email,
       }));
-
     } catch (err) {
       setErro(err?.response?.data?.message || "Email ou senha inválidos.");
     }
@@ -75,8 +81,13 @@ export default function Perfil({ qtdeMoedas }) {
     case "Perfil":
       conteudoPerfil = (
         <>
+          {modalOpcFoto && <ModalOpcFoto modalAtivado={modalOpcFoto} onClose={fecharModalOpcFoto}/>}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">
+            <button
+              className="btnOpcFotoPerfil"
+              onClick={() => setModalOpcFoto(true)}
+            />
             <p className="lblInfoPerfil">Nome:</p>
             <Input
               input={{

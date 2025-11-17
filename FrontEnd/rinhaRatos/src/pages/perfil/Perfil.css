@@ -27,7 +27,7 @@
 .conteudo-perfil {
   width: 100%;
   max-width: 115rem;
-  min-height: 80rem;
+  min-height: 60rem;
   background-image: url("../../assets/displays/displayMadeira.png");
   background-size: 100% 100%;
   display: flex;
@@ -78,7 +78,7 @@
 
 .subtituloPerfil {
   width: 35rem;
-  height: 10rem;
+  height: 7.5rem;
   margin-top: 0.5rem;
   background-image: url("../../assets/labels/lblPapelTitulo.png");
   background-size: 100% 100%;
@@ -87,6 +87,14 @@
   align-items: center;
   font-size: 2.8rem;
   color: black;
+}
+
+.btnOpcFotoPerfil{
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 0.2rem solid #000000;
 }
 
 .dados {
