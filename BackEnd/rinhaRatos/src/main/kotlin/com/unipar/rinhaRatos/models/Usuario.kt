@@ -31,6 +31,9 @@ class Usuario(
     @Column(nullable = false)
     var vitorias: Int = 0,
 
+    @Column(nullable = false)
+    var idFotoPerfil: Long = 0L,
+
     @OneToMany(
         mappedBy = "usuario",
     )
@@ -45,6 +48,7 @@ class Usuario(
         "",
         TipoConta.JOGADOR,
         30,
+        0,
         0,
         mutableListOf()
     )

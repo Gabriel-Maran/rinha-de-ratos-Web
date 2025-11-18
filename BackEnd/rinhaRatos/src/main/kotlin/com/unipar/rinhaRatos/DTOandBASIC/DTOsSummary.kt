@@ -2,12 +2,14 @@ package com.unipar.rinhaRatos.DTOandBASIC
 
 import com.unipar.rinhaRatos.enums.ClassesRato
 import com.unipar.rinhaRatos.enums.StatusBatalha
+import com.unipar.rinhaRatos.mapper.toSummaryDto
 import jakarta.persistence.Column
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class UsuarioSummaryDTO(
     val idUsuario: Long,
+    val idFotoPerfil: Long? = 0,
     val nome: String,
     val email: String? = null
 )
@@ -35,6 +37,7 @@ data class BatalhaSummary(
 
 data class UsuarioDTO(
     val idUsuario: Long,
+    val idFotoPerfil: Long? = 0,
     val nome: String,
     val email: String,
     val tipoConta: String,
