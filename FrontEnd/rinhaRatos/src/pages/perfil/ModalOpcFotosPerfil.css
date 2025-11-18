@@ -1,0 +1,18 @@
+.listaFotosPerfil{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.fotosPerfil{
+    min-width: 5rem;
+    max-width: 9rem;
+    padding: 1rem;
+}
+
+.fotosPerfil img{
+    width: 100%;
+   height: 100%;
+}
