@@ -22,14 +22,14 @@ export default function Perfil({ qtdeMoedas }) {
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
   const { user, setUser } = useAuth();
-  const [nome, setNome] = useState(user.nome);
+  const [nome, setNome] = useState(user?.nome ?? null);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-   const funMostrarSenha = () => {
+  const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
 
@@ -81,7 +81,11 @@ export default function Perfil({ qtdeMoedas }) {
     case "Perfil":
       conteudoPerfil = (
         <>
-          {modalOpcFoto && <ModalOpcFoto modalAtivado={modalOpcFoto} onClose={fecharModalOpcFoto}/>}
+          {modalOpcFoto &&
+            <ModalOpcFoto
+              modalAtivado={modalOpcFoto}
+              onClose={fecharModalOpcFoto}
+            />}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">
             <button
