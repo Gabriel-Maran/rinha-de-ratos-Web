@@ -26,7 +26,7 @@ const ETAPAS = {
 };
 
 export default function HomeJogador() {
- const { user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
@@ -47,12 +47,19 @@ export default function HomeJogador() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
 
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
+  const ratoSelecionado = user ? user.idRato || user.rato : null; 
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
 
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
+
+  const dados = {
+    idBatalha,
+    idUsuario: idUsuarioLogado,
+    idRato
+  }
 
   // useCallback usado  para ele refazer a função que busca se você tá incrito em uma batalha
   const buscarDadosIniciais = useCallback(async () => {
@@ -74,6 +81,7 @@ export default function HomeJogador() {
         pegarBatalhasAbertas(),
         pegarBatalhasIncrito(idUsuarioLogado),
       ]);
+
 
       setRatosUsuario(respostaRatos.data);
       setClasses(respostaClasses.data);
@@ -127,9 +135,13 @@ export default function HomeJogador() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
-  const definirRatoBatalha = (rato) => {
-    localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
-    setRatoParaBatalhar(rato);
+  const definirRatoBatalha = async () => {
+    try {
+      await entrarBatalha(dados);
+    } catch (err) {
+      
+    }
+    setRatoParaBatalhar();
   };
 
   let conteudoCorpo;
