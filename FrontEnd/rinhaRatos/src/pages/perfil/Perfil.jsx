@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; 
-// Importa o necessário para login, foto e a função de sincronização
 import { trocarSenha, trocarFoto, pegarUsuarioPorId } from "../../Api/Api"; 
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
@@ -9,7 +8,7 @@ import TelaHistorico from "./TelaHistorico";
 import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
 import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
 import Input from "../../components/comuns/Input";
-import ModalOpcFoto from "./ModalOpcFotosPerfil";
+import ModalOpcFoto, { getFotoUrlById } from "./ModalOpcFotosPerfil";
 import "./Perfil.css";
 
 export default function Perfil({ qtdeMoedas }) {
@@ -29,7 +28,6 @@ export default function Perfil({ qtdeMoedas }) {
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   
-  // Inicializa o estado com o ID de foto atual do usuário
   const [fotoSelecionada, setFotoSelecionada] = useState(user.idFotoPerfil); 
   
   const funMostrarSenha = () => {
@@ -42,10 +40,11 @@ export default function Perfil({ qtdeMoedas }) {
     setModalOpcFoto(false);
   };
   
-  // HANDLER SIMPLIFICADO: Recebe APENAS o ID (número)
   const handleFotoSelecionada = (id) => {
     setFotoSelecionada(id);
   };
+
+  const fotoUrl = getFotoUrlById(fotoSelecionada);
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
   
@@ -57,28 +56,23 @@ export default function Perfil({ qtdeMoedas }) {
 
   const senhaTrocada = async (evento) => {
     const idUsuarioLogado = user.idUsuario || user.id; 
+    
 
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
 
     const dados = { email, senha, nome };
-    const idFotoParaAPI = fotoSelecionada; // O ID de foto que será enviado
+    const idFotoParaAPI = fotoSelecionada; 
 
     try {
-      // 1. CHAMA API DE SENHA/NOME
       await trocarSenha(dados, idUsuarioLogado); 
       
-      // 2. CHAMA API DE FOTO (Condicionalmente, se o ID foi alterado)
       if (idFotoParaAPI !== user.idFotoPerfil) { 
-        // Argumentos corretos: (idUsuario, idFoto)
         await trocarFoto(idUsuarioLogado, idFotoParaAPI); 
       }
 
-      // 3. 🚨 SINCRONIZAÇÃO: Busca os dados mais recentes do backend
       const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
-      
-      // 4. ATUALIZA O CONTEXTO COM OS DADOS FINAIS E CONFIÁVEIS
       setUser(respostaUsuarioAtualizada.data); 
       
       console.log("Perfil alterado OK!");
@@ -92,6 +86,7 @@ export default function Perfil({ qtdeMoedas }) {
   const fecharHistorico = () => {
     setMostrarHistorico(false);
   };
+  
   let conteudoPerfil;
 
   switch (opcaoAtivada) {
@@ -102,15 +97,21 @@ export default function Perfil({ qtdeMoedas }) {
             <ModalOpcFoto
               modalAtivado={modalOpcFoto}
               onClose={fecharModalOpcFoto}
-              // Passando o handler que aceita apenas o ID
               onSelectFoto={handleFotoSelecionada} 
             />}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">
             <button
               className="btnOpcFotoPerfil"
-              onClick={() => setModalOpcFoto(true)}
-            />
+              onClick={() => setModalOpcFoto(true)}            >
+              <img 
+              className="perfil"  
+                src={fotoUrl} 
+                alt="Foto de Perfil" 
+                
+              />
+            </button>
+
             <p className="lblInfoPerfil">Nome:</p>
             <Input
               input={{

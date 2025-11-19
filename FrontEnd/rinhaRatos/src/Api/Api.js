@@ -81,4 +81,9 @@ export const entrarBatalha = (dadosBatalha) => {
 export const pegarBatalhasIncrito = async (idUsuario) => {
   return await apiClient.get(`batalha/user/${idUsuario}`);
 };
-
+export const gerenciarBatalha = (novosDadosBatalha) => {
+  return apiClient.put(`batalha/atualizar/${idBatalha}`, novosDadosBatalha)
+};
+export const removerJogador = (idBatalha, idUsuario) => {
+  return apiClient.post(`batalha/retirar/${idBatalha}/${idUsuario}`);
+};
