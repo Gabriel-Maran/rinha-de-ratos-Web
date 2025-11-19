@@ -35,6 +35,10 @@
   background-size: 100% 100%;
   cursor: pointer;
 }
+.pacote:hover {
+  transform: scale(1.10);
+  transition: transform 0.3s ease;
+}
 
 .pacote p {
   align-self: center;
