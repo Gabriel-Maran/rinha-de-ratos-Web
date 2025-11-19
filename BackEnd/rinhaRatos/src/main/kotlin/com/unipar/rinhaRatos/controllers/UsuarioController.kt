@@ -236,6 +236,16 @@ class UsuarioController(
                     )
                 )
 
+                HttpStatus.NOT_ACCEPTABLE -> ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+                    ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.NOT_ACCEPTABLE.value(),
+                        error = "Not Acceptable",
+                        message = "Preencha todos os campos",
+                        code = "PREENCHA_CAMPOS"
+                    )
+                )
+
                 else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     ErrorResponse(
                         timestamp = Instant.now().toString(),

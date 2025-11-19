@@ -112,7 +112,7 @@ class UsuarioService(
                 return HttpStatus.BAD_REQUEST
             }
         }
-
+        if(usuario.email.isEmpty() || usuario.nome.isEmpty() || usuario.senha.isEmpty()) return HttpStatus.NOT_ACCEPTABLE
         usuario.nome = usuarioDTO.nome
         usuario.email = usuarioDTO.email
         usuario.senha = usuarioDTO.senha
