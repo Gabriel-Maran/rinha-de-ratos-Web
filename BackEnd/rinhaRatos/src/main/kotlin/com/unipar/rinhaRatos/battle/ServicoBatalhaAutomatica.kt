@@ -389,17 +389,17 @@ class ServicoBatalhaAutomatica(
                 }
             } else ""
 
-            val n = nomeClasse.lowercase()
+            val nomeClasseLower = nomeClasse.lowercase()
             return when {
-                "esgoto" in n -> ClassesRato.ESGOTO
-                "hospital" in n -> ClassesRato.HOSPITAL
-                "laboratorio" in n || "laboratório" in n -> ClassesRato.LABORATORIO
-                "fazenda" in n -> ClassesRato.FAZENDA
-                "cassino" in n -> ClassesRato.CASSINO
-                "biblioteca" in n -> ClassesRato.BIBLIOTECA
+                "esgoto" in nomeClasseLower -> ClassesRato.ESGOTO
+                "hospital" in nomeClasseLower -> ClassesRato.HOSPITAL
+                "laboratorio" in nomeClasseLower || "laboratório" in nomeClasseLower -> ClassesRato.LABORATORIO
+                "fazenda" in nomeClasseLower -> ClassesRato.FAZENDA
+                "cassino" in nomeClasseLower -> ClassesRato.CASSINO
+                "biblioteca" in nomeClasseLower -> ClassesRato.BIBLIOTECA
                 else -> ClassesRato.ESGOTO
             }
-        } catch (_: Exception) {
+        } catch (ex: Exception) {
             return ClassesRato.ESGOTO
         }
     }
