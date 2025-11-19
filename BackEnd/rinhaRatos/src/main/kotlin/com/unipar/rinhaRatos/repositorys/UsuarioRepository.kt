@@ -18,6 +18,9 @@ interface UsuarioRepository: JpaRepository<Usuario, Long> {
     @Query("select distinct u from Usuario u where u.tipoConta = 'JOGADOR' order by u.vitorias desc")
     fun findTop10WithRatosOrderByVitoriasDesc(pageable: Pageable): List<Usuario>
 
+    @Query("select COUNT(u) from Usuario u where u.tipoConta = 'BOT'")
+    fun countBots(): Long
+
     @Query("select distinct u from Usuario u left join fetch u.ratos")
     fun findAllWithRatos(): List<Usuario>
 

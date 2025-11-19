@@ -3,8 +3,6 @@ package com.unipar.rinhaRatos.controllers
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
-import com.unipar.rinhaRatos.mapper.toDto
-import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.service.RatoService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -48,21 +46,12 @@ class RatoController(
         val status = result["Status"]?.toString() ?: "UNKNOWN"
 
         if (status == "CREATED") {
-            val ratoObj = result["Rato"]
-            if (ratoObj == null) {
+            val ratoObj = ratoService.getRatoById( result["idRato"].toString().toLong())
+            if (ratoObj.isEmpty) {
                 return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Rato criado mas objeto ausente", "UNKNOWN")
-            }
-
-            if (ratoObj is Rato) {
-                val bodyDto = ratoObj.toDto()
-                return ResponseEntity.status(HttpStatus.CREATED).body(bodyDto)
-            }
-
-            if (ratoObj is RatoDTO) {
+            }else{
                 return ResponseEntity.status(HttpStatus.CREATED).body(ratoObj)
             }
-
-            return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Objeto Rato com tipo inesperado", "UNKNOWN")
         }
 
         return mapStatusToResponse(status)

@@ -6,6 +6,8 @@ import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.models.MessageRound
 import com.unipar.rinhaRatos.models.Results
 import com.unipar.rinhaRatos.enums.ClassesRato
+import com.unipar.rinhaRatos.enums.TipoConta
+import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
 import com.unipar.rinhaRatos.repositorys.RatoRepository
@@ -36,11 +38,10 @@ class ServicoBatalhaAutomatica(
 
     fun executarBatalhaSincrona(idBatalha: Long): ResultadoBatalha {
         val optB = repositorioBatalha.findById(idBatalha)
-        if (optB.isEmpty) throw IllegalArgumentException("BATALHA_NAO_ENCONTRADA")
         val batalha = optB.get()
 
-        val rato1 = batalha.rato1 ?: throw IllegalArgumentException("RATO1_NAO_CONFIGURADO")
-        val rato2 = batalha.rato2 ?: throw IllegalArgumentException("RATO2_NAO_CONFIGURADO")
+        val rato1 = batalha.rato1!!
+        val rato2 = batalha.rato2!!
 
         val estadoRato1 = criarEstadoDoRato(rato1)
         val estadoRato2 = criarEstadoDoRato(rato2)
@@ -126,7 +127,7 @@ class ServicoBatalhaAutomatica(
         }
 
         if (idPerdedor != null && idVencedor != null) {
-            atualizarRatosSemFalha(vencedorId = idVencedor, perdedorId = idPerdedor)
+            atualizarRatos(vencedorId = idVencedor, perdedorId = idPerdedor)
         }
 
         // persiste resultado final
@@ -135,10 +136,17 @@ class ServicoBatalhaAutomatica(
         return ResultadoBatalha(idBatalha, idVencedor, idPerdedor, historicoRounds.toList())
     }
 
-    private fun atualizarRatosSemFalha(vencedorId: Long, perdedorId: Long) {
+    private fun atualizarRatos(vencedorId: Long, perdedorId: Long) {
+        val ratoVencedor = repositorioRato.findById(vencedorId).get()
+        val usuarioVencedor = usuarioRepository.findById(ratoVencedor.usuario!!.idUsuario)
         try {
             try {
-                serviceRato.removeRato(perdedorId) // soft delete do perdedor (regra de negócio)
+                //Logica para nn remover quando for batalha com BOT e remover quando por Player vs Player
+                if(usuarioVencedor.get().tipoConta == TipoConta.BOT){
+                    serviceRato.removeRato(vencedorId)
+                }else{
+                    serviceRato.removeRato(perdedorId)
+                }
             } catch (ex: Exception) {
                 log.warn("Falha ao remover rato perdedor (id=$perdedorId): ${ex.message}")
             }
@@ -268,6 +276,13 @@ class ServicoBatalhaAutomatica(
                 rdb.estaTorneio = false
                 rdb.estaVivo = e2.hpAtual > 0
                 repositorioRato.save(rdb)
+            }
+            val usuarioWin = usuarioRepository.findById(idUsuarioVecedor).ifPresent { usuarioWin ->
+                val usuarioLose = usuarioRepository.findById(idUsuarioPerdedor)
+                if(usuarioWin.tipoConta != TipoConta.BOT && usuarioLose.get().tipoConta != TipoConta.BOT){
+                    usuarioWin.vitorias += 1
+                    usuarioRepository.save<Usuario>(usuarioWin)
+                }
             }
 
             log.info("Batalha ${batalha.idBatalha} persistida: vencedorRato=$idRatoVencedor")

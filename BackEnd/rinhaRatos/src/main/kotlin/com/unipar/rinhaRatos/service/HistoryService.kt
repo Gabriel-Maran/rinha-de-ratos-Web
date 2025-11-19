@@ -1,6 +1,7 @@
 package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.repositorys.ResultsRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -8,6 +9,8 @@ class HistoryService(
     private val messageService: MessageService,
     private val resultsService: ResultsService
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     fun getAllBattleHistoryByIdBatalha(id: Long): List<Any>{
         val mensagens =  messageService.pegarTodasAsMensagensPorBatalha(id)
         val resultado = resultsService.pegarTodasAsMensagensPorBatalha(id)
