@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   pegarRatosDoUsuario,
   pegarTodasClasses,
@@ -25,7 +26,8 @@ const ETAPAS = {
 };
 
 export default function HomeJogador() {
-  const { user } = useAuth();
+ const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
@@ -52,9 +54,8 @@ export default function HomeJogador() {
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
-// useCallback usado  para ele refazer a função que busca se você tá incrito em uma batalha
+  // useCallback usado  para ele refazer a função que busca se você tá incrito em uma batalha
   const buscarDadosIniciais = useCallback(async () => {
-    if (!idUsuarioLogado) return;
 
     setLoadingRatos(true);
     setErroRatos(null);
@@ -71,7 +72,7 @@ export default function HomeJogador() {
         pegarTodasClasses(),
         pegarDescricaoHabilidades(),
         pegarBatalhasAbertas(),
-        pegarBatalhasIncrito(idUsuarioLogado), 
+        pegarBatalhasIncrito(idUsuarioLogado),
       ]);
 
       setRatosUsuario(respostaRatos.data);
@@ -90,8 +91,12 @@ export default function HomeJogador() {
 
 
   useEffect(() => {
+    if (!idUsuarioLogado) {
+      navigate("/login");
+      return;
+    }
     buscarDadosIniciais();
-  }, [buscarDadosIniciais]); 
+  }, [buscarDadosIniciais]);
 
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
@@ -171,8 +176,8 @@ export default function HomeJogador() {
                   {contagemRatosVivos >= limiteRatos
                     ? "Limite Atingido"
                     : loadingRatos
-                    ? "Carregando..."
-                    : ".Adicionar Rato + "}
+                      ? "Carregando..."
+                      : ".Adicionar Rato + "}
                 </strong>
               }
             />
@@ -183,7 +188,7 @@ export default function HomeJogador() {
         conteudoCorpo = (
           <ListaDeBatalhas
             batalhasAbertas={batalhasAbertas}
-            batalhasInscrito={batalhasInscrito} 
+            batalhasInscrito={batalhasInscrito}
             ratosUsuario={ratosUsuario}
             idUsuarioLogado={idUsuarioLogado}
             onBatalhaInscrita={buscarDadosIniciais}

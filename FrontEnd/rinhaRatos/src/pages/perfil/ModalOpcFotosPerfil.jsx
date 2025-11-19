@@ -13,7 +13,7 @@ import FtPerfil10 from "../../assets/perfil/perfil-mulher-5.png";
 import "../home/jogador/HomeJogador.css";
 import "./ModalOpcFotosPerfil.css";
 
-export default function ModalOpcFoto({ modalAtivado, onClose }) {
+export default function ModalOpcFoto({ modalAtivado, onClose, onSelectFoto }) {
   const listafotosPerfil = {
     1: {
       id: 1,
@@ -73,12 +73,11 @@ export default function ModalOpcFoto({ modalAtivado, onClose }) {
   };
 
   const [fotos, setfotos] = useState(listafotosPerfil)
-
+  
   const handleClickFoto = (fotoClicada) => {
     const novasFotos = {}
     Object.keys(fotos).map((chave) => {
       const fotoAtual = fotos[chave];
-
       const taSelecionada = (fotoAtual.id === fotoClicada.id)
 
       novasFotos[chave] = {
@@ -87,6 +86,8 @@ export default function ModalOpcFoto({ modalAtivado, onClose }) {
       }
     })
     setfotos(novasFotos)
+    
+    onSelectFoto(fotoClicada.id, fotoClicada.img);                    
   }
 
   return (
@@ -100,7 +101,7 @@ export default function ModalOpcFoto({ modalAtivado, onClose }) {
           <div className="listaFotosPerfil">
             {Object.values(fotos).map((foto) => (
               <div className={foto.selecionada === true ? "fotoPerfilSelc" : "fotoPerfil"}
-                key={foto.index}
+                key={foto.id} 
                 onClick={() => handleClickFoto(foto)}>
                 <img src={foto.img} />
               </div>
@@ -111,3 +112,22 @@ export default function ModalOpcFoto({ modalAtivado, onClose }) {
     </>
   );
 }
+
+export const FOTOS_PERFIL_MAP = {
+  0: FtPerfilPadrao,
+  1: FtPerfil1,
+  2: FtPerfil2,
+  3: FtPerfil3,
+  4: FtPerfil4,
+  5: FtPerfil5,
+  6: FtPerfil6,
+  7: FtPerfil7,
+  8: FtPerfil8,
+  9: FtPerfil9,
+  10: FtPerfil10,
+};
+
+// Função auxiliar para obter a URL da foto, usando o ID e garantindo o fallback
+export const getFotoUrlById = (id) => {
+      return FOTOS_PERFIL_MAP[id] || FOTOS_PERFIL_MAP[0];
+};

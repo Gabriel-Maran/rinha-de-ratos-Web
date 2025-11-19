@@ -21,7 +21,7 @@ export default function Header({ home }) {
           <img
             className="fotoJogador"
             onClick={() => navigate("/perfil")}
-            src={RatoEsgoto}
+            src={user.idFotoPerfil}
           />
           {user ? (
             <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1>
