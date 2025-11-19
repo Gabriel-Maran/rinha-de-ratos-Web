@@ -2,6 +2,7 @@ package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
+import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Classe
 import com.unipar.rinhaRatos.models.Rato
@@ -34,14 +35,15 @@ class RatoService(
         return Optional.of(ratoRepository.findAllByUsuario_IdUsuario(id).map { it.toDto() })
     }
 
-    fun cadastrarRato(ratoBasic: RatoBasic): Map<String, Any> {
+    fun cadastrarRato(ratoBasic: RatoBasic): Map<String, String> {
         val donoDoRatoOpt = usuarioRepository.findByIdWithRatos(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
-
-        if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
-        if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
-        donoDoRato.mousecoinSaldo -= 5
+        if(donoDoRato.tipoConta != TipoConta.BOT){
+            if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
+            if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
+            donoDoRato.mousecoinSaldo -= 5
+        }
         val habilidadeOpt = habilidadeRepository.findById(ratoBasic.idHabilidade)
         if (habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
         val habilidade = habilidadeOpt.get()
@@ -67,7 +69,7 @@ class RatoService(
         usuarioRepository.save(donoDoRato)
 
         log.info("Rato ${ratoSalvo.idRato} cadastrado para usuário ${donoDoRato.idUsuario}")
-        return mapOf("Status" to "CREATED", "Rato" to ratoSalvo.toDto())
+        return mapOf("Status" to "CREATED", "idRato" to ratoSalvo.idRato.toString())
     }
 
     private fun auxSortRatoAtributos(rato: Rato, classe: Classe): Rato {

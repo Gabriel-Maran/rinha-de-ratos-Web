@@ -26,7 +26,6 @@ class MessageService(
     fun pegarTodasAsMensagensPorBatalha(idBatalha: Long): Optional<List<MessageRoundDTO>> {
         val batalha = batalhaRepository.findById(idBatalha)
         log.warn(batalha.toString())
-        if (batalha.isEmpty) return Optional.empty()
         return Optional.of(messageRoundRepository.findByIdBatalha(idBatalha).map { it.toDto() })
     }
 }

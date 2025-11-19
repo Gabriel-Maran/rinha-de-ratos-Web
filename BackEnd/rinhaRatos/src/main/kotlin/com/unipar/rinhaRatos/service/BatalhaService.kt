@@ -3,16 +3,21 @@ package com.unipar.rinhaRatos.service
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaBasic
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaDTO
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaSummary
+import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
+import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
+import com.unipar.rinhaRatos.DTOandBASIC.RatoSummaryDTO
 import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Batalha
 import com.unipar.rinhaRatos.models.Rato
+import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -23,7 +28,8 @@ class BatalhaService(
     private val batalhaRepository: BatalhaRepository,
     private val usuarioRepository: UsuarioRepository,
     private val ratoRepository: RatoRepository,
-    private val battleManager : GerenciadorBatalhasAutomatica
+    private val battleManager : GerenciadorBatalhasAutomatica,
+    private val ratoService: RatoService
 ) {
     private val ISO_FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     private val log = LoggerFactory.getLogger(javaClass)
@@ -240,6 +246,53 @@ class BatalhaService(
         // delega ao gerenciador: ele retorna false se já estiver rodando
         val iniciou = battleManager.iniciarSimulacaoBatalhaAsync(idBatalha)
         return if (iniciou) "OK" else "ALREADY_RUNNING"
+    }
+
+    fun criarBatalhaComBot(idUsuario: Long, idRato: Long): Map<String, String>{
+        val usuarioOpt = usuarioRepository.findById(idUsuario)
+        val ratoOpt = ratoRepository.findById(idRato)
+        if(usuarioOpt.isEmpty || ratoOpt.isEmpty) return mapOf("message" to "Usuário ou rato não existente", "error" to "USER_OR_RATO_NOT_FOUND")
+        val rato = ratoOpt.get()
+        val usuario = usuarioOpt.get()
+        if(rato.usuario!!.idUsuario != usuario.idUsuario) return mapOf("message" to "Rato não pertence a este usuário", "error" to "RATO_DONT_BELONG_THIS_PLAYER")
+
+        if(usuarioRepository.countBots() == 0L){
+            usuarioRepository.save(
+                Usuario(
+                    email = "BOT@bot.rinhaderatos.com",
+                    nome = "BOT",
+                    senha =  "BOT",
+                    tipoConta = TipoConta.BOT,
+                    mousecoinSaldo = 0
+                )
+            )
+        }
+        val botUser = usuarioRepository.findByEmail("BOT@bot.rinhaderatos.com").get()
+
+        val retorno = ratoService.cadastrarRato(
+                RatoBasic(
+                    idUsuario = botUser.idUsuario,
+                    nomeCustomizado = "",
+                    idHabilidade = (1..18).random().toLong()
+                )
+        )
+        val botRato = ratoRepository.findById(retorno["idRato"]!!.toLong()).get()
+
+        val criarBatalha = batalhaRepository.save<Batalha>(
+            Batalha(
+                nomeBatalha = "Bot Battle",
+                dataHorarioInicio = LocalDateTime.now(),
+                premioTotal = 0,
+                admCriador = usuarioRepository.findById(-1).get(),
+                status = StatusBatalha.InscricoesAbertas,
+                custoInscricao = 0,
+                jogador1 = usuario,
+                rato1 = rato,
+                jogador2 = botUser,
+                rato2 = botRato
+            )
+        )
+        return mapOf("idBatalha" to criarBatalha.idBatalha.toString())
     }
 
     fun estaSimulandoBatalha(idBatalha: Long): Boolean {

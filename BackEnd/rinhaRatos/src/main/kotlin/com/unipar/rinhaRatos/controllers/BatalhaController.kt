@@ -160,6 +160,33 @@ class BatalhaController(
         }
     }
 
+    @PostMapping("/bot/{idUsuario}/{idRato}")
+    fun batalhaSimuladoComBot(@PathVariable("idUsuario") idUsuario: Long, @PathVariable("idRato") idRato: Long ): ResponseEntity<Any>{
+        val respCriacao =  batalhaService.criarBatalhaComBot(idUsuario,idRato)
+        when (respCriacao["error"]) {
+            "USER_OR_RATO_NOT_FOUND" ->
+                return buildError(HttpStatus.NOT_FOUND, respCriacao["message"].toString(), "USER_OR_RATO_NOT_FOUND")
+            "RATO_DONT_BELONG_THIS_PLAYER" ->
+                return buildError(HttpStatus.BAD_REQUEST, respCriacao["message"].toString(), "RATO_DONT_BELONG_THIS_PLAYER")
+        }
+
+        val respInicio = batalhaService.iniciarBatalhaAsync(respCriacao["idBatalha"]!!.toLong())
+        return when (respInicio) {
+            "NOT_ENOUGH_USERS" ->
+                buildError(HttpStatus.BAD_REQUEST, "Sem usuários suficientes para iniciar a batalha", "NOT_ENOUGH_USERS")
+            "BATALHA_NOT_FOUND" ->
+                buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
+            "BATALHA_HAPPENING_OR_OVER" ->
+                buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
+            "ALREADY_RUNNING" ->
+                buildError(HttpStatus.CONFLICT, "Simulação já em execução para esta batalha", "BATALHA_JA_EM_EXECUCAO")
+            "OK" ->
+                ResponseEntity.ok(mapOf("message" to "Batalha iniciada com sucesso", "idBatalha" to respCriacao["idBatalha"]!!.toLong()))
+            else ->
+                buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+        }
+    }
+
     @DeleteMapping("/deletar/{idBatalha}")
     fun deletarBatalha(@PathVariable idBatalha: Long): ResponseEntity<Any> {
         val resp = batalhaService.excluirBatalhaPorId(idBatalha)

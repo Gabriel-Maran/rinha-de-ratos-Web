@@ -26,7 +26,6 @@ class ResultsService(
 
     fun pegarTodasAsMensagensPorBatalha(idBatalha: Long): Optional<List<Results>> {
         val batalha = batalhaRepository.findById(idBatalha)
-        if (batalha.isEmpty) return Optional.empty()
         return Optional.of(resultsRepository.findAllIdBatalha(idBatalha))
     }
 }

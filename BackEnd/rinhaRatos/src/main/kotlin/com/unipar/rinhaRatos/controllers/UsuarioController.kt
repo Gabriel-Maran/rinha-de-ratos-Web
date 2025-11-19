@@ -1,6 +1,7 @@
 package com.unipar.rinhaRatos.controllers
 
 import com.unipar.rinhaRatos.DTOandBASIC.*
+import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.service.UsuarioService
@@ -157,6 +158,17 @@ class UsuarioController(
             )
         val usuario = usuarioService.validaUsuarioLogin(loginRequest.email, loginRequest.senha)
         if (usuario.isPresent) {
+            if(usuario.get().tipoConta == TipoConta.BOT){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.UNAUTHORIZED.value(),
+                        error = HttpStatus.UNAUTHORIZED.reasonPhrase,
+                        message = "Não é possível acessar esta conta",
+                        code = "LOGIN_FAILED"
+                    )
+                )
+            }
             return ResponseEntity.ok(
                 mapOf(
                     "message" to "Login realizado com sucesso",
@@ -177,7 +189,7 @@ class UsuarioController(
 
     }
 
-    @PostMapping(",")
+    @PostMapping("/changeUser/password")
     fun changePassWord(@RequestBody loginRequest: UsuarioBasic): ResponseEntity<Any> {
         val senhaTrocada = usuarioService.redefinirUsuarioSenha(loginRequest.email, loginRequest.senha)
         if (senhaTrocada == "OK") {

@@ -181,19 +181,3 @@ fun calcularDano(pasAtacante: Double, pdsDefensor: Double, chanceCritico: Double
     if (ehCritico) dano = (dano * 2.0).roundToInt()
     return dano
 }
-//fun calcularDano(pasAtacante: Double, pdsDefensor: Double, chanceCritico: Double): Int {
-//    // atenua o PAS para evitar picos de dano muito altos
-//    val pasAtu = pasAtacante * 0.90
-//    // defesa completa reduz como PDS * 1.0
-//    var danoBase = (pasAtu - pdsDefensor * 1.0).roundToInt()
-//    if (danoBase < 1) danoBase = 1
-//
-//    // crítico moderado
-//    val roll = Random.nextDouble()
-//    val ehCritico = roll < chanceCritico
-//    if (ehCritico) {
-//        // crítico mais moderado que antes
-//        danoBase = (danoBase * 1.5).roundToInt()
-//    }
-//    return danoBase
-//}
