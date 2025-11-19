@@ -50,3 +50,6 @@ INSERT INTO habilidades (id_classe, nome_habilidade, descricao, chance_sucesso, 
 (6, 'Mente de Arquivo', '78% de chance de ganhar +22% INT — 1 rodada. Falha: perde 8% da STR na rodada.', 78, '+22%INTSEU', '-8%STRSEU', 'Conhecimento é poder! +22% INT nesta rodada!','Esforço mental! -8% STR apenas nesta rodada.'),
 (6, 'Páginas Cortantes', '70% de chance de ignorar 18% da DEF do alvo — 1 rodada. Falha: perde 6% do HP.', 70, '-18%DEFADV', '-6%HPSSEU', 'Corte preciso! Ignora 18% da DEF do oponente nesta rodada!','Página cortante volta contra: -6% HP.'),
 (6, 'Mapa das Falhas', '74% de chance de ganhar +11% PA e +9% PD — 1 rodada. Falha: perde 5% da INT na rodada e 4% do HP.', 74, '+11%PASSEU;+9%PDSSEU', '-5%INTSEU;-4%HPSSEU', 'Pontos vitais expostos! +11% PA e +9% PD nesta rodada!','Leitura errada! -5% INT nesta rodada e -4% HP.');
+
+INSERT INTO usuarios (id_usuario, nome, email, senha, tipo_conta, mousecoin_saldo, vitorias, id_foto_perfil)
+VALUES(-1, 'ADM', 'ADM', 'ADM', 'ADM', 0, 0, 0)

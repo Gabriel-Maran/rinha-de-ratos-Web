@@ -277,10 +277,18 @@ class ServicoBatalhaAutomatica(
                 rdb.estaVivo = e2.hpAtual > 0
                 repositorioRato.save(rdb)
             }
-            val usuarioWin = usuarioRepository.findById(idUsuarioVecedor).ifPresent { usuarioWin ->
+            usuarioRepository.findById(idUsuarioVecedor).ifPresent { usuarioWin ->
                 val usuarioLose = usuarioRepository.findById(idUsuarioPerdedor)
+
+    
+                usuarioLose.get().ratos.removeIf {
+                    it.idRato == e1.idRato
+                }
+
+
                 if(usuarioWin.tipoConta != TipoConta.BOT && usuarioLose.get().tipoConta != TipoConta.BOT){
                     usuarioWin.vitorias += 1
+                    usuarioWin.mousecoinSaldo += batalha.premioTotal
                     usuarioRepository.save<Usuario>(usuarioWin)
                 }
             }
