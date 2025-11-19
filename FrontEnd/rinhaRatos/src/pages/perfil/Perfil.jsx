@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { trocarSenha } from "../../Api/Api";
+import { useLocation, useNavigate } from "react-router-dom"; 
+// Importa o necessário para login, foto e a função de sincronização
+import { trocarSenha, trocarFoto, pegarUsuarioPorId } from "../../Api/Api"; 
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import Header from "../../components/comuns/Header/Header";
@@ -28,7 +28,10 @@ export default function Perfil({ qtdeMoedas }) {
   const [erro, setErro] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-
+  
+  // Inicializa o estado com o ID de foto atual do usuário
+  const [fotoSelecionada, setFotoSelecionada] = useState(user.idFotoPerfil); 
+  
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
@@ -37,9 +40,15 @@ export default function Perfil({ qtdeMoedas }) {
 
   const fecharModalOpcFoto = () => {
     setModalOpcFoto(false);
-  }
+  };
+  
+  // HANDLER SIMPLIFICADO: Recebe APENAS o ID (número)
+  const handleFotoSelecionada = (id) => {
+    setFotoSelecionada(id);
+  };
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
+  
   useEffect(() => {
     if (user) {
       setEmail(user.email);
@@ -47,28 +56,36 @@ export default function Perfil({ qtdeMoedas }) {
   }, [user]);
 
   const senhaTrocada = async (evento) => {
-    const idUsuarioLogado = user.idUsuario || user.id;
+    const idUsuarioLogado = user.idUsuario || user.id; 
 
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
 
     const dados = { email, senha, nome };
+    const idFotoParaAPI = fotoSelecionada; // O ID de foto que será enviado
 
     try {
-      const resposta = await trocarSenha(dados, idUsuarioLogado);
-      console.log("Senha trocada OK!", resposta.data);
-      setMensagemSucesso(
-        resposta.data.message || "Senha alterada com sucesso!"
-      );
+      // 1. CHAMA API DE SENHA/NOME
+      await trocarSenha(dados, idUsuarioLogado); 
+      
+      // 2. CHAMA API DE FOTO (Condicionalmente, se o ID foi alterado)
+      if (idFotoParaAPI !== user.idFotoPerfil) { 
+        // Argumentos corretos: (idUsuario, idFoto)
+        await trocarFoto(idUsuarioLogado, idFotoParaAPI); 
+      }
 
-      setUser((userAntigo) => ({
-        ...userAntigo,
-        nome: nome,
-        email: email,
-      }));
+      // 3. 🚨 SINCRONIZAÇÃO: Busca os dados mais recentes do backend
+      const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
+      
+      // 4. ATUALIZA O CONTEXTO COM OS DADOS FINAIS E CONFIÁVEIS
+      setUser(respostaUsuarioAtualizada.data); 
+      
+      console.log("Perfil alterado OK!");
+      setMensagemSucesso("Perfil alterado com sucesso!");
+      
     } catch (err) {
-      setErro(err?.response?.data?.message || "Email ou senha inválidos.");
+      setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
     }
   };
 
@@ -85,6 +102,8 @@ export default function Perfil({ qtdeMoedas }) {
             <ModalOpcFoto
               modalAtivado={modalOpcFoto}
               onClose={fecharModalOpcFoto}
+              // Passando o handler que aceita apenas o ID
+              onSelectFoto={handleFotoSelecionada} 
             />}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">

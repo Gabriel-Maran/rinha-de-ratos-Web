@@ -23,17 +23,22 @@ export const trocarSenha = (dadosNovaSenha, idUsuario) => {
   return apiClient.put(`usuario/${idUsuario}/changeUser/basic`, dadosNovaSenha);
 };
 
-export const ratosUsuario = (dadosRatos) => {
-  return apiClient.post("/rato/cadastro", dadosRatos);
+export const trocarFoto = (idUsuario, idFoto) => {
+  return apiClient.post(`usuario/changeFoto/${idUsuario}/${idFoto}`);
 };
 
-export const pegarRatosDoUsuario = async (idUsuario) => {
-  return await apiClient.get(`/rato/dousuario/${idUsuario}`);
+export const ratosUsuario = (dadosRatos) => {
+  return apiClient.post("/rato/cadastro", dadosRatos);
 };
 
 export const pegarUsuarioPorId = async (id) => {
   return await apiClient.get(`/usuario/${id}`);
 };
+0
+export const pegarRatosDoUsuario = async (idUsuario) => {
+  return await apiClient.get(`/rato/dousuario/${idUsuario}`);
+};
+
 
 export const pegarTodasClasses = async () => {
   return await apiClient.get("/classe/todos");
@@ -73,6 +78,7 @@ export const ranking = async () => {
 export const entrarBatalha = (dadosBatalha) => {
   return apiClient.post("batalha/entrar", dadosBatalha);
 };
-export const pegarBatalhasIncrito = async (idUsuario) => { 
+export const pegarBatalhasIncrito = async (idUsuario) => {
   return await apiClient.get(`batalha/user/${idUsuario}`);
 };
+
