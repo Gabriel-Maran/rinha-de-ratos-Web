@@ -122,7 +122,7 @@ class UsuarioService(
     }
 
     fun changeFotoPerfil(idUsuario: Long, idFoto: Long): HttpStatus{
-        if(idFoto < 0 || idFoto > 10) return HttpStatus.BAD_REQUEST
+        if(idFoto < 0 || idFoto > 11) return HttpStatus.BAD_REQUEST
         val usuario: Optional<Usuario> = usuarioRepository.findById(idUsuario)
         if(usuario.isEmpty) return HttpStatus.NOT_FOUND
         usuario.get().idFotoPerfil = idFoto
