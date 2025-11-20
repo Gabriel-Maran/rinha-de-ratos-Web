@@ -1,7 +1,6 @@
 package com.unipar.rinhaRatos.repositorys
 
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioDetailsDto
-import com.unipar.rinhaRatos.DTOandBASIC.UsuarioSummaryDTO
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Usuario
 import org.springframework.data.domain.Pageable

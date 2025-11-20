@@ -24,44 +24,6 @@ class UsuarioController(
         return ResponseEntity.ok(usuariosMapped)
     }
 
-    @GetMapping("/podeCriarMaisRatos/{id}")
-    fun findPodeCriarMaisRatos(@PathVariable id: Long): ResponseEntity<Any> {
-        val usuarioPode = usuarioService.getUserPodeCriarNewRato(id)
-        if (usuarioPode == "SIM") {
-            return ResponseEntity.ok(
-                mapOf(
-                    "message" to "Usuário pode criar mais ratos",
-                    "status" to true
-                )
-            )
-        }
-        if (usuarioPode == "NAO") {
-
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                mapOf(
-                    "Error" to ErrorResponse(
-                        timestamp = Instant.now().toString(),
-                        status = HttpStatus.CONFLICT.value(),
-                        error = "Conflict",
-                        message = "Não pode criar mais ratos",
-                        code = "USER_ALREADY_HAS_3_RATOS"
-                    ),
-                    "status" to true
-                )
-
-            )
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.NOT_FOUND.value(),
-                error = "Not Found",
-                message = "Usuário não encontrado",
-                code = "USER_NOT_FOUND"
-            )
-        )
-    }
-
     @GetMapping("/{id}")
     fun findUsuarioById(@PathVariable id: Long): ResponseEntity<Any> {
         val usuarioOpt = usuarioService.getById(id)

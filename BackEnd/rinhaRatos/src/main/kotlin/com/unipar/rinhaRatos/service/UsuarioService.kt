@@ -35,12 +35,12 @@ class UsuarioService(
 
     fun getById(id: Long): Optional<Usuario> {
         log.debug("Buscando usuário por id: $id (com ratos)")
-        var usuario : Usuario = Usuario()
-        if(usuarioRepository.countRatosVivosByIdUsuario(id) > 0){
+        val usuario: Usuario = Usuario()
+        if (usuarioRepository.countRatosVivosByIdUsuario(id) > 0) {
             return usuarioRepository.findByIdUsuarioWithRatosVivos(id)
-        }else{
+        } else {
             val optUser = usuarioRepository.findByIdUsuarioWithoutRatos(id)
-            if(optUser.isEmpty) return Optional.empty()
+            if (optUser.isEmpty) return Optional.empty()
             usuario.idUsuario = optUser.get().idUsuario
             usuario.ratos = mutableListOf()
             usuario.senha = "VAZIO"
@@ -57,22 +57,30 @@ class UsuarioService(
     fun getTop10Vitorias(): List<UsuarioDTO> {
         log.debug("Buscando top 10 usuários por vitórias")
         val page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "vitorias"))
-        val usersRaw = usuarioRepository.findByTipoContaOrderByVitoriasDesc( TipoConta.JOGADOR,page)
-
+        val usersRaw = usuarioRepository.findByTipoContaOrderByVitoriasDesc(TipoConta.JOGADOR, page)
+        val listaUsers = mutableListOf<Usuario>()
         usersRaw.forEach {
-            val ratosDesseMano = ratoRepository.pegaRatosDoUsuario(it.idUsuario)
-            it.ratos = ratoRepository.pegaRatosDoUsuario(it.idUsuario).toMutableList()
+            val usuario = Usuario()
+            val optUser = usuarioRepository.findByIdUsuarioWithoutRatos(it.idUsuario)
+            if (optUser.isPresent) {
+                if (usuarioRepository.countRatosVivosByIdUsuario(it.idUsuario) > 0) {
+                    val userCompleto = usuarioRepository.findByIdUsuarioWithRatosVivos(it.idUsuario)
+                    listaUsers.add(userCompleto.get())
+                }else{
+                    usuario.idUsuario = optUser.get().idUsuario
+                    usuario.ratos = mutableListOf()
+                    usuario.senha = "VAZIO"
+                    usuario.email = optUser.get().email
+                    usuario.idFotoPerfil = optUser.get().idFotoPerfil
+                    usuario.nome = optUser.get().nome
+                    usuario.tipoConta = optUser.get().tipoConta
+                    usuario.vitorias = optUser.get().vitorias
+                    usuario.mousecoinSaldo = optUser.get().mousecoinSaldo
+                    listaUsers.add(usuario)
+                }
+            }
         }
-        return usersRaw.map { it.toDto() }
-    }
-
-    fun getUserPodeCriarNewRato(id: Long): String {
-        val usuarioOpt = getById(id)
-        if (usuarioOpt.isEmpty) return "SEM_USER"
-        val usuario = usuarioOpt.get()
-        val podeCriar = ratoRepository.pegaRatosVivosDoUsuario(usuario.idUsuario)
-        if (podeCriar.size == 3) return "NAO"
-        return "SIM"
+        return listaUsers.map { it.toDto() }
     }
 
     fun cadastrarUsuario(usuario: Usuario): Map<String, Any> {

@@ -54,16 +54,26 @@ class RatoController(
         val result: Map<String, Any> = ratoService.cadastrarRato(ratoDTO)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
 
-        if (status == "CREATED") {
-            val ratoObj = ratoService.getRatoById( result["idRato"].toString().toLong())
-            if (ratoObj.isEmpty) {
-                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Rato criado mas objeto ausente", "UNKNOWN")
-            }else{
-                return ResponseEntity.status(HttpStatus.CREATED).body(ratoObj)
+        when (status) {
+            "CREATED" -> {
+                return ResponseEntity.noContent().build()
+            }
+            "USER_NOT_FOUND" -> {
+                return buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
+            }
+            "USER_ALREADY_HAS_3_RATOS" -> {
+                return buildError(HttpStatus.CONFLICT, "Você já possui 3 ratos", "USER_ALREADY_HAS_3_RATOS")
+            }
+            "USER_HAS_NOT_ENOUGH_MONEY" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Você não possui mousecoins suficiente", "USER_HAS_NOT_ENOUGH_MONEY")
+            }
+            "NON_EXISTENT_CLASS_OR_HABILIDADE" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade não existente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
+            }
+            else -> {
+                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
             }
         }
-
-        return mapStatusToResponse(status)
     }
 
     @PostMapping("/deletar/{id}")
@@ -86,21 +96,17 @@ class RatoController(
         val result = ratoService.deletarRatoPermanentemente(id)
         val status = result["Status"]?.toString() ?: "UNKNOWN"
 
-        when (status) {
+        return when (status) {
             "NO_CONTENT" -> {
-                return ResponseEntity.noContent().build()
+                ResponseEntity.noContent().build()
             }
+
             "RATO_NOT_FOUND" -> {
-                return buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
+                buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
             }
-            "USER_NOT_FOUND" -> {
-                return buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
-            }
-            "USER_DONT_HAS_THISRATO" -> {
-                return buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Rato não pertence a este usuário", "USER_DONT_HAS_THISRATO")
-            }
+
             else -> {
-                return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
+                buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
             }
         }
     }

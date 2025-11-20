@@ -18,6 +18,7 @@ class RatoService(
     private val ratoRepository: RatoRepository,
     private val habilidadeRepository: HabilidadeRepository,
     private val usuarioRepository: UsuarioRepository,
+    private val usuarioService: UsuarioService,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -36,12 +37,12 @@ class RatoService(
     }
 
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, String> {
-        val donoDoRatoOpt = usuarioRepository.findById(ratoBasic.idUsuario)
+        val donoDoRatoOpt = usuarioService.getById(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
         if(donoDoRato.tipoConta != TipoConta.BOT){
             val countRatos = usuarioRepository.countRatosVivosByIdUsuario(donoDoRato.idUsuario)
-            if (countRatos >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
+            if (countRatos == 3.toLong()) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
             if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
             donoDoRato.mousecoinSaldo -= 5
         }
@@ -112,22 +113,8 @@ class RatoService(
     fun deletarRatoPermanentemente(ratoId: Long): Map<String, Any> {
         val ratoOpt = ratoRepository.findByIdWithUsuario(ratoId)
         if (ratoOpt.isEmpty) return mapOf("Status" to "RATO_NOT_FOUND")
-        val rato = ratoOpt.get()
-
-        val usuarioRef = rato.usuario ?: return mapOf("Status" to "USER_NOT_FOUND")
-        val usuarioOpt = usuarioRepository.findByIdUsuarioWithRatosVivos(usuarioRef.idUsuario)
-        if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
-        val usuario = usuarioOpt.get()
-
-        val pertence = usuario.ratos.any { it.idRato == rato.idRato }
-        if (!pertence) return mapOf("Status" to "USER_DONT_HAS_THISRATO")
-
-        usuario.ratos.removeIf { it.idRato == rato.idRato }
-        usuarioRepository.save(usuario)
-
         ratoRepository.deleteById(ratoId)
-
-        log.info("Rato ${ratoId} deletado permanentemente do usuário ${usuario.idUsuario}")
+        log.info("Rato ${ratoId} deletado permanentemente")
         return mapOf("Status" to "NO_CONTENT")
     }
 }
