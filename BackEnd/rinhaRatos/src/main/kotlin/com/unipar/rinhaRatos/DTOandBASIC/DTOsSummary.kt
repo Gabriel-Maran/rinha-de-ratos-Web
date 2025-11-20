@@ -2,6 +2,7 @@ package com.unipar.rinhaRatos.DTOandBASIC
 
 import com.unipar.rinhaRatos.enums.ClassesRato
 import com.unipar.rinhaRatos.enums.StatusBatalha
+import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.mapper.toSummaryDto
 import jakarta.persistence.Column
 import java.math.BigDecimal
@@ -12,6 +13,16 @@ data class UsuarioSummaryDTO(
     val idFotoPerfil: Long? = 0,
     val nome: String,
     val email: String? = null
+)
+
+data class UsuarioDetailsDto(
+    val idUsuario: Long,
+    val tipoConta: TipoConta,
+    val vitorias: Int,
+    val email: String,
+    val idFotoPerfil: Long,
+    val mousecoinSaldo: Int,
+    val nome: String,
 )
 
 data class RatoSummaryDTO(

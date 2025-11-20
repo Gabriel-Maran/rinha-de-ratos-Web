@@ -36,11 +36,12 @@ class RatoService(
     }
 
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, String> {
-        val donoDoRatoOpt = usuarioRepository.findByIdWithRatos(ratoBasic.idUsuario)
+        val donoDoRatoOpt = usuarioRepository.findById(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
         if(donoDoRato.tipoConta != TipoConta.BOT){
-            if (donoDoRato.ratos.size >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
+            val countRatos = usuarioRepository.countRatosVivosByIdUsuario(donoDoRato.idUsuario)
+            if (countRatos >= 3) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
             if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
             donoDoRato.mousecoinSaldo -= 5
         }
@@ -90,7 +91,7 @@ class RatoService(
         val rato = ratoOpt.get()
 
         val usuarioRef = rato.usuario ?: return mapOf("Status" to "USER_NOT_FOUND")
-        val usuarioOpt = usuarioRepository.findByIdWithRatos(usuarioRef.idUsuario)
+        val usuarioOpt = usuarioRepository.findByIdUsuarioWithRatosVivos(usuarioRef.idUsuario)
         if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val usuario = usuarioOpt.get()
 
@@ -114,7 +115,7 @@ class RatoService(
         val rato = ratoOpt.get()
 
         val usuarioRef = rato.usuario ?: return mapOf("Status" to "USER_NOT_FOUND")
-        val usuarioOpt = usuarioRepository.findByIdWithRatos(usuarioRef.idUsuario)
+        val usuarioOpt = usuarioRepository.findByIdUsuarioWithRatosVivos(usuarioRef.idUsuario)
         if (usuarioOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val usuario = usuarioOpt.get()
 

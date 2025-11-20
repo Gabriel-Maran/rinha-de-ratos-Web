@@ -2,6 +2,7 @@ package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioBasic
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioDTO
+import com.unipar.rinhaRatos.DTOandBASIC.UsuarioDetailsDto
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioSummaryDTO
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -34,7 +35,23 @@ class UsuarioService(
 
     fun getById(id: Long): Optional<Usuario> {
         log.debug("Buscando usuário por id: $id (com ratos)")
-        return usuarioRepository.findByIdWithRatos(id)
+        var usuario : Usuario = Usuario()
+        if(usuarioRepository.countRatosVivosByIdUsuario(id) > 0){
+            return usuarioRepository.findByIdUsuarioWithRatosVivos(id)
+        }else{
+            val optUser = usuarioRepository.findByIdUsuarioWithoutRatos(id)
+            if(optUser.isEmpty) return Optional.empty()
+            usuario.idUsuario = optUser.get().idUsuario
+            usuario.ratos = mutableListOf()
+            usuario.senha = "VAZIO"
+            usuario.email = optUser.get().email
+            usuario.idFotoPerfil = optUser.get().idFotoPerfil
+            usuario.nome = optUser.get().nome
+            usuario.tipoConta = optUser.get().tipoConta
+            usuario.vitorias = optUser.get().vitorias
+            usuario.mousecoinSaldo = optUser.get().mousecoinSaldo
+        }
+        return Optional.of(usuario)
     }
 
     fun getTop10Vitorias(): List<UsuarioDTO> {
