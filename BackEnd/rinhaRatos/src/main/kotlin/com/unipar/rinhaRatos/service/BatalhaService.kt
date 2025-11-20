@@ -15,12 +15,17 @@ import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.util.Optional
 
 @Service
 @Transactional
@@ -64,6 +69,14 @@ class BatalhaService(
         }
 
         return "USER_IS_NOT_IN_THIS_BATTLE"
+    }
+
+    fun getById(idBatalha: Long, ): Optional<Batalha> {
+        val batalha =  batalhaRepository.findById(idBatalha)
+        if(batalha.isEmpty){
+            log.warn("Batalha vazia no id $idBatalha")
+        }
+        return batalha
     }
 
     fun criarBatalha(basic: BatalhaBasic): Batalha {

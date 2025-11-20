@@ -5,6 +5,7 @@ import com.unipar.rinhaRatos.DTOandBASIC.BatalhaDTO
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaSummary
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.mapper.toDto
+import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.service.BatalhaService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,6 +17,7 @@ import java.time.Instant
 @RequestMapping("/batalha")
 class BatalhaController(
     private val batalhaService: BatalhaService,
+    private val batalhaRepository: BatalhaRepository,
 ) {
 
     @GetMapping("/adm/{idADM}")
@@ -51,6 +53,13 @@ class BatalhaController(
             "USER_IS_NOT_IN_THIS_BATTLE" -> buildError(HttpStatus.FORBIDDEN, "Usuário não está nesta batalha", "USER_IS_NOT_IN_THIS_BATTLE")
             else -> buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
         }
+    }
+
+    @GetMapping("/{idBatalha}")
+    fun pegaBatalha(@PathVariable("idBatalha") idBatalha: Long): ResponseEntity<Any> {
+        val result = batalhaService.getById(idBatalha)
+        if(result.isEmpty) return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
+        return ResponseEntity.ok(result.get().toDto())
     }
 
     @GetMapping("/batalhacheia/{idBatalha}")
