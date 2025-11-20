@@ -26,11 +26,11 @@ class Rato(
     // referências às outras entidades (nullable)
     @ManyToOne
     @JoinColumn(name = "classe_id")
-    var classe: Classe? = null,
+    var classe: Classe,
 
     @ManyToOne
     @JoinColumn(name = "habilidade_id")
-    var habilidadeEscolhida: Habilidade? = null,
+    var habilidadeEscolhida: Habilidade,
 
     @Column(nullable = false)
     var strBase: Int = 0,
@@ -60,8 +60,8 @@ class Rato(
         "",
         "",
         null,
-        null,
-        null,
+        Classe(),
+        Habilidade(),
         0,
         0,
         0,

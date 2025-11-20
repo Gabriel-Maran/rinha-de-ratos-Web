@@ -101,12 +101,12 @@ fun aplicarEfeito(efeito: Efeito, fonte: EstadoRato, alvoEstado: EstadoRato, men
     when (efeito.atributo) {
         AtributoEfeito.HPS -> {
             // aplica alteração de HP (instantânea) — NÃO adiciona mensagem aqui
-            val delta = if (efeito.ehPercentual) {
+            val auxHp = if (efeito.ehPercentual) {
                 (destino.hpMaximo * efeito.valor * efeito.sinal).roundToInt()
             } else {
                 (efeito.valor * efeito.sinal).roundToInt()
             }
-            destino.hpAtual = (destino.hpAtual + delta).coerceIn(0, destino.hpMaximo)
+            destino.hpAtual = (destino.hpAtual + auxHp).coerceIn(0, destino.hpMaximo)
         }
         AtributoEfeito.STR, AtributoEfeito.AGI, AtributoEfeito.INT, AtributoEfeito.DEF, AtributoEfeito.PAS,
         AtributoEfeito.PDS, AtributoEfeito.CRI,

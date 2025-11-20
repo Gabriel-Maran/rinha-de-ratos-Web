@@ -6,6 +6,7 @@ import com.unipar.rinhaRatos.models.Rato
 import com.unipar.rinhaRatos.models.MessageRound
 import com.unipar.rinhaRatos.models.Results
 import com.unipar.rinhaRatos.enums.ClassesRato
+import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
@@ -224,8 +225,8 @@ class ServicoBatalhaAutomatica(
                 // se a sua implementar aceitar MutableList<String>, isto funcionará
                 aplicarEfeito(ef, estadoFonte, estadoAlvo, tempMsgs)
                 // converte cada mensagem string gerada para Map e adiciona à lista principal
-                for (m in tempMsgs) {
-                    mensagens.add(mapOf("message" to m, "player" to player))
+                for (mes in tempMsgs) {
+                    mensagens.add(mapOf("message" to mes, "player" to player))
                 }
             } catch (ex: NoSuchMethodError) {
                 // caso não exista a versão aplicable da função aplicarEfeito que receba MutableList<String>
@@ -241,92 +242,78 @@ class ServicoBatalhaAutomatica(
         batalha: Batalha,
         idRatoVencedor: Long?,
         idRatoPerdedor: Long?,
-        e1: EstadoRato,
-        e2: EstadoRato,
+        eRato1: EstadoRato,
+        eRato2: EstadoRato,
     ) {
         try {
-            var idUsuarioVecedor = 0L
-            var idUsuarioPerdedor = 0L
-            if (idRatoVencedor != null && idRatoPerdedor != null) {
-                val usuarioVencedor = when (idRatoVencedor) {
-                    e1.idRato -> batalha.jogador1
-                    e2.idRato -> batalha.jogador2
-                    else -> null
-                }
-                val usuarioPerdedor = when (idRatoPerdedor) {
-                    e1.idRato -> batalha.jogador1
-                    e2.idRato -> batalha.jogador2
-                    else -> null
-                }
-                batalha.vencedor = usuarioVencedor
-                batalha.perdedor = usuarioPerdedor
-                idUsuarioVecedor = batalha.vencedor!!.idUsuario
-                idUsuarioPerdedor = batalha.perdedor!!.idUsuario
-            }
+             val usuarioVencedor = when (idRatoVencedor) {
+                 eRato1.idRato -> usuarioRepository.findById( batalha.jogador1!!.idUsuario).get()
+                 eRato2.idRato -> usuarioRepository.findById( batalha.jogador2!!.idUsuario).get()
+                 else -> null
+             }
+             val usuarioPerdedor = when (idRatoPerdedor) {
+                 eRato1.idRato -> usuarioRepository.findById( batalha.jogador1!!.idUsuario).get()
+                 eRato2.idRato -> usuarioRepository.findById( batalha.jogador2!!.idUsuario).get()
+                 else -> null
+             }
+             batalha.vencedor = usuarioVencedor
+             batalha.perdedor = usuarioPerdedor
 
-            batalha.status = com.unipar.rinhaRatos.enums.StatusBatalha.Concluida
+            batalha.status = StatusBatalha.Concluida
             repositorioBatalha.save(batalha)
+            log.warn("TESTE")
 
-            repositorioRato.findById(e1.idRato).ifPresent { rdb ->
+            repositorioRato.findById(eRato1.idRato).ifPresent { rdb ->
                 rdb.estaTorneio = false
-                rdb.estaVivo = e1.hpAtual > 0
+                rdb.estaVivo = eRato1.hpAtual > 0
                 repositorioRato.save(rdb)
             }
-            repositorioRato.findById(e2.idRato).ifPresent { rdb ->
+            repositorioRato.findById(eRato2.idRato).ifPresent { rdb ->
                 rdb.estaTorneio = false
-                rdb.estaVivo = e2.hpAtual > 0
+                rdb.estaVivo = eRato2.hpAtual > 0
                 repositorioRato.save(rdb)
             }
-            usuarioRepository.findById(idUsuarioVecedor).ifPresent { usuarioWin ->
-                val usuarioLose = usuarioRepository.findById(idUsuarioPerdedor)
-
-    
-                usuarioLose.get().ratos.removeIf {
-                    it.idRato == e1.idRato
-                }
 
 
-                if(usuarioWin.tipoConta != TipoConta.BOT && usuarioLose.get().tipoConta != TipoConta.BOT){
-                    usuarioWin.vitorias += 1
-                    usuarioWin.mousecoinSaldo += batalha.premioTotal
-                    usuarioRepository.save<Usuario>(usuarioWin)
-                }
+            if(usuarioVencedor!!.tipoConta != TipoConta.BOT && usuarioPerdedor!!.tipoConta != TipoConta.BOT) {
+                usuarioVencedor.vitorias += 1
+                usuarioVencedor.mousecoinSaldo += batalha.premioTotal
+                usuarioRepository.save<Usuario>(usuarioVencedor)
             }
 
+            if (usuarioVencedor.tipoConta != TipoConta.BOT && usuarioPerdedor != null) {
+                log.warn("ENTROU ${usuarioVencedor.tipoConta}, ${usuarioPerdedor.tipoConta}") // Sem !!
+                val ratosLoser = repositorioRato.pegaRatosVivosDoUsuario(usuarioPerdedor.idUsuario)
+                log.warn("Size da bomba 1 ${ratosLoser.size}") // Sem !!
+                usuarioPerdedor.ratos = ratosLoser
+                if(ratosLoser.isEmpty()){
+                    usuarioPerdedor.ratos = mutableListOf()
+                }else{
+                    usuarioPerdedor.ratos = ratosLoser
+                }
+                usuarioRepository.save<Usuario>(usuarioPerdedor)
+            }
             log.info("Batalha ${batalha.idBatalha} persistida: vencedorRato=$idRatoVencedor")
 
             try {
-                val vencedorNomeUsuario = batalha.vencedor?.nome ?: ""
-                val perdedorNomeUsuario = batalha.perdedor?.nome ?: ""
-
-                val vencedorRatoName =
-                    if (idRatoVencedor == e1.idRato) e1.ratoOriginal.nomeCustomizado else e2.ratoOriginal.nomeCustomizado
-                val perdedorRatoName =
-                    if (idRatoPerdedor == e1.idRato) e1.ratoOriginal.nomeCustomizado else e2.ratoOriginal.nomeCustomizado
-
-                val vencedorTipo =
-                    if (idRatoVencedor == e1.idRato) mapearClasseRatoParaEnum(e1.ratoOriginal) else mapearClasseRatoParaEnum(
-                        e2.ratoOriginal
-                    )
-                val perdedorTipo =
-                    if (idRatoPerdedor == e1.idRato) mapearClasseRatoParaEnum(e1.ratoOriginal) else mapearClasseRatoParaEnum(
-                        e2.ratoOriginal
-                    )
+                val vencedorRato =
+                    if (idRatoVencedor == eRato1.idRato) eRato1.ratoOriginal else eRato2.ratoOriginal
+                val perdedorRato =
+                    if (idRatoPerdedor == eRato1.idRato) eRato1.ratoOriginal else eRato2.ratoOriginal
 
                 val results = Results(
-                    vencedorUserName = vencedorNomeUsuario,
-                    perdedorUserName = perdedorNomeUsuario,
-                    vencedorRatoName = vencedorRatoName,
-                    perdedorRatoName = perdedorRatoName,
-                    vencedorRatoType = vencedorTipo,
-                    perdedorRatoType = perdedorTipo,
-                    vencedorRatoHP = (if (idRatoVencedor == e1.idRato) e1.hpAtual else e2.hpAtual).toFloat(),
-                    perdedorRatoHP = (if (idRatoPerdedor == e1.idRato) e1.hpAtual else e2.hpAtual).toFloat(),
+                    vencedorUserName = usuarioVencedor.nome,
+                    perdedorUserName = usuarioPerdedor!!.nome,
+                    vencedorRatoName = vencedorRato.nomeCustomizado,
+                    perdedorRatoName = perdedorRato.nomeCustomizado,
+                    vencedorRatoType =  mapearClasseRatoParaEnum(vencedorRato),
+                    perdedorRatoType = mapearClasseRatoParaEnum(perdedorRato),
+                    vencedorRatoHP = (if (idRatoVencedor == eRato1.idRato) eRato1.hpAtual else eRato2.hpAtual).toFloat(),
+                    perdedorRatoHP = (if (idRatoPerdedor == eRato1.idRato) eRato1.hpAtual else eRato2.hpAtual).toFloat(),
                     id_batalha = batalha.idBatalha,
-                    id_vencedor = idUsuarioVecedor,
-                    id_perdedor = idUsuarioPerdedor
+                    id_vencedor = usuarioVencedor.idUsuario,
+                    id_perdedor = usuarioPerdedor.idUsuario
                 )
-
 
                 resultsService.criarMensagem(results)
             } catch (ex: Exception) {
@@ -338,20 +325,7 @@ class ServicoBatalhaAutomatica(
         }
     }
 
-    private fun obterChanceCriticaDoRato(r: Rato): Double {
-        val possiveisNomes = listOf("chanceCritico", "chanceCritica", "criBase", "criticoBase")
-        for (nome in possiveisNomes) {
-            try {
-                val f = r.javaClass.getDeclaredField(nome)
-                f.isAccessible = true
-                val v = f.get(r)
-                if (v is Number) return (v.toDouble()).coerceAtLeast(0.0)
-                if (v is String) return v.toDoubleOrNull() ?: 0.10
-            } catch (_: Exception) {
-            }
-        }
-        return 0.10
-    }
+    private fun obterChanceCriticaDoRato(r: Rato): Double{ return 0.10 }
 
     // ---------- salvar mensagens com player 1/2/0 (sistema) ----------
     private fun salvarMensagensDoRound(
@@ -381,37 +355,15 @@ class ServicoBatalhaAutomatica(
             try {
                 messageService.criarMensagem(mr)
             } catch (ex: Exception) {
-                log.warn("Falha ao salvar MessageRound (batalha ${batalha.idBatalha}, round $numeroRound): ${ex.message}")
+                log.warn("salvarMensagensDoRound: Falha ao salvar MessageRound (batalha ${batalha.idBatalha}, round $numeroRound): ${ex.message}")
             }
         }
     }
 
-    private fun mapearClasseRatoParaEnum(r: Rato): ClassesRato {
+    private fun mapearClasseRatoParaEnum(rato: Rato): ClassesRato {
         try {
-            val classeObj = try {
-                val f = r.javaClass.getDeclaredField("classe")
-                f.isAccessible = true
-                f.get(r)
-            } catch (ex: Exception) {
-                null
-            }
-
-            val nomeClasse = if (classeObj != null) {
-                try {
-                    val fn = classeObj.javaClass.getDeclaredField("nome")
-                    fn.isAccessible = true
-                    fn.get(classeObj)?.toString() ?: ""
-                } catch (_: Exception) {
-                    try {
-                        val fa = classeObj.javaClass.getDeclaredField("apelido")
-                        fa.isAccessible = true
-                        fa.get(classeObj)?.toString() ?: ""
-                    } catch (_: Exception) {
-                        ""
-                    }
-                }
-            } else ""
-
+            val classeObj = rato.classe
+            val nomeClasse = classeObj!!.nomeClasse
             val nomeClasseLower = nomeClasse.lowercase()
             return when {
                 "esgoto" in nomeClasseLower -> ClassesRato.ESGOTO
@@ -423,6 +375,7 @@ class ServicoBatalhaAutomatica(
                 else -> ClassesRato.ESGOTO
             }
         } catch (ex: Exception) {
+            log.warn("mapearClasseRatoParaEnum: Deu pau em ler a classe do rato kkkkkkkkkkk")
             return ClassesRato.ESGOTO
         }
     }

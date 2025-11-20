@@ -1,5 +1,7 @@
 package com.unipar.rinhaRatos.repositorys
 
+import com.unipar.rinhaRatos.DTOandBASIC.UsuarioSummaryDTO
+import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Usuario
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
@@ -15,15 +17,14 @@ interface UsuarioRepository: JpaRepository<Usuario, Long> {
     fun existsByEmail(email: String): Boolean
 
     @EntityGraph(attributePaths = ["ratos"])
-    @Query("select distinct u from Usuario u where u.tipoConta = 'JOGADOR' order by u.vitorias desc")
-    fun findTop10WithRatosOrderByVitoriasDesc(pageable: Pageable): List<Usuario>
+    fun findByTipoContaOrderByVitoriasDesc(tipoConta: TipoConta, pageable: Pageable): List<Usuario>
 
     @Query("select COUNT(u) from Usuario u where u.tipoConta = 'BOT'")
     fun countBots(): Long
 
-    @Query("select distinct u from Usuario u left join fetch u.ratos")
+    @Query("select distinct u from Usuario u left join fetch u.ratos r where r.estaVivo = true or r is null")
     fun findAllWithRatos(): List<Usuario>
 
-    @Query("select u from Usuario u left join fetch u.ratos where u.idUsuario = :id")
+    @Query("select u from Usuario u left join fetch u.ratos r where u.idUsuario = :id and r.estaVivo = true")
     fun findByIdWithRatos(@Param("id") id: Long): Optional<Usuario>
 }

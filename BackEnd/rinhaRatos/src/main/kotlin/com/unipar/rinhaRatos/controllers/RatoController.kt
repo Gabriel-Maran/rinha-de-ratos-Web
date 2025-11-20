@@ -3,6 +3,8 @@ package com.unipar.rinhaRatos.controllers
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
 import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
+import com.unipar.rinhaRatos.mapper.toDto
+import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.service.RatoService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,13 +15,20 @@ import java.time.Instant
 @RestController
 @RequestMapping("/rato")
 class RatoController(
-    private val ratoService: RatoService
+    private val ratoService: RatoService,
+    private val ratoRepository: RatoRepository
 ) {
 
     @GetMapping("/todos")
     fun findAllRatos(): ResponseEntity<List<RatoDTO>> {
         val ratos = ratoService.getAllRatos()
         return ResponseEntity.ok(ratos)
+    }
+
+    @GetMapping("/teste/{id}")
+    fun findAllRatos(@PathVariable("id") id: Long): ResponseEntity<List<RatoDTO>> {
+        val ratos = ratoRepository.pegaRatosDoUsuario(id)
+        return ResponseEntity.ok(ratos.map { it -> it.toDto() })
     }
 
     @GetMapping("/{id}")

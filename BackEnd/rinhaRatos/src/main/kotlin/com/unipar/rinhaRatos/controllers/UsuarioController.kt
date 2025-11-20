@@ -81,8 +81,7 @@ class UsuarioController(
     @GetMapping("/top10Vitorias")
     fun findTop10Vitorias(): ResponseEntity<List<UsuarioDTO>> {
         val top = usuarioService.getTop10Vitorias()
-        val topMapped = top.map { it.toDto() }
-        return ResponseEntity.ok(topMapped)
+        return ResponseEntity.ok(top)
     }
 
     @PostMapping("/changeFoto/{idUsuario}/{idFoto}")

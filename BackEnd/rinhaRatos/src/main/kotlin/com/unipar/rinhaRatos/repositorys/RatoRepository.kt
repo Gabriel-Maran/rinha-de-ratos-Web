@@ -12,5 +12,9 @@ interface RatoRepository: JpaRepository<Rato, Long> {
     @Query("select r from Rato r left join fetch r.usuario where r.idRato = :id")
     fun findByIdWithUsuario(@Param("id") id: Long): Optional<Rato>
 
-    fun findAllByUsuario_IdUsuario(id: Long): List<Rato>
+    @Query("SELECT r FROM Rato r WHERE r.usuario.idUsuario = :id")
+    fun pegaRatosDoUsuario(@Param("id")id: Long): List<Rato>
+
+    @Query("SELECT r FROM Rato r WHERE r.usuario.idUsuario = :id AND r.estaVivo = true")
+    fun pegaRatosVivosDoUsuario(@Param("id")id: Long): MutableList<Rato>
 }

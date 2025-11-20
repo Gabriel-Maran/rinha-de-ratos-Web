@@ -32,7 +32,7 @@ class RatoService(
 
     fun getAllRatosByUserId(id: Long): Optional<List<RatoDTO>>{
         if(usuarioRepository.findById(id).isEmpty) return Optional.empty()
-        return Optional.of(ratoRepository.findAllByUsuario_IdUsuario(id).map { it.toDto() })
+        return Optional.of(ratoRepository.pegaRatosVivosDoUsuario(id).map { it.toDto() })
     }
 
     fun cadastrarRato(ratoBasic: RatoBasic): Map<String, String> {

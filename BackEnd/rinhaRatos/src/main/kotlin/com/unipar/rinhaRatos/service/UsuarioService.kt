@@ -1,10 +1,14 @@
 package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioBasic
+import com.unipar.rinhaRatos.DTOandBASIC.UsuarioDTO
+import com.unipar.rinhaRatos.DTOandBASIC.UsuarioSummaryDTO
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import com.unipar.rinhaRatos.enums.TipoConta
+import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Usuario
+import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
@@ -14,7 +18,8 @@ import java.util.Optional
 
 @Service
 class UsuarioService(
-    private val usuarioRepository: UsuarioRepository
+    private val usuarioRepository: UsuarioRepository,
+    private val ratoRepository: RatoRepository
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -32,17 +37,24 @@ class UsuarioService(
         return usuarioRepository.findByIdWithRatos(id)
     }
 
-    fun getTop10Vitorias(): List<Usuario> {
+    fun getTop10Vitorias(): List<UsuarioDTO> {
         log.debug("Buscando top 10 usuários por vitórias")
         val page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "vitorias"))
-        return usuarioRepository.findTop10WithRatosOrderByVitoriasDesc(page)
+        val usersRaw = usuarioRepository.findByTipoContaOrderByVitoriasDesc( TipoConta.JOGADOR,page)
+
+        usersRaw.forEach {
+            val ratosDesseMano = ratoRepository.pegaRatosDoUsuario(it.idUsuario)
+            it.ratos = ratoRepository.pegaRatosDoUsuario(it.idUsuario).toMutableList()
+        }
+        return usersRaw.map { it.toDto() }
     }
 
     fun getUserPodeCriarNewRato(id: Long): String {
         val usuarioOpt = getById(id)
         if (usuarioOpt.isEmpty) return "SEM_USER"
         val usuario = usuarioOpt.get()
-        if (usuario.ratos.size == 3) return "NAO"
+        val podeCriar = ratoRepository.pegaRatosVivosDoUsuario(usuario.idUsuario)
+        if (podeCriar.size == 3) return "NAO"
         return "SIM"
     }
 
@@ -50,9 +62,9 @@ class UsuarioService(
         val emailNormalized = usuario.email.trim()
         if (emailNormalized.isEmpty() || usuario.nome.isEmpty() || usuario.senha.isEmpty())
             return mapOf(
-                        "user" to "",
-                        "error" to "PREENCHA_CAMPOS"
-                    )
+                "user" to "",
+                "error" to "PREENCHA_CAMPOS"
+            )
         if (usuarioRepository.existsByEmail(emailNormalized)) {
             log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
             return mapOf("user" to "", "error" to "EMAIL_ALREADY_EXISTS")
@@ -84,7 +96,7 @@ class UsuarioService(
     }
 
     fun redefinirUsuarioSenha(email: String, novaSenha: String): String {
-        if(email.trim().isEmpty() || novaSenha.trim().isEmpty()) return "PREENCHA_CAMPOS"
+        if (email.trim().isEmpty() || novaSenha.trim().isEmpty()) return "PREENCHA_CAMPOS"
         val usuarioOpt = usuarioRepository.findByEmail(email)
         if (usuarioOpt.isEmpty) {
             log.warn("Redefinir senha: email não encontrado $email")
@@ -112,7 +124,7 @@ class UsuarioService(
                 return HttpStatus.BAD_REQUEST
             }
         }
-        if(usuario.email.isEmpty() || usuario.nome.isEmpty() || usuario.senha.isEmpty()) return HttpStatus.NOT_ACCEPTABLE
+        if (usuario.email.isEmpty() || usuario.nome.isEmpty() || usuario.senha.isEmpty()) return HttpStatus.NOT_ACCEPTABLE
         usuario.nome = usuarioDTO.nome
         usuario.email = usuarioDTO.email
         usuario.senha = usuarioDTO.senha
@@ -121,10 +133,10 @@ class UsuarioService(
         return HttpStatus.OK
     }
 
-    fun changeFotoPerfil(idUsuario: Long, idFoto: Long): HttpStatus{
-        if(idFoto < 0 || idFoto > 10) return HttpStatus.BAD_REQUEST
+    fun changeFotoPerfil(idUsuario: Long, idFoto: Long): HttpStatus {
+        if (idFoto < 0 || idFoto > 10) return HttpStatus.BAD_REQUEST
         val usuario: Optional<Usuario> = usuarioRepository.findById(idUsuario)
-        if(usuario.isEmpty) return HttpStatus.NOT_FOUND
+        if (usuario.isEmpty) return HttpStatus.NOT_FOUND
         usuario.get().idFotoPerfil = idFoto
         usuarioRepository.save(usuario.get())
         log.info("Deu certo")
