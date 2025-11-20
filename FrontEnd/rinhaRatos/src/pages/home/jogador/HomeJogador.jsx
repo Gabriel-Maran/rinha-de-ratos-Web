@@ -41,13 +41,12 @@ export default function HomeJogador() {
   const [batalhasAbertas, setBatalhasAbertas] = useState([]);
   const [batalhasInscrito, setBatalhasInscrito] = useState([]);
   const [loadingRatos, setLoadingRatos] = useState(true);
-  const [erroRatos, setErroRatos] = useState(null);
-
   const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
+  const [erroRatos, setErroRatos] = useState(null);
+  
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
 
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
-  const ratoSelecionado = user ? user.idRato || user.rato : null; 
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
@@ -55,14 +54,11 @@ export default function HomeJogador() {
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
-  const dados = {
-    idBatalha,
-    idUsuario: idUsuarioLogado,
-    idRato
-  }
-
-  // useCallback usado  para ele refazer a função que busca se você tá incrito em uma batalha
+  // ----------------------------------------------------------
+  // useCallback para buscar dados
+  // ----------------------------------------------------------
   const buscarDadosIniciais = useCallback(async () => {
+    if (!idUsuarioLogado) return;
 
     setLoadingRatos(true);
     setErroRatos(null);
@@ -82,7 +78,6 @@ export default function HomeJogador() {
         pegarBatalhasIncrito(idUsuarioLogado),
       ]);
 
-
       setRatosUsuario(respostaRatos.data);
       setClasses(respostaClasses.data);
       setDescHabilidades(respostaHabilidades.data);
@@ -94,9 +89,7 @@ export default function HomeJogador() {
     } finally {
       setLoadingRatos(false);
     }
-
   }, [idUsuarioLogado]);
-
 
   useEffect(() => {
     if (!idUsuarioLogado) {
@@ -104,8 +97,11 @@ export default function HomeJogador() {
       return;
     }
     buscarDadosIniciais();
-  }, [buscarDadosIniciais]);
+  }, [buscarDadosIniciais, idUsuarioLogado, navigate]);
 
+  // ----------------------------------------------------------
+  // Funções do Modal
+  // ----------------------------------------------------------
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
   };
@@ -135,15 +131,48 @@ export default function HomeJogador() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
-  const definirRatoBatalha = async () => {
-    try {
-      await entrarBatalha(dados);
-    } catch (err) {
-      
-    }
-    setRatoParaBatalhar();
+  // ----------------------------------------------------------
+  // Lógica de Seleção e Batalha 
+  // ----------------------------------------------------------
+
+  const definirRatoBatalha = (rato) => {
+     console.log("Rato selecionado para batalha:", rato);
+     setRatoParaBatalhar(rato);
+     alert(`Rato ${rato.nome} selecionado para as próximas batalhas!`);
   };
 
+  const handleEntrarBatalha = async (idBatalhaClicada) => {
+    if (!idUsuarioLogado) return;
+    
+    // Garante que pegamos o ID corretamente, seja objeto ou número
+    const idRatoParaUso = ratoParaBatalhar?.id || ratoParaBatalhar?.idRato || ratoParaBatalhar;
+
+    if (!idRatoParaUso) {
+      alert("Você PRECISA selecionar um rato na aba 'Meus Ratos' antes de entrar em uma batalha!");
+      setOpcaoAtivada("Meus ratos");
+      return;
+    }
+
+    const dadosParaApi = {
+      idBatalha: idBatalhaClicada,
+      idUsuario: idUsuarioLogado,
+      idRato: idRatoParaUso
+    };
+
+    try {
+      console.log("Enviando dados para entrar na batalha:", dadosParaApi);
+      await entrarBatalha(dadosParaApi);
+      alert("Você entrou na batalha com sucesso!");
+      buscarDadosIniciais(); 
+    } catch (err) {
+      console.error("Erro ao entrar na batalha:", err);
+      alert(err?.response?.data?.message || "Erro ao entrar na batalha.");
+    }
+  };
+
+  // ----------------------------------------------------------
+  // Renderização
+  // ----------------------------------------------------------
   let conteudoCorpo;
 
   if (loadingRatos) {
@@ -204,6 +233,7 @@ export default function HomeJogador() {
             ratosUsuario={ratosUsuario}
             idUsuarioLogado={idUsuarioLogado}
             onBatalhaInscrita={buscarDadosIniciais}
+            onEntrarClick={handleEntrarBatalha} 
           />
         );
         break;
