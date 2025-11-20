@@ -4,20 +4,19 @@ import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
 import { entrarBatalha } from "../../../../Api/Api";
 import "./ListaDeBatalhas.css";
 
-
 export default function ListaDeBatalhas({
   ratosUsuario,
   batalhasAbertas,
-  batalhasInscrito, 
+  batalhasInscrito,
   idUsuarioLogado,
-  onBatalhaInscrita, 
+  onBatalhaInscrita,
 }) {
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
   const [ativarModal, setAtivarModal] = useState(false);
 
-
+  const [comBot, setComBot] = useState(false);
   const [batalhaSelecionadaId, setBatalhaSelecionadaId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [erroModal, setErroModal] = useState(null);
@@ -35,8 +34,12 @@ export default function ListaDeBatalhas({
     }
   };
 
-  const handleAbrirModal = (idBatalha) => {
-    setBatalhaSelecionadaId(idBatalha); 
+  const handleAbrirModal = (idBatalha, bot) => {
+    if (!bot) {
+      setBatalhaSelecionadaId(idBatalha);
+    } else {
+      setComBot(true);
+    }
     setAtivarModal(true);
     setErroModal(null);
   };
@@ -58,11 +61,24 @@ export default function ListaDeBatalhas({
     setIsLoading(true);
     setErroModal(null);
 
-    const dadosEntraBatalha = {
-      idBatalha: batalhaSelecionadaId,
-      idUsuario: idUsuarioLogado,
-      idRato: idRato,
-    };
+    let dadosEntraBatalha = {
+      idBatalha: null,
+      idUsuarioLogado: null,
+      idRato: null
+    }
+
+    if (!comBot) {
+      dadosEntraBatalha = {
+        idBatalha: batalhaSelecionadaId,
+        idUsuario: idUsuarioLogado,
+        idRato: idRato,
+      };
+    } else {
+      dadosEntraBatalha = {
+        idUsuario: idUsuarioLogado,
+        idRato: idRato,
+      };
+    }
 
     try {
       await entrarBatalha(dadosEntraBatalha);
@@ -87,11 +103,18 @@ export default function ListaDeBatalhas({
             <ModalEscolherRatoBatalha
               onClose={handleFecharModal}
               ratosUsuario={ratosUsuario}
-              onConfirmar={handleEntrarBatalha} 
+              onConfirmar={handleEntrarBatalha}
               isLoading={isLoading}
               erroModal={erroModal}
+              comBot={comBot}
             />
           )}
+          <button
+            className="btnIniciarTreinamento"
+            onClick={(bot) => handleAbrirModal(bot)}
+          >
+            Treinar
+          </button>
           <div className="listaBatalhas">
             {batalhasAbertas &&
               batalhasAbertas.map((batalha) => (
@@ -119,25 +142,34 @@ export default function ListaDeBatalhas({
       break;
     case "Inscritas":
       conteudoOpcaoBatalhas = (
-        <div className="listaBatalhas">
-          {batalhasInscrito &&
-            batalhasInscrito.map((batalha) => (
-              <div className="batalha" key={batalha.idBatalha}>
-                <img src={Trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nomeBatalha}</p>
-                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                  <p>
-                    Data e Hora: {formatarDataEHora(batalha.dataHorarioInicio)}
-                  </p>
-                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+        <>
+          <button
+            className="btnIniciarTreinamento"
+            onClick={(bot) => handleAbrirModal(bot)}
+          >
+            Treinar
+          </button>
+          <div className="listaBatalhas">
+            {batalhasInscrito &&
+              batalhasInscrito.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>
+                      Data e Hora:{" "}
+                      {formatarDataEHora(batalha.dataHorarioInicio)}
+                    </p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  </div>
+                  <div className="btnSairBatalha">
+                    <button>Sair</button>
+                  </div>
                 </div>
-                <div className="opcoesBatalha">
-                  <button>Jogar</button>
-                </div>
-              </div>
-            ))}
-        </div>
+              ))}
+          </div>
+        </>
       );
       break;
     default:

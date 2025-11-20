@@ -1,6 +1,6 @@
 .opcoesAbaBatalha {
   position: absolute;
-  top: 0.8rem;
+  top: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -10,7 +10,7 @@
 .btnOpcaoBatalhas,
 .btnOpcaoBatalhasAtivo {
   width: 18rem;
-  height: 9.5rem;
+  height: 8rem;
   background-color: transparent;
   background-image: url("../../../../assets/buttons/btnOpcaoBatalhas.png");
   background-size: 100% 100%;
@@ -31,6 +31,18 @@
   transform: scale(0.97);
 }
 
+.btnIniciarTreinamento {
+  width: 13rem;
+  height: 5rem;
+  color: white;
+  background-color: #ffae52;
+  margin-top: 12rem;
+  border-radius: 20px;
+  border: 3px solid #000;
+  font-size: 2.5rem;
+  text-shadow: 0 0 3px #000, 0 0 6px #000, 0 0 8px #000;
+}
+
 .addBatalha {
   width: 20rem;
   position: sticky;
@@ -43,7 +55,6 @@
 .listaBatalhas {
   width: 50rem;
   height: 40rem;
-  margin-top: 10.5rem;
   color: black;
   display: flex;
   flex-direction: column;
@@ -88,7 +99,8 @@
   gap: 0.8rem;
 }
 
-.opcoesBatalha button {
+.opcoesBatalha button,
+.btnSairBatalha button {
   width: 10rem;
   height: 3.5rem;
   background-image: url("../../../../assets/buttons/btnParticiparBatalha.png");
@@ -100,6 +112,10 @@
   color: white;
 }
 
+.btnSairBatalha button {
+  background-image: url("../../../../assets/buttons/btnSairBatalha.png");
+}
+
 .opcoesBatalha button:active {
   transform: scale(0.97);
 }
@@ -109,32 +125,35 @@
 /* ------------------------------- */
 @media (max-height: 1045px) {
   .listaBatalhas {
-    margin-top: 8.7rem;
+    position: absolute;
+    top: 14rem;
     transform: scale(0.8);
   }
 }
 
 @media (max-height: 985px) {
   .listaBatalhas {
-    margin-top: 6.7rem;
+    position: absolute;
+    top: 12rem;
     transform: scale(0.7);
   }
 }
 
 @media (max-height: 920px) {
   .listaBatalhas {
-    margin-top: 4.5rem;
+    position: absolute;
+    top: 10rem;
     transform: scale(0.6);
   }
 }
 
 @media (max-height: 855px) {
   .listaBatalhas {
-    margin-top: 2rem;
+    position: absolute;
+    top: 8rem;
     transform: scale(0.5);
   }
 }
-
 
 /* ----------------------------------------- */
 /* Medias Query para tratar altura e largura */
@@ -158,7 +177,7 @@
   .batalha {
     font-size: 1.8rem;
   }
-  .infoBatalha{
+  .infoBatalha {
     margin-right: 1rem;
   }
 }

@@ -5,9 +5,9 @@ import "./ModalEscolherRatoBatalha.css";
 export default function ModalEscolherRatoBatalha({
   onClose,
   ratosUsuario,
-  onConfirmar, 
-  isLoading,  
-  erroModal,    
+  onConfirmar,
+  isLoading,
+  erroModal,
 }) {
 
   function handleRatoSelecionado(rato) {
