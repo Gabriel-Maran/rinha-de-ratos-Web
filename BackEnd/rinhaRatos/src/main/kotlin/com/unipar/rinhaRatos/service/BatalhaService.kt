@@ -277,7 +277,7 @@ class BatalhaService(
         val rato = ratoOpt.get()
         val usuario = usuarioOpt.get()
         if(rato.usuario!!.idUsuario != usuario.idUsuario) return mapOf("message" to "Rato não pertence a este usuário", "error" to "RATO_DONT_BELONG_THIS_PLAYER")
-
+        if(!rato.estaVivo) return mapOf("message" to "Rato está morto", "error" to "RATO_IS_DEAD")
         if(usuarioRepository.countBots() == 0L){
             usuarioRepository.save(
                 Usuario(

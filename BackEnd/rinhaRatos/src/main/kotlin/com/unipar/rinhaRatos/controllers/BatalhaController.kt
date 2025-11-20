@@ -176,6 +176,8 @@ class BatalhaController(
         when (respCriacao["error"]) {
             "USER_OR_RATO_NOT_FOUND" ->
                 return buildError(HttpStatus.NOT_FOUND, respCriacao["message"].toString(), "USER_OR_RATO_NOT_FOUND")
+            "RATO_IS_DEAD" ->
+                return buildError(HttpStatus.NOT_FOUND, respCriacao["message"].toString(), "RATO_IS_DEAD")
             "RATO_DONT_BELONG_THIS_PLAYER" ->
                 return buildError(HttpStatus.BAD_REQUEST, respCriacao["message"].toString(), "RATO_DONT_BELONG_THIS_PLAYER")
         }

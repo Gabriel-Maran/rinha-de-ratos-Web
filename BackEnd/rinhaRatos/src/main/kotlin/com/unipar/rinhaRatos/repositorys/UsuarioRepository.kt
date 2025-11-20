@@ -25,7 +25,7 @@ interface UsuarioRepository: JpaRepository<Usuario, Long> {
     @Query("select distinct u from Usuario u left join fetch u.ratos r where r.estaVivo = true or r is null")
     fun findAllWithRatos(): List<Usuario>
 
-    @Query("select distinct u from Usuario u left join fetch u.ratos r where u.idUsuario = :id and r.estaVivo = true")
+    @Query("select distinct u from Usuario u left join fetch u.ratos r where r.usuario.idUsuario = :id and r.estaVivo = true")
     fun findByIdUsuarioWithRatosVivos(@Param("id") idUsuario: Long): Optional<Usuario>
 
     @Query("select count(r) from Usuario u join u.ratos r where u.idUsuario = :id and r.estaVivo = true")
