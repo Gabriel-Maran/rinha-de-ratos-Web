@@ -115,6 +115,7 @@ class BatalhaController(
         val resp = batalhaService.entrarNaBatalha(idBatalha, idUsuario, idRato)
         return when (resp) {
             "BATALHA_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
+            "CANNOT_PAY" -> buildError(HttpStatus.PAYMENT_REQUIRED, "Não possui saldo para entrar na batalha", "CANNOT_PAY")
             "USER_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
             "RATO_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Rato não encontrado", "RATO_NOT_FOUND")
             "BATALHA_NOT_OPEN" -> buildError(HttpStatus.CONFLICT, "Inscrições fechadas", "BATALHA_NOT_OPEN")

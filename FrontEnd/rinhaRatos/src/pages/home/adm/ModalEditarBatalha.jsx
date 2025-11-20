@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import "./ModalEditarBatalha.css";
+import { gerenciarBatalha } from "../../../Api/Api";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function ModalEditarBatalha({
   estadoModal,
   onClose,
   batalhaSendoEditada,
-  listaBatalhas,
   setListaBatalhas,
 }) {
+  const { user } = useAuth();
+   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
   const [nomeBatalhaEditada, setNomeBatalhaEditada] = useState("");
   const [inscricaoEditada, setInscricaoEditada] = useState(0);
   const [dataHoraEditada, setDataHoraEditada] = useState("");
   const [premioEditado, setPremioEditado] = useState(0);
+  const [erro, setErro] = useState(null);
 
   useEffect(() => {
     if (batalhaSendoEditada) {
@@ -23,20 +27,30 @@ export default function ModalEditarBatalha({
     }
   }, [batalhaSendoEditada]);
 
-  const atualizarBatalha = () => {
-    const listaAtualizada = listaBatalhas.map((batalha) =>
-      batalha.id == batalhaSendoEditada.id
-        ? {
-            ...batalha,
-            nome: nomeBatalhaEditada,
-            custo: inscricaoEditada,
-            dataEHora: dataHoraEditada,
-            premio: premioEditado,
-          }
-        : batalha
-    );
-    setListaBatalhas(listaAtualizada);
-    onClose();
+  const atualizarBatalha = async () => {
+    const dadosAtt = {
+      idAdm: idUsuarioLogado,
+      nome: nomeBatalhaEditada,
+      custo: inscricaoEditada,
+      dataEHora: dataHoraEditada,
+    }
+
+    const dados = {
+      idAdm: idUsuarioLogado
+      
+    }
+
+    try {
+      const resposta = await gerenciarBatalha(dadosAtt)
+      setListaBatalhas(resposta.data);
+
+      const respostaExclusaoUser = await removerJogador()
+      onClose();
+    } catch (err) {
+      setErro(
+        err?.response?.data?.message || "Erro ao conectar com o servidor."
+      );
+    }
   };
 
   const [btnNavModal, setBtnNavModal] = useState("1");
@@ -72,14 +86,6 @@ export default function ModalEditarBatalha({
               type="datetime-local"
               value={dataHoraEditada}
               onChange={(e) => setDataHoraEditada(e.target.value)}
-            />
-          </div>
-          <div>
-            <h3>Prêmio</h3>
-            <input
-              type="number"
-              value={premioEditado}
-              onChange={(e) => setPremioEditado(Number(e.target.value))}
             />
           </div>
         </div>

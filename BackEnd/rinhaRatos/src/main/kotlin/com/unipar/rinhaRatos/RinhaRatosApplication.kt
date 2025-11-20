@@ -8,4 +8,4 @@ class RinhaRatosApplication
 
 fun main(args: Array<String>) {
 	runApplication<RinhaRatosApplication>(*args)
-}	        
+}

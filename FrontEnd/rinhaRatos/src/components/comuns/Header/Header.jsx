@@ -1,18 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import Logo from "../../../assets/Logo_Coliseu_dos_Ratos.svg";
 import MouseCoin from "../../../assets/moedas/MouseCoin.png";
+import { getFotoUrlById } from "../../../pages/perfil/ModalOpcFotosPerfil";
 import "./Header.css";
 
 export default function Header({ home }) {
-
-  
   const { user, setUser } = useAuth();
-
-  console.log("O objeto USER no Header é:", user);
-
   const navigate = useNavigate();
+
+  // 2. LÓGICA: Converte o ID (número) na URL da Imagem (string)
+  // Se o user ainda não carregou, usa o ID 0 (padrão) para evitar erro.
+  const fotoPerfilUrl = user ? getFotoUrlById(user.idFotoPerfil) : getFotoUrlById(0);
 
   return (
     <>
@@ -21,7 +20,8 @@ export default function Header({ home }) {
           <img
             className="fotoJogador"
             onClick={() => navigate("/perfil")}
-            src={user.idFotoPerfil}
+            src={fotoPerfilUrl} 
+            alt="Foto de perfil do jogador"
           />
           {user ? (
             <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1>
@@ -43,6 +43,7 @@ export default function Header({ home }) {
           onClick={() => navigate(`/${home}`)}
           className="logoColiseu"
           src={Logo}
+          alt="Logo Coliseu"
         />
       </div>
     </>

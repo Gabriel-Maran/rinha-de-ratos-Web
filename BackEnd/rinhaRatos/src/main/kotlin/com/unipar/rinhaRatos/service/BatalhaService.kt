@@ -121,6 +121,13 @@ class BatalhaService(
             }
         }
 
+        if (summary.inscricaoMousecoin <=0 ){
+            batalha.custoInscricao = 10
+        }else{
+            batalha.custoInscricao = summary.inscricaoMousecoin
+        }
+        batalha.premioTotal = batalha.custoInscricao * 2
+
         batalhaRepository.save(batalha)
         log.info("Batalha $idBatalha atualizada (nome/data). Nova data: ${batalha.dataHorarioInicio}")
         return "OK"
@@ -158,6 +165,7 @@ class BatalhaService(
         val rato = ratoOpt.get()
 
         if (batalha.status != StatusBatalha.InscricoesAbertas) return "BATALHA_NOT_OPEN"
+        if (usuario.mousecoinSaldo < batalha.custoInscricao) return "CANNOT_PAY"
         if (!rato.estaVivo) return "RATO_NOT_ELIGIBLE"
         if (rato.estaTorneio) return "RATO_NOT_ELIGIBLE"
 
@@ -178,6 +186,7 @@ class BatalhaService(
             return "BATALHA_CHEIA"
         }
 
+        usuario.mousecoinSaldo -= batalha.custoInscricao
         rato.estaTorneio = true
         ratoRepository.save(rato)
         batalhaRepository.save(batalha)
