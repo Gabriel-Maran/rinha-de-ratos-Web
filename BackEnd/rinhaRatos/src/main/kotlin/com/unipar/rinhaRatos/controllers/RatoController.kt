@@ -56,7 +56,8 @@ class RatoController(
 
         when (status) {
             "CREATED" -> {
-                return ResponseEntity.noContent().build()
+                val ratoCompleto = ratoService.getRatoById(result["idRato"].toString().toLong())
+                return ResponseEntity(ratoCompleto, HttpStatus.CREATED)
             }
             "USER_NOT_FOUND" -> {
                 return buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
