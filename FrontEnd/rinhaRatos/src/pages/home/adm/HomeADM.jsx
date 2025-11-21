@@ -131,7 +131,7 @@ export default function HomeADM() {
               Criar Batalha
             </button>
 
-            <div className="listaBatalhas">
+            <div className="listaBatalhasNormal">
               {listaBatalhas.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha}>
                   <img src={trofeu} />

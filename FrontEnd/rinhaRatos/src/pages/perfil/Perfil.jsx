@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; 
-import { trocarSenha, trocarFoto, pegarUsuarioPorId } from "../../Api/Api"; 
+import { useLocation, useNavigate } from "react-router-dom";
+import { trocarSenha, trocarFoto, pegarUsuarioPorId } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import Header from "../../components/comuns/Header/Header";
@@ -27,9 +27,9 @@ export default function Perfil({ qtdeMoedas }) {
   const [erro, setErro] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  
-  const [fotoSelecionada, setFotoSelecionada] = useState(user.idFotoPerfil); 
-  
+
+  const [fotoSelecionada, setFotoSelecionada] = useState(user.idFotoPerfil);
+
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
@@ -39,7 +39,7 @@ export default function Perfil({ qtdeMoedas }) {
   const fecharModalOpcFoto = () => {
     setModalOpcFoto(false);
   };
-  
+
   const handleFotoSelecionada = (id) => {
     setFotoSelecionada(id);
   };
@@ -47,7 +47,7 @@ export default function Perfil({ qtdeMoedas }) {
   const fotoUrl = getFotoUrlById(fotoSelecionada);
 
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
-  
+
   useEffect(() => {
     if (user) {
       setEmail(user.email);
@@ -55,29 +55,29 @@ export default function Perfil({ qtdeMoedas }) {
   }, [user]);
 
   const senhaTrocada = async (evento) => {
-    const idUsuarioLogado = user.idUsuario || user.id; 
-    
+    const idUsuarioLogado = user.idUsuario || user.id;
 
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
 
     const dados = { email, senha, nome };
-    const idFotoParaAPI = fotoSelecionada; 
+    const idFotoParaAPI = fotoSelecionada;
 
     try {
-      await trocarSenha(dados, idUsuarioLogado); 
-      
-      if (idFotoParaAPI !== user.idFotoPerfil) { 
-        await trocarFoto(idUsuarioLogado, idFotoParaAPI); 
+      await trocarSenha(dados, idUsuarioLogado);
+
+      if (idFotoParaAPI !== user.idFotoPerfil) {
+        await trocarFoto(idUsuarioLogado, idFotoParaAPI);
       }
 
-      const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
-      setUser(respostaUsuarioAtualizada.data); 
-      
+      const respostaUsuarioAtualizada = await pegarUsuarioPorId(
+        idUsuarioLogado
+      );
+      setUser(respostaUsuarioAtualizada.data);
+
       console.log("Perfil alterado OK!");
       setMensagemSucesso("Perfil alterado com sucesso!");
-      
     } catch (err) {
       setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
     }
@@ -86,30 +86,27 @@ export default function Perfil({ qtdeMoedas }) {
   const fecharHistorico = () => {
     setMostrarHistorico(false);
   };
-  
+
   let conteudoPerfil;
 
   switch (opcaoAtivada) {
     case "Perfil":
       conteudoPerfil = (
         <>
-          {modalOpcFoto &&
+          {modalOpcFoto && (
             <ModalOpcFoto
               modalAtivado={modalOpcFoto}
               onClose={fecharModalOpcFoto}
-              onSelectFoto={handleFotoSelecionada} 
-            />}
+              onSelectFoto={handleFotoSelecionada}
+            />
+          )}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
           <div className="dados">
             <button
               className="btnOpcFotoPerfil"
-              onClick={() => setModalOpcFoto(true)}            >
-              <img 
-              className="perfil"  
-                src={fotoUrl} 
-                alt="Foto de Perfil" 
-                
-              />
+              onClick={() => setModalOpcFoto(true)}
+            >
+              <img className="perfil" src={fotoUrl} alt="Foto de Perfil" />
             </button>
 
             <p className="lblInfoPerfil">Nome:</p>
@@ -152,14 +149,17 @@ export default function Perfil({ qtdeMoedas }) {
             {mensagemSucesso && (
               <p className="mensagem-sucesso">{mensagemSucesso}</p>
             )}
-          </div>
-          <div className="acoesPerfil">
-            <button className="btnSalvar" onClick={senhaTrocada}>
-              Salvar
-            </button>
-            <button className="btnDeslogar" onClick={() => navigate("/login")}>
-              Deslogar
-            </button>
+            <div className="acoesPerfil">
+              <button className="btnSalvar" onClick={senhaTrocada}>
+                Salvar
+              </button>
+              <button
+                className="btnDeslogar"
+                onClick={() => navigate("/login")}
+              >
+                Deslogar
+              </button>
+            </div>
           </div>
         </>
       );

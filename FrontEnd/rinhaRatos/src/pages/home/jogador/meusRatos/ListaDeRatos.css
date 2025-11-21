@@ -145,6 +145,7 @@
   .addRato {
     width: 10rem;
     height: 4.5rem;
+    top: 0.6rem;
     font-size: 1.2rem;
   }
   .listaRatos {

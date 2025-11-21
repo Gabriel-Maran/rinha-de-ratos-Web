@@ -52,16 +52,18 @@
   flex-direction: column;
 }
 
-.listaBatalhas {
+.listaBatalhasHome {
   width: 50rem;
   height: 40rem;
+  position: absolute;
+  top: 14rem;
   color: black;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
   scrollbar-width: none;
-  transform: scale(0.9);
+  transform: scale(0.8);
 }
 
 .batalha {
@@ -123,35 +125,113 @@
 /* ------------------------------- */
 /* Medias Query para tratar altura */
 /* ------------------------------- */
-@media (max-height: 1045px) {
-  .listaBatalhas {
-    position: absolute;
-    top: 14rem;
-    transform: scale(0.8);
+@media (max-height: 1070px) {
+  .btnIniciarTreinamento {
+    margin-top: 11.5rem;
+    transform: scale(0.9);
   }
-}
-
-@media (max-height: 985px) {
-  .listaBatalhas {
-    position: absolute;
-    top: 12rem;
+  .listaBatalhasHome {
+    top: 11rem;
     transform: scale(0.7);
   }
 }
 
-@media (max-height: 920px) {
-  .listaBatalhas {
-    position: absolute;
-    top: 10rem;
+@media (max-height: 990px) {
+  .btnIniciarTreinamento {
+    margin-top: 11.5rem;
+    transform: scale(0.8);
+  }
+  .listaBatalhasHome {
+    top: 8.5rem;
     transform: scale(0.6);
   }
 }
 
-@media (max-height: 855px) {
-  .listaBatalhas {
-    position: absolute;
-    top: 8rem;
+@media (max-height: 920px) {
+  .btnIniciarTreinamento {
+    margin-top: 11rem;
+    transform: scale(0.7);
+  }
+  .listaBatalhasHome {
+    top: 6rem;
     transform: scale(0.5);
+  }
+}
+
+@media (max-height: 845px) {
+  .btnIniciarTreinamento {
+    margin-top: 10.7rem;
+    transform: scale(0.6);
+  }
+  .listaBatalhasHome {
+    top: 3rem;
+    transform: scale(0.4);
+  }
+}
+
+@media (max-height: 770px) {
+  .btnIniciarTreinamento {
+    margin-top: 10.7rem;
+    transform: scale(0.5);
+  }
+  .listaBatalhasHome {
+    top: 1rem;
+    transform: scale(0.3);
+  }
+}
+
+/* -------------------------------- */
+/* Medias Query para tratar largura */
+/* -------------------------------- */
+@media (max-width: 890px) {
+  .listaBatalhasHome {
+    top: 5rem;
+    transform: scale(0.5);
+  }
+}
+
+@media (max-width: 845px) {
+  .opcoesAbaBatalha {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 735px) {
+  .opcoesAbaBatalha {
+    gap: 2rem;
+  }
+  .btnOpcaoBatalhas,
+  .btnOpcaoBatalhasAtivo {
+    width: 13rem;
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 690px) {
+  .opcoesAbaBatalha {
+    top: 0.5rem;
+    gap: 2rem;
+  }
+  .btnOpcaoBatalhas,
+  .btnOpcaoBatalhasAtivo {
+    width: 10rem;
+    height: 6rem;
+    font-size: 2rem;
+  }
+  .btnIniciarTreinamento {
+    margin-top: 7.5rem;
+    transform: scale(0.8);
+  }
+  .listaBatalhasHome {
+    top: 4rem;
+    transform: scale(0.55);
+  }
+}
+
+@media (max-width: 600px) {
+  .listaBatalhasHome {
+    top: 2rem;
+    transform: scale(0.45);
   }
 }
 
@@ -166,12 +246,26 @@
 }
 
 @media (max-width: 375px) and (max-height: 667px) {
-  .listaBatalhas {
+  .opcoesAbaBatalha {
+    top: 1rem;
+    gap: 2rem;
+  }
+  .btnOpcaoBatalhas,
+  .btnOpcaoBatalhasAtivo {
+    width: 6rem;
+    height: 4rem;
+    font-size: 1.5rem;
+  }
+  .btnIniciarTreinamento {
+    margin-top: 5rem;
+    transform: scale(0.5);
+  }
+  .listaBatalhasHome {
     margin-top: 0;
     transform: scale(0.3);
-    height: 65rem;
+    height: 50rem;
     position: absolute;
-    top: -16.5rem;
+    top: -8.5rem;
     font-size: 1.3rem;
   }
   .batalha {

@@ -125,13 +125,16 @@
 
 @media (max-width: 690px) {
   .subTitulo {
-    top: 0.5rem;
+    top: 0.8rem;
     width: 20rem;
-    height: 8rem;
+    height: 5.5rem;
     font-size: 2.3rem;
   }
+  .listaJogadores {
+    margin-top: 4.5rem;
+    transform: scale(0.7);
+  }
 }
-
 
 /* ----------------------------------------- */
 /* Medias Query para tratar altura e largura */

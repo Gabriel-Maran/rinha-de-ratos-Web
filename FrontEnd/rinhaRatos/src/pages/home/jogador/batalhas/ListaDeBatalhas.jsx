@@ -64,8 +64,8 @@ export default function ListaDeBatalhas({
     let dadosEntraBatalha = {
       idBatalha: null,
       idUsuarioLogado: null,
-      idRato: null
-    }
+      idRato: null,
+    };
 
     if (!comBot) {
       dadosEntraBatalha = {
@@ -109,13 +109,7 @@ export default function ListaDeBatalhas({
               comBot={comBot}
             />
           )}
-          <button
-            className="btnIniciarTreinamento"
-            onClick={(bot) => handleAbrirModal(bot)}
-          >
-            Treinar
-          </button>
-          <div className="listaBatalhas">
+          <div className="listaBatalhasHome">
             {batalhasAbertas &&
               batalhasAbertas.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha}>
@@ -143,13 +137,7 @@ export default function ListaDeBatalhas({
     case "Inscritas":
       conteudoOpcaoBatalhas = (
         <>
-          <button
-            className="btnIniciarTreinamento"
-            onClick={(bot) => handleAbrirModal(bot)}
-          >
-            Treinar
-          </button>
-          <div className="listaBatalhas">
+          <div className="listaBatalhasHome">
             {batalhasInscrito &&
               batalhasInscrito.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha}>
@@ -193,6 +181,12 @@ export default function ListaDeBatalhas({
           </button>
         ))}
       </header>
+      <button
+        className="btnIniciarTreinamento"
+        onClick={(bot) => handleAbrirModal(bot)}
+      >
+        Treinar
+      </button>
       {conteudoOpcaoBatalhas}
     </>
   );
