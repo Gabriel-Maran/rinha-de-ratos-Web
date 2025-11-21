@@ -10,8 +10,25 @@ export default function Header({ home }) {
   const navigate = useNavigate();
 
   // 2. LÓGICA: Converte o ID (número) na URL da Imagem (string)
-  // Se o user ainda não carregou, usa o ID 0 (padrão) para evitar erro.
   const fotoPerfilUrl = user ? getFotoUrlById(user.idFotoPerfil) : getFotoUrlById(0);
+
+  const decidirOndeIr = () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    switch (user.tipoConta) {
+      case "ADM":
+        navigate("/homeadm");
+        break;
+      case "JOGADOR":
+        navigate("/home");
+        break;
+      default:
+        navigate("/home"); 
+        break;
+    }
+  };
 
   return (
     <>
@@ -28,7 +45,8 @@ export default function Header({ home }) {
           ) : (
             <p>Carregando...</p>
           )}
-          {home == "home" && (
+          
+          {user?.tipoConta === "JOGADOR" && (
             <div className="quantidadeMoedas">
               <img
                 className="mouseCoin"
@@ -40,10 +58,11 @@ export default function Header({ home }) {
           )}
         </div>
         <img
-          onClick={() => navigate(`/${home}`)}
+          onClick={decidirOndeIr}
           className="logoColiseu"
           src={Logo}
           alt="Logo Coliseu"
+          style={{ cursor: 'pointer' }}
         />
       </div>
     </>

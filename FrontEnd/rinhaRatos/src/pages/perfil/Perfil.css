@@ -1,3 +1,6 @@
+/* ------------------------------------------------- */
+/* RESET E CONFIGURAÇÕES GERAIS */
+/* ------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -7,6 +10,9 @@
   box-sizing: border-box;
 }
 
+/* ------------------------------------------------- */
+/* CONTAINER PRINCIPAL E FUNDO */
+/* ------------------------------------------------- */
 .perfil-container {
   background-image: linear-gradient(rgba(55, 51, 51, 0.5),
       rgba(55, 51, 51, 0.5)),
@@ -35,6 +41,9 @@
   position: relative;
 }
 
+/* ------------------------------------------------- */
+/* MENU DE ABAS (BOTÕES TOPO) */
+/* ------------------------------------------------- */
 .opcoesPerfil {
   width: 60rem;
   min-height: 5rem;
@@ -74,6 +83,9 @@
   transform: scale(0.97);
 }
 
+/* ------------------------------------------------- */
+/* ESTILOS DO FORMULÁRIO DE PERFIL */
+/* ------------------------------------------------- */
 .subtituloPerfil {
   width: 35rem;
   height: 7.5rem;
@@ -93,11 +105,14 @@
   border-radius: 50%;
   background-color: transparent;
   border: 0.2rem solid #000000;
+  padding: 0; /* Remove padding padrão */
+  overflow: hidden; /* Garante que a imagem não saia do circulo */
 }
 
 .perfil {
   width: 100%;
   height: 100%;
+  object-fit: cover; /* Ajusta imagem dentro do botão */
 }
 
 .dados {
@@ -128,6 +143,7 @@
   outline: none;
 }
 
+/* Input de Senha com Olho */
 .input-senha {
   position: relative;
   width: 100%;
@@ -149,6 +165,7 @@
   width: 1.8rem;
 }
 
+/* Mensagens de Feedback */
 .mensagem-erro {
   color: #ff6b6b;
   font-size: 1.2rem;
@@ -164,6 +181,7 @@
   margin: 0;
 }
 
+/* Botões de Ação (Salvar/Sair) */
 .acoesPerfil {
   width: 50%;
   display: flex;
@@ -190,18 +208,30 @@
 }
 
 /* ------------------------------------------------- */
-/* Parta abaixo relacionada ao histórico de batalhas */
+/* ESTILOS DO HISTÓRICO DE BATALHAS */
 /* ------------------------------------------------- */
-.historicoBatalhas {
-  width: 45%;
-  height: 28rem;
-  color: black;
+
+/* Container da lista (Substitui o style inline) */
+.container-historico-batalhas {
+  width: 100%;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto;
+  /* Se quiser rolagem interna, descomente abaixo e ajuste height */
+  /* height: 40rem; */
+  /* overflow-y: auto; */
 }
 
+/* Mensagem quando lista está vazia ou carregando */
+.msg-historico-vazio {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Card da Batalha */
 .batalhaFeita {
   width: 87%;
   height: 12rem;
@@ -211,14 +241,11 @@
   align-items: center;
   padding: 1rem 3rem 1rem 2rem;
   font-size: 1.3rem;
+  margin-bottom: 1rem; /* Espaçamento entre batalhas */
 }
 
 .batalhaFeita p {
-  margin-bottom: 1rem;
-}
-
-.batalhaFeita p+p {
-  margin: 0;
+  margin-bottom: 0.5rem;
 }
 
 .batalhaFeita img {
@@ -228,29 +255,20 @@
 
 .infoBatalhaFeita {
   width: 40rem;
-  margin-right: 6rem;
+  margin-right: 2rem;
+}
+
+/* Texto de Vitória/Derrota (Substitui o style inline) */
+.status-batalha-texto {
+  font-weight: bold;
+  color: #4b2c20;
+  margin-top: 0.5rem;
 }
 
 .opcoesBatalhaFeita {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-}
-
-.opcoesBatalhaFeita p {
-  width: 12rem;
-  height: 3.5rem;
-  background-image: url("../../assets/buttons/btnParticiparBatalha.png");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  border: none;
-  background-color: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  color: white;
-  margin: 0;
 }
 
 .opcoesBatalhaFeita button {
@@ -263,11 +281,16 @@
   background-color: transparent;
   font-size: 1.5rem;
   color: white;
+  cursor: pointer;
 }
 
 .opcoesBatalhaFeita button:active {
   transform: scale(0.97);
 }
+
+/* ------------------------------------------------- */
+/* RESPONSIVIDADE (MEDIA QUERIES) */
+/* ------------------------------------------------- */
 
 @media (max-height: 820px) {
   .dados {
@@ -316,9 +339,9 @@
     top: 0.55rem;
   }
 
-  .botaoSalvar {
-    width: 7rem;
-    padding: 0rem;
+  /* Ajuste para botões menores */
+  .btnSalvar, .btnDeslogar {
+    height: 3rem;
     font-size: 1.5rem;
     margin-top: 1rem;
   }
@@ -338,12 +361,16 @@
 @media (max-width: 600px) {
   .dados {
     width: 25rem;
-    margin-top: 15rem;
+    margin-top: 2rem;
+  }
+  
+  .perfil-container {
+    overflow-y: auto; /* Permite scroll em telas pequenas */
   }
 }
 
 @media (max-width: 690px) {
-  .conteudo-principal {
+  .conteudo-perfil {
     width: 90%;
     min-height: 100%;
     background-size: 100% 100%;
@@ -364,9 +391,9 @@
 
   .btnOpcao,
   .opcaoAtiva {
-    width: 20%;
-    height: 60%;
-    font-size: 1rem;
+    width: 40%;
+    height: 4rem;
+    font-size: 1.2rem;
   }
 
   .subtituloPerfil {
@@ -389,11 +416,8 @@
     top: 0.3rem;
   }
 
-  .dados p {
-    font-size: 0.5rem;
-  }
-
-  .botaoSalvar {
+  .btnSalvar, .btnDeslogar {
     margin-top: 1rem;
+    font-size: 1.2rem;
   }
 }

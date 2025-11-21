@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import "./ModalEditarBatalha.css";
-import { gerenciarBatalha } from "../../../Api/Api";
+import {
+  gerenciarBatalha,
+  removerJogador,
+  deletarBatalha, 
+} from "../../../Api/Api";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function ModalEditarBatalha({
@@ -11,45 +15,160 @@ export default function ModalEditarBatalha({
   setListaBatalhas,
 }) {
   const { user } = useAuth();
-   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
+  const idUsuarioLogado = user ? user.idUsuario || user.id : null;
+
   const [nomeBatalhaEditada, setNomeBatalhaEditada] = useState("");
   const [inscricaoEditada, setInscricaoEditada] = useState(0);
   const [dataHoraEditada, setDataHoraEditada] = useState("");
-  const [premioEditado, setPremioEditado] = useState(0);
-  const [erro, setErro] = useState(null);
 
+  const [jogadoresBatalha, setJogadoresBatalha] = useState([]);
+
+  // ESTADOS PARA AS MENSAGENS
+  const [erro, setErro] = useState(null);
+  const [mensagemSucesso, setMensagemSucesso] = useState(null);
+
+  // Função auxiliar para limpar mensagens automaticamente
+  const limparMensagens = () => {
+    setTimeout(() => {
+      setMensagemSucesso(null);
+      setErro(null);
+    }, 500);
+  };
+
+  // ---------------------------------------------------------
+  // CARREGAR DADOS AO ABRIR O MODAL
+  // ---------------------------------------------------------
   useEffect(() => {
     if (batalhaSendoEditada) {
-      setNomeBatalhaEditada(batalhaSendoEditada.nome || "");
-      setInscricaoEditada(batalhaSendoEditada.custo || 0);
-      setDataHoraEditada(batalhaSendoEditada.dataEHora || "");
-      setPremioEditado(batalhaSendoEditada.premio || 0);
+      setNomeBatalhaEditada(
+        batalhaSendoEditada.nome || batalhaSendoEditada.nomeBatalha || ""
+      );
+      setInscricaoEditada(
+        batalhaSendoEditada.custo || batalhaSendoEditada.custoInscricao || 0
+      );
+      setDataHoraEditada(
+        batalhaSendoEditada.dataEHora ||
+          batalhaSendoEditada.dataHorarioInicio || ""
+      );
+
+      setErro(null);
+      setMensagemSucesso(null);
+
+      const listaParticipantes = [];
+      if (batalhaSendoEditada.jogador1)
+        listaParticipantes.push(batalhaSendoEditada.jogador1);
+      if (batalhaSendoEditada.jogador2)
+        listaParticipantes.push(batalhaSendoEditada.jogador2);
+
+      setJogadoresBatalha(listaParticipantes);
     }
   }, [batalhaSendoEditada]);
 
-  const atualizarBatalha = async () => {
-    const dadosAtt = {
-      idAdm: idUsuarioLogado,
-      nome: nomeBatalhaEditada,
-      custo: inscricaoEditada,
-      dataEHora: dataHoraEditada,
-    }
+  // ---------------------------------------------------------
+  // REMOVER JOGADOR
+  // ---------------------------------------------------------
+  const handleRemoverJogador = async (idUsuarioAlvo) => {
+    const idBatalhaSeguro =
+      batalhaSendoEditada?.idBatalha || batalhaSendoEditada?.id;
 
-    const dados = {
-      idAdm: idUsuarioLogado
-      
-    }
+    if (!idBatalhaSeguro) return;
+
+    setErro(null);
+    setMensagemSucesso(null);
 
     try {
-      const resposta = await gerenciarBatalha(dadosAtt)
-      setListaBatalhas(resposta.data);
+      await removerJogador(idBatalhaSeguro, idUsuarioAlvo);
 
-      const respostaExclusaoUser = await removerJogador()
-      onClose();
-    } catch (err) {
-      setErro(
-        err?.response?.data?.message || "Erro ao conectar com o servidor."
+      setJogadoresBatalha((listaAtual) =>
+        listaAtual.filter((jogador) => jogador.idUsuario !== idUsuarioAlvo)
       );
+
+      setMensagemSucesso("Jogador removido com sucesso!");
+      limparMensagens();
+    } catch (err) {
+      console.error("Erro ao remover:", err);
+      setErro(err?.response?.data?.message || "Erro ao remover jogador.");
+    }
+  };
+
+  // ---------------------------------------------------------
+  // EXCLUIR BATALHA
+  // ---------------------------------------------------------
+  const excluirBatalha = async () => {
+    const idBatalha = batalhaSendoEditada?.idBatalha || batalhaSendoEditada?.id;
+
+    if (!idBatalha) return;
+
+    try {
+      await deletarBatalha(idBatalha);
+
+      setListaBatalhas((listaAntiga) =>
+        listaAntiga.filter((batalha) => batalha.idBatalha !== idBatalha)
+      );
+
+      setMensagemSucesso("Batalha excluída com sucesso!");
+
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } catch (err) {
+      console.error("Erro ao remover:", err);
+      setErro(err?.response?.data?.message || "Erro ao deletar batalha.");
+    }
+  };
+
+  // ---------------------------------------------------------
+  // ATUALIZAR DADOS
+  // ---------------------------------------------------------
+  const atualizarBatalha = async () => {
+    setErro(null);
+    setMensagemSucesso(null);
+
+    const idRealDaBatalha =
+      batalhaSendoEditada?.idBatalha || batalhaSendoEditada?.id;
+
+    if (!idRealDaBatalha) {
+      setErro("Erro interno: ID da batalha inválido.");
+      return;
+    }
+
+    const dadosAtt = {
+      idAdm: idUsuarioLogado,
+      idBatalha: idRealDaBatalha,
+      nomeBatalha: nomeBatalhaEditada,
+      inscricaoMousecoin: inscricaoEditada,
+      dataInicio: dataHoraEditada,
+    };
+
+    try {
+      await gerenciarBatalha(dadosAtt);
+
+      // Atualiza a lista na tela do ADM manualmente para evitar erros
+      setListaBatalhas((listaAntiga) =>
+        listaAntiga.map((batalha) => {
+          if (
+            batalha.idBatalha === idRealDaBatalha ||
+            batalha.id === idRealDaBatalha
+          ) {
+            return {
+              ...batalha,
+              nomeBatalha: nomeBatalhaEditada,
+              custoInscricao: inscricaoEditada,
+              dataHorarioInicio: dataHoraEditada,
+            };
+          }
+          return batalha;
+        })
+      );
+
+      setMensagemSucesso("Dados atualizados com sucesso!");
+
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } catch (err) {
+      console.error(err);
+      setErro(err?.response?.data?.message || "Erro ao atualizar a batalha.");
     }
   };
 
@@ -88,6 +207,11 @@ export default function ModalEditarBatalha({
               onChange={(e) => setDataHoraEditada(e.target.value)}
             />
           </div>
+
+          {erro && <p className="msg-erro-modal">{erro}</p>}
+          {mensagemSucesso && (
+            <p className="msg-sucesso-modal">{mensagemSucesso}</p>
+          )}
         </div>
       );
       break;
@@ -96,29 +220,45 @@ export default function ModalEditarBatalha({
       abaModal = (
         <>
           <div className="quadroJogadoresBatalha">
-            <div className="qJogadorBatalha">
-              <div className="qFotoENomeJogador">
-                <img className="fotoJogadorBatalha" src={RatoEsgoto} />
-                <p className="nomeJogadorBatalha">João Pedro</p>
+            {jogadoresBatalha.length === 0 && (
+              <p className="aviso-sem-jogadores">Nenhum jogador inscrito.</p>
+            )}
+
+            {jogadoresBatalha.map((jogador) => (
+              <div className="qJogadorBatalha" key={jogador.idUsuario}>
+                <div className="qFotoENomeJogador">
+                  <img
+                    className="fotoJogadorBatalha"
+                    src={RatoEsgoto}
+                    alt="Foto perfil"
+                  />
+                  <div className="infoJogadorTexto">
+                    <p className="nomeJogadorBatalha">{jogador.nome}</p>
+                  </div>
+                </div>
+                <button
+                  className="btnRemoverJogador"
+                  onClick={() => handleRemoverJogador(jogador.idUsuario)}
+                  title="Remover jogador"
+                >
+                  X
+                </button>
               </div>
-              <button>X</button>
-            </div>
-            <div className="qJogadorBatalha">
-              <div className="qFotoENomeJogador">
-                <img className="fotoJogadorBatalha" src={RatoEsgoto} />
-                <p className="nomeJogadorBatalha">João Pedro</p>
-              </div>
-              <button>X</button>
-            </div>
+            ))}
           </div>
+
+          {erro && <p className="msg-erro-modal">{erro}</p>}
+          {mensagemSucesso && (
+            <p className="msg-sucesso-modal">{mensagemSucesso}</p>
+          )}
+
           <div className="botoesOpcBatalha">
-            <button
-              className="btnAtualizarInfo"
-              onClick={atualizarBatalha}
-            >
-              Atualizar
+            <button className="btnAtualizarInfo" onClick={atualizarBatalha}>
+              Atualizar Dados
             </button>
-            <button className="btnExcluir">Excluir Batalha</button>
+            <button className="btnExcluir" onClick={excluirBatalha}>
+              Excluir Batalha
+            </button>
           </div>
         </>
       );

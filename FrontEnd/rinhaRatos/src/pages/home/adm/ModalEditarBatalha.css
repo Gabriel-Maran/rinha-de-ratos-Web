@@ -165,3 +165,25 @@ input[type="number"] {
 .btnExcluir {
   background-color: red;
 }
+
+.msg-sucesso-modal {
+  color: #27ae60;
+  background-color: #eafaf1;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  border: 1px solid #27ae60;
+}
+
+.msg-erro-modal {
+  color: #c0392b; 
+  background-color: #f9e79f;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  border: 1px solid #c0392b;
+}

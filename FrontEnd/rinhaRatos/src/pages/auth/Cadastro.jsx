@@ -21,7 +21,7 @@ export default function Cadastro() {
   const [erro, setErro] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const tipoConta = "ADM";
+  const tipoConta = "JOGADOR";
   const mousecoinSaldo = 30;
   const vitorias = 0;
 
@@ -31,8 +31,8 @@ export default function Cadastro() {
 
   const irLogin = async (evento) => {
     if (email === "" || email === "") {
-      setErro("Preencha os campos necessários")
-      return
+      setErro("Preencha os campos necessários");
+      return;
     }
     evento.preventDefault();
     setErro(null);
