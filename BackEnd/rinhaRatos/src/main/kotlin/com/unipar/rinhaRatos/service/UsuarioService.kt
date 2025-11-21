@@ -150,7 +150,7 @@ class UsuarioService(
                 return HttpStatus.BAD_REQUEST
             }
         }
-        if (usuario.email.trim().isEmpty() || usuario.nome.trim().isEmpty() || usuario.senha.trim().isEmpty()) return HttpStatus.NOT_ACCEPTABLE
+        if (usuarioDTO.email.trim().isEmpty() || usuarioDTO.nome.trim().isEmpty() || usuarioDTO.senha.trim().isEmpty()) return HttpStatus.NOT_ACCEPTABLE
         if(usuario.nome.trim().length > 25) return HttpStatus.PAYLOAD_TOO_LARGE
         usuario.nome = usuarioDTO.nome
         usuario.email = usuarioDTO.email
