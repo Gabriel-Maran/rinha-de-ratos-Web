@@ -70,8 +70,20 @@ class BatalhaController(
     }
 
     @GetMapping("/concluidas")
-    fun pegaBatalha(): ResponseEntity<Any> {
+    fun pegaBatalhaAcabadas(): ResponseEntity<Any> {
         val result = batalhaService.pegarTodasAsBatalhasAcabadas()
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
+    @GetMapping("/user/disponiveispara/{idUsuario}")
+    fun pegarBatalhasDisponiveisParaUsuario(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasAsBatalhasAbertasQueOUserNParticipa(idUsuario)
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
+    @GetMapping("/user/concluidas/{idUsuario}")
+    fun pegaBatalhaConcuildaIdUser(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
         return ResponseEntity.ok(result.map{ it.toDto()})
     }
 

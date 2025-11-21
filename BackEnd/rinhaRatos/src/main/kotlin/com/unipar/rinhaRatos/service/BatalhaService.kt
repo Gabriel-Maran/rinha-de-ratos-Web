@@ -55,6 +55,22 @@ class BatalhaService(
     fun pegarTodasAsBatalhasAcabadas(): List<Batalha> =
         batalhaRepository.pegarTodasAsBatalhasAcabadas()
 
+    fun pegarTodasBatalhasDoUsuarioConcluidas(idUsuario: Long): List<Batalha> =
+        batalhaRepository.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
+
+    fun pegarTodasAsBatalhasAbertasQueOUserNParticipa(idUsuario: Long): MutableList<Batalha> {
+        val batalhas = pegarTodasAsBatalhasAbertas()
+        val batalhasParaUser = mutableListOf<Batalha>()
+        for (batalha in batalhas) {
+            val player1 = batalha.jogador1?.idUsuario ?: -100
+            val player2 = batalha.jogador2?.idUsuario ?: -100
+            if(player1 != idUsuario && player2 != idUsuario){
+                batalhasParaUser.add(batalha)
+            }
+        }
+        return batalhasParaUser
+    }
+
     fun batalhaCheia(idBatalha: Long): String {
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
