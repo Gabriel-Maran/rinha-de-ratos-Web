@@ -24,7 +24,7 @@ export default function ModalCriarBatalhas({
       return;
     }
     setErro(null);
-    setMensagemSucesso(null); 
+    setMensagemSucesso(null);
     const idAdmCriador = user.idUsuario || user.id;
 
     const dados = {
@@ -42,8 +42,8 @@ export default function ModalCriarBatalhas({
 
       const novaBatalha = resposta.data;
       console.log("Batalha Criada!", novaBatalha);
-      setListaBatalhas([ novaBatalha, ...listaBatalhas]);
-      
+      setListaBatalhas([novaBatalha, ...listaBatalhas]);
+
       onClose();
     } catch (err) {
       setErro(

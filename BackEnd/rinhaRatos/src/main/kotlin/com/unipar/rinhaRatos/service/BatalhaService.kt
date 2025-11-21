@@ -48,6 +48,13 @@ class BatalhaService(
     fun pegarTodasAsBatalhasDoUsuario(idUsuario: Long): List<Batalha> =
         batalhaRepository.pegarTodasBatalhasDoUsuario(idUsuario)
 
+    fun pegarTodasAsBatalhasDoUsuarioQueNaoAcabaram(idUsuario: Long): List<Batalha> =
+        batalhaRepository.pegarTodasBatalhasDoUsuarioComInscricaoAberta(idUsuario)
+
+
+    fun pegarTodasAsBatalhasAcabadas(): List<Batalha> =
+        batalhaRepository.pegarTodasAsBatalhasAcabadas()
+
     fun batalhaCheia(idBatalha: Long): String {
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
@@ -85,6 +92,7 @@ class BatalhaService(
             throw IllegalArgumentException("USER_NOT_FOUND")
         }
         val adm = admOpt.get()
+        if(basic.nomeBatalha.trim().length > 40 ) throw IllegalArgumentException("NAME_LIMIT_EXCEPTED")
         if(adm.tipoConta != TipoConta.ADM) throw IllegalArgumentException("USER_IS_NOT_ADM")
         val parsedDate = try {
             parseIsoToLocalDateTime(basic.dataHorarioInicio)

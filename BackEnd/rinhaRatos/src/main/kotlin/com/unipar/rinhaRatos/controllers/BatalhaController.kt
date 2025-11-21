@@ -41,6 +41,13 @@ class BatalhaController(
         return ResponseEntity.ok(dtoList)
     }
 
+    @GetMapping("/user/andamento/{idUsuario}")
+    fun pegarTodasAsBatalhasDoUsuarioQueNaoAcabaram(@PathVariable idUsuario: Long): ResponseEntity<List<BatalhaDTO>> {
+        val batalhas = batalhaService.pegarTodasAsBatalhasDoUsuarioQueNaoAcabaram(idUsuario)
+        val dtoList = batalhas.map { it.toDto() }
+        return ResponseEntity.ok(dtoList)
+    }
+
     @GetMapping("/verificaplayer/{idBatalha}/{idUsuario}")
     fun usuarioEstaBatalha(
         @PathVariable idBatalha: Long,
@@ -60,6 +67,12 @@ class BatalhaController(
         val result = batalhaService.getById(idBatalha)
         if(result.isEmpty) return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
         return ResponseEntity.ok(result.get().toDto())
+    }
+
+    @GetMapping("/concluidas")
+    fun pegaBatalha(): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasAsBatalhasAcabadas()
+        return ResponseEntity.ok(result.map{ it.toDto()})
     }
 
     @GetMapping("/batalhacheia/{idBatalha}")
@@ -83,6 +96,7 @@ class BatalhaController(
             val msg = e.message ?: "Requisição inválida"
             when {
                 msg.contains("USER_NOT_FOUND") -> buildError(HttpStatus.NOT_FOUND, "Usuário (adm) não encontrado", "USER_NOT_FOUND")
+                msg.contains("NAME_LIMIT_EXCEPTED") -> buildError(HttpStatus.BAD_REQUEST, "Ultrapassou o limite de caracteres para o nome da batalha", "NAME_LIMIT_EXCEPTED")
                 msg.startsWith("BAD_DATE_FORMAT") -> {
                     // pode vir "BAD_DATE_FORMAT: detalhe..."
                     val detail = msg.removePrefix("BAD_DATE_FORMAT:").trim().ifEmpty { "Formato inválido para data/hora" }

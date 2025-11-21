@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import {
   pegarRatosDoUsuario,
   pegarTodasClasses,
   pegarDescricaoHabilidades,
   pegarBatalhasAbertas,
-  entrarBatalha,
   pegarBatalhasIncrito,
 } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
@@ -27,7 +25,6 @@ const ETAPAS = {
 
 export default function HomeJogador() {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
@@ -38,12 +35,14 @@ export default function HomeJogador() {
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
+  
   const [batalhasAbertas, setBatalhasAbertas] = useState([]);
   const [batalhasInscrito, setBatalhasInscrito] = useState([]);
-  const [loadingRatos, setLoadingRatos] = useState(true);
-  const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
-  const [erroRatos, setErroRatos] = useState(null);
   
+  const [loadingRatos, setLoadingRatos] = useState(true);
+  const [erroRatos, setErroRatos] = useState(null);
+
+  const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
 
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
@@ -54,14 +53,14 @@ export default function HomeJogador() {
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
-  // ----------------------------------------------------------
-  // useCallback para buscar dados
-  // ----------------------------------------------------------
-  const buscarDadosIniciais = useCallback(async () => {
+
+  const buscarDadosIniciais = useCallback(async (silencioso = false) => {
     if (!idUsuarioLogado) return;
 
-    setLoadingRatos(true);
-    setErroRatos(null);
+    if (!silencioso) {
+        setLoadingRatos(true);
+        setErroRatos(null);
+    }
 
     try {
       const [
@@ -85,23 +84,23 @@ export default function HomeJogador() {
       setBatalhasInscrito(respostaBatalhasInscrito.data);
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);
-      setErroRatos("Falha ao carregar dados.");
+      if (!silencioso) setErroRatos("Falha ao carregar dados.");
     } finally {
-      setLoadingRatos(false);
+      if (!silencioso) setLoadingRatos(false);
     }
   }, [idUsuarioLogado]);
 
-  useEffect(() => {
-    if (!idUsuarioLogado) {
-      navigate("/login");
-      return;
-    }
-    buscarDadosIniciais();
-  }, [buscarDadosIniciais, idUsuarioLogado, navigate]);
 
-  // ----------------------------------------------------------
-  // Funções do Modal
-  // ----------------------------------------------------------
+  useEffect(() => {
+    buscarDadosIniciais(false); 
+
+    const intervalo = setInterval(() => {
+        buscarDadosIniciais(true); 
+    }, 3000);
+
+    return () => clearInterval(intervalo);
+  }, [buscarDadosIniciais]);
+
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
   };
@@ -121,7 +120,7 @@ export default function HomeJogador() {
   };
 
   const mostrarRatoCriado = (ratoCompletoDaApi, descHabilidadeDaClasse) => {
-    setRatosUsuario((prevRatos) => [ratoCompletoDaApi, ...prevRatos]);
+    setRatosUsuario((prevRatos) => [...prevRatos, ratoCompletoDaApi]);
     setNovoRato(ratoCompletoDaApi);
     setDescHabilidade(descHabilidadeDaClasse);
     setEtapaModal(ETAPAS.RATO_CRIADO);
@@ -131,48 +130,11 @@ export default function HomeJogador() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
-  // ----------------------------------------------------------
-  // Lógica de Seleção e Batalha 
-  // ----------------------------------------------------------
-
   const definirRatoBatalha = (rato) => {
-     console.log("Rato selecionado para batalha:", rato);
-     setRatoParaBatalhar(rato);
-     alert(`Rato ${rato.nome} selecionado para as próximas batalhas!`);
+    localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
+    setRatoParaBatalhar(rato);
   };
 
-  const handleEntrarBatalha = async (idBatalhaClicada) => {
-    if (!idUsuarioLogado) return;
-    
-    // Garante que pegamos o ID corretamente, seja objeto ou número
-    const idRatoParaUso = ratoParaBatalhar?.id || ratoParaBatalhar?.idRato || ratoParaBatalhar;
-
-    if (!idRatoParaUso) {
-      alert("Você PRECISA selecionar um rato na aba 'Meus Ratos' antes de entrar em uma batalha!");
-      setOpcaoAtivada("Meus ratos");
-      return;
-    }
-
-    const dadosParaApi = {
-      idBatalha: idBatalhaClicada,
-      idUsuario: idUsuarioLogado,
-      idRato: idRatoParaUso
-    };
-
-    try {
-      console.log("Enviando dados para entrar na batalha:", dadosParaApi);
-      await entrarBatalha(dadosParaApi);
-      alert("Você entrou na batalha com sucesso!");
-      buscarDadosIniciais(); 
-    } catch (err) {
-      console.error("Erro ao entrar na batalha:", err);
-      alert(err?.response?.data?.message || "Erro ao entrar na batalha.");
-    }
-  };
-
-  // ----------------------------------------------------------
-  // Renderização
-  // ----------------------------------------------------------
   let conteudoCorpo;
 
   if (loadingRatos) {
@@ -217,8 +179,8 @@ export default function HomeJogador() {
                   {contagemRatosVivos >= limiteRatos
                     ? "Limite Atingido"
                     : loadingRatos
-                      ? "Carregando..."
-                      : ".Adicionar Rato + "}
+                    ? "Carregando..."
+                    : ".Adicionar Rato + "}
                 </strong>
               }
             />
@@ -226,14 +188,18 @@ export default function HomeJogador() {
         );
         break;
       case "Batalhas":
+        // Filtramos a lista para mostrar APENAS as que ainda estão "InscricoesAbertas"
+        const inscricoesPendentes = batalhasInscrito.filter(
+            (batalha) => batalha.status === "InscricoesAbertas"
+        );
+
         conteudoCorpo = (
           <ListaDeBatalhas
             batalhasAbertas={batalhasAbertas}
-            batalhasInscrito={batalhasInscrito}
+            batalhasInscrito={inscricoesPendentes} 
             ratosUsuario={ratosUsuario}
             idUsuarioLogado={idUsuarioLogado}
-            onBatalhaInscrita={buscarDadosIniciais}
-            onEntrarClick={handleEntrarBatalha} 
+            onBatalhaInscrita={() => buscarDadosIniciais(false)}
           />
         );
         break;

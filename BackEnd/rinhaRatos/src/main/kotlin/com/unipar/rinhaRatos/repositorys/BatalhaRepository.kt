@@ -16,5 +16,19 @@ interface BatalhaRepository: JpaRepository<Batalha, Long> {
     """)
     fun pegarTodasBatalhasDoUsuario(@Param("userId") idUsuario: Long): List<Batalha>
 
+    @Query("""
+        SELECT b FROM Batalha b 
+        WHERE (b.jogador1.idUsuario = :userId 
+        OR b.jogador2.idUsuario = :userId)
+        AND b.status = "InscricoesAbertas"
+    """)
+    fun pegarTodasBatalhasDoUsuarioComInscricaoAberta(@Param("userId") idUsuario: Long): List<Batalha>
+
+    @Query("""
+        SELECT b FROM Batalha b 
+        WHERE b.status = "Concluida"
+    """)
+    fun pegarTodasAsBatalhasAcabadas(): List<Batalha>
+
     fun findAllByStatusIs(statusBatalha: StatusBatalha): List<Batalha>
 }

@@ -96,6 +96,16 @@ class UsuarioController(
                     code = "PREENCHA_CAMPOS"
                 )
             )
+        } else if (saved["error"] == "NAME_LIMIT_EXCEPTED") {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse(
+                    timestamp = Instant.now().toString(),
+                    status = HttpStatus.BAD_REQUEST.value(),
+                    error = "Bad Request",
+                    message = "Limite maximo de caracteres para o nome ultrapassado",
+                    code = "NAME_LIMIT_EXCEPTED"
+                )
+            )
         }
         val usuario: Usuario = saved["user"] as Usuario
         return ResponseEntity(usuario.toDto(), HttpStatus.CREATED)
@@ -198,6 +208,17 @@ class UsuarioController(
                         code = "USER_NOT_FOUND"
                     )
                 )
+
+                HttpStatus.PAYLOAD_TOO_LARGE -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ErrorResponse(
+                        timestamp = Instant.now().toString(),
+                        status = HttpStatus.NOT_FOUND.value(),
+                        error = "Payload too large",
+                        message = "Limite maximo de caracteres para o nome ultrapassado",
+                        code = "NAME_LIMIT_EXCEPTED"
+                    )
+                )
+
 
                 HttpStatus.BAD_REQUEST -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     ErrorResponse(

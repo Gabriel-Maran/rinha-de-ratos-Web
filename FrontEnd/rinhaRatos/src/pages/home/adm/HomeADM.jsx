@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { pegarBatalhasAbertas } from "../../../Api/Api";
-import { ranking } from "../../../Api/Api";
+import {
+  pegarBatalhasAbertas,
+  iniciarBatlhas,
+  ranking,
+  verificarSeBatalhaCheia,
+} from "../../../Api/Api";
+
 import Header from "../../../components/comuns/Header/Header";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import trofeu from "../../../assets/icones/IconeTrofeu.png";
@@ -22,8 +27,18 @@ export default function HomeADM() {
   const [editarBatalha, setEditarBatalha] = useState(false);
   const [criarBatalha, setCriarBatalha] = useState(false);
 
+  const [mensagemSucesso, setMensagemSucesso] = useState(null);
+  const [mensagemErro, setMensagemErro] = useState(null);
+
   const [loadingDados, setLoadingDados] = useState(true);
   const [erroDados, setErroDados] = useState(null);
+
+  const limparMensagens = () => {
+    setTimeout(() => {
+      setMensagemSucesso(null);
+      setMensagemErro(null);
+    }, 1000);
+  };
 
   useEffect(() => {
     if (!idUsuarioLogado) return;
@@ -62,6 +77,44 @@ export default function HomeADM() {
   const fecharModal = () => {
     setEditarBatalha(false);
     setCriarBatalha(false);
+  };
+
+  const IniciarBatalha = async (batalha) => {
+    const idBatalha = batalha.idBatalha || batalha.id;
+
+    setMensagemSucesso(null);
+    setMensagemErro(null);
+
+    try {
+      try {
+        await verificarSeBatalhaCheia(idBatalha);
+        setMensagemErro("🚫 Jogadores insuficiente!");
+        limparMensagens();
+        return;
+      } catch (errCheck) {
+        // Se der 409 (Cheia), é bom!
+        if (errCheck.response && errCheck.response.status === 409) {
+        } else {
+          throw errCheck;
+        }
+      }
+
+      await iniciarBatlhas(idBatalha);
+
+      setMensagemSucesso("Batalha iniciada com sucesso!");
+      limparMensagens();
+
+      // Remove da lista visualmente
+      setListaBatalhas((antiga) =>
+        antiga.filter((b) => b.idBatalha !== idBatalha)
+      );
+    } catch (err) {
+      console.error(err);
+      setMensagemErro(
+        err?.response?.data?.message || "Erro ao iniciar batalha."
+      );
+      limparMensagens();
+    }
   };
 
   const formatarDataEHora = (data) => {
@@ -110,6 +163,11 @@ export default function HomeADM() {
       default:
         conteudoHomeAdm = (
           <>
+            {mensagemSucesso && (
+              <div className="msg-sucesso">{mensagemSucesso}</div>
+            )}
+            {mensagemErro && <div className="msg-erro">{mensagemErro}</div>}
+            
             {criarBatalha && (
               <ModalCriarBatalha
                 estadoModal={criarBatalha ? "bgModalAtivo" : "bgModal"}
@@ -133,7 +191,7 @@ export default function HomeADM() {
 
             <div className="listaBatalhasNormal">
               {listaBatalhas.map((batalha) => (
-                <div className="batalha" key={batalha.idBatalha}>
+                <div className="batalha" key={batalha.idBatalha || batalha.id}>
                   <img src={trofeu} />
                   <div className="infoBatalha">
                     <p>{batalha.nomeBatalha}</p>
@@ -149,6 +207,12 @@ export default function HomeADM() {
                     onClick={() => EdicaoDeBatalha(batalha)}
                   >
                     Gerenciar
+                  </button>
+                  <button
+                    className="btnGerenciar"
+                    onClick={() => IniciarBatalha(batalha)}
+                  >
+                    Iniciar Batalha
                   </button>
                 </div>
               ))}

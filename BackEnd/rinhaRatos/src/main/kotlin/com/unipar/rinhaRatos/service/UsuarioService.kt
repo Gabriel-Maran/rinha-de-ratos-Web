@@ -94,6 +94,7 @@ class UsuarioService(
             log.warn("Tentativa de cadastro com email já existente: $emailNormalized")
             return mapOf("user" to "", "error" to "EMAIL_ALREADY_EXISTS")
         }
+        if(usuario.nome.trim().length > 25) return mapOf("user" to "", "error" to "NAME_LIMIT_EXCEPTED")
         usuario.email = emailNormalized
         val saved = usuarioRepository.saveAndFlush(usuario)
         log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
@@ -149,7 +150,8 @@ class UsuarioService(
                 return HttpStatus.BAD_REQUEST
             }
         }
-        if (usuario.email.isEmpty() || usuario.nome.isEmpty() || usuario.senha.isEmpty()) return HttpStatus.NOT_ACCEPTABLE
+        if (usuario.email.trim().isEmpty() || usuario.nome.trim().isEmpty() || usuario.senha.trim().isEmpty()) return HttpStatus.NOT_ACCEPTABLE
+        if(usuario.nome.trim().length > 25) return HttpStatus.PAYLOAD_TOO_LARGE
         usuario.nome = usuarioDTO.nome
         usuario.email = usuarioDTO.email
         usuario.senha = usuarioDTO.senha
