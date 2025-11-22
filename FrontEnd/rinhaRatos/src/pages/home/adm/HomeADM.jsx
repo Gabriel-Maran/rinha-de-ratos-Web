@@ -167,7 +167,7 @@ export default function HomeADM() {
               <div className="msg-sucesso">{mensagemSucesso}</div>
             )}
             {mensagemErro && <div className="msg-erro">{mensagemErro}</div>}
-            
+
             {criarBatalha && (
               <ModalCriarBatalha
                 estadoModal={criarBatalha ? "bgModalAtivo" : "bgModal"}
@@ -188,7 +188,6 @@ export default function HomeADM() {
             <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
               Criar Batalha
             </button>
-
             <div className="listaBatalhas">
               {listaBatalhas.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha || batalha.id}>
@@ -202,18 +201,20 @@ export default function HomeADM() {
                     </p>
                     <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
                   </div>
-                  <button
-                    className="btnGerenciar"
-                    onClick={() => EdicaoDeBatalha(batalha)}
-                  >
-                    Gerenciar
-                  </button>
-                  <button
-                    className="btnGerenciar"
-                    onClick={() => IniciarBatalha(batalha)}
-                  >
-                    Iniciar Batalha
-                  </button>
+                  <div className="acoesBatalhaADM">
+                    <button
+                      className="btnIniciarBatalha"
+                      onClick={() => IniciarBatalha(batalha)}
+                    >
+                      Iniciar Batalha
+                    </button>
+                    <button
+                      className="btnGerenciarBatalha"
+                      onClick={() => EdicaoDeBatalha(batalha)}
+                    >
+                      Gerenciar
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

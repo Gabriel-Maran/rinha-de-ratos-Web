@@ -1,8 +1,8 @@
 .btnIniciarCriacao {
-  position: absolute;
-  top: 0.8rem;
   width: 20rem;
-  height: 10rem;
+  height: 8rem;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
   background-image: url("../../../assets/buttons/btnParticiparBatalha.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -17,22 +17,44 @@
   transform: scale(0.97);
 }
 
-.btnGerenciar {
-  width: 20rem;
-  height: 5rem;
+.listaBatalhasADM {
+  width: 50rem;
+  height: 40rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  scrollbar-width: none;
+  transform-origin: top;
+  transform: scale(0.9);
+}
+
+.acoesBatalhaADM{
+  display: flex;
+  flex-direction: column;
+  gap:1rem
+}
+
+.btnGerenciarBatalha,
+.btnIniciarBatalha {
+  width: 12rem;
+  height: 4rem;
   background-image: url("../../../assets/buttons/btnVerHistorico.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   border: none;
   background-color: transparent;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
+}
+
+.btnIniciarBatalha{
+  background-image: url("../../../assets/buttons/btnParticiparBatalha.png");
 }
 
 .btnGerenciar:active {
   transform: scale(0.97);
 }
-
 
 
 /* ----------------------------------------- */

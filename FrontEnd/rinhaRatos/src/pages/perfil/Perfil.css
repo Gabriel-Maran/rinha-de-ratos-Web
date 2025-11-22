@@ -36,9 +36,9 @@
   background-size: 100% 100%;
   display: flex;
   align-items: center;
-  overflow: hidden;
   flex-direction: column;
   position: relative;
+  overflow: hidden;  
 }
 
 /* ------------------------------------------------- */
@@ -50,7 +50,7 @@
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  margin: 10rem 0rem 2rem 0rem;
+  margin: 6rem 0rem 2rem 0rem;
 }
 
 .btnOpcao,
@@ -88,13 +88,14 @@
 /* ------------------------------------------------- */
 .subtituloPerfil {
   width: 35rem;
-  height: 7.5rem;
+  min-height: 7.5rem;
   margin-top: 0.5rem;
   background-image: url("../../assets/labels/lblPapelTitulo.png");
   background-size: 100% 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
   font-size: 2.8rem;
   color: black;
 }
@@ -105,14 +106,16 @@
   border-radius: 50%;
   background-color: transparent;
   border: 0.2rem solid #000000;
-  padding: 0; /* Remove padding padrão */
-  overflow: hidden; /* Garante que a imagem não saia do circulo */
+  padding: 0;
+  /* Remove padding padrão */
+  overflow: hidden;
+  /* Garante que a imagem não saia do circulo */
 }
 
 .perfil {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ajusta imagem dentro do botão */
+  object-fit: cover;
 }
 
 .dados {
@@ -124,6 +127,7 @@
   align-items: center;
   flex-direction: column;
   gap: 0.5rem;
+  transform-origin: top;
 }
 
 .dados .lblInfoPerfil {
@@ -183,9 +187,9 @@
 
 /* Botões de Ação (Salvar/Sair) */
 .acoesPerfil {
-  width: 50%;
+  width: 30rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .btnSalvar,
@@ -210,17 +214,19 @@
 /* ------------------------------------------------- */
 /* ESTILOS DO HISTÓRICO DE BATALHAS */
 /* ------------------------------------------------- */
-
-/* Container da lista (Substitui o style inline) */
-.container-historico-batalhas {
-  width: 100%;
-  margin-top: 2rem;
+.subTituloBatalhas {
+  width: 28rem;
+  height: 7rem;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  /* Se quiser rolagem interna, descomente abaixo e ajuste height */
-  /* height: 40rem; */
-  /* overflow-y: auto; */
+  text-align: center;
+  background-image: url("../../assets/labels/lblPapelTitulo.png");
+  background-size: 100% 100%;
+  font-size: 2.8rem;
+  color: black;
 }
 
 /* Mensagem quando lista está vazia ou carregando */
@@ -231,33 +237,6 @@
   margin-top: 2rem;
 }
 
-/* Card da Batalha */
-.batalhaFeita {
-  width: 87%;
-  height: 12rem;
-  background-image: url("../../assets/labels/lblPapelBatalha.png");
-  background-size: 100% 100%;
-  display: flex;
-  align-items: center;
-  padding: 1rem 3rem 1rem 2rem;
-  font-size: 1.3rem;
-  margin-bottom: 1rem; /* Espaçamento entre batalhas */
-}
-
-.batalhaFeita p {
-  margin-bottom: 0.5rem;
-}
-
-.batalhaFeita img {
-  width: 5rem;
-  margin-right: 1rem;
-}
-
-.infoBatalhaFeita {
-  width: 40rem;
-  margin-right: 2rem;
-}
-
 /* Texto de Vitória/Derrota (Substitui o style inline) */
 .status-batalha-texto {
   font-weight: bold;
@@ -265,13 +244,14 @@
   margin-top: 0.5rem;
 }
 
-.opcoesBatalhaFeita {
+.opcoesBatalhaPerfil {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.opcoesBatalhaFeita button {
+.btnVerHistorico,
+.btnBaixarRelatorio {
   width: 12rem;
   height: 3.5rem;
   background-image: url("../../assets/buttons/btnVerHistorico.png");
@@ -284,6 +264,10 @@
   cursor: pointer;
 }
 
+.btnBaixarRelatorio{
+  background-image: url("../../assets/buttons/btnParticiparBatalha.png");
+}
+
 .opcoesBatalhaFeita button:active {
   transform: scale(0.97);
 }
@@ -292,16 +276,96 @@
 /* RESPONSIVIDADE (MEDIA QUERIES) */
 /* ------------------------------------------------- */
 
-@media (max-height: 820px) {
+@media (max-height: 870px) {
   .dados {
-    margin-top: 0;
-    transform: scale(0.85);
-  }
-
-  .botaoSalvar {
-    margin-top: 0;
+    transform: scale(0.8);
   }
 }
+
+@media (max-height: 765px) {
+  .dados {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-height: 715px) {
+  .dados {
+    transform: scale(0.6);
+  }
+}
+
+@media (max-height: 662px) {
+  .dados {
+    transform: scale(0.5);
+  }
+}
+
+@media (max-height: 610px) {
+  .dados {
+    transform: scale(0.4);
+  }
+}
+
+@media (max-height: 560px) {
+  .dados {
+    transform: scale(0.3);
+  }
+}
+
+@media (max-height: 508px) {
+  .dados {
+    transform: scale(0.2);
+  }
+}
+
+
+/* -------------------------------- */
+/* Medias Query para tratar largura */
+/* -------------------------------- */
+@media (max-width: 690px) {
+  .subtituloPerfil {
+    width: 15rem;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 325px) {
+  .subtituloPerfil {
+    width: 10rem;
+    font-size: 1.5rem;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .dados{
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 475px) {
+  .dados{
+    transform: scale(0.6);
+  }
+}
+
+@media (max-width: 360px) {
+  .dados{
+    transform: scale(0.4);
+  }
+}
+
+@media (max-width: 969px) {
+  .opcoesPerfil {
+    width: 90%;
+  }
+
+  .btnOpcao,
+  .opcaoAtiva {
+    width: 30%;
+  }
+}
+
 
 @media (max-width: 1280px) and (max-height: 620px) {
   .opcoesPerfil {
@@ -340,41 +404,11 @@
   }
 
   /* Ajuste para botões menores */
-  .btnSalvar, .btnDeslogar {
+  .btnSalvar,
+  .btnDeslogar {
     height: 3rem;
     font-size: 1.5rem;
     margin-top: 1rem;
-  }
-}
-
-@media (max-width: 970px) {
-  .opcoesPerfil {
-    width: 90%;
-  }
-
-  .btnOpcao,
-  .opcaoAtiva {
-    width: 30%;
-  }
-}
-
-@media (max-width: 600px) {
-  .dados {
-    width: 25rem;
-    margin-top: 2rem;
-  }
-  
-  .perfil-container {
-    overflow-y: auto; /* Permite scroll em telas pequenas */
-  }
-}
-
-@media (max-width: 690px) {
-  .conteudo-perfil {
-    width: 90%;
-    min-height: 100%;
-    background-size: 100% 100%;
-    overflow: visible;
   }
 }
 
@@ -416,7 +450,8 @@
     top: 0.3rem;
   }
 
-  .btnSalvar, .btnDeslogar {
+  .btnSalvar,
+  .btnDeslogar {
     margin-top: 1rem;
     font-size: 1.2rem;
   }

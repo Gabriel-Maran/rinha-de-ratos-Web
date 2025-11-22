@@ -15,6 +15,7 @@ export default function ListaDeBatalhas({
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
   const [ativarModal, setAtivarModal] = useState(false);
+  const [comBot, setComBot] = useState(false);
   const [batalhaSelecionadaId, setBatalhaSelecionadaId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [erroModal, setErroModal] = useState(null);
@@ -30,9 +31,12 @@ export default function ListaDeBatalhas({
       return data;
     }
   };
-
-  const handleAbrirModal = (idBatalha) => {
-    setBatalhaSelecionadaId(idBatalha);
+  const handleAbrirModal = (idBatalha, bot) => {
+    if (!bot) {
+      setBatalhaSelecionadaId(idBatalha);
+    } else {
+      setComBot(true);
+    }
     setAtivarModal(true);
     setErroModal(null);
   };
@@ -48,7 +52,7 @@ export default function ListaDeBatalhas({
       setErroModal("Erro: Dados incompletos.");
       return;
     }
-    
+
     setIsLoading(true);
     setErroModal(null);
 
@@ -79,55 +83,65 @@ export default function ListaDeBatalhas({
             <ModalEscolherRatoBatalha
               onClose={handleFecharModal}
               ratosUsuario={ratosUsuario}
-              onConfirmar={handleEntrarBatalha} 
+              onConfirmar={handleEntrarBatalha}
               isLoading={isLoading}
               erroModal={erroModal}
             />
           )}
-          <div className="listaBatalhas">
-            {batalhasAbertas && batalhasAbertas.map((batalha) => (
-              <div className="batalha" key={batalha.idBatalha}>
-                <img src={Trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nomeBatalha}</p>
-                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                  <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
-                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+          <div className="botaoBotELista">
+            <button
+              className="btnBatalhaComBot"
+              onClick={(bot) => handleAbrirModal(bot)}
+            >
+              Batalhar com Bot
+            </button>
+            <div className="listaBatalhas">
+              {batalhasAbertas && batalhasAbertas.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  </div>
+                  <div className="opcoesBatalha">
+                    <button onClick={() => handleAbrirModal(batalha.idBatalha)}>
+                      Participar
+                    </button>
+                  </div>
                 </div>
-                <div className="opcoesBatalha">
-                  <button onClick={() => handleAbrirModal(batalha.idBatalha)}>
-                    Participar
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </>
       );
       break;
-    case "Inscritas": 
+    case "Inscritas":
       conteudoOpcaoBatalhas = (
-        <div className="listaBatalhas">
-          {batalhasInscrito && batalhasInscrito.length > 0 ? (
-            batalhasInscrito.map((batalha) => (
-              <div className="batalha" key={batalha.idBatalha}>
-                <img src={Trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nomeBatalha}</p>
-                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                  <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
-                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+        <div className="botaoBotELista">
+          <div className="listaBatalhas">
+            {batalhasInscrito && batalhasInscrito.length > 0 ? (
+              batalhasInscrito.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  </div>
+                  <div className="opcoesBatalha">
+                    <button>Aguardando...</button>
+                  </div>
                 </div>
-                <div className="opcoesBatalha">
-                  <button>Aguardando...</button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p style={{ textAlign: "center", fontSize: "1.5rem", marginTop: "2rem" }}>
-              Você não está inscrito em nenhuma batalha aberta.
-            </p>
-          )}
+              ))
+            ) : (
+              <p style={{ textAlign: "center", fontSize: "1.5rem", marginTop: "2rem" }}>
+                Você não está inscrito em nenhuma batalha aberta.
+              </p>
+            )}
+          </div>
         </div>
       );
       break;

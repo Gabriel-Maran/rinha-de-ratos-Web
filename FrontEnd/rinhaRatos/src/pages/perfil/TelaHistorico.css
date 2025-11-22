@@ -219,8 +219,8 @@
 }
 
 .historicoBatalha h3 {
-  width: 13rem;
-  height: 4rem;
+  width: 20rem;
+  height: 3.5rem;
   align-self: center;
   display: flex;
   justify-content: center;
@@ -231,7 +231,7 @@
   background-size: 100% 100%;
   box-sizing: content-box;
   position: absolute;
-  bottom: 17.5rem;
+  bottom: 18rem;
 }
 
 .bgConteinerHist {

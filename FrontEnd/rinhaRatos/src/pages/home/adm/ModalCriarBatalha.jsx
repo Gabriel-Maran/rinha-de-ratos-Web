@@ -16,7 +16,7 @@ export default function ModalCriarBatalhas({
 
   const [nomeBatalha, setNomeBatalha] = useState("");
   const [dataHorarioInicio, setDataHorarioInicio] = useState("");
-  const [custoInscricao, setCustoInscricao] = useState(0);
+  const [custoInscricao, setCustoInscricao] = useState("");
 
   const CadastrarBatalha = async () => {
     if (nomeBatalha === "" || custoInscricao <= 0 || dataHorarioInicio === "") {
@@ -72,14 +72,16 @@ export default function ModalCriarBatalhas({
               <input
                 type="text"
                 value={nomeBatalha}
+                placeholder="Insira o nome da batalha"
                 onChange={(e) => setNomeBatalha(e.target.value)}
               />
             </div>
             <div>
-              <h3>Inscrição</h3>
+              <h3>Custo da Inscrição</h3>
               <input
                 type="number"
                 value={custoInscricao}
+                placeholder="Insira o custo da incrição"
                 onChange={(e) => setCustoInscricao(Number(e.target.value))}
               />
             </div>
