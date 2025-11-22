@@ -38,7 +38,6 @@ export default function Perfil({ qtdeMoedas }) {
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  // Inicia com 1 (padrão), mas o useEffect vai corrigir isso logo em seguida
   const [fotoSelecionada, setFotoSelecionada] = useState(
     user?.idFotoPerfil || 1
   );
@@ -55,7 +54,7 @@ export default function Perfil({ qtdeMoedas }) {
   const fotoUrl = getFotoUrlById(fotoSelecionada);
 
   // ---------------------------------------------------------
-  // CARREGAMENTO INICIAL E MONITORAMENTO DE ABAS
+  // CARREGAMENTO INICIAL
   // ---------------------------------------------------------
   useEffect(() => {
     if (!idUsuarioLogado) return;
@@ -136,36 +135,41 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   // ---------------------------------------------------------
-  // AÇÃO: TROCAR DADOS DO PERFIL
+  // AÇÃO: TROCAR DADOS (SEM VERIFICAÇÃO DE SEGURANÇA)
   // ---------------------------------------------------------
   const senhaTrocada = async (evento) => {
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
 
-    const dados = { email, senha, nome };
-    const idFotoParaAPI = fotoSelecionada;
+    // Monta o objeto exatamente como está nos inputs
+    const dados = { email, nome, senha };
 
     try {
+      // 1. Manda para o backend sem validar nada no front
       await trocarSenha(dados, idUsuarioLogado);
-      if (idFotoParaAPI !== user.idFotoPerfil) {
-        await trocarFoto(idUsuarioLogado, idFotoParaAPI);
+
+      // 2. Se a foto mudou visualmente, manda a requisição da foto
+      if (fotoSelecionada !== user.idFotoPerfil) {
+        await trocarFoto(idUsuarioLogado, fotoSelecionada);
       }
 
-      const respostaUsuarioAtualizada = await pegarUsuarioPorId(
-        idUsuarioLogado
-      );
-
+      // 3. Atualiza o usuário no contexto global para refletir na tela
+      const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
       setUser(respostaUsuarioAtualizada.data);
 
+      setSenha(""); // Limpa o campo senha apenas visualmente
       setMensagemSucesso("Perfil alterado com sucesso!");
+      
     } catch (err) {
+      console.error(err);
+      // Se der erro, mostra a mensagem que o backend mandar
       setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
     }
   };
 
   // ---------------------------------------------------------
-  // RENDERIZAÇÃO DO CONTEÚDO
+  // RENDERIZAÇÃO
   // ---------------------------------------------------------
   let conteudoPerfil;
 
@@ -178,6 +182,7 @@ export default function Perfil({ qtdeMoedas }) {
               modalAtivado={modalOpcFoto}
               onClose={fecharModalOpcFoto}
               onSelectFoto={handleFotoSelecionada}
+              fotoAtual={fotoSelecionada}
             />
           )}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
@@ -186,7 +191,13 @@ export default function Perfil({ qtdeMoedas }) {
               className="btnOpcFotoPerfil"
               onClick={() => setModalOpcFoto(true)}
             >
-              <img className="perfil" src={fotoUrl} alt="Foto de Perfil" />
+              <img 
+                className="perfil" 
+                src={fotoUrl} 
+                alt="Foto de Perfil" 
+                // Garante que a foto não fique invertida se houver CSS global interferindo
+                style={{ transform: "none" }} 
+              />
             </button>
 
             <p className="lblInfoPerfil">Nome:</p>
@@ -214,7 +225,7 @@ export default function Perfil({ qtdeMoedas }) {
                   type: mostrarSenha ? "text" : "password",
                   value: senha,
                   onChange: (e) => setSenha(e.target.value),
-                  placeholder: "Coloque sua nova senha",
+                  placeholder: "Nova senha (opcional)",
                 }}
               />
               <span className="verSenhaRedefinida" onClick={funMostrarSenha}>
