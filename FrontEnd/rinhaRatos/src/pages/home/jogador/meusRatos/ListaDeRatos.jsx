@@ -12,7 +12,7 @@ export default function ListaDeRatos({
       <div className="listaRatos">
         {ratosUsuario.map((rato) => (
           <div
-            onClick={mostrarDetalhesRato}
+            onClick={() => mostrarDetalhesRato(rato)}
             className={
               "displayRato" +
               (ratoSelecionado && ratoSelecionado.id === rato.id

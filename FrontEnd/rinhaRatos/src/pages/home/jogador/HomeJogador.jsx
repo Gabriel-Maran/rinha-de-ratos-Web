@@ -4,8 +4,8 @@ import {
   pegarRatosDoUsuario,
   pegarTodasClasses,
   pegarDescricaoHabilidades,
-  pegarBatalhasAbertas,
   pegarBatalhasIncrito,
+  pegarBatalhasDisponiveis,
 } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
 import Botao from "../../../components/comuns/Botao";
@@ -35,10 +35,10 @@ export default function HomeJogador() {
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
-  
+
   const [batalhasAbertas, setBatalhasAbertas] = useState([]);
   const [batalhasInscrito, setBatalhasInscrito] = useState([]);
-  
+
   const [loadingRatos, setLoadingRatos] = useState(true);
   const [erroRatos, setErroRatos] = useState(null);
 
@@ -53,49 +53,61 @@ export default function HomeJogador() {
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
+  const buscarDadosIniciais = useCallback(
+    async (silencioso = false) => {
+      if (!idUsuarioLogado) return;
 
-  const buscarDadosIniciais = useCallback(async (silencioso = false) => {
-    if (!idUsuarioLogado) return;
-
-    if (!silencioso) {
+      if (!silencioso) {
         setLoadingRatos(true);
         setErroRatos(null);
-    }
+      }
 
-    try {
-      const [
-        respostaRatos,
-        respostaClasses,
-        respostaHabilidades,
-        respostaBatalhas,
-        respostaBatalhasInscrito,
-      ] = await Promise.all([
-        pegarRatosDoUsuario(idUsuarioLogado),
-        pegarTodasClasses(),
-        pegarDescricaoHabilidades(),
-        pegarBatalhasAbertas(),
-        pegarBatalhasIncrito(idUsuarioLogado),
-      ]);
+      try {
+        const [
+          respostaRatos,
+          respostaClasses,
+          respostaHabilidades,
+          respostaBatalhas,
+          respostaBatalhasInscrito,
+        ] = await Promise.all([
+          pegarRatosDoUsuario(idUsuarioLogado),
+          pegarTodasClasses(),
+          pegarDescricaoHabilidades(),
+          pegarBatalhasDisponiveis(idUsuarioLogado),
+          pegarBatalhasIncrito(idUsuarioLogado),
+        ]);
 
-      setRatosUsuario(respostaRatos.data);
-      setClasses(respostaClasses.data);
-      setDescHabilidades(respostaHabilidades.data);
-      setBatalhasAbertas(respostaBatalhas.data);
-      setBatalhasInscrito(respostaBatalhasInscrito.data);
-    } catch (err) {
-      console.error("Erro ao buscar dados iniciais:", err);
-      if (!silencioso) setErroRatos("Falha ao carregar dados.");
-    } finally {
-      if (!silencioso) setLoadingRatos(false);
-    }
-  }, [idUsuarioLogado]);
+        setRatosUsuario(respostaRatos.data);
+        setClasses(respostaClasses.data);
+        setDescHabilidades(respostaHabilidades.data);
+        setBatalhasInscrito(respostaBatalhasInscrito.data);
 
+        // if para organizar a ordem da batalha.
+        if (Array.isArray(respostaBatalhas.data)) {
+          const listaOrdenada = respostaBatalhas.data.sort((a, b) => {
+            const idA = a.idBatalha || a.id;
+            const idB = b.idBatalha || b.id;
+            return idB - idA;
+          });
+          setBatalhasAbertas(listaOrdenada);
+        } else {
+          setBatalhasAbertas([]);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar dados iniciais:", err);
+        if (!silencioso) setErroRatos("Falha ao carregar dados.");
+      } finally {
+        if (!silencioso) setLoadingRatos(false);
+      }
+    },
+    [idUsuarioLogado]
+  );
 
   useEffect(() => {
-    buscarDadosIniciais(false); 
+    buscarDadosIniciais(false);
 
     const intervalo = setInterval(() => {
-        buscarDadosIniciais(true); 
+      buscarDadosIniciais(true);
     }, 3000);
 
     return () => clearInterval(intervalo);
@@ -126,7 +138,19 @@ export default function HomeJogador() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
-  const mostrarDetalhesRato = () => {
+  const mostrarDetalhesRato = (ratoClicado) => {
+    setNovoRato(ratoClicado);
+
+    if (descricaoHabilidades && ratoClicado.habilidade) {
+      const habilidadeEncontrada = descricaoHabilidades.find(
+        (h) => h.nomeHabilidade === ratoClicado.habilidade.nomeHabilidade
+      );
+      const desc = habilidadeEncontrada
+        ? habilidadeEncontrada.descricao
+        : "Descrição indisponível.";
+      setDescHabilidade(desc);
+    }
+
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
@@ -190,13 +214,13 @@ export default function HomeJogador() {
       case "Batalhas":
         // Filtramos a lista para mostrar APENAS as que ainda estão "InscricoesAbertas"
         const inscricoesPendentes = batalhasInscrito.filter(
-            (batalha) => batalha.status === "InscricoesAbertas"
+          (batalha) => batalha.status === "InscricoesAbertas"
         );
 
         conteudoCorpo = (
           <ListaDeBatalhas
             batalhasAbertas={batalhasAbertas}
-            batalhasInscrito={inscricoesPendentes} 
+            batalhasInscrito={inscricoesPendentes}
             ratosUsuario={ratosUsuario}
             idUsuarioLogado={idUsuarioLogado}
             onBatalhaInscrita={() => buscarDadosIniciais(false)}

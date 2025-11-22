@@ -5,6 +5,8 @@ import {
   trocarFoto,
   pegarUsuarioPorId,
   batalhaConcluidas,
+  pegarBatalhasCriadas,
+  baixarPdf,
 } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
@@ -66,25 +68,125 @@ export default function Perfil({ qtdeMoedas }) {
     }
 
     if (opcaoAtivada === "Histórico de Batalhas") {
-      const buscarHistorico = async () => {
-        setLoadingHistorico(true);
-        try {
-          const resposta = await batalhaConcluidas(idUsuarioLogado);
-          if (Array.isArray(resposta.data)) {
-            setHistoricoBatalhas(resposta.data);
-          } else {
+      if (user.tipoConta === "JOGADOR") {
+        const buscarHistorico = async () => {
+          setLoadingHistorico(true);
+          try {
+            const resposta = await batalhaConcluidas(idUsuarioLogado);
+            if (Array.isArray(resposta.data)) {
+              setHistoricoBatalhas(resposta.data);
+            } else {
+              setHistoricoBatalhas([]);
+            }
+          } catch (err) {
+            console.error("Erro ao buscar histórico:", err);
             setHistoricoBatalhas([]);
+          } finally {
+            setLoadingHistorico(false);
           }
-        } catch (err) {
-          console.error("Erro ao buscar histórico:", err);
-          setHistoricoBatalhas([]);
-        } finally {
-          setLoadingHistorico(false);
-        }
-      };
-      buscarHistorico();
+        };
+        buscarHistorico();
+      } else {
+        const buscarHistorico = async () => {
+          setLoadingHistorico(true);
+          try {
+            const resposta = await pegarBatalhasCriadas(idUsuarioLogado);
+            if (Array.isArray(resposta.data)) {
+              setHistoricoBatalhas(resposta.data);
+            } else {
+              setHistoricoBatalhas([]);
+            }
+          } catch (err) {
+            console.error("Erro ao buscar histórico:", err);
+            setHistoricoBatalhas([]);
+          } finally {
+            setLoadingHistorico(false);
+          }
+        };
+        buscarHistorico();
+      }
     }
   }, [user, opcaoAtivada, idUsuarioLogado]);
+
+  // ---------------------------------------------------------
+  //  BAIXAR O HISTORICO EM PDF
+  // ---------------------------------------------------------
+
+  // BLOB(Binary Large Object)  sem usar o blob o axios tenta abrir o arquivo e ler um json,
+  // já com o blob você diz para ele apenas guardar os dados  brutos em uma caixa,
+  // com isso o javScript   pega os binários exatos e salva na memória.
+
+  // 1. Cria uma URL temporária para o arquivo binário createObjectURL(Blob).
+  // 2. Cria um link HTML invisível(createElement).
+  // 3. Define o nome do arquivo que será baixado(setAttribute).
+  // 4. Adiciona no corpo do site, clica e remove(appendChild).
+
+  const baixarHistorico = async () => {
+    setMensagemSucesso(null);
+    setErro(null);
+    try {
+      const resposta = await baixarPdf(idUsuarioLogado);
+
+      const url = window.URL.createObjectURL(new Blob([resposta.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+
+      link.setAttribute(
+        "download",
+        `Historico_Batalhas_${idUsuarioLogado}.pdf`
+      );
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setMensagemSucesso("Relatório baixado com sucesso!");
+    } catch (err) {
+      console.error(err);
+      setErro("Erro ao baixar o PDF. Tente novamente.");
+    }
+  };
+
+  // ---------------------------------------------------------
+  //  TROCAR DADOS
+  // ---------------------------------------------------------
+  const senhaTrocada = async (evento) => {
+    evento.preventDefault();
+    setErro(null);
+    setMensagemSucesso(null);
+
+    const dados = { email, nome, senha };
+
+    try {
+      await trocarSenha(dados, idUsuarioLogado);
+
+      if (fotoSelecionada !== user.idFotoPerfil) {
+        await trocarFoto(idUsuarioLogado, fotoSelecionada);
+      }
+
+      // Atualiza o usuário no contexto global para refletir na tela
+      const respostaUsuarioAtualizada = await pegarUsuarioPorId(
+        idUsuarioLogado
+      );
+      setUser(respostaUsuarioAtualizada.data);
+
+      setSenha("");
+      setMensagemSucesso("Perfil alterado com sucesso!");
+    } catch (err) {
+      console.error(err);
+      setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
+    }
+  };
+
+  // ---------------------------------------------------------
+  //  DESLOGAR
+  // ---------------------------------------------------------
+  const deslogar = () => {
+    setUser(null);
+    sessionStorage.removeItem("idUsuario");
+    navigate("/login");
+  };
 
   // ---------------------------------------------------------
   // FUNÇÕES AUXILIARES
@@ -133,38 +235,6 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   // ---------------------------------------------------------
-  //  TROCAR DADOS 
-  // ---------------------------------------------------------
-  const senhaTrocada = async (evento) => {
-    evento.preventDefault();
-    setErro(null);
-    setMensagemSucesso(null);
-
-
-    const dados = { email, nome, senha };
-
-    try {
-  
-      await trocarSenha(dados, idUsuarioLogado);
-
-      if (fotoSelecionada !== user.idFotoPerfil) {
-        await trocarFoto(idUsuarioLogado, fotoSelecionada);
-      }
-
-      // Atualiza o usuário no contexto global para refletir na tela
-      const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
-      setUser(respostaUsuarioAtualizada.data);
-
-      setSenha(""); 
-      setMensagemSucesso("Perfil alterado com sucesso!");
-      
-    } catch (err) {
-      console.error(err);
-      setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
-    }
-  };
-
-  // ---------------------------------------------------------
   // RENDERIZAÇÃO
   // ---------------------------------------------------------
   let conteudoPerfil;
@@ -187,11 +257,7 @@ export default function Perfil({ qtdeMoedas }) {
               className="btnOpcFotoPerfil"
               onClick={() => setModalOpcFoto(true)}
             >
-              <img 
-                className="perfil" 
-                src={fotoUrl} 
-                alt="Foto de Perfil" 
-              />
+              <img className="perfil" src={fotoUrl} alt="Foto de Perfil" />
             </button>
             <p className="lblInfoPerfil">Nome:</p>
             <Input
@@ -237,7 +303,7 @@ export default function Perfil({ qtdeMoedas }) {
               <button className="btnSalvar" onClick={senhaTrocada}>
                 Salvar
               </button>
-              <button className="btnDeslogar" onClick={() => navigate("/login")}>
+              <button className="btnDeslogar" onClick={deslogar}>
                 Deslogar
               </button>
             </div>
@@ -268,17 +334,25 @@ export default function Perfil({ qtdeMoedas }) {
                     <div className="infoBatalha">
                       <p>{batalha.nomeBatalha}</p>
                       <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                      <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                      <p>
+                        Data: {formatarDataEHora(batalha.dataHorarioInicio)}
+                      </p>
                       <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
                       <p className="status-batalha-texto">
                         {getStatusVisual(batalha)}
                       </p>
                     </div>
                     <div className="opcoesBatalhaPerfil">
-                      <button className="btnVerHistorico" onClick={() => abrirHistorico(batalha.idBatalha)}>
+                      <button
+                        className="btnVerHistorico"
+                        onClick={() => abrirHistorico(batalha.idBatalha)}
+                      >
                         Ver Histórico
                       </button>
-                      <button className="btnBaixarRelatorio">
+                      <button
+                        className="btnBaixarRelatorio"
+                        onClick={baixarHistorico}
+                      >
                         Baixar Relatório
                       </button>
                     </div>

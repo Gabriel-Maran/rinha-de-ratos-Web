@@ -100,11 +100,10 @@ export default function HomeADM() {
       }
 
       await iniciarBatlhas(idBatalha);
-      console.log(idBatalha)
+      console.log(idBatalha);
       setMensagemSucesso("Batalha iniciada com sucesso!");
       limparMensagens();
 
-      
       setListaBatalhas((antiga) =>
         antiga.filter((b) => b.idBatalha !== idBatalha)
       );

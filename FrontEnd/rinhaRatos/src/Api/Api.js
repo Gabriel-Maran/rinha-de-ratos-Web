@@ -96,8 +96,18 @@ export const pegarBatalhasIncrito = async (idUsuario) => {
 };
 
 export const batalhaConcluidas = async (idUsuario) => {
-  return await apiClient.get(`batalha/user/concluidas/${idUsuario}`)
-}
+  return await apiClient.get(`batalha/user/concluidas/${idUsuario}`);
+};
+
+export const pegarBatalhasDisponiveis = async (idUsuario) => {
+  return await apiClient.get(`batalha/user/disponiveispara/${idUsuario}`);
+};
+
+export const baixarPdf = async (idUsuario) => {
+  return await apiClient.get(`/pdf/user/${idUsuario}`, {
+    responseType: 'blob', // <--- OBRIGATÓRIO PARA ARQUIVOS
+  });
+};
 
 // ---------------------------------------------------------
 // APIS RELACIONADAS A BATALHA DO ADM
@@ -128,4 +138,8 @@ export const iniciarBatlhas = (idBatalha) => {
 
 export const verificarSeBatalhaCheia = (idBatalha) => {
   return apiClient.get(`batalha/batalhacheia/${idBatalha}`);
+};
+
+export const pegarBatalhasCriadas = (idADM) => {
+  return apiClient.get(`batalha/adm/${idADM}`);
 };

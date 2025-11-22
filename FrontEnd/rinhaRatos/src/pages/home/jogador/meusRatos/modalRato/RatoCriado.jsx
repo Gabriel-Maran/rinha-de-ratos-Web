@@ -19,7 +19,9 @@ export default function RatoCriado({ onClose, novoRato, descHabilidade }) {
 
   return (
     <>
-      <div className="titulo">Criação concluída!</div>
+      <div className="titulo">
+        {novoRato?.idRato ? "Detalhes do Rato" : "Criação concluída!"}
+      </div>
       <div className="imagemENome">
         <img
           src={
