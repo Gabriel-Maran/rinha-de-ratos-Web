@@ -6,13 +6,13 @@ import {
   ranking,
   verificarSeBatalhaCheia,
 } from "../../../Api/Api";
-
 import Header from "../../../components/comuns/Header/Header";
 import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import trofeu from "../../../assets/icones/IconeTrofeu.png";
 import ModalEditarBatalha from "./ModalEditarBatalha";
 import ModalCriarBatalha from "./ModalCriarBatalha";
 import "./HomeADM.css";
+import "../jogador/HomeJogador.css"
 import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
@@ -131,7 +131,7 @@ export default function HomeADM() {
 
   let conteudoHomeAdm;
   if (loadingDados) {
-    conteudoHomeAdm = <p className="loading-mensagem">A carregar dados...</p>;
+    conteudoHomeAdm = <p className="loading-mensagem">Carregando...</p>;
   } else if (erroDados) {
     conteudoHomeAdm = <p className="erro-mensagem">{erroDados}</p>;
   } else {

@@ -1,10 +1,9 @@
 .addRato {
-  position: absolute;
-  top: 1.2rem;
+  width: 21rem;
+  height: 6rem;
+  margin-top: 1rem;
   color: white;
   background-color: #ffae52;
-  width: 21rem;
-  height: 9rem;
   border-radius: 20px;
   border: 3px solid #000;
   font-size: 2.5rem;
@@ -15,7 +14,7 @@
 .listaRatos {
   width: 50rem;
   height: 40rem;
-  margin-top: 12rem;
+  margin-top: 3rem;
   box-sizing: border-box;
 }
 
@@ -47,10 +46,12 @@
   .listaRatos {
     width: 38rem;
   }
+
   .displayRato {
     height: 9rem;
     font-size: 2.8rem;
   }
+
   .imagem-rato-lista {
     width: 8rem;
   }
@@ -60,10 +61,12 @@
   .listaRatos {
     width: 32rem;
   }
+
   .displayRato {
     height: 7rem;
     font-size: 2.5rem;
   }
+
   .imagem-rato-lista {
     width: 6rem;
   }
@@ -73,10 +76,12 @@
   .listaRatos {
     width: 28rem;
   }
+
   .displayRato {
     height: 6rem;
     font-size: 2.2rem;
   }
+
   .imagem-rato-lista {
     width: 5rem;
   }
@@ -86,27 +91,62 @@
   .listaRatos {
     width: 25rem;
   }
+
   .displayRato {
     height: 5rem;
     font-size: 2rem;
   }
+
   .imagem-rato-lista {
     width: 4rem;
   }
 }
+
+@media (max-height: 650px) {
+  .listaRatos {
+    width: 22rem;
+  }
+
+  .displayRato {
+    height: 4rem;
+    font-size: 1.7rem;
+  }
+
+  .imagem-rato-lista {
+    width: 3rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .listaRatos {
+    width: 19rem;
+  }
+
+  .displayRato {
+    height: 3rem;
+    font-size: 1.5rem;
+  }
+
+  .imagem-rato-lista {
+    width: 2rem;
+  }
+}
+
 
 /* ------------------------------------ */
 /* Medias Query para tratar comprimento */
 /* ------------------------------------ */
 @media (max-width: 970px) {
   .listaRatos {
-    width: 33rem;
+    width: 28rem;
   }
+
   .displayRato {
     font-size: 2.2rem;
   }
+
   .imagem-rato-lista {
-    width: 8rem;
+    width: 4rem;
   }
 }
 
@@ -116,14 +156,17 @@
     height: 7rem;
     font-size: 1.7rem;
   }
+
   .listaRatos {
     width: 22rem;
   }
+
   .displayRato {
     height: 8rem;
     font-size: 2rem;
     padding: 0rem 0.5rem 0rem 1rem;
   }
+
   .imagem-rato-lista {
     width: 6rem;
   }
@@ -147,15 +190,18 @@
     height: 4.5rem;
     font-size: 1.2rem;
   }
+
   .listaRatos {
     margin-top: 8rem;
     width: 13rem;
   }
+
   .displayRato {
     height: 5rem;
     font-size: 1rem;
     padding: 0rem 0.5rem 0rem 1rem;
   }
+
   .imagem-rato-lista {
     width: 4rem;
   }

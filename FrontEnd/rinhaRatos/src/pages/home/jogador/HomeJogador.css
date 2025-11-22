@@ -36,7 +36,7 @@
 .conteudo-principal {
   width: 100%;
   max-width: 115rem;
-  min-height: 80rem;
+  min-height: 60rem;
   background-image: url("../../../assets/displays/displayMadeira.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;

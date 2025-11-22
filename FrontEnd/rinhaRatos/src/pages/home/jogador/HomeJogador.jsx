@@ -58,7 +58,7 @@ export default function HomeJogador() {
 
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
-  
+
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
 
@@ -94,8 +94,8 @@ export default function HomeJogador() {
           pegarRatosDoUsuario(idUsuarioLogado),
           pegarTodasClasses(),
           pegarDescricaoHabilidades(),
-          pegarBatalhasDisponiveis(idUsuarioLogado), 
-          pegarBatalhasIncrito(idUsuarioLogado),    
+          pegarBatalhasDisponiveis(idUsuarioLogado),
+          pegarBatalhasIncrito(idUsuarioLogado),
         ]);
 
         setRatosUsuario(respostaRatos.data);
@@ -128,7 +128,7 @@ export default function HomeJogador() {
 
   useEffect(() => {
     // Busca inicial com loading visual
-    buscarDadosIniciais(false); 
+    buscarDadosIniciais(false);
 
     // Cria um intervalo (Polling) para atualizar os dados a cada 3 segundos
     // sem mostrar o loading (silencioso), mantendo a lista sempre atualizada.
@@ -220,13 +220,6 @@ export default function HomeJogador() {
               loadingModal={loadingRatos}
               erroModal={erroRatos}
             />
-
-            <ListaDeRatos
-              ratosUsuario={ratosUsuario}
-              onSelectRato={definirRatoBatalha}
-              ratoSelecionado={ratoParaBatalhar}
-              mostrarDetalhesRato={mostrarDetalhesRato}
-            />
             <Botao
               button={{
                 className: "addRato",
@@ -238,10 +231,16 @@ export default function HomeJogador() {
                   {contagemRatosVivos >= limiteRatos
                     ? "Limite Atingido"
                     : loadingRatos
-                    ? "Carregando..."
-                    : ".Adicionar Rato + "}
+                      ? "Carregando..."
+                      : ".Adicionar Rato + "}
                 </strong>
               }
+            />
+            <ListaDeRatos
+              ratosUsuario={ratosUsuario}
+              onSelectRato={definirRatoBatalha}
+              ratoSelecionado={ratoParaBatalhar}
+              mostrarDetalhesRato={mostrarDetalhesRato}
             />
           </>
         );
@@ -266,7 +265,7 @@ export default function HomeJogador() {
       case "Ranking":
         conteudoCorpo = <Ranking />;
         break;
-        
+
       case "Loja":
         conteudoCorpo = <Loja qtdeMoedas={qtdeMoedas} />;
         break;

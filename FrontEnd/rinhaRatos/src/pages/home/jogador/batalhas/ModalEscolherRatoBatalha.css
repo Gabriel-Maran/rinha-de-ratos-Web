@@ -1,3 +1,7 @@
+.loading-mensagem-modal-selecao-rato{
+  color: white;
+}
+
 .bgModal {
   /* Torna o overlay de tela inteira */
   position: fixed;

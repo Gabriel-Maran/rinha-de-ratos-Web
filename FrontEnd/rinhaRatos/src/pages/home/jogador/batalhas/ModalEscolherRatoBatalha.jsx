@@ -24,7 +24,7 @@ export default function ModalEscolherRatoBatalha({
             ✖
           </button>
           <div className="titulo">Escolha um Rato</div>
-          {isLoading && <p className="loading-mensagem">A inscrever rato...</p>}
+          {isLoading && <p className="loading-mensagem-modal-selecao-rato">Inscrevendo rato...</p>}
           {erroModal && <p className="mensagem-erro-batalha">{erroModal}</p>}
           {ratosDisponiveis.length === 0 && !isLoading && (
             <p className="mensagem-erro-batalha">Nenhum rato disponível para batalhar.</p>

@@ -1,7 +1,13 @@
+.loading-mensagem{
+  margin-top: 12rem;
+  font-size: 3rem;
+  color: white;
+}
+
 .btnIniciarCriacao {
   width: 20rem;
-  height: 8rem;
-  margin-top: 1.5rem;
+  height: 6.5rem;
+  margin-top: 1rem;
   margin-bottom: 3rem;
   background-image: url("../../../assets/buttons/btnParticiparBatalha.png");
   background-repeat: no-repeat;
