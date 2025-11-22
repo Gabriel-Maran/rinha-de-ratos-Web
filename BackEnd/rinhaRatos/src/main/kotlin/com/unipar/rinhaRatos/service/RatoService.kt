@@ -40,22 +40,26 @@ class RatoService(
         val donoDoRatoOpt = usuarioService.getById(ratoBasic.idUsuario)
         if (donoDoRatoOpt.isEmpty) return mapOf("Status" to "USER_NOT_FOUND")
         val donoDoRato = donoDoRatoOpt.get()
+        val habilidadeOpt = habilidadeRepository.findById(ratoBasic.idHabilidade)
         if(donoDoRato.tipoConta != TipoConta.BOT){
             val countRatos = usuarioRepository.countRatosVivosByIdUsuario(donoDoRato.idUsuario)
             if (countRatos == 3.toLong()) return mapOf("Status" to "USER_ALREADY_HAS_3_RATOS")
             if (donoDoRato.mousecoinSaldo < 5) return mapOf("Status" to "USER_HAS_NOT_ENOUGH_MONEY" )
             donoDoRato.mousecoinSaldo -= 5
         }
-        val habilidadeOpt = habilidadeRepository.findById(ratoBasic.idHabilidade)
         if (habilidadeOpt.isEmpty) return mapOf("Status" to "NON_EXISTENT_CLASS_OR_HABILIDADE")
+
         val habilidade = habilidadeOpt.get()
         val classe = habilidade.classe
 
-        val descricao = classe.descricao ?: "Sem descrição"
         var nome = ratoBasic.nomeCustomizado?.trim() ?: ""
         if(nome.isEmpty()){
             nome = classe.apelido.toString()
         }
+        if(nome.length > 25) return mapOf("Status" to "NAME_LIMIT_EXCEPTED")
+
+
+        val descricao = classe.descricao ?: "Sem descrição"
         val rato = Rato(
             nomeCustomizado = nome,
             descricao = descricao,

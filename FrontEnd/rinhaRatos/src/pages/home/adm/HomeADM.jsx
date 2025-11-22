@@ -17,6 +17,7 @@ import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
   const { user } = useAuth();
+
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;

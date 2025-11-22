@@ -25,6 +25,10 @@ export const esqueceuSenha = (dadosNovaSenha) => {
 // ---------------------------------------------------------
 // APIS RELACIONADAS AO PERFIL
 // ---------------------------------------------------------
+export const pegarUsuarioPorId = async (id) => {
+  return await apiClient.get(`/usuario/${id}`);
+};
+
 export const trocarSenha = (dadosNovaSenha, idUsuario) => {
   return apiClient.put(`usuario/${idUsuario}/changeUser/basic`, dadosNovaSenha);
 };
@@ -58,10 +62,6 @@ export const ratosUsuario = (dadosRatos) => {
   return apiClient.post("/rato/cadastro", dadosRatos);
 };
 
-export const pegarUsuarioPorId = async (id) => {
-  return await apiClient.get(`/usuario/${id}`);
-};
-
 export const pegarRatosDoUsuario = async (idUsuario) => {
   return await apiClient.get(`/rato/dousuario/${idUsuario}`);
 };
@@ -72,6 +72,10 @@ export const pegarTodasClasses = async () => {
 
 export const pegarDescricaoHabilidades = async () => {
   return await apiClient.get("habilidade/todos");
+};
+
+export const ratoMorto = async (id) => {
+  return await apiClient.post(`rato/deletar/${id}`);
 };
 
 // ---------------------------------------------------------
@@ -103,13 +107,13 @@ export const pegarBatalhasDisponiveis = async (idUsuario) => {
   return await apiClient.get(`batalha/user/disponiveispara/${idUsuario}`);
 };
 
-export const batlhaBot = async (idUsuario, idRato) => { 
-  return await apiClient.post(`/batalha/bot/${idUsuario}/${idRato}`)
-}
+export const batlhaBot = async (idUsuario, idRato) => {
+  return await apiClient.post(`/batalha/bot/${idUsuario}/${idRato}`);
+};
 
 export const baixarPdf = async (idUsuario) => {
   return await apiClient.get(`/pdf/user/${idUsuario}`, {
-    responseType: 'blob', 
+    responseType: "blob",
   });
 };
 
