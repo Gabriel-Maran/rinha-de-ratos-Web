@@ -1,14 +1,14 @@
 .opcoesAbaBatalha {
-  margin-top: 1.5rem;
-  margin-bottom: 3rem;
+  margin-top: 1.2rem;
+  margin-bottom: 1.5rem;
   display: flex;
   gap: 8rem;
 }
 
 .btnOpcaoBatalhas,
 .btnOpcaoBatalhasAtivo {
-  width: 18rem;
-  height: 8rem;
+  width: 16rem;
+  height: 6rem;
   background-color: transparent;
   background-image: url("../../../../assets/buttons/btnOpcaoBatalhas.png");
   background-size: 100% 100%;
@@ -58,7 +58,8 @@
 
 .listaBatalhas {
   width: 50rem;
-  height: calc(100vh - 28rem);
+  height: 35rem;
+  /* height: calc(100vh - 28rem); */
   color: black;
   display: flex;
   flex-direction: column;
@@ -129,73 +130,64 @@
 /* Medias Query para tratar altura */
 /* ------------------------------- */
 
-/* @media (max-height: 1060px) {
+@media (max-height: 880px) or (max-width: 790px) {
   .botaoBotELista {
     transform: scale(0.9);
   }
 }
 
-@media (max-height: 1000px) {
+@media (max-height: 825px) or (max-width: 710px) {
   .botaoBotELista {
     transform: scale(0.8);
   }
 }
 
-@media (max-height: 920px) {
+@media (max-height: 770px) or (max-width: 630px){
   .botaoBotELista {
     transform: scale(0.7);
   }
 }
 
-@media (max-height: 865px) {
+@media (max-height: 720px) or (max-width: 550px){
   .botaoBotELista {
     transform: scale(0.6);
   }
 }
 
-@media (max-height: 795px) {
+@media (max-height: 665px) or (max-width: 475px){
   .botaoBotELista {
     transform: scale(0.5);
   }
 }
 
-@media (max-height: 735px) {
+@media (max-height: 620px) or (max-width: 405px){
   .botaoBotELista {
-    transform: scale(0.9);
-  }
-  .listaBatalhas{
-    height: 15rem;
+    transform: scale(0.4);
   }
 }
 
-@media (max-height: 670px) {
+@media (max-height: 560px) or (max-width: 320px){
   .botaoBotELista {
     transform: scale(0.3);
   }
 }
 
-@media (max-height: 605px) {
+@media (max-height: 510px) or (max-width: 240px){
   .botaoBotELista {
     transform: scale(0.2);
   }
 }
 
-@media (max-height: 540px) {
-  .botaoBotELista {
-    transform: scale(0.1);
-  }
-} */
-
 
 /* -------------------------------- */
 /* Medias Query para tratar largura */
 /* -------------------------------- */
-@media (max-width: 790px) {
+/*  @media (max-width: 790px) {
   .botaoBotELista {
     transform: scale(0.8);
   }
 
-  .listaBatalhas {
+   .listaBatalhas {
     height: calc(100vh - 18rem);
   }
 }
@@ -205,17 +197,17 @@
     transform: scale(0.6);
   }
 
-  .listaBatalhas {
+    .listaBatalhas {
     height: calc(100vh - 5rem);
   }
-}
+} 
 
 @media (max-width: 475px) {
   .botaoBotELista {
     transform: scale(0.4);
   }
 
-  .listaBatalhas {
+    .listaBatalhas {
     height: 100vh;
   }
 }
@@ -225,11 +217,11 @@
     transform: scale(0.2);
   }
 
-  .listaBatalhas {
+    .listaBatalhas {
     height: 100vh;
   }
 }
-
+ */
 /* ============================================= */
 /* Botões "Todas" e "Inscritas" */
 @media (max-width: 830px) {
@@ -260,7 +252,7 @@
 /* ----------------------------------------- */
 /* Medias Query para tratar altura e largura */
 /* ----------------------------------------- */
-@media (max-width: 375px) and (max-height: 667px) {
+/* @media (max-width: 375px) and (max-height: 667px) {
   .listaBatalhas {
     margin-top: 0;
     transform: scale(0.3);
@@ -277,4 +269,4 @@
   .infoBatalha {
     margin-right: 1rem;
   }
-}
+} */

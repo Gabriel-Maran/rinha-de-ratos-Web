@@ -100,12 +100,12 @@ export default function ListaDeBatalhas({
               erroModal={erroModal}
             />
           )}
-          <button
+{/*           <button
             className="btnBatalhaComBot"
             onClick={() => setMostrarResultadoBatalha(true)}
           >
             Teste
-          </button>
+          </button> */}
           <div className="botaoBotELista">
             <button
               className="btnBatalhaComBot"
