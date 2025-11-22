@@ -327,6 +327,7 @@
   border-radius: 50%;
 }
 
+
 @media (max-height: 970px) {
   .modalResultado {
     transform: scale(0.9);
@@ -364,4 +365,62 @@
   .tituloResultado {
     transform: scale(0.9);
   }
+}
+
+
+/* Container que segura o banner e o texto */
+.area-banner-central {
+    position: relative; /* CRUCIAL: Define o limite para o texto absoluto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 7rem;
+    z-index: 20;
+}
+
+/* A Imagem do Banner */
+.img-banner-final {
+    width: 35rem; 
+    height: auto;
+    display: block; /* Garante que a imagem ocupe o espaço correto */
+    filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.8));
+}
+
+/* O Texto "Você perdeu..." / "Você venceu!" */
+.texto-resultado-final {
+    /* Posicionamento Absoluto para ficar por cima da imagem */
+    position: absolute;
+    z-index: 100;
+    
+    /* TÉCNICA DE CENTRALIZAÇÃO PERFEITA */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Puxa de volta metade da própria altura/largura */
+    
+    /* Estilos do texto */
+    width: 70%; /* Garante que o texto tenha espaço para centralizar horizontalmente */
+    text-align: center;
+    font-family: "Fondamento", "fantasy";
+    font-size: 3.5rem;
+    color: white;
+    margin: 0; /* Remove margens que possam atrapalhar */
+    
+    /* Sombra forte para ler em cima do vermelho/azul */
+    text-shadow: 
+        3px 3px 0 #000,
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
+
+/* (Mantenha os ajustes do histórico abaixo) */
+.historicoBatalha {
+    height: 18rem; 
+    bottom: 1rem; 
+}
+
+.historicoBatalha h3 {
+    bottom: 16rem; 
 }

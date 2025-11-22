@@ -103,9 +103,13 @@ export const pegarBatalhasDisponiveis = async (idUsuario) => {
   return await apiClient.get(`batalha/user/disponiveispara/${idUsuario}`);
 };
 
+export const batlhaBot = async (idUsuario, idRato) => { 
+  return await apiClient.post(`/batalha/bot/${idUsuario}/${idRato}`)
+}
+
 export const baixarPdf = async (idUsuario) => {
   return await apiClient.get(`/pdf/user/${idUsuario}`, {
-    responseType: 'blob', // <--- OBRIGATÓRIO PARA ARQUIVOS
+    responseType: 'blob', 
   });
 };
 

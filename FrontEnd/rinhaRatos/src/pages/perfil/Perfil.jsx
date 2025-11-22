@@ -284,7 +284,7 @@ export default function Perfil({ qtdeMoedas }) {
                   type: mostrarSenha ? "text" : "password",
                   value: senha,
                   onChange: (e) => setSenha(e.target.value),
-                  placeholder: "Nova senha (opcional)",
+                  placeholder: "Nova senha",
                 }}
               />
               <span className="verSenhaRedefinida" onClick={funMostrarSenha}>
@@ -320,6 +320,7 @@ export default function Perfil({ qtdeMoedas }) {
               onClose={fecharHistorico}
               mostrarHistorico={mostrarHistorico}
               idBatalha={idBatalhaSelecionada}
+              usuarioLogado={user}
             />
           )}
           <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>

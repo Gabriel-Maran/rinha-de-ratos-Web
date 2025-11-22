@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { buscarHistorico } from "../../Api/Api";
 import RE from "../../assets/classeRatos/RatoEsgoto.png";
+import ImgVitoria from "../../assets/icones/IconeVitoria.png";
+import ImgDerrota from "../../assets/icones/IconeDerrota.png";
 
 import "../../pages/perfil/TelaHistorico.css";
 
@@ -8,7 +10,7 @@ export default function TelaHistorico({
   onClose,
   mostrarHistorico,
   idBatalha,
-  batalhaConcluidaId,
+  usuarioLogado,
 }) {
   const [logs, setLogs] = useState([]);
   const [resultado, setResultado] = useState(null);
@@ -21,13 +23,11 @@ export default function TelaHistorico({
       setLoading(true);
       try {
         const resposta = await buscarHistorico(idBatalha);
-
-
         const dados = resposta.data;
 
         if (Array.isArray(dados) && dados.length >= 2) {
-          setLogs(dados[0]); // O índice 0 são os logs
-          setResultado(dados[1][0]); // O índice 1 é um array com o objeto de resultado
+          setLogs(dados[0]);
+          setResultado(dados[1][0]);
         }
       } catch (erro) {
         console.error("Erro ao carregar histórico:", erro);
@@ -39,6 +39,22 @@ export default function TelaHistorico({
     carregarDetalhes();
   }, [idBatalha]);
 
+  // --- LÓGICA DO TEXTO E BANNER ---
+  let imagemBanner = null;
+  let mensagemResultado = "";
+
+  if (resultado && usuarioLogado) {
+    const souVencedor = resultado.vencedorUserName === usuarioLogado.nome;
+    
+    if (souVencedor) {
+        imagemBanner = ImgVitoria;
+        mensagemResultado = "Você venceu!";
+    } else {
+        imagemBanner = ImgDerrota;
+        mensagemResultado = "Você perdeu...";
+    }
+  }
+
   if (!mostrarHistorico) return null;
 
   return (
@@ -47,53 +63,30 @@ export default function TelaHistorico({
         <button className="fecharMdResultado" onClick={onClose}>
           ✖
         </button>
+
         {loading ? (
-          <h2 style={{ color: "white", marginTop: "2rem" }}>
+          <h2 style={{ color: "white", marginTop: "15rem" }}>
             Carregando detalhes...
           </h2>
         ) : (
           <>
             <h1 className="tituloResultado">Resultado da Batalha:</h1>
-            {resultado ? (
-              <div className="brasaoResultado">
-                <div className="secaoVitorioso">
-                  <p className="statusJogadorVencedor">Vencedor 🏆</p>
-                  <div>
-                    <p className="resultNomeJogador">
-                      {resultado.vencedorUserName}
-                    </p>
-                    <div className="infoRatoResultBatalha">
-                      <img src={RE} alt="Rato Vencedor" />
-                      <p>{resultado.vencedorRatoName}</p>
-                      <small style={{ color: "lightgreen" }}>
-                        HP Final: {resultado.vencedorRatoHP}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-                <div className="secaoDerrotado">
-                  <p className="statusJogadorDerrotado">Derrotado 💀</p>
-                  <div>
-                    <p className="resultNomeJogador">
-                      {resultado.perdedorUserName}
-                    </p>
-                    <div className="infoRatoResultBatalha">
-                      <img src={RE} alt="Rato Perdedor" />
-                      <p>{resultado.perdedorRatoName}</p>
-                      <small style={{ color: "red" }}>
-                        HP Final: {resultado.perdedorRatoHP}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p style={{ color: "white", textAlign: "center" }}>
-                Batalha ainda não concluída ou sem resultados.
-              </p>
-            )}
+
+            {/* ÁREA CENTRAL: BANNER GRANDE + TEXTO */}
+            <div className="area-banner-central">
+                {imagemBanner && (
+                    <img 
+                        src={imagemBanner} 
+                        alt="Resultado" 
+                        className="img-banner-final" 
+                    />
+                )}
+                <h2 className="texto-resultado-final">{mensagemResultado}</h2>
+            </div>
+
+            {/* HISTÓRICO */}
             <div className="historicoBatalha">
-              <h3>Histórico de Turnos</h3>
+              <h3>Histórico</h3>
               <div className="bgConteinerHist">
                 <div className="conteinerHistorico">
                   {logs.length > 0 ? (
