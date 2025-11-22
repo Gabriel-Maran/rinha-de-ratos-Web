@@ -4,7 +4,7 @@ import {
   trocarSenha,
   trocarFoto,
   pegarUsuarioPorId,
-  pegarBatalhasIncrito,
+  batalhaConcluidas,
 } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
@@ -59,19 +59,17 @@ export default function Perfil({ qtdeMoedas }) {
   useEffect(() => {
     if (!idUsuarioLogado) return;
 
-    // Se estiver na aba Perfil, preenche os dados COM O USER ATUAL
     if (user && opcaoAtivada === "Perfil") {
       setEmail(user.email);
       setNome(user.nome);
       setFotoSelecionada(user.idFotoPerfil || 0);
     }
 
-    // Se estiver na aba Histórico, busca as batalhas
     if (opcaoAtivada === "Histórico de Batalhas") {
       const buscarHistorico = async () => {
         setLoadingHistorico(true);
         try {
-          const resposta = await pegarBatalhasIncrito(idUsuarioLogado);
+          const resposta = await batalhaConcluidas(idUsuarioLogado);
           if (Array.isArray(resposta.data)) {
             setHistoricoBatalhas(resposta.data);
           } else {
@@ -135,35 +133,33 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   // ---------------------------------------------------------
-  // AÇÃO: TROCAR DADOS (SEM VERIFICAÇÃO DE SEGURANÇA)
+  //  TROCAR DADOS 
   // ---------------------------------------------------------
   const senhaTrocada = async (evento) => {
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
 
-    // Monta o objeto exatamente como está nos inputs
+
     const dados = { email, nome, senha };
 
     try {
-      // 1. Manda para o backend sem validar nada no front
+  
       await trocarSenha(dados, idUsuarioLogado);
 
-      // 2. Se a foto mudou visualmente, manda a requisição da foto
       if (fotoSelecionada !== user.idFotoPerfil) {
         await trocarFoto(idUsuarioLogado, fotoSelecionada);
       }
 
-      // 3. Atualiza o usuário no contexto global para refletir na tela
+      // Atualiza o usuário no contexto global para refletir na tela
       const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
       setUser(respostaUsuarioAtualizada.data);
 
-      setSenha(""); // Limpa o campo senha apenas visualmente
+      setSenha(""); 
       setMensagemSucesso("Perfil alterado com sucesso!");
       
     } catch (err) {
       console.error(err);
-      // Se der erro, mostra a mensagem que o backend mandar
       setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
     }
   };
@@ -195,8 +191,6 @@ export default function Perfil({ qtdeMoedas }) {
                 className="perfil" 
                 src={fotoUrl} 
                 alt="Foto de Perfil" 
-                // Garante que a foto não fique invertida se houver CSS global interferindo
-                style={{ transform: "none" }} 
               />
             </button>
 

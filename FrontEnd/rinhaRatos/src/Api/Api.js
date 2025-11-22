@@ -95,6 +95,10 @@ export const pegarBatalhasIncrito = async (idUsuario) => {
   return await apiClient.get(`batalha/user/${idUsuario}`);
 };
 
+export const batalhaConcluidas = async (idUsuario) => {
+  return await apiClient.get(`batalha/user/concluidas/${idUsuario}`)
+}
+
 // ---------------------------------------------------------
 // APIS RELACIONADAS A BATALHA DO ADM
 // ---------------------------------------------------------
