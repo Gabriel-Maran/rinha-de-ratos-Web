@@ -4,7 +4,7 @@ import {
   trocarSenha,
   trocarFoto,
   pegarUsuarioPorId,
-  pegarBatalhasIncrito,
+  batalhaConcluidas,
 } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
@@ -38,7 +38,6 @@ export default function Perfil({ qtdeMoedas }) {
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  // Inicia com 1 (padrão), mas o useEffect vai corrigir isso logo em seguida
   const [fotoSelecionada, setFotoSelecionada] = useState(
     user?.idFotoPerfil || 1
   );
@@ -55,24 +54,22 @@ export default function Perfil({ qtdeMoedas }) {
   const fotoUrl = getFotoUrlById(fotoSelecionada);
 
   // ---------------------------------------------------------
-  // CARREGAMENTO INICIAL E MONITORAMENTO DE ABAS
+  // CARREGAMENTO INICIAL
   // ---------------------------------------------------------
   useEffect(() => {
     if (!idUsuarioLogado) return;
 
-    // Se estiver na aba Perfil, preenche os dados COM O USER ATUAL
     if (user && opcaoAtivada === "Perfil") {
       setEmail(user.email);
       setNome(user.nome);
       setFotoSelecionada(user.idFotoPerfil || 0);
     }
 
-    // Se estiver na aba Histórico, busca as batalhas
     if (opcaoAtivada === "Histórico de Batalhas") {
       const buscarHistorico = async () => {
         setLoadingHistorico(true);
         try {
-          const resposta = await pegarBatalhasIncrito(idUsuarioLogado);
+          const resposta = await batalhaConcluidas(idUsuarioLogado);
           if (Array.isArray(resposta.data)) {
             setHistoricoBatalhas(resposta.data);
           } else {
@@ -136,36 +133,39 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   // ---------------------------------------------------------
-  // AÇÃO: TROCAR DADOS DO PERFIL
+  //  TROCAR DADOS 
   // ---------------------------------------------------------
   const senhaTrocada = async (evento) => {
     evento.preventDefault();
     setErro(null);
     setMensagemSucesso(null);
 
-    const dados = { email, senha, nome };
-    const idFotoParaAPI = fotoSelecionada;
+
+    const dados = { email, nome, senha };
 
     try {
+  
       await trocarSenha(dados, idUsuarioLogado);
-      if (idFotoParaAPI !== user.idFotoPerfil) {
-        await trocarFoto(idUsuarioLogado, idFotoParaAPI);
+
+      if (fotoSelecionada !== user.idFotoPerfil) {
+        await trocarFoto(idUsuarioLogado, fotoSelecionada);
       }
 
-      const respostaUsuarioAtualizada = await pegarUsuarioPorId(
-        idUsuarioLogado
-      );
-
+      // Atualiza o usuário no contexto global para refletir na tela
+      const respostaUsuarioAtualizada = await pegarUsuarioPorId(idUsuarioLogado);
       setUser(respostaUsuarioAtualizada.data);
 
+      setSenha(""); 
       setMensagemSucesso("Perfil alterado com sucesso!");
+      
     } catch (err) {
+      console.error(err);
       setErro(err?.response?.data?.message || "Erro ao salvar alterações.");
     }
   };
 
   // ---------------------------------------------------------
-  // RENDERIZAÇÃO DO CONTEÚDO
+  // RENDERIZAÇÃO
   // ---------------------------------------------------------
   let conteudoPerfil;
 
@@ -178,6 +178,7 @@ export default function Perfil({ qtdeMoedas }) {
               modalAtivado={modalOpcFoto}
               onClose={fecharModalOpcFoto}
               onSelectFoto={handleFotoSelecionada}
+              fotoAtual={fotoSelecionada}
             />
           )}
           <h1 className="subtituloPerfil">Redefina suas informações</h1>
@@ -186,7 +187,11 @@ export default function Perfil({ qtdeMoedas }) {
               className="btnOpcFotoPerfil"
               onClick={() => setModalOpcFoto(true)}
             >
-              <img className="perfil" src={fotoUrl} alt="Foto de Perfil" />
+              <img 
+                className="perfil" 
+                src={fotoUrl} 
+                alt="Foto de Perfil" 
+              />
             </button>
             <p className="lblInfoPerfil">Nome:</p>
             <Input
@@ -213,7 +218,7 @@ export default function Perfil({ qtdeMoedas }) {
                   type: mostrarSenha ? "text" : "password",
                   value: senha,
                   onChange: (e) => setSenha(e.target.value),
-                  placeholder: "Coloque sua nova senha",
+                  placeholder: "Nova senha (opcional)",
                 }}
               />
               <span className="verSenhaRedefinida" onClick={funMostrarSenha}>

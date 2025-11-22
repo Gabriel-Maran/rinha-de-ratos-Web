@@ -1,4 +1,4 @@
-import { useState } from 'react';
+// ARQUIVO: ModalOpcFotosPerfil.jsx
 import FtPerfilPadrao from "../../assets/perfil/perfil-default.png";
 import FtPerfil1 from "../../assets/perfil/perfil-homem-1.png";
 import FtPerfil2 from "../../assets/perfil/perfil-homem-2.png";
@@ -13,106 +13,60 @@ import FtPerfil10 from "../../assets/perfil/perfil-mulher-5.png";
 import "../home/jogador/HomeJogador.css";
 import "./ModalOpcFotosPerfil.css";
 
-export default function ModalOpcFoto({ modalAtivado, onClose, onSelectFoto }) {
-  const listafotosPerfil = {
-    1: {
-      id: 1,
-      img: FtPerfil1,
-      selecionada: false
-    },
-    2: {
-      id: 2,
-      img: FtPerfil2,
-      selecionada: false
-    },
-    3: {
-      id: 3,
-      img: FtPerfil3,
-      selecionada: false
-    },
-    4: {
-      id: 4,
-      img: FtPerfil4,
-      selecionada: false
-    },
-    5: {
-      id: 5,
-      img: FtPerfil5,
-      selecionada: false
-    },
-    6: {
-      id: 6,
-      img: FtPerfil6,
-      selecionada: false
-    },
-    7: {
-      id: 7,
-      img: FtPerfil7,
-      selecionada: false
-    },
-    8: {
-      id: 8,
-      img: FtPerfil8,
-      selecionada: false
-    },
-    9: {
-      id: 9,
-      img: FtPerfil9,
-      selecionada: false
-    },
-    10: {
-      id: 10,
-      img: FtPerfil10,
-      selecionada: false
-    },
-    0: {
-      id: 0,
-      img: FtPerfilPadrao,
-      selecionada: true
-    },
-  };
+// Lista estática apenas com dados, sem estado "selecionada"
+const LISTA_FOTOS = [
+  { id: 0, img: FtPerfilPadrao },
+  { id: 1, img: FtPerfil1 },
+  { id: 2, img: FtPerfil2 },
+  { id: 3, img: FtPerfil3 },
+  { id: 4, img: FtPerfil4 },
+  { id: 5, img: FtPerfil5 },
+  { id: 6, img: FtPerfil6 },
+  { id: 7, img: FtPerfil7 },
+  { id: 8, img: FtPerfil8 },
+  { id: 9, img: FtPerfil9 },
+  { id: 10, img: FtPerfil10 },
+];
 
-  const [fotos, setfotos] = useState(listafotosPerfil)
+// ATENÇÃO: Recebendo 'fotoAtual' nas props
+export default function ModalOpcFoto({ modalAtivado, onClose, onSelectFoto, fotoAtual }) {
   
-  const handleClickFoto = (fotoClicada) => {
-    const novasFotos = {}
-    Object.keys(fotos).map((chave) => {
-      const fotoAtual = fotos[chave];
-      const taSelecionada = (fotoAtual.id === fotoClicada.id)
+  if (!modalAtivado) return null;
 
-      novasFotos[chave] = {
-        ...fotoAtual,
-        selecionada: taSelecionada
-      }
-    })
-    setfotos(novasFotos)
-    
-    onSelectFoto(fotoClicada.id, fotoClicada.img);                    
-  }
+  // Se fotoAtual for nulo ou indefinido, usa 0 (o rato) como fallback
+  const idFotoSegura = fotoAtual ?? 0;
 
   return (
-    <>
-      <div className={modalAtivado ? "bgModalAtivo" : "bgModal"}>
-        <div className="containerModalFotos">
-          <button className="sair" onClick={onClose}>
-            ✖
-          </button>
-          <div className="titModalOpcFoto">Selecione uma foto de perfil</div>
-          <div className="listaFotosPerfil">
-            {Object.values(fotos).map((foto) => (
-              <div className={foto.selecionada === true ? "fotoPerfilSelc" : "fotoPerfil"}
-                key={foto.id} 
-                onClick={() => handleClickFoto(foto)}>
-                <img src={foto.img} />
+    <div className="bgModalAtivo">
+      <div className="containerModalFotos">
+        <button className="sair" onClick={onClose}>
+          ✖
+        </button>
+        <div className="titModalOpcFoto">Selecione uma foto de perfil</div>
+        
+        <div className="listaFotosPerfil">
+          {LISTA_FOTOS.map((foto) => {
+            // A MÁGICA: Verifica se o ID desta foto é igual ao ID que veio do Pai
+            const estaSelecionada = foto.id === idFotoSegura;
+            
+            return (
+              <div 
+                key={foto.id}
+                // O CSS vai pintar de verde baseado nessa classe
+                className={estaSelecionada ? "fotoPerfilSelc" : "fotoPerfil"}
+                onClick={() => onSelectFoto(foto.id)}
+              >
+                <img src={foto.img} alt={`Foto de perfil ${foto.id}`} />
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
+// Helpers (mantidos para compatibilidade com seu código existente)
 export const FOTOS_PERFIL_MAP = {
   0: FtPerfilPadrao,
   1: FtPerfil1,
@@ -127,7 +81,6 @@ export const FOTOS_PERFIL_MAP = {
   10: FtPerfil10,
 };
 
-// Função auxiliar para obter a URL da foto, usando o ID e garantindo o fallback
 export const getFotoUrlById = (id) => {
-      return FOTOS_PERFIL_MAP[id] || FOTOS_PERFIL_MAP[0];
+  return FOTOS_PERFIL_MAP[id] || FOTOS_PERFIL_MAP[0];
 };

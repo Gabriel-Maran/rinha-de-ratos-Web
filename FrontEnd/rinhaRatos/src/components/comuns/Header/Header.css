@@ -27,7 +27,6 @@
 .fotoJogador {
   height: 4rem;
   margin-left: 2rem;
-  transform: scaleX(-1);
   cursor: pointer;
 }
 

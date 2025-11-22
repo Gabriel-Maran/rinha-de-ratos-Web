@@ -21,7 +21,7 @@ export default function TelaHistorico({
       try {
         const resposta = await buscarHistorico(idBatalha);
 
-        // A API retorna um array: [ [listaLogs], [listaResultado] ]
+
         const dados = resposta.data;
 
         if (Array.isArray(dados) && dados.length >= 2) {

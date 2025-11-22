@@ -30,12 +30,13 @@ interface BatalhaRepository: JpaRepository<Batalha, Long> {
     """)
     fun pegarTodasAsBatalhasAcabadas(): List<Batalha>
 
+
     @Query("""
-        SELECT b FROM Batalha b 
-        WHERE (b.jogador1.idUsuario = :userId 
-        OR b.jogador2.idUsuario = :userId)
-        AND b.status = "InscricoesAbertas"
-    """)
+    SELECT b FROM Batalha b 
+    WHERE (b.jogador1.idUsuario = :userId 
+    OR b.jogador2.idUsuario = :userId)
+    AND b.status = "Concluida"
+""")
     fun pegarTodasBatalhasDoUsuarioConcluidas(@Param("userId") idUsuario: Long): List<Batalha>
 
 

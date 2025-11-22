@@ -4,32 +4,44 @@
         url("../../assets/backgrounds/bgLogin.png");
     background-size: cover;
     border-radius: 1rem;
-    width: 50rem;
-    height: 40rem;
+    width: 55rem; 
+    height: auto; 
+    min-height: 45rem;
     text-align: center;
     font-family: "Fondamento", "fantasy";
     font-weight: lighter;
 
     position: relative;
-    padding: 0rem 1.5rem 1.5rem 1.5rem;
+    padding: 0rem 1.5rem 2.5rem 1.5rem; 
 
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    transform: scale(1.35);
+    transform: scale(1.0);
     transition: transform 0.3s ease;
 }
 
+
+@media (max-width: 768px) {
+    .containerModalFotos {
+        width: 95%;
+        transform: scale(0.9);
+    }
+    .listaFotosPerfil {
+        gap: 1rem;
+    }
+}
+
 .titModalOpcFoto {
-    min-height: 3.5rem;
-    width: 27rem;
+    min-height: 4rem;
+    width: 30rem;
     padding: auto;
     margin: 1.5rem 5rem;
     background-image: url("../../assets/labels/lblTabua.png");
     background-size: 100% 100%;
     color: white;
-    font-size: 2rem;
+    font-size: 2.2rem; 
     text-align: center;
     display: flex;
     justify-content: center;
@@ -39,27 +51,37 @@
 }
 
 .listaFotosPerfil {
-    width: auto;
+    width: 100%;
     height: auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 2rem; 
     justify-content: center;
     margin-top: 1rem;
+    padding-bottom: 1rem;
 }
+
 
 .fotoPerfil,
 .fotoPerfilSelc {
-    width: 9rem;
-    height: 9rem;
-    padding: 0.8rem;
+    width: 11rem; 
+    height: 11rem; 
+    padding: 0.5rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%; 
+    transition: all 0.3s ease-in-out;
 }
+
 
 .fotoPerfil img,
 .fotoPerfilSelc img {
+.fotoPerfilSelc img {
     width: 100%;
     height: 100%;
-    border: 0.1rem solid black;
+    border: 0.15rem solid rgba(0, 0, 0, 0.8); 
     border-radius: 50%;
     box-shadow: 0 0 10px #000, 0 0 10px #000, 0 0 8px #000;
 }
@@ -68,8 +90,28 @@
     box-shadow: 0 0 10px #2bff00, 0 0 10px #2bff00, 0 0 8px #2bff00;
 }
 
-.fotoPerfil:hover,
-.fotoPerfilSelc:hover {
+
+.fotoPerfil:hover img {
+    box-shadow: 0 0 20px #2bff00, 0 0 15px #2bff00;
+    transform: scale(1.15); 
+    border-color: #2bff00;
+}
+
+
+.fotoPerfilSelc:hover img {
+    transform: scale(1.15); 
+    box-shadow: 0 0 25px #2bff00, 0 0 20px #ffffff; 
+}
+
+
+.sair {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
     cursor: pointer;
     padding: 0rem;
     transition: transform 5s ease;

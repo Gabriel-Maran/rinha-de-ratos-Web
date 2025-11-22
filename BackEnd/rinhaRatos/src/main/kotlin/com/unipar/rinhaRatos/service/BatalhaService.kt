@@ -51,7 +51,6 @@ class BatalhaService(
     fun pegarTodasAsBatalhasDoUsuarioQueNaoAcabaram(idUsuario: Long): List<Batalha> =
         batalhaRepository.pegarTodasBatalhasDoUsuarioComInscricaoAberta(idUsuario)
 
-
     fun pegarTodasAsBatalhasAcabadas(): List<Batalha> =
         batalhaRepository.pegarTodasAsBatalhasAcabadas()
 
