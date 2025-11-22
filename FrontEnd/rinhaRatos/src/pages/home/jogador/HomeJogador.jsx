@@ -16,6 +16,7 @@ import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
 import "./HomeJogador.css";
 
+// Objeto constante para controlar as "fases" do Modal de criação/visualização.
 const ETAPAS = {
   FECHADO: 0,
   SELECAO_CLASSE: 1,
@@ -26,12 +27,18 @@ const ETAPAS = {
 export default function HomeJogador() {
   const { user } = useAuth();
 
+  // ---------------------------------------------------------
+  // ESTADOS DE CONTROLE DO MODAL E SELEÇÃO
+  // ---------------------------------------------------------
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
   const [indexClasse, setIndexClasse] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
   const [novoRato, setNovoRato] = useState(null);
 
+  // ---------------------------------------------------------
+  // ESTADOS DE DADOS VINDOS DA API
+  // ---------------------------------------------------------
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
@@ -39,20 +46,32 @@ export default function HomeJogador() {
   const [batalhasAbertas, setBatalhasAbertas] = useState([]);
   const [batalhasInscrito, setBatalhasInscrito] = useState([]);
 
+  // ---------------------------------------------------------
+  // ESTADOS DE UI E CARREGAMENTO
+  // ---------------------------------------------------------
   const [loadingRatos, setLoadingRatos] = useState(true);
   const [erroRatos, setErroRatos] = useState(null);
 
   const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
 
+
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
+  
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
+
 
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
+  // ---------------------------------------------------------
+  // BUSCA DE DADOS (CARREGAMENTO INICIAL E ATUALIZAÇÃO)
+  // ---------------------------------------------------------
+
+  // useCallback garante que a função não seja recriada a cada renderização,
+  // evitando loops infinitos no useEffect.
   const buscarDadosIniciais = useCallback(
     async (silencioso = false) => {
       if (!idUsuarioLogado) return;
@@ -63,6 +82,8 @@ export default function HomeJogador() {
       }
 
       try {
+        // Promise.all executa todas as requisições em paralelo.
+        // O código só continua quando TODAS responderem.
         const [
           respostaRatos,
           respostaClasses,
@@ -73,8 +94,8 @@ export default function HomeJogador() {
           pegarRatosDoUsuario(idUsuarioLogado),
           pegarTodasClasses(),
           pegarDescricaoHabilidades(),
-          pegarBatalhasDisponiveis(idUsuarioLogado),
-          pegarBatalhasIncrito(idUsuarioLogado),
+          pegarBatalhasDisponiveis(idUsuarioLogado), 
+          pegarBatalhasIncrito(idUsuarioLogado),    
         ]);
 
         setRatosUsuario(respostaRatos.data);
@@ -82,7 +103,9 @@ export default function HomeJogador() {
         setDescHabilidades(respostaHabilidades.data);
         setBatalhasInscrito(respostaBatalhasInscrito.data);
 
-        // if para organizar a ordem da batalha.
+        // Lógica de Ordenação:
+        // Ordena as batalhas disponíveis de forma decrescente pelo ID.
+        // (ID Maior - ID Menor) faz com que as batalhas mais novas apareçam no topo.
         if (Array.isArray(respostaBatalhas.data)) {
           const listaOrdenada = respostaBatalhas.data.sort((a, b) => {
             const idA = a.idBatalha || a.id;
@@ -104,8 +127,11 @@ export default function HomeJogador() {
   );
 
   useEffect(() => {
-    buscarDadosIniciais(false);
+    // Busca inicial com loading visual
+    buscarDadosIniciais(false); 
 
+    // Cria um intervalo (Polling) para atualizar os dados a cada 3 segundos
+    // sem mostrar o loading (silencioso), mantendo a lista sempre atualizada.
     const intervalo = setInterval(() => {
       buscarDadosIniciais(true);
     }, 3000);
@@ -113,6 +139,9 @@ export default function HomeJogador() {
     return () => clearInterval(intervalo);
   }, [buscarDadosIniciais]);
 
+  // ---------------------------------------------------------
+  // FUNÇÕES DE CONTROLE DO MODAL
+  // ---------------------------------------------------------
   const mostrarSelecaoClasse = () => {
     setEtapaModal(ETAPAS.SELECAO_CLASSE);
   };
@@ -141,6 +170,7 @@ export default function HomeJogador() {
   const mostrarDetalhesRato = (ratoClicado) => {
     setNovoRato(ratoClicado);
 
+    // Procura a descrição da habilidade correspondente na lista carregada
     if (descricaoHabilidades && ratoClicado.habilidade) {
       const habilidadeEncontrada = descricaoHabilidades.find(
         (h) => h.nomeHabilidade === ratoClicado.habilidade.nomeHabilidade
@@ -154,11 +184,15 @@ export default function HomeJogador() {
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
 
+  // Salva o rato selecionado no LocalStorage para persistência durante a navegação
   const definirRatoBatalha = (rato) => {
     localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
     setRatoParaBatalhar(rato);
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO CONDICIONAL (SWITCH DE ABAS)
+  // ---------------------------------------------------------
   let conteudoCorpo;
 
   if (loadingRatos) {
@@ -170,6 +204,7 @@ export default function HomeJogador() {
       case "Meus ratos":
         conteudoCorpo = (
           <>
+            {/* Componente Modal que gerencia todas as etapas de criação/visualização */}
             <ModalCriacaoRato
               etapa={etapaModal}
               etapas={ETAPAS}
@@ -211,8 +246,8 @@ export default function HomeJogador() {
           </>
         );
         break;
+
       case "Batalhas":
-        // Filtramos a lista para mostrar APENAS as que ainda estão "InscricoesAbertas"
         const inscricoesPendentes = batalhasInscrito.filter(
           (batalha) => batalha.status === "InscricoesAbertas"
         );
@@ -227,9 +262,11 @@ export default function HomeJogador() {
           />
         );
         break;
+
       case "Ranking":
         conteudoCorpo = <Ranking />;
         break;
+        
       case "Loja":
         conteudoCorpo = <Loja qtdeMoedas={qtdeMoedas} />;
         break;
