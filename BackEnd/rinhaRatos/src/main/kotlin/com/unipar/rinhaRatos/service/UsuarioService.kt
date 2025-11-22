@@ -95,6 +95,8 @@ class UsuarioService(
             return mapOf("user" to "", "error" to "EMAIL_ALREADY_EXISTS")
         }
         if(usuario.nome.trim().length > 25) return mapOf("user" to "", "error" to "NAME_LIMIT_EXCEPTED")
+        if(usuario.email.trim().length > 35) return mapOf("user" to "", "error" to "EMAIL_LIMIT_EXCEPTED")
+        if(usuario.senha.trim().length > 20) return mapOf("user" to "", "error" to "SENHA_LIMIT_EXCEPTED")
         usuario.email = emailNormalized
         val saved = usuarioRepository.saveAndFlush(usuario)
         log.info("Usuário cadastrado id=${saved.idUsuario}, email=${saved.email}")
@@ -136,28 +138,30 @@ class UsuarioService(
         return "OK"
     }
 
-    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioBasic): HttpStatus {
+    fun changeNomeEmailSenhaById(id: Long, usuarioDTO: UsuarioBasic): String {
         val usuarioOpt = usuarioRepository.findById(id)
         if (usuarioOpt.isEmpty) {
             log.warn("changeNomeEmailSenhaById: usuário não encontrado id=$id")
-            return HttpStatus.NOT_FOUND
+            return "NOT_FOUND"
         }
         val usuario = usuarioOpt.get()
 
         if (usuario.email != usuarioDTO.email) {
             if (usuarioRepository.existsByEmail(usuarioDTO.email)) {
                 log.warn("changeNomeEmailSenhaById: email já em uso ${usuarioDTO.email}")
-                return HttpStatus.BAD_REQUEST
+                return "BAD_REQUEST"
             }
         }
-        if (usuarioDTO.email.trim().isEmpty() || usuarioDTO.nome.trim().isEmpty() || usuarioDTO.senha.trim().isEmpty()) return HttpStatus.NOT_ACCEPTABLE
-        if(usuario.nome.trim().length > 25) return HttpStatus.PAYLOAD_TOO_LARGE
+        if (usuarioDTO.email.trim().isEmpty() || usuarioDTO.nome.trim().isEmpty() || usuarioDTO.senha.trim().isEmpty()) return "NOT_ACCEPTABLE"
+        if(usuarioDTO.nome.trim().length > 25) return "NAME_LIMIT_EXCEPTED"
+        if(usuarioDTO.email.trim().length > 35) return "EMAIL_LIMIT_EXCEPTED"
+        if(usuarioDTO.senha.trim().length > 20) return "SENHA_LIMIT_EXCEPTED"
         usuario.nome = usuarioDTO.nome
         usuario.email = usuarioDTO.email
         usuario.senha = usuarioDTO.senha
         usuarioRepository.save(usuario)
         log.info("Dados básicos atualizados para usuário id=$id")
-        return HttpStatus.OK
+        return "OK"
     }
 
     fun changeFotoPerfil(idUsuario: Long, idFoto: Long): HttpStatus {

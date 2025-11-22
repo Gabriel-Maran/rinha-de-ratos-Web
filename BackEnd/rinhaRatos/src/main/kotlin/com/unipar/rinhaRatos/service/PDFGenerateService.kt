@@ -1,5 +1,6 @@
 package com.unipar.rinhaRatos.service
 
+import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory
 @Service
 class PDFGenerateService(
     private val usuarioRepository: UsuarioRepository,
+    private val batalhaRepository: BatalhaRepository,
     private val batalhaService: BatalhaService
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -21,7 +23,7 @@ class PDFGenerateService(
 
     fun getUserHistorico(idUsuario: Long): ByteArray {
         val userOpt = usuarioRepository.findById(idUsuario)
-        if (userOpt.isEmpty) return ByteArray(size = 100)
+        if (userOpt.isEmpty) throw NoSuchElementException("Usuário não encontrado")
         val batalhasUser = batalhaService.pegarTodasAsBatalhasDoUsuario(idUsuario)
         val user = userOpt.get()
         val pdfByte = ByteArrayOutputStream()
@@ -228,6 +230,19 @@ class PDFGenerateService(
         }
         return pdfByte.toByteArray()
     }
+
+    fun getUserBatalhaHistorico(idUsuario: Long, idBatalha: Long): ByteArray {
+        val userOpt = usuarioRepository.findById(idUsuario)
+        val batalhaOpt = batalhaRepository.findById(idBatalha)
+
+        if (userOpt.isEmpty) throw NoSuchElementException("USER_NOT_FOUND")
+        if (batalhaOpt.isEmpty) throw NoSuchElementException("BATALHA_NOT_FOUND")
+
+        return ByteArray(size = 100)
+
+    }
+
+
 
     fun textAllignCenter(text: String, fontSize: Float, pageWidth: Float): Float {
         return (pageWidth - font.getStringWidth(text) / 1000 * fontSize) / 2

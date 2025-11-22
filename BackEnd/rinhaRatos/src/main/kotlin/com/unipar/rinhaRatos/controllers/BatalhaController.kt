@@ -109,6 +109,7 @@ class BatalhaController(
             when {
                 msg.contains("USER_NOT_FOUND") -> buildError(HttpStatus.NOT_FOUND, "Usuário (adm) não encontrado", "USER_NOT_FOUND")
                 msg.contains("NAME_LIMIT_EXCEPTED") -> buildError(HttpStatus.BAD_REQUEST, "Ultrapassou o limite de caracteres para o nome da batalha", "NAME_LIMIT_EXCEPTED")
+                msg.contains("COINS_LIMIT_EXCEPTED") -> buildError(HttpStatus.BAD_REQUEST, "Ultrapassou o limite de moedas para o cadastro da batalha", "COINS_LIMIT_EXCEPTED")
                 msg.startsWith("BAD_DATE_FORMAT") -> {
                     // pode vir "BAD_DATE_FORMAT: detalhe..."
                     val detail = msg.removePrefix("BAD_DATE_FORMAT:").trim().ifEmpty { "Formato inválido para data/hora" }
