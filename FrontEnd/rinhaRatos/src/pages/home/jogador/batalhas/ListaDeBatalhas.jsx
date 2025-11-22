@@ -3,6 +3,7 @@ import Trofeu from "../../../../assets/icones/IconeTrofeu.png";
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
 import { entrarBatalha } from "../../../../Api/Api";
 import "./ListaDeBatalhas.css";
+import TelaHistorico from "../../../perfil/TelaHistorico";
 
 export default function ListaDeBatalhas({
   ratosUsuario,
@@ -14,7 +15,9 @@ export default function ListaDeBatalhas({
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
-  const [ativarModal, setAtivarModal] = useState(false);
+  const [modalSelecionarRato, setModalSelecionarRato] = useState(false);
+  const [mostrarResultadoBatalha, setMostrarResultadoBatalha] = useState(false);
+  const [batalhaConcluidaId, setBatalhaConcluidaId] = useState(null)
   const [comBot, setComBot] = useState(false);
   const [batalhaSelecionadaId, setBatalhaSelecionadaId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,14 +40,16 @@ export default function ListaDeBatalhas({
     } else {
       setComBot(true);
     }
-    setAtivarModal(true);
+    setModalSelecionarRato(true);
     setErroModal(null);
   };
 
   const handleFecharModal = () => {
-    setAtivarModal(false);
+    setModalSelecionarRato(false);
+    setMostrarResultadoBatalha(false);
     setErroModal(null);
     setBatalhaSelecionadaId(null);
+    setBatalhaConcluidaId(null);
   };
 
   const handleEntrarBatalha = async (idRato) => {
@@ -79,7 +84,14 @@ export default function ListaDeBatalhas({
     case "Todas":
       conteudoOpcaoBatalhas = (
         <>
-          {ativarModal && (
+          {mostrarResultadoBatalha && (
+            <TelaHistorico
+              onClose={handleFecharModal}
+              mostrarHistorico={mostrarResultadoBatalha}
+              batalhaConcluidaId={batalhaConcluidaId}
+            />
+          )}
+          {modalSelecionarRato && (
             <ModalEscolherRatoBatalha
               onClose={handleFecharModal}
               ratosUsuario={ratosUsuario}
@@ -88,6 +100,12 @@ export default function ListaDeBatalhas({
               erroModal={erroModal}
             />
           )}
+          <button
+            className="btnBatalhaComBot"
+            onClick={() => setMostrarResultadoBatalha(true)}
+          >
+            Teste
+          </button>
           <div className="botaoBotELista">
             <button
               className="btnBatalhaComBot"

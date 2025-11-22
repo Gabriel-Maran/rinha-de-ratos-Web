@@ -8,6 +8,7 @@ export default function TelaHistorico({
   onClose,
   mostrarHistorico,
   idBatalha,
+  batalhaConcluidaId,
 }) {
   const [logs, setLogs] = useState([]);
   const [resultado, setResultado] = useState(null);
@@ -46,7 +47,6 @@ export default function TelaHistorico({
         <button className="fecharMdResultado" onClick={onClose}>
           ✖
         </button>
-
         {loading ? (
           <h2 style={{ color: "white", marginTop: "2rem" }}>
             Carregando detalhes...
@@ -54,7 +54,6 @@ export default function TelaHistorico({
         ) : (
           <>
             <h1 className="tituloResultado">Resultado da Batalha:</h1>
-
             {resultado ? (
               <div className="brasaoResultado">
                 <div className="secaoVitorioso">
@@ -72,7 +71,6 @@ export default function TelaHistorico({
                     </div>
                   </div>
                 </div>
-
                 <div className="secaoDerrotado">
                   <p className="statusJogadorDerrotado">Derrotado 💀</p>
                   <div>
@@ -94,7 +92,6 @@ export default function TelaHistorico({
                 Batalha ainda não concluída ou sem resultados.
               </p>
             )}
-
             <div className="historicoBatalha">
               <h3>Histórico de Turnos</h3>
               <div className="bgConteinerHist">

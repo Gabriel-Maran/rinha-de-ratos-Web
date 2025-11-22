@@ -126,6 +126,15 @@ button:active {
   text-decoration: underline;
 }
 
+/* ------------------------------- */
+/* Medias Query para tratar altura */
+/* ------------------------------- */
+@media (max-height: 300px) {
+  .logoELogin {
+    transform: scale(0.2);
+  }
+}
+
 /* ----------------------------------------- */
 /* Medias Query para tratar largura e altura */
 /* ----------------------------------------- */
@@ -168,11 +177,5 @@ button:active {
 @media (max-height: 400px) or (max-width: 250px) {
   .logoELogin {
     transform: scale(0.3);
-  }
-}
-
-@media (max-height: 300px) {
-  .logoELogin {
-    transform: scale(0.2);
   }
 }
