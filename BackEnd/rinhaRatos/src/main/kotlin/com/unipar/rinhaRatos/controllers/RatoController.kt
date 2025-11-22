@@ -25,7 +25,7 @@ class RatoController(
         return ResponseEntity.ok(ratos)
     }
 
-    @GetMapping("/teste/{id}")
+    @GetMapping("/rato/dousuario/{id}")
     fun findAllRatos(@PathVariable("id") id: Long): ResponseEntity<List<RatoDTO>> {
         val ratos = ratoRepository.pegaRatosDoUsuario(id)
         return ResponseEntity.ok(ratos.map { it -> it.toDto() })
@@ -70,6 +70,9 @@ class RatoController(
             }
             "NON_EXISTENT_CLASS_OR_HABILIDADE" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade não existente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
+            }
+            "NAME_LIMIT_EXCEPTED" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Limite maximo de caracteres para o nome", "NAME_LIMIT_EXCEPTED")
             }
             else -> {
                 return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")

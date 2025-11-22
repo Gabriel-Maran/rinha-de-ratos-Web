@@ -108,6 +108,7 @@ class BatalhaService(
         }
         val adm = admOpt.get()
         if(basic.nomeBatalha.trim().length > 40 ) throw IllegalArgumentException("NAME_LIMIT_EXCEPTED")
+        if(basic.custoInscricao.toString().length > 4 ) throw IllegalArgumentException("COINS_LIMIT_EXCEPTED")
         if(adm.tipoConta != TipoConta.ADM) throw IllegalArgumentException("USER_IS_NOT_ADM")
         val parsedDate = try {
             parseIsoToLocalDateTime(basic.dataHorarioInicio)
