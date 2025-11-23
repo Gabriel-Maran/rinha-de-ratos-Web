@@ -352,10 +352,6 @@ class BatalhaService(
         return mapOf("idBatalha" to criarBatalha.idBatalha.toString())
     }
 
-    fun estaSimulandoBatalha(idBatalha: Long): Boolean {
-        return battleManager.estaExecutando(idBatalha)
-    }
-
     fun parseIsoToLocalDateTime(value: String?): LocalDateTime? {
         if (value.isNullOrBlank()) return null
         val dataString = value.trim()

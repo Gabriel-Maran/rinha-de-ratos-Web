@@ -32,9 +32,4 @@ class GerenciadorBatalhasAutomatica(
         futuros[idBatalha] = guardaFuturo
         return true
     }
-
-    fun estaExecutando(idBatalha: Long): Boolean {
-        val executandoFuturo = futuros[idBatalha] ?: return false
-        return !executandoFuturo.isDone && !executandoFuturo.isCancelled
-    }
 }
