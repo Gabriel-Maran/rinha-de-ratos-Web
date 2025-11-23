@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   pegarBatalhasAbertas,
   iniciarBatlhas,
@@ -12,11 +13,12 @@ import trofeu from "../../../assets/icones/IconeTrofeu.png";
 import ModalEditarBatalha from "./ModalEditarBatalha";
 import ModalCriarBatalha from "./ModalCriarBatalha";
 import "./HomeADM.css";
-import "../jogador/HomeJogador.css"
+import "../jogador/HomeJogador.css";
 import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
@@ -33,6 +35,12 @@ export default function HomeADM() {
 
   const [loadingDados, setLoadingDados] = useState(true);
   const [erroDados, setErroDados] = useState(null);
+
+  useEffect(() => {
+    if (idUsuarioLogado === null) {
+      navigate("/login");
+    }
+  }, [idUsuarioLogado, navigate]);
 
   const limparMensagens = () => {
     setTimeout(() => {

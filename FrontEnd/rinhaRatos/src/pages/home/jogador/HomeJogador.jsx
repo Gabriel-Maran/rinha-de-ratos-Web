@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   pegarRatosDoUsuario,
   pegarTodasClasses,
@@ -15,8 +16,7 @@ import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
-import TelaHistorico from "../../perfil/TelaHistorico"; 
-
+import TelaHistorico from "../../perfil/TelaHistorico";
 import "./HomeJogador.css";
 
 const ETAPAS = {
@@ -28,24 +28,18 @@ const ETAPAS = {
 
 export default function HomeJogador() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const listaBatalhasAntigas = useRef([]);
-  
-  // ---------------------------------------------------------
-  // ESTADOS DE CONTROLE DO MODAL E SELEÇÃO
-  // ---------------------------------------------------------
+
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
   const [indexClasse, setIndexClasse] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
   const [novoRato, setNovoRato] = useState(null);
 
-  // 2. ESTADOS NOVOS: Controle do Modal de Resultado Automático
   const [mostrarResultadoBatalha, setMostrarResultadoBatalha] = useState(false);
   const [idBatalhaResultado, setIdBatalhaResultado] = useState(null);
 
-  // ---------------------------------------------------------
-  // ESTADOS DE DADOS VINDOS DA API
-  // ---------------------------------------------------------
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
@@ -53,9 +47,6 @@ export default function HomeJogador() {
   const [batalhasAbertas, setBatalhasAbertas] = useState([]);
   const [batalhasInscrito, setBatalhasInscrito] = useState([]);
 
-  // ---------------------------------------------------------
-  // ESTADOS DE UI E CARREGAMENTO
-  // ---------------------------------------------------------
   const [loadingRatos, setLoadingRatos] = useState(true);
   const [erroRatos, setErroRatos] = useState(null);
 
@@ -71,9 +62,12 @@ export default function HomeJogador() {
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
-  // ---------------------------------------------------------
-  // BUSCA DE DADOS (CARREGAMENTO INICIAL E ATUALIZAÇÃO)
-  // ---------------------------------------------------------
+  useEffect(() => {
+    if (idUsuarioLogado === null) {
+      navigate("/login");
+    }
+  }, [idUsuarioLogado, navigate]);
+
   const buscarDadosIniciais = useCallback(
     async (silencioso = false) => {
       if (!idUsuarioLogado) return;
@@ -103,7 +97,6 @@ export default function HomeJogador() {
         setDescHabilidades(respostaHabilidades.data);
         setBatalhasInscrito(respostaBatalhasInscrito.data);
 
-        // Ordenação
         if (Array.isArray(respostaBatalhas.data)) {
           const listaOrdenada = respostaBatalhas.data.sort((a, b) => {
             const idA = a.idBatalha || a.id;
@@ -114,41 +107,62 @@ export default function HomeJogador() {
         } else {
           setBatalhasAbertas([]);
         }
-        
-        // ------------------------------------------------------------
-        // LÓGICA PARA ABRIR O HISTÓRICO)
-        // ------------------------------------------------------------
+
+        // --- LÓGICA DE FIM DE BATALHA ---
         if (listaBatalhasAntigas.current.length > 0) {
-          
           listaBatalhasAntigas.current.forEach((batalhaVelha) => {
             const batalhaNova = respostaBatalhasInscrito.data.find(
-              (b) => (b.idBatalha || b.id) === (batalhaVelha.idBatalha || batalhaVelha.id)
+              (b) =>
+                (b.idBatalha || b.id) ===
+                (batalhaVelha.idBatalha || batalhaVelha.id)
             );
 
-            if (batalhaNova && batalhaVelha.status !== "Concluida" && batalhaNova.status === "Concluida") {
-               console.log("BATALHA ACABOU! ID:", batalhaNova.idBatalha);
+            if (
+              batalhaNova &&
+              batalhaVelha.status !== "Concluida" &&
+              batalhaNova.status === "Concluida"
+            ) {
+              console.log("BATALHA ACABOU! ID:", batalhaNova.idBatalha);
 
-               let meuRatoNaBatalha = null;
-               if (batalhaNova.jogador1?.idUsuario === idUsuarioLogado) {
-                   meuRatoNaBatalha = batalhaNova.rato1; 
-               } 
-               else if (batalhaNova.jogador2?.idUsuario === idUsuarioLogado) {
-                   meuRatoNaBatalha = batalhaNova.rato2; 
-               }
+              let meuRatoNaBatalha = null;
+              if (batalhaNova.jogador1?.idUsuario === idUsuarioLogado) {
+                meuRatoNaBatalha = batalhaNova.rato1;
+              } else if (batalhaNova.jogador2?.idUsuario === idUsuarioLogado) {
+                meuRatoNaBatalha = batalhaNova.rato2;
+              }
 
-               if (meuRatoNaBatalha) {
-                   
-                  // Chama o modal para o mostrar o resultado
-                   setIdBatalhaResultado(batalhaNova.idBatalha || batalhaNova.id);
-                   setMostrarResultadoBatalha(true);
-                   
-                   
-                   // LÓGICA DE MORTE
-                   if (batalhaNova.vencedor?.idUsuario !== idUsuarioLogado) {
-                       console.log("💀 DERROTA! Executando baixa do rato...");
-                       ratoMorto(meuRatoNaBatalha.idRato || meuRatoNaBatalha.id);
-                   }
-               }
+              if (meuRatoNaBatalha) {
+                setIdBatalhaResultado(batalhaNova.idBatalha || batalhaNova.id);
+                setMostrarResultadoBatalha(true);
+
+                // --- CORREÇÃO DA MORTE (VERSÃO ROBUSTA) ---
+                const criadorIdRaw = batalhaNova.admCriador?.idUsuario ?? batalhaNova.admCriador?.id;
+                const criadorIdNum = criadorIdRaw != null ? Number(criadorIdRaw) : null;
+                const ehBatalhaContraBot = !batalhaNova.admCriador || criadorIdNum === -1;
+
+                if (ehBatalhaContraBot) {
+                  console.log("🤖 Batalha contra Bot detectada: Morte desativada.");
+                } else {
+                  // Normaliza id do vencedor (várias possiblidades de formato)
+                  const idVencedor = Number(
+                    batalhaNova.vencedor?.idUsuario ??
+                    batalhaNova.vencedorId ??
+                    batalhaNova.vencedor?.id ??
+                    batalhaNova.vencedor
+                  );
+
+                  // Só executa morte se houver um vencedor numérico e for diferente do usuário logado
+                  if (Number.isFinite(idVencedor) && idVencedor !== idUsuarioLogado) {
+                    const ratoId = meuRatoNaBatalha?.idRato ?? meuRatoNaBatalha?.id;
+                    if (ratoId) {
+                      console.log("💀 DERROTA PVP! Executando baixa do rato...", ratoId);
+                      ratoMorto(ratoId);
+                    } else {
+                      console.warn("Não foi possível obter id do rato para executar ratoMorto:", meuRatoNaBatalha);
+                    }
+                  }
+                }
+              }
             }
           });
         }
@@ -165,20 +179,15 @@ export default function HomeJogador() {
   );
 
   useEffect(() => {
-    buscarDadosIniciais(false); 
+    buscarDadosIniciais(false);
     const intervalo = setInterval(() => {
       buscarDadosIniciais(true);
     }, 3000);
     return () => clearInterval(intervalo);
   }, [buscarDadosIniciais]);
 
-  // ---------------------------------------------------------
-  // FUNÇÕES DE CONTROLE DO MODAL
-  // ---------------------------------------------------------
-  const mostrarSelecaoClasse = () => {
-    setEtapaModal(ETAPAS.SELECAO_CLASSE);
-  };
-
+  // --- CONTROLE MODAL ---
+  const mostrarSelecaoClasse = () => setEtapaModal(ETAPAS.SELECAO_CLASSE);
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
     setClasseSelecionada(null);
@@ -186,50 +195,38 @@ export default function HomeJogador() {
     setNovoRato(null);
     setDescHabilidade(null);
   };
-
   const selecionarClasse = (classe, index) => {
     setEtapaModal(ETAPAS.DETALHES_CLASSE);
     setClasseSelecionada(classe);
     setIndexClasse(index);
   };
-
   const mostrarRatoCriado = (ratoCompletoDaApi, descHabilidadeDaClasse) => {
     setRatosUsuario((prevRatos) => [...prevRatos, ratoCompletoDaApi]);
     setNovoRato(ratoCompletoDaApi);
     setDescHabilidade(descHabilidadeDaClasse);
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
-
   const mostrarDetalhesRato = (ratoClicado) => {
     setNovoRato(ratoClicado);
     if (descricaoHabilidades && ratoClicado.habilidade) {
       const habilidadeEncontrada = descricaoHabilidades.find(
         (h) => h.nomeHabilidade === ratoClicado.habilidade.nomeHabilidade
       );
-      const desc = habilidadeEncontrada
-        ? habilidadeEncontrada.descricao
-        : "Descrição indisponível.";
-      setDescHabilidade(desc);
+      setDescHabilidade(habilidadeEncontrada ? habilidadeEncontrada.descricao : "Descrição indisponível.");
     }
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
-
   const definirRatoBatalha = (rato) => {
     localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
     setRatoParaBatalhar(rato);
   };
-
   const fecharHistoricoAutomatico = () => {
     setMostrarResultadoBatalha(false);
     setIdBatalhaResultado(null);
     buscarDadosIniciais(false);
   };
 
-  // ---------------------------------------------------------
-  // RENDERIZAÇÃO
-  // ---------------------------------------------------------
   let conteudoCorpo;
-
   if (loadingRatos) {
     conteudoCorpo = <p className="loading-mensagem">A carregar dados...</p>;
   } else if (erroRatos) {
@@ -260,15 +257,7 @@ export default function HomeJogador() {
                 onClick: mostrarSelecaoClasse,
                 disabled: loadingRatos || contagemRatosVivos >= limiteRatos,
               }}
-              acaoBtn={
-                <strong>
-                  {contagemRatosVivos >= limiteRatos
-                    ? "Limite Atingido"
-                    : loadingRatos
-                      ? "Carregando..."
-                      : ".Adicionar Rato + "}
-                </strong>
-              }
+              acaoBtn={<strong>{contagemRatosVivos >= limiteRatos ? "Limite Atingido" : loadingRatos ? "Carregando..." : ".Adicionar Rato + "}</strong>}
             />
             <ListaDeRatos
               ratosUsuario={ratosUsuario}
@@ -279,12 +268,10 @@ export default function HomeJogador() {
           </>
         );
         break;
-
       case "Batalhas":
         const inscricoesPendentes = batalhasInscrito.filter(
           (batalha) => batalha.status === "InscricoesAbertas"
         );
-
         conteudoCorpo = (
           <ListaDeBatalhas
             batalhasAbertas={batalhasAbertas}
@@ -295,11 +282,9 @@ export default function HomeJogador() {
           />
         );
         break;
-
       case "Ranking":
         conteudoCorpo = <Ranking />;
         break;
-
       case "Loja":
         conteudoCorpo = <Loja qtdeMoedas={qtdeMoedas} />;
         break;
@@ -316,7 +301,6 @@ export default function HomeJogador() {
           usuarioLogado={user}
         />
       )}
-
       <Header home="home" qtdeMoedas={qtdeMoedas} />
       <div className="corpo-container">
         <div className={"opcoes"}>

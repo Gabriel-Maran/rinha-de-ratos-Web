@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   trocarSenha,
   trocarFoto,
   pegarUsuarioPorId,
-  batalhaConcluidas,
+  buscarHistoricoSemBto,
   pegarBatalhasCriadas,
   baixarPdf,
 } from "../../Api/Api";
@@ -20,7 +20,6 @@ import "./Perfil.css";
 import "../home/jogador/batalhas/ListaDeBatalhas.css";
 
 export default function Perfil({ qtdeMoedas }) {
-  const location = useLocation();
   const navigate = useNavigate();
   let loginADM = false;
 
@@ -59,6 +58,12 @@ export default function Perfil({ qtdeMoedas }) {
   // CARREGAMENTO INICIAL
   // ---------------------------------------------------------
   useEffect(() => {
+    if (idUsuarioLogado === null) {
+      navigate("/login");
+    }
+  }, [idUsuarioLogado, navigate]);
+
+  useEffect(() => {
     if (!idUsuarioLogado) return;
 
     if (user && opcaoAtivada === "Perfil") {
@@ -68,11 +73,15 @@ export default function Perfil({ qtdeMoedas }) {
     }
 
     if (opcaoAtivada === "Histórico de Batalhas") {
-      if (user.tipoConta === "JOGADOR") {
+      // FIX: Adicionado .toUpperCase() e ? para evitar erro se tipoConta vier minúsculo ou nulo
+      if (user.tipoConta?.toUpperCase() === "JOGADOR") {
         const buscarHistorico = async () => {
           setLoadingHistorico(true);
           try {
-            const resposta = await batalhaConcluidas(idUsuarioLogado);
+            console.log("Buscando histórico para ID:", idUsuarioLogado);
+            const resposta = await buscarHistoricoSemBto(idUsuarioLogado);
+            console.log("Resposta Histórico:", resposta.data);
+
             if (Array.isArray(resposta.data)) {
               setHistoricoBatalhas(resposta.data);
             } else {
@@ -87,6 +96,7 @@ export default function Perfil({ qtdeMoedas }) {
         };
         buscarHistorico();
       } else {
+        // Lógica para ADM
         const buscarHistorico = async () => {
           setLoadingHistorico(true);
           try {
@@ -111,16 +121,6 @@ export default function Perfil({ qtdeMoedas }) {
   // ---------------------------------------------------------
   //  BAIXAR O HISTORICO EM PDF
   // ---------------------------------------------------------
-
-  // BLOB(Binary Large Object)  sem usar o blob o axios tenta abrir o arquivo e ler um json,
-  // já com o blob você diz para ele apenas guardar os dados  brutos em uma caixa,
-  // com isso o javScript   pega os binários exatos e salva na memória.
-
-  // 1. Cria uma URL temporária para o arquivo binário createObjectURL(Blob).
-  // 2. Cria um link HTML invisível(createElement).
-  // 3. Define o nome do arquivo que será baixado(setAttribute).
-  // 4. Adiciona no corpo do site, clica e remove(appendChild).
-
   const baixarHistorico = async () => {
     setMensagemSucesso(null);
     setErro(null);
@@ -128,7 +128,6 @@ export default function Perfil({ qtdeMoedas }) {
       const resposta = await baixarPdf(idUsuarioLogado);
 
       const url = window.URL.createObjectURL(new Blob([resposta.data]));
-
       const link = document.createElement("a");
       link.href = url;
 
@@ -165,7 +164,6 @@ export default function Perfil({ qtdeMoedas }) {
         await trocarFoto(idUsuarioLogado, fotoSelecionada);
       }
 
-      // Atualiza o usuário no contexto global para refletir na tela
       const respostaUsuarioAtualizada = await pegarUsuarioPorId(
         idUsuarioLogado
       );
@@ -179,9 +177,6 @@ export default function Perfil({ qtdeMoedas }) {
     }
   };
 
-  // ---------------------------------------------------------
-  //  DESLOGAR
-  // ---------------------------------------------------------
   const deslogar = () => {
     setUser(null);
     sessionStorage.removeItem("idUsuario");
@@ -328,6 +323,7 @@ export default function Perfil({ qtdeMoedas }) {
             {loadingHistorico ? (
               <p className="msg-historico-vazio">Carregando batalhas...</p>
             ) : historicoBatalhas.length > 0 ? (
+              // Map direto sem filter, assumindo que a API já filtra ou queremos ver tudo
               historicoBatalhas.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha}>
                   <img src={Trofeu} alt="Troféu" />

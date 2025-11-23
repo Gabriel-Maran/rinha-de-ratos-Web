@@ -20,29 +20,26 @@ export default function ListaDeBatalhas({
   const [batalhaConcluidaId, setBatalhaConcluidaId] = useState(null);
   const [comBot, setComBot] = useState(false);
   const [batalhaSelecionadaId, setBatalhaSelecionadaId] = useState(null);
-  const [dadosBatalhaBot, setDadosBatalhaBot] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [erroModal, setErroModal] = useState(null);
 
   const batalharComBot = async (idRato) => {
     setIsLoading(true);
     setErroModal(null);
-
     try {
       const resposta = await batlhaBot(idUsuarioLogado, idRato);
+      // debug útil — remova se não quiser logs
+      console.log("Resposta batlhaBot:", resposta?.data);
+      const novoId = resposta.data.idBatalha;
+      if (!novoId) throw new Error("Não foi possível recuperar o ID da batalha.");
 
-      setDadosBatalhaBot(resposta.data);
-      console.log("RESPOSTA COMPLETA DO BOT:", resposta);
-      console.log("DADOS DA RESPOSTA:", resposta.data);
-
+      setBatalhaConcluidaId(novoId);
       setIsLoading(false);
       setModalSelecionarRato(false);
       setMostrarResultadoBatalha(true);
     } catch (err) {
       setIsLoading(false);
-      setErroModal(
-        err?.response?.data?.message || "Erro ao realizar a batalha de treino."
-      );
+      setErroModal(err?.response?.data?.message || "Erro ao realizar a batalha de treino.");
     }
   };
 
@@ -53,16 +50,17 @@ export default function ListaDeBatalhas({
       const [ano, mes, dia] = parteDaData.split("-");
       return `${dia}/${mes}, ${parteDaHora}`;
     } catch (erro) {
-      console.error("Erro ao formatar data:", erro);
       return data;
     }
   };
 
   const handleAbrirModal = (idBatalha, bot) => {
-    if (!bot) {
-      setBatalhaSelecionadaId(idBatalha);
-    } else {
+    if (bot) {
       setComBot(true);
+      setBatalhaSelecionadaId(null);
+    } else {
+      setComBot(false);
+      setBatalhaSelecionadaId(idBatalha);
     }
     setModalSelecionarRato(true);
     setErroModal(null);
@@ -74,7 +72,7 @@ export default function ListaDeBatalhas({
     setErroModal(null);
     setBatalhaSelecionadaId(null);
     setBatalhaConcluidaId(null);
-    setDadosBatalhaBot(null);
+    setComBot(false);
   };
 
   const handleEntrarBatalha = async (idRato) => {
@@ -82,16 +80,13 @@ export default function ListaDeBatalhas({
       setErroModal("Erro: Dados incompletos.");
       return;
     }
-
     setIsLoading(true);
     setErroModal(null);
-
     const dadosEntraBatalha = {
       idBatalha: batalhaSelecionadaId,
       idUsuario: idUsuarioLogado,
       idRato: idRato,
     };
-
     try {
       await entrarBatalha(dadosEntraBatalha);
       setIsLoading(false);
@@ -99,14 +94,11 @@ export default function ListaDeBatalhas({
       onBatalhaInscrita();
     } catch (err) {
       setIsLoading(false);
-      setErroModal(
-        err?.response?.data?.message || "Erro ao entrar na batalha."
-      );
+      setErroModal(err?.response?.data?.message || "Erro ao entrar na batalha.");
     }
   };
 
   let conteudoOpcaoBatalhas;
-
   switch (btnOpcBatalhas) {
     case "Todas":
       conteudoOpcaoBatalhas = (
@@ -115,14 +107,13 @@ export default function ListaDeBatalhas({
             <TelaHistorico
               onClose={handleFecharModal}
               mostrarHistorico={mostrarResultadoBatalha}
-              batalhaConcluidaId={batalhaConcluidaId}
-              dadosBatalhaBot={dadosBatalhaBot}
-              usuarioLogado={{ nome: "SeuUsuario" }}
+              dadosBatalhaBot={comBot ? batalhaConcluidaId : null}
+              idBatalha={!comBot ? batalhaConcluidaId : null}
+              // Passamos o objeto para a TelaHistorico conseguir comparar
+              usuarioLogado={{ idUsuario: idUsuarioLogado }}
             />
           )}
 
-          {/* Só mostra o modal de seleção se o de resultado NÃO estiver aberto.
-              Isso é uma segurança extra para evitar sobreposição visual */}
           {modalSelecionarRato && !mostrarResultadoBatalha && (
             <ModalEscolherRatoBatalha
               onClose={handleFecharModal}
@@ -130,40 +121,37 @@ export default function ListaDeBatalhas({
               onConfirmar={comBot ? batalharComBot : handleEntrarBatalha}
               isLoading={isLoading}
               erroModal={erroModal}
+              ignorarInscricao={comBot}
             />
           )}
 
           <div className="botaoBotELista">
             <button
               className="btnBatalhaComBot"
-              onClick={() => handleAbrirModal(null, true)} // Ajustei aqui para passar null no ID e true no bot
+              onClick={() => handleAbrirModal(null, true)}
             >
               Batalhar com Bot
             </button>
             <div className="listaBatalhas">
               {batalhasAbertas &&
-                batalhasAbertas.map((batalha) => (
-                  <div className="batalha" key={batalha.idBatalha}>
-                    <img src={Trofeu} alt="Troféu" />
-                    <div className="infoBatalha">
-                      <p>{batalha.nomeBatalha}</p>
-                      <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                      <p>
-                        Data: {formatarDataEHora(batalha.dataHorarioInicio)}
-                      </p>
-                      <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                batalhasAbertas
+                  .filter((batalha) => !batalha.jogador2)
+                  .map((batalha) => (
+                    <div className="batalha" key={batalha.idBatalha}>
+                      <img src={Trofeu} alt="Troféu" />
+                      <div className="infoBatalha">
+                        <p>{batalha.nomeBatalha}</p>
+                        <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                        <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                        <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                      </div>
+                      <div className="opcoesBatalha">
+                        <button onClick={() => handleAbrirModal(batalha.idBatalha, false)}>
+                          Participar
+                        </button>
+                      </div>
                     </div>
-                    <div className="opcoesBatalha">
-                      <button
-                        onClick={() =>
-                          handleAbrirModal(batalha.idBatalha, false)
-                        }
-                      >
-                        Participar
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))}
             </div>
           </div>
         </>
@@ -189,13 +177,7 @@ export default function ListaDeBatalhas({
                 </div>
               ))
             ) : (
-              <p
-                style={{
-                  textAlign: "center",
-                  fontSize: "1.5rem",
-                  marginTop: "2rem",
-                }}
-              >
+              <p className="nenhumaInscricao">
                 Você não está inscrito em nenhuma batalha aberta.
               </p>
             )}

@@ -44,6 +44,10 @@ export const buscarHistorico = async (idBatalha) => {
   return await apiClient.get(`history/${idBatalha}`);
 };
 
+export const buscarHistoricoSemBto = async (idUsuario) => {
+  return await apiClient.get(`batalha/user/concluidas/sembot/${idUsuario}`);
+};
+
 // ---------------------------------------------------------
 // APIS RELACIONADAS A LOJA
 // ---------------------------------------------------------
