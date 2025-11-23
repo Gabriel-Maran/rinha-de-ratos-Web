@@ -185,7 +185,7 @@ class PDFGenerateService(
 
                     var tempTextTotalSaldo = ""
 
-                    if(saldoBatalhasSomadas > 0){
+                    if(saldoBatalhasSomadas >= 0){
                         tempTextTotalSaldo = "Saldo ganho: "
                         r = 0f
                         g = 180f

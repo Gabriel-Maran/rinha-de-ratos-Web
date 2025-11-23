@@ -87,6 +87,12 @@ class BatalhaController(
         return ResponseEntity.ok(result.map{ it.toDto()})
     }
 
+    @GetMapping("/user/concluidas/sembot/{idUsuario}")
+    fun pegaBatalhaConcuildaIdUserSemBot(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasBatalhasDoUsuarioConcluidasSemBot(idUsuario)
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
     @GetMapping("/batalhacheia/{idBatalha}")
     fun batalhaCheia(@PathVariable("idBatalha") idBatalha: Long): ResponseEntity<Any> {
         val result = batalhaService.batalhaCheia(idBatalha)

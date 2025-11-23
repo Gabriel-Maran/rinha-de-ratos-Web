@@ -57,6 +57,17 @@ class BatalhaService(
     fun pegarTodasBatalhasDoUsuarioConcluidas(idUsuario: Long): List<Batalha> =
         batalhaRepository.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
 
+    fun pegarTodasBatalhasDoUsuarioConcluidasSemBot(idUsuario: Long): List<Batalha> {
+       val batalhas = batalhaRepository.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
+        val batalhasSemBot = mutableListOf<Batalha>()
+        for (batalha in batalhas) {
+            if(batalha.custoInscricao > 0 ){
+                batalhasSemBot.add(batalha)
+            }
+        }
+        return batalhasSemBot
+    }
+
     fun pegarTodasAsBatalhasAbertasQueOUserNParticipa(idUsuario: Long): MutableList<Batalha> {
         val batalhas = pegarTodasAsBatalhasAbertas()
         val batalhasParaUser = mutableListOf<Batalha>()
