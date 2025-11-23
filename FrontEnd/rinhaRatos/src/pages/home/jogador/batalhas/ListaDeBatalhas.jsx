@@ -28,7 +28,6 @@ export default function ListaDeBatalhas({
     setErroModal(null);
     try {
       const resposta = await batlhaBot(idUsuarioLogado, idRato);
-      // debug útil — remova se não quiser logs
       console.log("Resposta batlhaBot:", resposta?.data);
       const novoId = resposta.data.idBatalha;
       if (!novoId) throw new Error("Não foi possível recuperar o ID da batalha.");
@@ -109,7 +108,6 @@ export default function ListaDeBatalhas({
               mostrarHistorico={mostrarResultadoBatalha}
               dadosBatalhaBot={comBot ? batalhaConcluidaId : null}
               idBatalha={!comBot ? batalhaConcluidaId : null}
-              // Passamos o objeto para a TelaHistorico conseguir comparar
               usuarioLogado={{ idUsuario: idUsuarioLogado }}
             />
           )}

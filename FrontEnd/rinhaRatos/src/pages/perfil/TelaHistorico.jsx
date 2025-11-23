@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { buscarHistorico } from "../../Api/Api";
+import { useAuth } from "../../context/AuthContext";
 import RE from "../../assets/classeRatos/RatoEsgoto.png";
 import ImgVitoria from "../../assets/icones/IconeVitoria.png";
 import ImgDerrota from "../../assets/icones/IconeDerrota.png";
@@ -9,27 +10,36 @@ export default function TelaHistorico({
   onClose,
   mostrarHistorico,
   idBatalha,
-  usuarioLogado,
   dadosBatalhaBot,
 }) {
+  const { user } = useAuth();
   const [logs, setLogs] = useState([]);
-  const [resultado, setResultado] = useState(null);
+  // Inicialize com null, pois ID geralmente não é array
+  const [idVencedor, setIdVencedor] = useState(null); 
   const [loading, setLoading] = useState(true);
 
+  const idUsuarioLogado = user?.idUsuario || user?.id;
+
   useEffect(() => {
-    // Lógica Unificada de Carregamento
-    const carregarDados = async (idParaBuscar) => {
-      if (!idParaBuscar) return;
+    // Se não mostrar, nem busca. Economiza recurso.
+    if (!mostrarHistorico) return;
+
+    const carregarDados = async () => {
+      const idFinal = dadosBatalhaBot || idBatalha;
+      if (!idFinal) return;
+
       setLoading(true);
       try {
-        const resposta = await buscarHistorico(idParaBuscar);
+        const resposta = await buscarHistorico(idFinal);
         const dados = resposta.data;
 
         // O Backend retorna [ [logs...], [resultado...] ]
         if (Array.isArray(dados) && dados.length >= 2) {
           setLogs(dados[0]);
-          // Pega o primeiro item do array de resultados
-          setResultado(dados[1][0]);
+          // Assumindo que o ID do vencedor vem na estrutura do segundo array ou na raiz
+          // Ajuste o caminho abaixo conforme seu backend exato (ex: dados[1][0].id_vencedor)
+          const infoResultado = dados[1][0]; 
+          setIdVencedor(infoResultado?.id_vencedor || resposta.data.id_vencedor);
         }
       } catch (err) {
         console.error("Erro ao carregar histórico:", err);
@@ -38,86 +48,20 @@ export default function TelaHistorico({
       }
     };
 
-    // Se for Bot (dadosBatalhaBot) tem prioridade, senão usa idBatalha
-    const idFinal = dadosBatalhaBot || idBatalha;
-    carregarDados(idFinal);
-
-  }, [idBatalha, dadosBatalhaBot]);
-
-  // --- LÓGICA DO TEXTO E BANNER (VERSÃO ROBUSTA) ---
-  let imagemBanner = null;
-  let mensagemResultado = "";
-
-  if (resultado && usuarioLogado) {
-    // 1. Normaliza o ID do Usuário Logado (Aceita .id ou .idUsuario e tenta localizar em localStorage como fallback)
-    const storedUser = (() => {
-      try {
-        return JSON.parse(localStorage.getItem("user") || "{}");
-      } catch {
-        return {};
-      }
-    })();
-    const meuId = Number(
-      usuarioLogado?.id ??
-      usuarioLogado?.idUsuario ??
-      storedUser?.idUsuario ??
-      storedUser?.id
-    );
-
-    // 2. Normaliza o ID do Vencedor (varias possibilidades)
-    let idVencedor = resultado?.vencedorId ??
-                     resultado?.vencedor?.idUsuario ??
-                     resultado?.vencedor?.id ??
-                     resultado?.vencedor ??
-                     resultado?.vencedor_usuario_id; // caso snake_case do backend
-
-    idVencedor = Number(idVencedor);
-
-    // Comparação segura: se não for possível determinar, setamos indeterminado (null)
-    const souVencedor =
-      Number.isFinite(idVencedor) ? idVencedor === meuId : null;
-
-    if (souVencedor === true) {
-      imagemBanner = ImgVitoria;
-      mensagemResultado = "Você venceu!";
-    } else if (souVencedor === false) {
-      imagemBanner = ImgDerrota;
-      mensagemResultado = "Você perdeu...";
-    } else {
-      // Indeterminado: se vier de uma batalha contra bot e não há idVencedor,
-      // tentamos inferir pelo resultado (ex.: resultado.jogadorVencedor, resultado.ratoVencedorId, etc.)
-      // Aqui fazemos checagens adicionais seguras:
-      const possiveisVencedores = [
-        resultado?.jogadorVencedor,
-        resultado?.jogadorVencedorId,
-        resultado?.ratoVencedorId,
-      ];
-      const qualquerVencedor = possiveisVencedores.find((v) => v != null);
-      if (qualquerVencedor != null) {
-        const vNum = Number(qualquerVencedor);
-        if (Number.isFinite(vNum) && vNum === meuId) {
-          imagemBanner = ImgVitoria;
-          mensagemResultado = "Você venceu!";
-        } else {
-          imagemBanner = ImgDerrota;
-          mensagemResultado = "Você perdeu...";
-        }
-      } else {
-        // fallback neutro
-        imagemBanner = ImgDerrota;
-        mensagemResultado = resultado?.mensagem || "Resultado indisponível.";
-      }
-    }
-  }
+    carregarDados();
+  }, [idBatalha, dadosBatalhaBot, mostrarHistorico]);
 
   if (!mostrarHistorico) return null;
 
+  // Lógica Derivada (Calculada a cada renderização, fora do useEffect)
+  const vitoria = idVencedor === idUsuarioLogado;
+  const imagemBanner = vitoria ? ImgVitoria : ImgDerrota;
+  const mensagemResultado = vitoria ? "Vitória!" : "Derrota!";
+
   return (
-    <div className={mostrarHistorico ? "bgEscuroOn" : "bgEscuroOff"}>
+    <div className="bgEscuroOn">
       <div className="modalResultado">
-        <button className="fecharMdResultado" onClick={onClose}>
-          ✖
-        </button>
+        <button className="fecharMdResultado" onClick={onClose}>✖</button>
 
         {loading ? (
           <h2 className="loadingResultado">Carregando resultado...</h2>
@@ -126,13 +70,7 @@ export default function TelaHistorico({
             <h1 className="tituloResultado">Resultado da Batalha:</h1>
 
             <div className="area-banner-central">
-              {imagemBanner && (
-                <img
-                  src={imagemBanner}
-                  alt="Resultado"
-                  className="img-banner-final"
-                />
-              )}
+              <img src={imagemBanner} alt="Resultado" className="img-banner-final" />
               <h2 className="texto-resultado-final">{mensagemResultado}</h2>
             </div>
 
@@ -140,23 +78,17 @@ export default function TelaHistorico({
               <h3>Histórico</h3>
               <div className="bgConteinerHist">
                 <div className="conteinerHistorico">
-                  {logs && logs.length > 0 ? (
+                  {logs.length > 0 ? (
                     logs.map((log, index) => {
-                      const esquerda = log.player === 1;
+                      const isPlayer1 = log.player === 1;
                       return (
                         <div
-                          className={esquerda ? "regHistEsq" : "regHistDir"}
+                          className={isPlayer1 ? "regHistEsq" : "regHistDir"}
                           key={log.idmessage || index}
                         >
-                          {esquerda && (
-                            <img className="imgEsquerda" src={RE} alt="rato" />
-                          )}
-                          <p>
-                            <strong>Round {log.round}:</strong> {log.descricao}
-                          </p>
-                          {!esquerda && (
-                            <img className="imgDireita" src={RE} alt="rato" />
-                          )}
+                          {isPlayer1 && <img className="imgEsquerda" src={RE} alt="rato" />}
+                          <p><strong>Round {log.round}:</strong> {log.descricao}</p>
+                          {!isPlayer1 && <img className="imgDireita" src={RE} alt="rato" />}
                         </div>
                       );
                     })
