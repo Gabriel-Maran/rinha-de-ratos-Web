@@ -121,6 +121,16 @@ export default function Perfil({ qtdeMoedas }) {
   // ---------------------------------------------------------
   //  BAIXAR O HISTORICO EM PDF
   // ---------------------------------------------------------
+  
+  // BLOB(Binary Large Object)  sem usar o blob o axios tenta abrir o arquivo e ler um json,
+  // já com o blob você diz para ele apenas guardar os dados  brutos em uma caixa,
+  // com isso o javScript   pega os binários exatos e salva na memória.
+
+  // 1. Cria uma URL temporária para o arquivo binário createObjectURL(Blob).
+  // 2. Cria um link HTML invisível(createElement).
+  // 3. Define o nome do arquivo que será baixado(setAttribute).
+  // 4. Adiciona no corpo do site, clica e remove(appendChild).
+
   const baixarHistorico = async () => {
     setMensagemSucesso(null);
     setErro(null);
