@@ -15,7 +15,6 @@ import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "./ranking/Ranking";
 import Loja from "./loja/Loja";
-// 1. IMPORTAÇÃO NOVA: Precisamos importar a tela de resultado
 import TelaHistorico from "../../perfil/TelaHistorico"; 
 
 import "./HomeJogador.css";
@@ -117,7 +116,7 @@ export default function HomeJogador() {
         }
         
         // ------------------------------------------------------------
-        // LÓGICA DO VIGIA (MODIFICADA PARA ABRIR O HISTÓRICO)
+        // LÓGICA PARA ABRIR O HISTÓRICO)
         // ------------------------------------------------------------
         if (listaBatalhasAntigas.current.length > 0) {
           
