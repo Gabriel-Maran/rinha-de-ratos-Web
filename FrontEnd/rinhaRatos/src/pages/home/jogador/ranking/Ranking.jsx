@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../../context/AuthContext";
 import { ranking } from "../../../../Api/Api";
-import RatoEsgoto from "../../../../assets/classeRatos/RatoEsgoto.png";
+import { getFotoUrlById } from "../../../perfil/ModalOpcFotosPerfil";
 import "./Ranking.css";
 
 export default function Ranking() {
   const { user } = useAuth();
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
 
- const [listaJogadores, setListaJogadores] = useState([]);
+  const [listaJogadores, setListaJogadores] = useState([]);
 
   const [loadingDados, setLoadingDados] = useState(true);
   const [erroDados, setErroDados] = useState(null);
@@ -36,22 +36,33 @@ export default function Ranking() {
   return (
     <>
       <h1 className="subTitulo">Batalhas Vencidas</h1>
-      <div className="listaJogadores">
-        {listaJogadores.map((jogador, index) => (
-          <div className="jogador" key={jogador.idUsuario}>
-            <div className="posicaoJogador">
-              <p>{index + 1}º</p>
-            </div>
-            <img src={RatoEsgoto} />
-            <div className="nomeEVitorias">
-              <p className="nomeJogador">{jogador.nome}</p>
-              <div className="vitorias">
-                <p>{jogador.vitorias}</p>
+
+      {listaJogadores.length === 0 ? (
+        <p>Nenhum jogador no ranking ainda.</p>
+      ) : (
+        <div className="listaJogadores">
+          {listaJogadores.map((jogador, index) => {
+            const imgPerfil = getFotoUrlById(jogador.idFotoPerfil || 0);
+
+            return (
+              <div className="jogador" key={jogador.idUsuario || index}>
+                <div className="posicaoJogador">
+                  <p>{index + 1}º</p>
+                </div>
+
+                <img src={imgPerfil} alt={`Avatar de ${jogador.nome}`} />
+
+                <div className="nomeEVitorias">
+                  <p className="nomeJogador">{jogador.nome}</p>
+                  <div className="vitorias">
+                    <p>{jogador.vitorias} vitórias</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </>
   );
 }

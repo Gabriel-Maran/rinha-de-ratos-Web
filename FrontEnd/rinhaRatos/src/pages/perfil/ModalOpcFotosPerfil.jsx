@@ -46,13 +46,11 @@ export default function ModalOpcFoto({ modalAtivado, onClose, onSelectFoto, foto
         
         <div className="listaFotosPerfil">
           {LISTA_FOTOS.map((foto) => {
-            // A MÁGICA: Verifica se o ID desta foto é igual ao ID que veio do Pai
             const estaSelecionada = foto.id === idFotoSegura;
             
             return (
               <div 
                 key={foto.id}
-                // O CSS vai pintar de verde baseado nessa classe
                 className={estaSelecionada ? "fotoPerfilSelc" : "fotoPerfil"}
                 onClick={() => onSelectFoto(foto.id)}
               >

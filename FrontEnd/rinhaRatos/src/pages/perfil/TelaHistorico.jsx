@@ -14,14 +14,12 @@ export default function TelaHistorico({
 }) {
   const { user } = useAuth();
   const [logs, setLogs] = useState([]);
-  // Inicialize com null, pois ID geralmente não é array
   const [idVencedor, setIdVencedor] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
   useEffect(() => {
-    // Se não mostrar, nem busca. Economiza recurso.
     if (!mostrarHistorico) return;
 
     const carregarDados = async () => {
@@ -36,8 +34,6 @@ export default function TelaHistorico({
         // O Backend retorna [ [logs...], [resultado...] ]
         if (Array.isArray(dados) && dados.length >= 2) {
           setLogs(dados[0]);
-          // Assumindo que o ID do vencedor vem na estrutura do segundo array ou na raiz
-          // Ajuste o caminho abaixo conforme seu backend exato (ex: dados[1][0].id_vencedor)
           const infoResultado = dados[1][0]; 
           setIdVencedor(infoResultado?.id_vencedor || resposta.data.id_vencedor);
         }
@@ -53,7 +49,6 @@ export default function TelaHistorico({
 
   if (!mostrarHistorico) return null;
 
-  // Lógica Derivada (Calculada a cada renderização, fora do useEffect)
   const vitoria = idVencedor === idUsuarioLogado;
   const imagemBanner = vitoria ? ImgVitoria : ImgDerrota;
   const mensagemResultado = vitoria ? "Vitória!" : "Derrota!";
