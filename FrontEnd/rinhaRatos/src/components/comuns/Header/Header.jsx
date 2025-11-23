@@ -5,7 +5,7 @@ import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import { getFotoUrlById } from "../../../pages/perfil/ModalOpcFotosPerfil";
 import "./Header.css";
 
-export default function Header({ home }) {
+export default function Header() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
@@ -20,9 +20,6 @@ export default function Header({ home }) {
     switch (user.tipoConta) {
       case "ADM":
         navigate("/homeadm");
-        break;
-      case "JOGADOR":
-        navigate("/home");
         break;
       default:
         navigate("/home"); 
@@ -45,7 +42,6 @@ export default function Header({ home }) {
           ) : (
             <p>Carregando...</p>
           )}
-          
           {user?.tipoConta === "JOGADOR" && (
             <div className="quantidadeMoedas">
               <img

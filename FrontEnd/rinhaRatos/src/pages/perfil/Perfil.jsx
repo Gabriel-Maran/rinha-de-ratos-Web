@@ -324,52 +324,49 @@ export default function Perfil({ qtdeMoedas }) {
             />
           )}
           <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
-          <div className="botaoBotELista">
-            <div className="listaBatalhas">
-              {loadingHistorico ? (
-                <p className="msg-historico-vazio">Carregando batalhas...</p>
-              ) : historicoBatalhas.length > 0 ? (
-                historicoBatalhas.map((batalha) => (
-                  <div className="batalha" key={batalha.idBatalha}>
-                    <img src={Trofeu} alt="Troféu" />
-                    <div className="infoBatalha">
-                      <p>{batalha.nomeBatalha}</p>
-                      <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                      <p>
-                        Data: {formatarDataEHora(batalha.dataHorarioInicio)}
-                      </p>
-                      <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
-                      <p className="status-batalha-texto">
-                        {getStatusVisual(batalha)}
-                      </p>
-                    </div>
-                    <div className="opcoesBatalhaPerfil">
-                      <button
-                        className="btnVerHistorico"
-                        onClick={() => abrirHistorico(batalha.idBatalha)}
-                      >
-                        Ver Histórico
-                      </button>
-                      <button
-                        className="btnBaixarRelatorio"
-                        onClick={baixarHistorico}
-                      >
-                        Baixar Relatório
-                      </button>
-                    </div>
+          <div className="listaBatalhasPerfil">
+            {loadingHistorico ? (
+              <p className="msg-historico-vazio">Carregando batalhas...</p>
+            ) : historicoBatalhas.length > 0 ? (
+              historicoBatalhas.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} alt="Troféu" />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>
+                      Data: {formatarDataEHora(batalha.dataHorarioInicio)}
+                    </p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                    <p className="status-batalha-texto">
+                      {getStatusVisual(batalha)}
+                    </p>
                   </div>
-                ))
-              ) : (
-                <p className="msg-historico-vazio">
-                  Você ainda não participou de batalhas.
-                </p>
-              )}
-            </div>
+                  <div className="opcoesBatalhaPerfil">
+                    <button
+                      className="btnVerHistorico"
+                      onClick={() => abrirHistorico(batalha.idBatalha)}
+                    >
+                      Ver Histórico
+                    </button>
+                    <button
+                      className="btnBaixarRelatorio"
+                      onClick={baixarHistorico}
+                    >
+                      Baixar Relatório
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="msg-historico-vazio">
+                Você ainda não participou de batalhas.
+              </p>
+            )}
           </div>
         </>
       );
   }
-
   return (
     <>
       <Header

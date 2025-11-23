@@ -59,7 +59,6 @@
 .listaBatalhas {
   width: 50rem;
   height: 35rem;
-  /* height: calc(100vh - 28rem); */
   color: black;
   display: flex;
   flex-direction: column;
@@ -129,7 +128,6 @@
 /* ------------------------------- */
 /* Medias Query para tratar altura */
 /* ------------------------------- */
-
 @media (max-height: 880px) or (max-width: 790px) {
   .botaoBotELista {
     transform: scale(0.9);
@@ -178,50 +176,6 @@
   }
 }
 
-
-/* -------------------------------- */
-/* Medias Query para tratar largura */
-/* -------------------------------- */
-/*  @media (max-width: 790px) {
-  .botaoBotELista {
-    transform: scale(0.8);
-  }
-
-   .listaBatalhas {
-    height: calc(100vh - 18rem);
-  }
-}
-
-@media (max-width: 630px) {
-  .botaoBotELista {
-    transform: scale(0.6);
-  }
-
-    .listaBatalhas {
-    height: calc(100vh - 5rem);
-  }
-} 
-
-@media (max-width: 475px) {
-  .botaoBotELista {
-    transform: scale(0.4);
-  }
-
-    .listaBatalhas {
-    height: 100vh;
-  }
-}
-
-@media (max-width: 320px) {
-  .botaoBotELista {
-    transform: scale(0.2);
-  }
-
-    .listaBatalhas {
-    height: 100vh;
-  }
-}
- */
 /* ============================================= */
 /* Botões "Todas" e "Inscritas" */
 @media (max-width: 830px) {
@@ -247,26 +201,3 @@
     font-size: 1rem;
   }
 }
-
-
-/* ----------------------------------------- */
-/* Medias Query para tratar altura e largura */
-/* ----------------------------------------- */
-/* @media (max-width: 375px) and (max-height: 667px) {
-  .listaBatalhas {
-    margin-top: 0;
-    transform: scale(0.3);
-    height: 65rem;
-    position: absolute;
-    top: -16.5rem;
-    font-size: 1.3rem;
-  }
-
-  .batalha {
-    font-size: 1.8rem;
-  }
-
-  .infoBatalha {
-    margin-right: 1rem;
-  }
-} */

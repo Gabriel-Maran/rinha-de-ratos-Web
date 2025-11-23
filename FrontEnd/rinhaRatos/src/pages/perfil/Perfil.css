@@ -38,7 +38,7 @@
   align-items: center;
   flex-direction: column;
   position: relative;
-  overflow: hidden;  
+  overflow: hidden;
 }
 
 /* ------------------------------------------------- */
@@ -88,7 +88,7 @@
 /* ------------------------------------------------- */
 .subtituloPerfil {
   width: 35rem;
-  min-height: 7.5rem;
+  height: 7.5rem;
   margin-top: 0.5rem;
   background-image: url("../../assets/labels/lblPapelTitulo.png");
   background-size: 100% 100%;
@@ -218,7 +218,7 @@
   width: 28rem;
   height: 7rem;
   margin-top: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 5.7rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -235,6 +235,19 @@
   font-size: 3rem;
   text-align: center;
   margin-top: 2rem;
+}
+
+.listaBatalhasPerfil {
+  width: 50rem;
+  height: 35rem;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  scrollbar-width: none;
+  transform-origin: top;
+  transform: scale(0.8);
 }
 
 /* Texto de Vitória/Derrota (Substitui o style inline) */
@@ -264,7 +277,7 @@
   cursor: pointer;
 }
 
-.btnBaixarRelatorio{
+.btnBaixarRelatorio {
   background-image: url("../../assets/buttons/btnParticiparBatalha.png");
 }
 
@@ -276,43 +289,52 @@
 /* RESPONSIVIDADE (MEDIA QUERIES) */
 /* ------------------------------------------------- */
 
-@media (max-height: 870px) {
+/* ========================================= */
+/*               Aba "Perfil"                */
+/* ========================================= */
+
+/* ----------------------------------------- */
+/* Medias Query para tratar altura e largura */
+/* ----------------------------------------- */
+/* ==================================== */
+/*    Inputs e botões da aba "Perfil"   */
+@media (max-height: 870px) or (max-width: 600px) {
   .dados {
     transform: scale(0.8);
   }
 }
 
-@media (max-height: 765px) {
+@media (max-height: 765px) or (max-width: 475px) {
   .dados {
     transform: scale(0.7);
   }
 }
 
-@media (max-height: 715px) {
+@media (max-height: 715px) or (max-width: 425px) {
   .dados {
     transform: scale(0.6);
   }
 }
 
-@media (max-height: 662px) {
+@media (max-height: 662px) or (max-width: 365px) {
   .dados {
     transform: scale(0.5);
   }
 }
 
-@media (max-height: 610px) {
+@media (max-height: 610px) or (max-width: 300px) {
   .dados {
     transform: scale(0.4);
   }
 }
 
-@media (max-height: 560px) {
+@media (max-height: 560px) or (max-width: 240px) {
   .dados {
     transform: scale(0.3);
   }
 }
 
-@media (max-height: 508px) {
+@media (max-height: 508px) or (max-width: 180px){
   .dados {
     transform: scale(0.2);
   }
@@ -321,7 +343,8 @@
 
 /* -------------------------------- */
 /* Medias Query para tratar largura */
-/* -------------------------------- */
+/* ================================ */
+/*    Sub-titulo da aba "Perfil"    */
 @media (max-width: 690px) {
   .subtituloPerfil {
     width: 15rem;
@@ -336,25 +359,28 @@
   }
 }
 
-
-@media (max-width: 600px) {
-  .dados{
-    transform: scale(0.8);
+@media (max-width: 300px) {
+  .subtituloPerfil {
+    width: 8rem;
+    height: 5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
   }
 }
 
-@media (max-width: 475px) {
-  .dados{
-    transform: scale(0.6);
+@media (max-width: 240px) {
+  .subtituloPerfil {
+    width: 5rem;
+    height: 3rem;
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+    font-size: 0.7rem;
   }
 }
 
-@media (max-width: 360px) {
-  .dados{
-    transform: scale(0.4);
-  }
-}
-
+/* ====================== */
+/*    Opções do Perfil    */
 @media (max-width: 969px) {
   .opcoesPerfil {
     width: 90%;
@@ -363,19 +389,133 @@
   .btnOpcao,
   .opcaoAtiva {
     width: 30%;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 290px) {
+  .btnOpcao,
+  .opcaoAtiva {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 225px) {
+  .btnOpcao,
+  .opcaoAtiva {
+    font-size: 0.9rem;
+  }
+}
+
+/* ----------------------------------------- */
+/* Medias Query para tratar largura e altura */
+/* ----------------------------------------- */
+
+/* ============================================= */
+/* Lista de Batalhas do perfil */
+@media (max-height: 870px) or (max-width: 790px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-height: 812px) or (max-width: 710px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.6);
+  }
+}
+
+@media (max-height: 760px) or (max-width: 600px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.5);
+  }
+}
+
+@media (max-height: 700px) or (max-width: 500px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.4);
+  }
+}
+
+@media (max-height: 645px) or (max-width: 400px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.3);
+  }
+}
+
+@media (max-height: 590px) or (max-width: 300px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.2);
+  }
+}
+
+@media (max-height: 532px) or (max-width: 200px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.1);
+  }
+}
+
+@media (max-height: 475px) or (max-width: 100px) {
+  .listaBatalhasPerfil {
+    transform: scale(0.05);
+  }
+}
+
+/* ----------------------------------------- */
+/* Medias Query para tratar largura */
+/* ----------------------------------------- */
+
+/* ============================================= */
+/* Subtitulo da aba de batalhas do perfil */
+@media (max-width: 710px) {
+  .subTituloBatalhas {
+    width: 20rem;
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .subTituloBatalhas {
+    width: 15rem;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .subTituloBatalhas {
+    width: 10rem;
+    height: 5rem;
+    margin-top: 1.5rem;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 300px) {
+  .subTituloBatalhas {
+    width: 5rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 200px) {
+  .subTituloBatalhas {
+    width: 2rem;
+    height: 3rem;
+    margin-top: 3rem;
+    font-size: 0.3rem;
   }
 }
 
 
-@media (max-width: 1280px) and (max-height: 620px) {
+
+/* ================================================ */
+/* ÁREA BIZARRA ABAIXO */
+/* ================================================ */
+/* @media (max-width: 1280px) and (max-height: 620px) {
   .opcoesPerfil {
     width: 60%;
     margin-top: 6rem;
     margin-bottom: 1rem;
-  }
-
-  .conteudo-perfil {
-    min-height: 40rem;
   }
 
   .subtituloPerfil {
@@ -403,16 +543,15 @@
     top: 0.55rem;
   }
 
-  /* Ajuste para botões menores */
   .btnSalvar,
   .btnDeslogar {
     height: 3rem;
     font-size: 1.5rem;
     margin-top: 1rem;
   }
-}
+} */
 
-@media (max-width: 375px) and (max-height: 667px) {
+/* @media (max-width: 375px) and (max-height: 667px) {
   .conteudo-perfil {
     min-height: 35rem;
   }
@@ -455,4 +594,4 @@
     margin-top: 1rem;
     font-size: 1.2rem;
   }
-}
+} */

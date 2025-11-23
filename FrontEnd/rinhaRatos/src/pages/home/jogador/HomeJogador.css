@@ -105,32 +105,3 @@
     height: 10rem;
   }
 }
-
-
-/* --------------------------------------------- */
-/* Medias Query para tratar comprimento e altura */
-/* --------------------------------------------- */
-@media (max-width: 1289px) and (max-height: 620px) {
-  .opcoes {
-    width: 60%;
-    margin-top: 6rem;
-    margin-bottom: 1rem;
-  }
-  .conteudo-principal {
-    min-height: 40rem;
-  }
-}
-
-@media (max-width: 375px) and (max-height: 667px) {
-  .opcoes {
-    width: 90%;
-    margin-right: 1rem;
-    margin-bottom: 0;
-  }
-  .btnOpcao,
-  .opcaoAtiva {
-    width: 20%;
-    height: 60%;
-    font-size: 1rem;
-  }
-}
