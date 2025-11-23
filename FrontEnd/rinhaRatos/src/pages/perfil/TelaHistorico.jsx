@@ -3,7 +3,6 @@ import { buscarHistorico } from "../../Api/Api";
 import RE from "../../assets/classeRatos/RatoEsgoto.png";
 import ImgVitoria from "../../assets/icones/IconeVitoria.png";
 import ImgDerrota from "../../assets/icones/IconeDerrota.png";
-
 import "../../pages/perfil/TelaHistorico.css";
 
 export default function TelaHistorico({
@@ -11,12 +10,36 @@ export default function TelaHistorico({
   mostrarHistorico,
   idBatalha,
   usuarioLogado,
+  dadosBatalhaBot, // <--- NOVA PROP
 }) {
   const [logs, setLogs] = useState([]);
   const [resultado, setResultado] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // CASO 1: Batalha de Bot (Dados já vieram prontos)
+    if (dadosBatalhaBot) {
+      setLoading(true);
+      const dados = dadosBatalhaBot;
+      
+      // Validação simples para evitar erros se o formato vier diferente
+      if (dados) {
+         // Se o back mandar direto logs e resultado:
+         if (Array.isArray(dados) && dados.length >= 2) {
+            setLogs(dados[0]);
+            setResultado(dados[1][0]);
+         } 
+         // Se o back mandar um objeto estruturado (ajuste conforme seu console.log anterior)
+         else if (dados.logs && dados.resultado) {
+            setLogs(dados.logs);
+            setResultado(dados.resultado);
+         }
+      }
+      setLoading(false);
+      return; 
+    }
+
+    // CASO 2: Batalha Normal (Busca no banco)
     if (!idBatalha) return;
 
     const carregarDetalhes = async () => {
@@ -37,14 +60,18 @@ export default function TelaHistorico({
     };
 
     carregarDetalhes();
-  }, [idBatalha]);
+  }, [idBatalha, dadosBatalhaBot]);
 
   // --- LÓGICA DO TEXTO E BANNER ---
   let imagemBanner = null;
   let mensagemResultado = "";
 
+  // Lógica defensiva para evitar erro se resultado for null
   if (resultado && usuarioLogado) {
-    const souVencedor = resultado.vencedorUserName === usuarioLogado.nome;
+    // Tenta comparar pelo ID ou pelo Nome, dependendo do que o Bot retorna
+    const souVencedor = 
+        resultado.vencedorUserName === usuarioLogado.nome || 
+        resultado.vencedorId === usuarioLogado.id;
     
     if (souVencedor) {
         imagemBanner = ImgVitoria;
@@ -65,14 +92,13 @@ export default function TelaHistorico({
         </button>
 
         {loading ? (
-          <h2 style={{ color: "white", marginTop: "15rem" }}>
-            Carregando detalhes...
+          <h2 style={{ color: "white", marginTop: "15rem", textAlign: "center" }}>
+            Carregando resultado...
           </h2>
         ) : (
           <>
             <h1 className="tituloResultado">Resultado da Batalha:</h1>
 
-            {/* ÁREA CENTRAL: BANNER GRANDE + TEXTO */}
             <div className="area-banner-central">
                 {imagemBanner && (
                     <img 
@@ -84,18 +110,18 @@ export default function TelaHistorico({
                 <h2 className="texto-resultado-final">{mensagemResultado}</h2>
             </div>
 
-            {/* HISTÓRICO */}
             <div className="historicoBatalha">
               <h3>Histórico</h3>
               <div className="bgConteinerHist">
                 <div className="conteinerHistorico">
-                  {logs.length > 0 ? (
-                    logs.map((log) => {
+                  {logs && logs.length > 0 ? (
+                    logs.map((log, index) => {
                       const esquerda = log.player === 1;
+                      // AQUI ESTAVA O ERRO: Removi o comentário de dentro da tag
                       return (
                         <div
                           className={esquerda ? "regHistEsq" : "regHistDir"}
-                          key={log.idmessage}
+                          key={log.idmessage || index} 
                         >
                           {esquerda && (
                             <img className="imgEsquerda" src={RE} alt="rato" />
@@ -122,4 +148,4 @@ export default function TelaHistorico({
       </div>
     </div>
   );
-}
+}   
