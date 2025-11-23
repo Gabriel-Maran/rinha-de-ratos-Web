@@ -36,7 +36,6 @@ data class EstadoRato(
 // Regex para pegar token do que a habilidade faz
 private val tokenRegex = Regex("""^([+-])(\d+(?:\.\d+)?)(%?)([A-Za-z0-9]+)(SEU|ADV)?$""", RegexOption.IGNORE_CASE)
 
-
 // Converte strings como "+8%HPSSEU", "-14%AGIADV", "+300%PASSEU", "+300PASSEU" em lista de Efeito.
 fun parseEfeitos(strEfeitos: String?): List<Efeito> {
     if (strEfeitos.isNullOrBlank()) return emptyList()
