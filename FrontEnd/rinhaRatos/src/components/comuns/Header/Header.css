@@ -64,7 +64,7 @@
   cursor: pointer;
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 1320px) {
   .infoHeader h1 {
     margin-bottom: 2rem;
   }
