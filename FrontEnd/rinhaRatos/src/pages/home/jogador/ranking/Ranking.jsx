@@ -55,7 +55,7 @@ export default function Ranking() {
                 <div className="nomeEVitorias">
                   <p className="nomeJogador">{jogador.nome}</p>
                   <div className="vitorias">
-                    <p>{jogador.vitorias} vitórias</p>
+                    <p>{jogador.vitorias}</p>
                   </div>
                 </div>
               </div>

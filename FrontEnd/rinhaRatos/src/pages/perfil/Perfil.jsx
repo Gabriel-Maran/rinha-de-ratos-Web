@@ -21,13 +21,13 @@ import "../home/jogador/batalhas/ListaDeBatalhas.css";
 
 export default function Perfil({ qtdeMoedas }) {
   const navigate = useNavigate();
-  let loginADM = false;
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Histórico de Batalhas");
   const botoes = ["Histórico de Batalhas", "Perfil"];
 
   const { user, setUser } = useAuth();
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
+  const loginADM = user?.tipoConta?.toUpperCase() === "ADM";
 
   // ---------------------------------------------------------
   // ESTADOS GERAIS (PERFIL)
@@ -121,7 +121,7 @@ export default function Perfil({ qtdeMoedas }) {
   // ---------------------------------------------------------
   //  BAIXAR O HISTORICO EM PDF
   // ---------------------------------------------------------
-  
+
   // BLOB(Binary Large Object)  sem usar o blob o axios tenta abrir o arquivo e ler um json,
   // já com o blob você diz para ele apenas guardar os dados  brutos em uma caixa,
   // com isso o javScript   pega os binários exatos e salva na memória.
@@ -328,7 +328,12 @@ export default function Perfil({ qtdeMoedas }) {
               usuarioLogado={user}
             />
           )}
-          <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
+          {loginADM ? (
+            <h1 className="subTituloBatalhas">Batalhas Criadas</h1>
+          ) : (
+            <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
+          )}
+
           <div className="listaBatalhasPerfil">
             {loadingHistorico ? (
               <p className="msg-historico-vazio">Carregando batalhas...</p>
@@ -340,13 +345,16 @@ export default function Perfil({ qtdeMoedas }) {
                   <div className="infoBatalha">
                     <p>{batalha.nomeBatalha}</p>
                     <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                    <p>
-                      Data: {formatarDataEHora(batalha.dataHorarioInicio)}
-                    </p>
+                    <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
                     <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
-                    <p className="status-batalha-texto">
-                      {getStatusVisual(batalha)}
-                    </p>
+
+                    {loginADM ? (
+                      <p></p>
+                    ) : (
+                      <p className="status-batalha-texto">
+                        {getStatusVisual(batalha)}
+                      </p>
+                    )}
                   </div>
                   <div className="opcoesBatalhaPerfil">
                     <button
