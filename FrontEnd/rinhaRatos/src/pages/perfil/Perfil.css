@@ -214,6 +214,15 @@
 /* ------------------------------------------------- */
 /* ESTILOS DO HISTÓRICO DE BATALHAS */
 /* ------------------------------------------------- */
+.subTituloEBotaoRelatorio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5.7rem;
+  width: 100%;
+  position: relative;
+}
+
 .subTituloBatalhas {
   width: 28rem;
   height: 7rem;
@@ -227,6 +236,20 @@
   background-size: 100% 100%;
   font-size: 2.8rem;
   color: black;
+}
+
+.btnBaixarRelatorioGeral{
+  width: 12rem;
+  height: 5rem;
+  position: absolute;
+  top: 2rem;
+  right: 16rem;
+  font-size: 1.1rem;
+  color: white;
+  background-image: url("../../assets/buttons/btnBaixarRelatorioGeral.png");
+  background-size: 100% 100%;
+  background-color: transparent;
+  border: none;
 }
 
 /* Mensagem quando lista está vazia ou carregando */

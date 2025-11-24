@@ -328,12 +328,14 @@ export default function Perfil({ qtdeMoedas }) {
               usuarioLogado={user}
             />
           )}
-          {loginADM ? (
-            <h1 className="subTituloBatalhas">Batalhas Criadas</h1>
-          ) : (
-            <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
-          )}
-
+          <div className="subTituloEBotaoRelatorio">
+            {loginADM ? (
+              <h1 className="subTituloBatalhas">Batalhas Criadas</h1>
+            ) : (
+              <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
+            )}
+            <button className="btnBaixarRelatorioGeral">Baixar Relatório Geral</button>
+          </div>
           <div className="listaBatalhasPerfil">
             {loadingHistorico ? (
               <p className="msg-historico-vazio">Carregando batalhas...</p>
