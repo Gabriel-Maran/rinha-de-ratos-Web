@@ -60,12 +60,10 @@ export default function ModalCriarBatalhas({
             ✖
           </button>
           <h1 className="tituloAba">Criação da Batalha</h1>
-
           {erro && <p className="mensagem-erro-batalha">{erro}</p>}
           {mensagemSucesso && (
             <p className="mensagem-sucesso-batalha">{mensagemSucesso}</p>
           )}
-
           <div className="criarBatalha">
             <div>
               <h3>Nome</h3>

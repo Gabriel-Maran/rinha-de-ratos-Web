@@ -207,7 +207,6 @@ export default function ModalEditarBatalha({
               onChange={(e) => setDataHoraEditada(e.target.value)}
             />
           </div>
-
           {erro && <p className="msg-erro-modal">{erro}</p>}
           {mensagemSucesso && (
             <p className="msg-sucesso-modal">{mensagemSucesso}</p>
@@ -223,7 +222,6 @@ export default function ModalEditarBatalha({
             {jogadoresBatalha.length === 0 && (
               <p className="aviso-sem-jogadores">Nenhum jogador inscrito.</p>
             )}
-
             {jogadoresBatalha.map((jogador) => (
               <div className="qJogadorBatalha" key={jogador.idUsuario}>
                 <div className="qFotoENomeJogador">
@@ -246,12 +244,10 @@ export default function ModalEditarBatalha({
               </div>
             ))}
           </div>
-
           {erro && <p className="msg-erro-modal">{erro}</p>}
           {mensagemSucesso && (
             <p className="msg-sucesso-modal">{mensagemSucesso}</p>
           )}
-
           <div className="botoesOpcBatalha">
             <button className="btnAtualizarInfo" onClick={atualizarBatalha}>
               Atualizar Dados
