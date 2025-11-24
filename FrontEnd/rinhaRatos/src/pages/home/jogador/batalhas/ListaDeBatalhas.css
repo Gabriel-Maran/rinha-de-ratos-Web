@@ -84,7 +84,7 @@
   margin-bottom: 1rem;
 }
 
-.batalha p+p {
+.batalha p + p {
   margin: 0;
 }
 
@@ -140,37 +140,37 @@
   }
 }
 
-@media (max-height: 770px) or (max-width: 630px){
+@media (max-height: 770px) or (max-width: 630px) {
   .botaoBotELista {
     transform: scale(0.7);
   }
 }
 
-@media (max-height: 720px) or (max-width: 550px){
+@media (max-height: 720px) or (max-width: 550px) {
   .botaoBotELista {
     transform: scale(0.6);
   }
 }
 
-@media (max-height: 665px) or (max-width: 475px){
+@media (max-height: 665px) or (max-width: 475px) {
   .botaoBotELista {
     transform: scale(0.5);
   }
 }
 
-@media (max-height: 620px) or (max-width: 405px){
+@media (max-height: 620px) or (max-width: 405px) {
   .botaoBotELista {
     transform: scale(0.4);
   }
 }
 
-@media (max-height: 560px) or (max-width: 320px){
+@media (max-height: 560px) or (max-width: 320px) {
   .botaoBotELista {
     transform: scale(0.3);
   }
 }
 
-@media (max-height: 510px) or (max-width: 240px){
+@media (max-height: 510px) or (max-width: 240px) {
   .botaoBotELista {
     transform: scale(0.2);
   }

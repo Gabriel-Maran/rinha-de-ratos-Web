@@ -8,8 +8,10 @@
 }
 
 .corpo-container {
-  background-image: linear-gradient(rgba(55, 51, 51, 0.5),
-      rgba(55, 51, 51, 0.5)),
+  background-image: linear-gradient(
+      rgba(55, 51, 51, 0.5),
+      rgba(55, 51, 51, 0.5)
+    ),
     url("../../../assets/backgrounds/bgHome.png");
   background-size: cover;
   /* Essa maravilha faz a imagem cobrir todo o site */
@@ -34,6 +36,7 @@
 .conteudo-principal {
   width: 100%;
   max-width: 115rem;
+  min-width: 60rem;
   min-height: 60rem;
   background-image: url("../../../assets/displays/displayMadeira.png");
   background-size: 100% 100%;
@@ -130,7 +133,6 @@
 }
 
 @media (max-width: 450px) {
-
   .btnOpcao,
   .opcaoAtiva {
     font-size: 1rem;
@@ -138,7 +140,6 @@
 }
 
 @media (max-width: 410px) {
-
   .btnOpcao,
   .opcaoAtiva {
     font-size: 0.8rem;
