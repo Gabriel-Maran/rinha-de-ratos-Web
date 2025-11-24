@@ -37,7 +37,7 @@ export default function HomeADM() {
   const [erroDados, setErroDados] = useState(null);
 
   useEffect(() => {
-if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
+    if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
       navigate("/login");
     }
   }, [idUsuarioLogado, user, navigate]);
@@ -148,7 +148,7 @@ if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
       case "Ranking":
         conteudoHomeAdm = (
           <>
-            <h1 className="subTitulo">Ranking</h1>
+            <h1 className="subTitulo">Batalhas Vencidas</h1>
             <div className="listaJogadores">
               {listaJogadores.map((jogador, index) => {
                 const imgPerfil = getFotoUrlById(jogador.idFotoPerfil || 0);
@@ -199,35 +199,37 @@ if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
             <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
               Criar Batalha
             </button>
-            <div className="listaBatalhas">
-              {listaBatalhas.map((batalha) => (
-                <div className="batalha" key={batalha.idBatalha || batalha.id}>
-                  <img src={trofeu} />
-                  <div className="infoBatalha">
-                    <p>{batalha.nomeBatalha}</p>
-                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                    <p>
-                      Data e Hora:{" "}
-                      {formatarDataEHora(batalha.dataHorarioInicio)}
-                    </p>
-                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+            <div className="botaoBotELista">
+              <div className="listaBatalhas">
+                {listaBatalhas.map((batalha) => (
+                  <div className="batalha" key={batalha.idBatalha || batalha.id}>
+                    <img src={trofeu} />
+                    <div className="infoBatalha">
+                      <p>{batalha.nomeBatalha}</p>
+                      <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                      <p>
+                        Data e Hora:{" "}
+                        {formatarDataEHora(batalha.dataHorarioInicio)}
+                      </p>
+                      <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                    </div>
+                    <div className="acoesBatalhaADM">
+                      <button
+                        className="btnIniciarBatalha"
+                        onClick={() => IniciarBatalha(batalha)}
+                      >
+                        Iniciar Batalha
+                      </button>
+                      <button
+                        className="btnGerenciarBatalha"
+                        onClick={() => EdicaoDeBatalha(batalha)}
+                      >
+                        Gerenciar
+                      </button>
+                    </div>
                   </div>
-                  <div className="acoesBatalhaADM">
-                    <button
-                      className="btnIniciarBatalha"
-                      onClick={() => IniciarBatalha(batalha)}
-                    >
-                      Iniciar Batalha
-                    </button>
-                    <button
-                      className="btnGerenciarBatalha"
-                      onClick={() => EdicaoDeBatalha(batalha)}
-                    >
-                      Gerenciar
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </>
         );

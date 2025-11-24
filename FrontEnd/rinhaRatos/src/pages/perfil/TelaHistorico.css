@@ -80,6 +80,12 @@
   width: 41rem;
 }
 
+.loadingResultado {
+  color: white;
+  margin-top: 20rem;
+  font-size: 3rem;
+}
+
 .tituloResultado {
   width: 30rem;
   height: 5rem;
@@ -337,19 +343,19 @@
 /* ----------------------------------------- */
 /* Medias Query para tratar altura e largura */
 /* ----------------------------------------- */
-@media (max-height: 970px) or (max-width: 800px){
+@media (max-height: 970px) or (max-width: 800px) {
   .modalResultado {
     transform: scale(0.9);
   }
 }
 
-@media (max-height: 800px) or (max-width: 660px){
+@media (max-height: 800px) or (max-width: 660px) {
   .modalResultado {
     transform: scale(0.8);
   }
 }
 
-@media (max-height: 740px) or (max-width: 590px){
+@media (max-height: 740px) or (max-width: 590px) {
   .modalResultado {
     transform: scale(0.7);
   }
@@ -365,14 +371,14 @@
 /* -------------------------------- */
 /* Medias Query para tratar largura */
 /* ================================ */
-@media (max-width: 440px){
-    .modalResultado {
+@media (max-width: 440px) {
+  .modalResultado {
     transform: scale(0.5);
   }
 }
 
-@media (max-width: 370px){
-    .modalResultado {
+@media (max-width: 370px) {
+  .modalResultado {
     transform: scale(0.4);
   }
 }

@@ -218,7 +218,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5.7rem;
+  margin-bottom: 11.4rem;
   width: 100%;
   position: relative;
 }
@@ -227,7 +227,6 @@
   width: 28rem;
   height: 7rem;
   margin-top: 0.5rem;
-  margin-bottom: 5.7rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -238,7 +237,7 @@
   color: black;
 }
 
-.btnBaixarRelatorioGeral{
+.btnBaixarRelatorioGeral {
   width: 12rem;
   height: 5rem;
   position: absolute;
@@ -366,8 +365,6 @@
 }
 
 
-/* -------------------------------- */
-/* Medias Query para tratar largura */
 /* ================================ */
 /*    Sub-titulo da aba "Perfil"    */
 @media (max-width: 690px) {
@@ -434,12 +431,13 @@
   .opcoesPerfil {
     min-height: 0rem;
   }
-} 
+}
 
 
 /* ======================= */
 /*    Botões das opções    */
 @media (max-width: 520px) {
+
   .btnOpcao,
   .opcaoAtiva {
     font-size: 1.2rem;
@@ -463,6 +461,7 @@
 }
 
 @media (max-width: 230px) {
+
   .btnOpcao,
   .opcaoAtiva {
     height: 1.5rem;
@@ -541,14 +540,14 @@
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 515px) {
   .subTituloBatalhas {
     width: 15rem;
     font-size: 1.5rem;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 440px) {
   .subTituloBatalhas {
     width: 10rem;
     height: 5rem;
@@ -557,7 +556,7 @@
   }
 }
 
-@media (max-width: 300px) {
+@media (max-width: 360px) {
   .subTituloBatalhas {
     width: 5rem;
     font-size: 0.8rem;
@@ -570,5 +569,59 @@
     height: 3rem;
     margin-top: 3rem;
     font-size: 0.3rem;
+  }
+}
+
+
+/* -------------------------------- */
+/* Medias Query para tratar largura */
+
+@media (max-width: 1350px) {
+  .btnBaixarRelatorioGeral {
+    right: 12rem;
+  }
+}
+
+@media (max-width: 1250px) {
+  .btnBaixarRelatorioGeral {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-width: 1200px) {
+  .btnBaixarRelatorioGeral {
+    transform: scale(0.7);
+    right: 8rem;
+  }
+}
+
+@media (max-width: 1025px) {
+  .btnBaixarRelatorioGeral {
+    width: 6rem;
+    height: 6rem;
+    top: 1.5rem;
+    right: 5rem;
+    padding: 0.1rem;
+  }
+}
+
+@media (max-width: 770px) {
+  .btnBaixarRelatorioGeral {
+    right: 3rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .btnBaixarRelatorioGeral {
+    right: 1rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .btnBaixarRelatorioGeral {
+    width: 4rem;
+    height: 4rem;
+    top: 2rem;
+    font-size: 0.8rem;
   }
 }

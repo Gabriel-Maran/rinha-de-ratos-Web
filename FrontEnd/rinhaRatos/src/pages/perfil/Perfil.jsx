@@ -143,7 +143,7 @@ export default function Perfil({ qtdeMoedas }) {
 
       link.setAttribute(
         "download",
-       `Historico_Batalha_${idBatalha}_Usuario_${idUsuarioLogado}.pdf`
+        `Historico_Batalha_${idBatalha}_Usuario_${idUsuarioLogado}.pdf`
       );
 
       document.body.appendChild(link);
@@ -355,6 +355,7 @@ export default function Perfil({ qtdeMoedas }) {
             />
           )}
           <div className="subTituloEBotaoRelatorio">
+            <div className="filler" />
             {loginADM ? (
               <h1 className="subTituloBatalhas">Batalhas Criadas</h1>
             ) : (
