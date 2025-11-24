@@ -65,7 +65,7 @@
 }
 
 @media (max-width: 1320px) {
-  .infoHeader h1 {
+  .nomeUsuario {
     margin-bottom: 2rem;
   }
 
@@ -108,7 +108,7 @@
     height: 3rem;
   }
 
-  .infoHeader h1 {
+  .nomeConta {
     font-size: 1rem;
   }
 

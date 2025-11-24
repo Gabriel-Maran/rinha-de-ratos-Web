@@ -22,7 +22,7 @@ export default function Header() {
         navigate("/homeadm");
         break;
       default:
-        navigate("/home"); 
+        navigate("/home");
         break;
     }
   };
@@ -34,11 +34,13 @@ export default function Header() {
           <img
             className="fotoJogador"
             onClick={() => navigate("/perfil")}
-            src={fotoPerfilUrl} 
+            src={fotoPerfilUrl}
             alt="Foto de perfil do jogador"
           />
           {user ? (
-            <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1>
+            <h1 className={user?.tipoConta === "JOGADOR" ? "nomeUsuario" : ""}
+              onClick={() => navigate("/perfil")}
+            >{user.nome}</h1>
           ) : (
             <p>Carregando...</p>
           )}
