@@ -18,7 +18,7 @@ import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
   const { user } = useAuth();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
@@ -37,10 +37,10 @@ export default function HomeADM() {
   const [erroDados, setErroDados] = useState(null);
 
   useEffect(() => {
-    if (idUsuarioLogado === null) {
+if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
       navigate("/login");
     }
-  }, [idUsuarioLogado, navigate]);
+  }, [idUsuarioLogado, user, navigate]);
 
   const limparMensagens = () => {
     setTimeout(() => {

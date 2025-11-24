@@ -194,8 +194,6 @@ class BatalhaController(
                 buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
             "BATALHA_HAPPENING_OR_OVER" ->
                 buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
-            "ALREADY_RUNNING" ->
-                buildError(HttpStatus.CONFLICT, "Simulação já em execução para esta batalha", "BATALHA_JA_EM_EXECUCAO")
             "OK" ->
                 ResponseEntity.ok(mapOf("message" to "Batalha iniciada com sucesso", "idBatalha" to idBatalha))
             else ->
@@ -223,8 +221,6 @@ class BatalhaController(
                 buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
             "BATALHA_HAPPENING_OR_OVER" ->
                 buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
-            "ALREADY_RUNNING" ->
-                buildError(HttpStatus.CONFLICT, "Simulação já em execução para esta batalha", "BATALHA_JA_EM_EXECUCAO")
             "OK" ->
                 ResponseEntity.ok(mapOf("message" to "Batalha iniciada com sucesso", "idBatalha" to respCriacao["idBatalha"]!!.toLong()))
             else ->

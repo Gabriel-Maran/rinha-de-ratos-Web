@@ -15,6 +15,7 @@ import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.Optional
 import java.util.concurrent.ThreadLocalRandom
 
 @Service
@@ -37,7 +38,7 @@ class ServicoBatalhaAutomatica(
         val rounds: List<ResultadoRound>,
     )
 
-    fun executarBatalhaSincrona(idBatalha: Long): ResultadoBatalha {
+    fun executarBatalhaSincrona(idBatalha: Long): Optional<ResultadoBatalha> {
         val optB = repositorioBatalha.findById(idBatalha)
         val batalha = optB.get()
 
@@ -161,7 +162,7 @@ class ServicoBatalhaAutomatica(
         // persiste resultado final
         persistirResultadoFinal(batalha, idVencedor, idPerdedor, estadoRato1, estadoRato2)
 
-        return ResultadoBatalha(idBatalha, idVencedor, idPerdedor, historicoRounds.toList())
+        return Optional.of(ResultadoBatalha(idBatalha, idVencedor, idPerdedor, historicoRounds.toList()))
     }
 
     private fun atualizarRatos(vencedorId: Long, perdedorId: Long) {
