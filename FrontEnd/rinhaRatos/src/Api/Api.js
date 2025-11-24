@@ -82,6 +82,17 @@ export const ratoMorto = async (id) => {
   return await apiClient.post(`rato/deletar/${id}`);
 };
 
+export const baixarPdf = async (idUsuario) => {
+  return await apiClient.get(`/pdf/user/${idUsuario}`, {
+    responseType: "blob",
+  });
+};
+
+export const baixarPdfGeral = async (idUsuario, idBatalha) => {
+  return await apiClient.get(`/pdf/user/${idUsuario}/${idBatalha}`, {
+    responseType: "blob",
+  });
+};
 // ---------------------------------------------------------
 // APIS RELACIONADAS A BATALHA DO JOGADOR
 // ---------------------------------------------------------
@@ -113,12 +124,6 @@ export const pegarBatalhasDisponiveis = async (idUsuario) => {
 
 export const batlhaBot = async (idUsuario, idRato) => {
   return await apiClient.post(`/batalha/bot/${idUsuario}/${idRato}`);
-};
-
-export const baixarPdf = async (idUsuario) => {
-  return await apiClient.get(`/pdf/user/${idUsuario}`, {
-    responseType: "blob",
-  });
 };
 
 // ---------------------------------------------------------

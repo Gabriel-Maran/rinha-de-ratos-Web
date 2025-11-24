@@ -7,6 +7,7 @@ import {
   buscarHistoricoSemBto,
   pegarBatalhasCriadas,
   baixarPdf,
+  baixarPdfGeral,
 } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
@@ -73,7 +74,6 @@ export default function Perfil({ qtdeMoedas }) {
     }
 
     if (opcaoAtivada === "Histórico de Batalhas") {
-      // FIX: Adicionado .toUpperCase() e ? para evitar erro se tipoConta vier minúsculo ou nulo
       if (user.tipoConta?.toUpperCase() === "JOGADOR") {
         const buscarHistorico = async () => {
           setLoadingHistorico(true);
@@ -131,7 +131,33 @@ export default function Perfil({ qtdeMoedas }) {
   // 3. Define o nome do arquivo que será baixado(setAttribute).
   // 4. Adiciona no corpo do site, clica e remove(appendChild).
 
-  const baixarHistorico = async () => {
+  const baixarHistoricoBatalha = async (idBatalha) => {
+    setMensagemSucesso(null);
+    setErro(null);
+    try {
+      const resposta = await baixarPdfGeral(idUsuarioLogado, idBatalha);
+
+      const url = window.URL.createObjectURL(new Blob([resposta.data]));
+      const link = document.createElement("a");
+      link.href = url;
+
+      link.setAttribute(
+        "download",
+       `Historico_Batalha_${idBatalha}_Usuario_${idUsuarioLogado}.pdf`
+      );
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setMensagemSucesso("Relatório baixado com sucesso!");
+    } catch (err) {
+      console.error(err);
+      setErro("Erro ao baixar o PDF. Tente novamente.");
+    }
+  };
+
+  const baixarHistoricoBatalhaGeral = async () => {
     setMensagemSucesso(null);
     setErro(null);
     try {
@@ -334,7 +360,12 @@ export default function Perfil({ qtdeMoedas }) {
             ) : (
               <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
             )}
-            <button className="btnBaixarRelatorioGeral">Baixar Relatório Geral</button>
+            <button
+              className="btnBaixarRelatorioGeral"
+              onClick={baixarHistoricoBatalhaGeral}
+            >
+              Baixar Relatório Geral
+            </button>
           </div>
           <div className="listaBatalhasPerfil">
             {loadingHistorico ? (
@@ -367,7 +398,7 @@ export default function Perfil({ qtdeMoedas }) {
                     </button>
                     <button
                       className="btnBaixarRelatorio"
-                      onClick={baixarHistorico}
+                      onClick={() => baixarHistoricoBatalha(batalha.idBatalha)}
                     >
                       Baixar Relatório
                     </button>
