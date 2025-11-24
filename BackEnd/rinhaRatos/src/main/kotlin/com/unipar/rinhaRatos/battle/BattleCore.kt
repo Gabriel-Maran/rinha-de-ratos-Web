@@ -156,8 +156,8 @@ fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 
     val pasRaw = (basePas * (1.0 + pctPas) + flatPas).coerceAtLeast(0.0)
     val pdsRaw = (basePds * (1.0 + pctPds) + flatPds).coerceAtLeast(0.0)
 
-    val pas = (pasRaw * (1.0 + Random.nextDouble(-0.10, 0.10))).coerceAtLeast(1.0)
-    val pds = (pdsRaw * (1.0 + Random.nextDouble(-0.10, 0.10))).coerceAtLeast(1.0)
+    val pas = (pasRaw * (1.0 + Random.nextDouble(0.1, 0.5))).coerceAtLeast(1.0)
+    val pds = (pdsRaw * (1.0 + Random.nextDouble(0.1, 0.5))).coerceAtLeast(1.0)
 
     val cri = (chanceCriticoBase + pctCri).coerceIn(0.0, 0.75)
 
