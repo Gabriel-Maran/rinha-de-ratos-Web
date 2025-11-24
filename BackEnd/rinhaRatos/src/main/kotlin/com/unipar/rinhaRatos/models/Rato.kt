@@ -6,7 +6,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "ratos")
-class Rato(
+open class  Rato(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

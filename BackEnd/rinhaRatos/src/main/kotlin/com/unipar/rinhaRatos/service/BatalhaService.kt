@@ -26,6 +26,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Optional
+import kotlin.random.Random
+import kotlin.random.nextLong
 
 @Service
 @Transactional
@@ -302,7 +304,7 @@ class BatalhaService(
 
         // delega ao gerenciador: ele retorna false se já estiver rodando
         val iniciou = battleManager.iniciarSimulacaoBatalhaAsync(idBatalha)
-        return if (iniciou) "OK" else "ALREADY_RUNNING"
+        return if (iniciou) "OK" else "UNKNOWN_ERROR"
     }
 
     fun criarBatalhaComBot(idUsuario: Long, idRato: Long): Map<String, String>{
@@ -313,27 +315,9 @@ class BatalhaService(
         val usuario = usuarioOpt.get()
         if(rato.usuario!!.idUsuario != usuario.idUsuario) return mapOf("message" to "Rato não pertence a este usuário", "error" to "RATO_DONT_BELONG_THIS_PLAYER")
         if(!rato.estaVivo) return mapOf("message" to "Rato está morto", "error" to "RATO_IS_DEAD")
-        if(usuarioRepository.countBots() == 0L){
-            usuarioRepository.save(
-                Usuario(
-                    email = "BOT@bot.rinhaderatos.com",
-                    nome = "BOT",
-                    senha =  "BOT",
-                    tipoConta = TipoConta.BOT,
-                    mousecoinSaldo = 0
-                )
-            )
-        }
-        val botUser = usuarioRepository.findByEmail("BOT@bot.rinhaderatos.com").get()
-
-        val retorno = ratoService.cadastrarRato(
-                RatoBasic(
-                    idUsuario = botUser.idUsuario,
-                    nomeCustomizado = "",
-                    idHabilidade = (1..18).random().toLong()
-                )
-        )
-        val botRato = ratoRepository.findById(retorno["idRato"]!!.toLong()).get()
+        val botUser = usuarioRepository.findById(-2).get()
+        val randomLong = Random.nextLong(1L..18L) * -1
+        val botRato = ratoRepository.findById(randomLong).get()
 
         val criarBatalha = batalhaRepository.save<Batalha>(
             Batalha(
