@@ -36,22 +36,18 @@ export default function Ranking() {
   return (
     <>
       <h1 className="subTitulo">Batalhas Vencidas</h1>
-
       {listaJogadores.length === 0 ? (
-        <p>Nenhum jogador no ranking ainda.</p>
+        <p className="msg-historico-vazio">Nenhum jogador no ranking ainda.</p>
       ) : (
         <div className="listaJogadores">
           {listaJogadores.map((jogador, index) => {
             const imgPerfil = getFotoUrlById(jogador.idFotoPerfil || 0);
-
             return (
               <div className="jogador" key={jogador.idUsuario || index}>
                 <div className="posicaoJogador">
                   <p>{index + 1}º</p>
                 </div>
-
                 <img src={imgPerfil} alt={`Avatar de ${jogador.nome}`} />
-
                 <div className="nomeEVitorias">
                   <p className="nomeJogador">{jogador.nome}</p>
                   <div className="vitorias">
