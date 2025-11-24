@@ -56,6 +56,14 @@
   flex-direction: column;
 }
 
+.nenhumaInscricao {
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+  margin-top: 5rem;
+}
+
+
 .listaBatalhas {
   width: 50rem;
   height: 35rem;
@@ -84,7 +92,7 @@
   margin-bottom: 1rem;
 }
 
-.batalha p + p {
+.batalha p+p {
   margin: 0;
 }
 
@@ -125,9 +133,9 @@
   transform: scale(0.97);
 }
 
-/* ------------------------------- */
-/* Medias Query para tratar altura */
-/* ------------------------------- */
+/* ----------------------------------------- */
+/* Medias Query para tratar altura e largura */
+/* ----------------------------------------- */
 @media (max-height: 880px) or (max-width: 790px) {
   .botaoBotELista {
     transform: scale(0.9);
