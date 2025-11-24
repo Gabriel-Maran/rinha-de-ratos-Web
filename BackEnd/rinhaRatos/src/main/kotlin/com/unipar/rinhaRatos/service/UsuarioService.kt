@@ -43,7 +43,6 @@ class UsuarioService(
             if (optUser.isEmpty) return Optional.empty()
             usuario.idUsuario = optUser.get().idUsuario
             usuario.ratos = mutableListOf()
-            usuario.senha = "VAZIO"
             usuario.email = optUser.get().email
             usuario.idFotoPerfil = optUser.get().idFotoPerfil
             usuario.nome = optUser.get().nome
