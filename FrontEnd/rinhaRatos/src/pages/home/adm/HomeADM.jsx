@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { getFotoUrlById } from "../../perfil/ModalOpcFotosPerfil";
 import { useNavigate } from "react-router-dom";
 import {
   pegarBatalhasAbertas,
@@ -8,7 +9,6 @@ import {
   verificarSeBatalhaCheia,
 } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
-import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import trofeu from "../../../assets/icones/IconeTrofeu.png";
 import ModalEditarBatalha from "./ModalEditarBatalha";
 import ModalCriarBatalha from "./ModalCriarBatalha";
@@ -18,7 +18,7 @@ import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigate;
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
@@ -148,22 +148,25 @@ export default function HomeADM() {
       case "Ranking":
         conteudoHomeAdm = (
           <>
-            <h1 className="subTitulo">Batalhas Vencidas</h1>
+            <h1 className="subTitulo">Ranking</h1>
             <div className="listaJogadores">
-              {listaJogadores.map((jogador, index) => (
-                <div className="jogador" key={jogador.idUsuario}>
-                  <div className="posicaoJogador">
-                    <p>{index + 1}º</p>
-                  </div>
-                  <img src={RatoEsgoto} />
-                  <div className="nomeEVitorias">
-                    <p className="nomeJogador">{jogador.nome}</p>
-                    <div className="vitorias">
-                      <p>{jogador.vitorias}</p>
+              {listaJogadores.map((jogador, index) => {
+                const imgPerfil = getFotoUrlById(jogador.idFotoPerfil || 0);
+                return (
+                  <div className="jogador" key={jogador.idUsuario}>
+                    <div className="posicaoJogador">
+                      <p>{index + 1}º</p>
+                    </div>
+                    <img src={imgPerfil} alt={`Avatar de ${jogador.nome}`} />
+                    <div className="nomeEVitorias">
+                      <p className="nomeJogador">{jogador.nome}</p>
+                      <div className="vitorias">
+                        <p>{jogador.vitorias}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         );
