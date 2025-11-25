@@ -30,7 +30,8 @@ export default function ListaDeBatalhas({
       const resposta = await batlhaBot(idUsuarioLogado, idRato);
       console.log("Resposta batlhaBot:", resposta?.data);
       const novoId = resposta.data.idBatalha;
-      if (!novoId) throw new Error("Não foi possível recuperar o ID da batalha.");
+      if (!novoId)
+        throw new Error("Não foi possível recuperar o ID da batalha.");
 
       setBatalhaConcluidaId(novoId);
       setIsLoading(false);
@@ -38,7 +39,9 @@ export default function ListaDeBatalhas({
       setMostrarResultadoBatalha(true);
     } catch (err) {
       setIsLoading(false);
-      setErroModal(err?.response?.data?.message || "Erro ao realizar a batalha de treino.");
+      setErroModal(
+        err?.response?.data?.message || "Erro ao realizar a batalha de treino."
+      );
     }
   };
 
@@ -93,7 +96,9 @@ export default function ListaDeBatalhas({
       onBatalhaInscrita();
     } catch (err) {
       setIsLoading(false);
-      setErroModal(err?.response?.data?.message || "Erro ao entrar na batalha.");
+      setErroModal(
+        err?.response?.data?.message || "Erro ao entrar na batalha."
+      );
     }
   };
 
@@ -140,11 +145,17 @@ export default function ListaDeBatalhas({
                       <div className="infoBatalha">
                         <p>{batalha.nomeBatalha}</p>
                         <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                        <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                        <p>
+                          Data: {formatarDataEHora(batalha.dataHorarioInicio)}
+                        </p>
                         <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
                       </div>
                       <div className="opcoesBatalha">
-                        <button onClick={() => handleAbrirModal(batalha.idBatalha, false)}>
+                        <button
+                          onClick={() =>
+                            handleAbrirModal(batalha.idBatalha, false)
+                          }
+                        >
                           Participar
                         </button>
                       </div>
@@ -204,12 +215,6 @@ export default function ListaDeBatalhas({
           </button>
         ))}
       </header>
-      <button
-        className="btnIniciarTreinamento"
-        onClick={(bot) => handleAbrirModal(bot)}
-      >
-        Treinar
-      </button>
       {conteudoOpcaoBatalhas}
     </>
   );
