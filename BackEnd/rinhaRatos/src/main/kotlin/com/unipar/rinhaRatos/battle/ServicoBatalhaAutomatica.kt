@@ -15,6 +15,7 @@ import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.Optional
 import java.util.concurrent.ThreadLocalRandom
 
 @Service
@@ -37,7 +38,7 @@ class ServicoBatalhaAutomatica(
         val rounds: List<ResultadoRound>,
     )
 
-    fun executarBatalhaSincrona(idBatalha: Long): ResultadoBatalha {
+    fun executarBatalhaSincrona(idBatalha: Long): Optional<ResultadoBatalha> {
         val optB = repositorioBatalha.findById(idBatalha)
         val batalha = optB.get()
 
@@ -64,10 +65,20 @@ class ServicoBatalhaAutomatica(
             val usouHabilidade2 = decidirUsarHabilidade()
 
             // mensagem simples de não uso (player 1 ou 2)
-            if (!usouHabilidade1) mensagens.add(mapOf("message" to "${rato1.nomeCustomizado} não usou a habilidade", "player" to "1"))
+            if (!usouHabilidade1) mensagens.add(
+                mapOf(
+                    "message" to "${rato1.nomeCustomizado} não usou a habilidade",
+                    "player" to "1"
+                )
+            )
             if (usouHabilidade1) processarHabilidadeDoRato(rato1, estadoRato1, estadoRato2, mensagens, "1")
 
-            if (!usouHabilidade2) mensagens.add(mapOf("message" to "${rato2.nomeCustomizado} não usou a habilidade", "player" to "2"))
+            if (!usouHabilidade2) mensagens.add(
+                mapOf(
+                    "message" to "${rato2.nomeCustomizado} não usou a habilidade",
+                    "player" to "2"
+                )
+            )
             if (usouHabilidade2) processarHabilidadeDoRato(rato2, estadoRato2, estadoRato1, mensagens, "2")
 
             // stats / chance de crítico
@@ -83,16 +94,31 @@ class ServicoBatalhaAutomatica(
 
             // aplica dano: atacante 1 primeiro
             estadoRato2.hpAtual = (estadoRato2.hpAtual - danoParaRato2).coerceAtLeast(0)
-            mensagens.add(mapOf("message" to "${rato1.nomeCustomizado} causou $danoParaRato2 ao ${rato2.nomeCustomizado}!", "player" to "1"))
+            mensagens.add(
+                mapOf(
+                    "message" to "${rato1.nomeCustomizado} causou $danoParaRato2 ao ${rato2.nomeCustomizado}!",
+                    "player" to "1"
+                )
+            )
 
             // se adversário ainda vivo, revida
             if (estadoRato2.hpAtual > 0) {
                 estadoRato1.hpAtual = (estadoRato1.hpAtual - danoParaRato1).coerceAtLeast(0)
-                mensagens.add(mapOf("message" to "${rato2.nomeCustomizado} causou $danoParaRato1 ao ${rato1.nomeCustomizado}!", "player" to "2"))
+                mensagens.add(
+                    mapOf(
+                        "message" to "${rato2.nomeCustomizado} causou $danoParaRato1 ao ${rato1.nomeCustomizado}!",
+                        "player" to "2"
+                    )
+                )
             }
 
             // mensagem final do round (sistema) — player = 0
-            mensagens.add(mapOf("message" to "HPs após round: ${rato1.nomeCustomizado}=${estadoRato1.hpAtual} | ${rato2.nomeCustomizado}=${estadoRato2.hpAtual}", "player" to "0"))
+            mensagens.add(
+                mapOf(
+                    "message" to "HPs após round: ${rato1.nomeCustomizado}=${estadoRato1.hpAtual} | ${rato2.nomeCustomizado}=${estadoRato2.hpAtual}",
+                    "player" to "0"
+                )
+            )
 
             // SALVA mensagens deste round no banco — usa nomes para identificar player 1/2
             salvarMensagensDoRound(
@@ -108,7 +134,9 @@ class ServicoBatalhaAutomatica(
             historicoRounds.add(
                 ResultadoRound(
                     numeroRound,
-                    mensagens.map { it["message"] ?: "" }, // mantemos histórico como lista de strings para compatibilidade
+                    mensagens.map {
+                        it["message"] ?: ""
+                    }, // mantemos histórico como lista de strings para compatibilidade
                     mapOf(rato1.idRato to estadoRato1.hpAtual, rato2.idRato to estadoRato2.hpAtual)
                 )
             )
@@ -134,7 +162,7 @@ class ServicoBatalhaAutomatica(
         // persiste resultado final
         persistirResultadoFinal(batalha, idVencedor, idPerdedor, estadoRato1, estadoRato2)
 
-        return ResultadoBatalha(idBatalha, idVencedor, idPerdedor, historicoRounds.toList())
+        return Optional.of(ResultadoBatalha(idBatalha, idVencedor, idPerdedor, historicoRounds.toList()))
     }
 
     private fun atualizarRatos(vencedorId: Long, perdedorId: Long) {
@@ -143,9 +171,9 @@ class ServicoBatalhaAutomatica(
         try {
             try {
                 //Logica para nn remover quando for batalha com BOT e remover quando por Player vs Player
-                if(usuarioVencedor.get().tipoConta == TipoConta.BOT){
+                if (usuarioVencedor.get().tipoConta == TipoConta.BOT) {
                     serviceRato.removeRato(vencedorId)
-                }else{
+                } else {
                     serviceRato.removeRato(perdedorId)
                 }
             } catch (ex: Exception) {
@@ -209,7 +237,8 @@ class ServicoBatalhaAutomatica(
         val sucesso = roll < hab.chanceSucesso
 
         // mensagem de uso/falha (texto do DB)
-        val texto = if (sucesso) (hab.efetivoTxt ?: hab.nomeHabilidade) else (hab.falhaTxt ?: "${hab.nomeHabilidade} falhou")
+        val texto =
+            if (sucesso) (hab.efetivoTxt ?: hab.nomeHabilidade) else (hab.falhaTxt ?: "${hab.nomeHabilidade} falhou")
         mensagens.add(mapOf("message" to "${r.nomeCustomizado}: $texto", "player" to player))
 
         val efeitosStr = if (sucesso) hab.efeitoSucessoStr else hab.efeitoFalhaStr
@@ -246,36 +275,36 @@ class ServicoBatalhaAutomatica(
         eRato2: EstadoRato,
     ) {
         try {
-             val usuarioVencedor = when (idRatoVencedor) {
-                 eRato1.idRato -> usuarioRepository.findById( batalha.jogador1!!.idUsuario).get()
-                 eRato2.idRato -> usuarioRepository.findById( batalha.jogador2!!.idUsuario).get()
-                 else -> null
-             }
-             val usuarioPerdedor = when (idRatoPerdedor) {
-                 eRato1.idRato -> usuarioRepository.findById( batalha.jogador1!!.idUsuario).get()
-                 eRato2.idRato -> usuarioRepository.findById( batalha.jogador2!!.idUsuario).get()
-                 else -> null
-             }
-             batalha.vencedor = usuarioVencedor
-             batalha.perdedor = usuarioPerdedor
+            val usuarioVencedor = when (idRatoVencedor) {
+                eRato1.idRato -> usuarioRepository.findById(batalha.jogador1!!.idUsuario).get()
+                eRato2.idRato -> usuarioRepository.findById(batalha.jogador2!!.idUsuario).get()
+                else -> null
+            }
+            val usuarioPerdedor = when (idRatoPerdedor) {
+                eRato1.idRato -> usuarioRepository.findById(batalha.jogador1!!.idUsuario).get()
+                eRato2.idRato -> usuarioRepository.findById(batalha.jogador2!!.idUsuario).get()
+                else -> null
+            }
+            batalha.vencedor = usuarioVencedor
+            batalha.perdedor = usuarioPerdedor
 
             batalha.status = StatusBatalha.Concluida
             repositorioBatalha.save(batalha)
             log.warn("TESTE")
 
-            repositorioRato.findById(eRato1.idRato).ifPresent { rdb ->
-                rdb.estaTorneio = false
-                rdb.estaVivo = eRato1.hpAtual > 0
-                repositorioRato.save(rdb)
-            }
-            repositorioRato.findById(eRato2.idRato).ifPresent { rdb ->
-                rdb.estaTorneio = false
-                rdb.estaVivo = eRato2.hpAtual > 0
-                repositorioRato.save(rdb)
-            }
 
+            if (usuarioVencedor!!.tipoConta != TipoConta.BOT && usuarioPerdedor!!.tipoConta != TipoConta.BOT) {
+                repositorioRato.findById(eRato1.idRato).ifPresent { rdb ->
+                    rdb.estaTorneio = false
+                    rdb.estaVivo = eRato1.hpAtual > 0
+                    repositorioRato.save(rdb)
+                }
+                repositorioRato.findById(eRato2.idRato).ifPresent { rdb ->
+                    rdb.estaTorneio = false
+                    rdb.estaVivo = eRato2.hpAtual > 0
+                    repositorioRato.save(rdb)
+                }
 
-            if(usuarioVencedor!!.tipoConta != TipoConta.BOT && usuarioPerdedor!!.tipoConta != TipoConta.BOT) {
                 usuarioVencedor.vitorias += 1
                 usuarioVencedor.mousecoinSaldo += batalha.premioTotal
                 usuarioRepository.save<Usuario>(usuarioVencedor)
@@ -286,9 +315,9 @@ class ServicoBatalhaAutomatica(
                 val ratosLoser = repositorioRato.pegaRatosVivosDoUsuario(usuarioPerdedor.idUsuario)
                 log.warn("Size da bomba 1 ${ratosLoser.size}") // Sem !!
                 usuarioPerdedor.ratos = ratosLoser
-                if(ratosLoser.isEmpty()){
+                if (ratosLoser.isEmpty()) {
                     usuarioPerdedor.ratos = mutableListOf()
-                }else{
+                } else {
                     usuarioPerdedor.ratos = ratosLoser
                 }
                 usuarioRepository.save<Usuario>(usuarioPerdedor)
@@ -306,7 +335,7 @@ class ServicoBatalhaAutomatica(
                     perdedorUserName = usuarioPerdedor!!.nome,
                     vencedorRatoName = vencedorRato.nomeCustomizado,
                     perdedorRatoName = perdedorRato.nomeCustomizado,
-                    vencedorRatoType =  mapearClasseRatoParaEnum(vencedorRato),
+                    vencedorRatoType = mapearClasseRatoParaEnum(vencedorRato),
                     perdedorRatoType = mapearClasseRatoParaEnum(perdedorRato),
                     vencedorRatoHP = (if (idRatoVencedor == eRato1.idRato) eRato1.hpAtual else eRato2.hpAtual).toFloat(),
                     perdedorRatoHP = (if (idRatoPerdedor == eRato1.idRato) eRato1.hpAtual else eRato2.hpAtual).toFloat(),
@@ -325,7 +354,9 @@ class ServicoBatalhaAutomatica(
         }
     }
 
-    private fun obterChanceCriticaDoRato(r: Rato): Double{ return 0.10 }
+    private fun obterChanceCriticaDoRato(r: Rato): Double {
+        return 0.10
+    }
 
     // ---------- salvar mensagens com player 1/2/0 (sistema) ----------
     private fun salvarMensagensDoRound(

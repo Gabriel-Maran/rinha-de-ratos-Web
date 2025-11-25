@@ -1,134 +1,195 @@
 import { useState, useEffect } from "react";
-import { buscarHistorico } from "../../Api/Api";
-import RE from "../../assets/classeRatos/RatoEsgoto.png";
-
+import { buscarHistorico, pegarUsuarioPorId } from "../../Api/Api";
+import { useAuth } from "../../context/AuthContext";
+import { getFotoUrlById } from "./ModalOpcFotosPerfil";
+import ImgVitoria from "../../assets/icones/IconeVitoria.png";
+import ImgDerrota from "../../assets/icones/IconeDerrota.png";
 import "../../pages/perfil/TelaHistorico.css";
 
 export default function TelaHistorico({
   onClose,
   mostrarHistorico,
   idBatalha,
+  dadosBatalhaBot,
 }) {
+  const { user } = useAuth();
   const [logs, setLogs] = useState([]);
-  const [resultado, setResultado] = useState(null);
+  const [idVencedor, setIdVencedor] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Começamos com 0. Se a API achar a foto, atualizamos.
+  const [idFotoInimigo, setIdFotoInimigo] = useState(0);
+
+  const idUsuarioLogado = user?.idUsuario || user?.id;
+
   useEffect(() => {
-    if (!idBatalha) return;
+    if (!mostrarHistorico) return;
 
-    const carregarDetalhes = async () => {
+    const carregarDados = async () => {
+      const idFinal = dadosBatalhaBot || idBatalha;
+      if (!idFinal) return;
+
       setLoading(true);
-      try {
-        const resposta = await buscarHistorico(idBatalha);
+      // Reseta a foto do inimigo para padrão ao abrir nova batalha
+      setIdFotoInimigo(0);
 
-        // A API retorna um array: [ [listaLogs], [listaResultado] ]
+      try {
+        const resposta = await buscarHistorico(idFinal);
         const dados = resposta.data;
 
         if (Array.isArray(dados) && dados.length >= 2) {
-          setLogs(dados[0]); // O índice 0 são os logs
-          setResultado(dados[1][0]); // O índice 1 é um array com o objeto de resultado
+          setLogs(dados[0]); // Gaveta 1: Logs
+
+          const infoResultado = dados[1]?.[0]; // Gaveta 2: Resultado
+
+          if (infoResultado) {
+            setIdVencedor(infoResultado.id_vencedor);
+
+            let idDoOponente = null;
+
+            if (infoResultado.id_vencedor === idUsuarioLogado) {
+              idDoOponente = infoResultado.id_perdedor;
+            } else if (infoResultado.id_perdedor === idUsuarioLogado) {
+              idDoOponente = infoResultado.id_vencedor;
+            } else {
+              idDoOponente = infoResultado.id_vencedor;
+            }
+            if (idDoOponente && idDoOponente > 0) {
+              try {
+                const respInimigo = await pegarUsuarioPorId(idDoOponente);
+                if (respInimigo.data && respInimigo.data.idFotoPerfil !== undefined) {
+                  console.log("Foto do inimigo encontrada:", respInimigo.data.idFotoPerfil);
+                  setIdFotoInimigo(respInimigo.data.idFotoPerfil);
+                }
+              } catch (errInimigo) {
+                console.warn(`Não foi possível carregar foto do oponente ${idDoOponente}. Usando padrão.`, errInimigo);
+              }
+            }
+          }
         }
-      } catch (erro) {
-        console.error("Erro ao carregar histórico:", erro);
+      } catch (err) {
+        console.error("Erro ao carregar histórico:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    carregarDetalhes();
-  }, [idBatalha]);
+    carregarDados();
+  }, [idBatalha, dadosBatalhaBot, mostrarHistorico, idUsuarioLogado]);
 
   if (!mostrarHistorico) return null;
 
-  return (
-    <div className={mostrarHistorico ? "bgEscuroOn" : "bgEscuroOff"}>
-      <div className="modalResultado">
-        <button className="fecharMdResultado" onClick={onClose}>
-          ✖
-        </button>
+  const vitoria = idVencedor === idUsuarioLogado;
+  const imagemBanner = vitoria ? ImgVitoria : ImgDerrota;
+  const mensagemResultado = vitoria ? "Você venceu!!!" : "Você perdeu...";
+  const [abaModal, setAbaModal] = useState("1");
+  const botoesNavModal = ["1", "2"];
 
-        {loading ? (
-          <h2 style={{ color: "white", marginTop: "2rem" }}>
-            Carregando detalhes...
-          </h2>
-        ) : (
-          <>
-            <h1 className="tituloResultado">Resultado da Batalha:</h1>
 
-            {resultado ? (
-              <div className="brasaoResultado">
-                <div className="secaoVitorioso">
-                  <p className="statusJogadorVencedor">Vencedor 🏆</p>
-                  <div>
-                    <p className="resultNomeJogador">
-                      {resultado.vencedorUserName}
-                    </p>
-                    <div className="infoRatoResultBatalha">
-                      <img src={RE} alt="Rato Vencedor" />
-                      <p>{resultado.vencedorRatoName}</p>
-                      <small style={{ color: "lightgreen" }}>
-                        HP Final: {resultado.vencedorRatoHP}
-                      </small>
-                    </div>
-                  </div>
-                </div>
+  let conteudoAba;
 
-                <div className="secaoDerrotado">
-                  <p className="statusJogadorDerrotado">Derrotado 💀</p>
-                  <div>
-                    <p className="resultNomeJogador">
-                      {resultado.perdedorUserName}
-                    </p>
-                    <div className="infoRatoResultBatalha">
-                      <img src={RE} alt="Rato Perdedor" />
-                      <p>{resultado.perdedorRatoName}</p>
-                      <small style={{ color: "red" }}>
-                        HP Final: {resultado.perdedorRatoHP}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              </div>
+  switch (abaModal) {
+    case "1":
+      conteudoAba = (
+        <>
+          {
+            loading ? (
+              <h2 className="loadingResultado">Carregando resultado...</h2>
             ) : (
-              <p style={{ color: "white", textAlign: "center" }}>
-                Batalha ainda não concluída ou sem resultados.
-              </p>
-            )}
-
-            <div className="historicoBatalha">
-              <h3>Histórico de Turnos</h3>
-              <div className="bgConteinerHist">
-                <div className="conteinerHistorico">
-                  {logs.length > 0 ? (
-                    logs.map((log) => {
-                      const esquerda = log.player === 1;
-                      return (
-                        <div
-                          className={esquerda ? "regHistEsq" : "regHistDir"}
-                          key={log.idmessage}
-                        >
-                          {esquerda && (
-                            <img className="imgEsquerda" src={RE} alt="rato" />
-                          )}
-                          <p>
-                            <strong>Round {log.round}:</strong> {log.descricao}
-                          </p>
-                          {!esquerda && (
-                            <img className="imgDireita" src={RE} alt="rato" />
-                          )}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <p style={{ textAlign: "center", padding: "1rem" }}>
-                      Nenhum registro de combate.
-                    </p>
-                  )}
+              <>
+                <h1 className="tituloResultado">Resultado da Batalha:</h1>
+                <div className="area-banner-central">
+                  <img
+                    src={imagemBanner}
+                    alt="Resultado"
+                    className="img-banner-final"
+                  />
+                  <h2 className="texto-resultado-final">{mensagemResultado}</h2>
                 </div>
-              </div>
-            </div>
-          </>
-        )}
+              </>
+            )
+          }
+        </>
+      );
+      break
+    default:
+      conteudoAba = (
+        <>
+          {
+            loading ? (
+              <h2 className="loadingResultado" >Carregando resultado...</h2>
+            ) : (
+              <>
+                <div className="historicoBatalha">
+                  <h3>Histórico</h3>
+                  <div className="bgConteinerHist">
+                    <div className="conteinerHistorico">
+                      {logs.length > 0 ? (
+                        logs.map((log, index) => {
+                          const isPlayer1 = log.player === 1;
+                          const imgAvatar = isPlayer1
+                            ? getFotoUrlById(user?.idFotoPerfil || 0)
+                            : getFotoUrlById(idFotoInimigo);
+                          return (
+                            <div
+                              className={isPlayer1 ? "regHistEsq" : "regHistDir"}
+                              key={log.idmessage || index}
+                            >
+                              {isPlayer1 && (
+                                <img
+                                  className="imgEsquerda"
+                                  src={imgAvatar}
+                                  alt="Eu"
+                                />
+                              )}
+                              <p>
+                                <strong>Round {log.round}:</strong> {log.descricao}
+                              </p>
+                              {!isPlayer1 && (
+                                <img
+                                  className="imgDireita"
+                                  src={imgAvatar}
+                                  alt="Oponente"
+                                />
+                              )}
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <p className="nenhumRegistro">
+                          Nenhum registro de combate.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )
+          }
+        </>
+      )
+  }
+
+  return (
+    <div className="bgEscuroOn">
+      <div className="modalResultado">
+        <div className="abasModalResultado">
+          {botoesNavModal.map((textoBtn) => (
+            <button
+              onClick={() => setAbaModal(textoBtn)}
+              className={
+                textoBtn == abaModal ? "btnNavModalAtivado" : "btnNavModal"
+              }
+              key={textoBtn}
+            >
+              {textoBtn}
+            </button>
+          ))}
+          <button className="fecharMdResultado" onClick={onClose}>
+            ✖
+          </button>
+        </div>
+        {conteudoAba}
       </div>
     </div>
   );

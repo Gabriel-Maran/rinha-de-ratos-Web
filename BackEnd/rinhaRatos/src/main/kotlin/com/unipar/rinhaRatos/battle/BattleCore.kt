@@ -36,7 +36,6 @@ data class EstadoRato(
 // Regex para pegar token do que a habilidade faz
 private val tokenRegex = Regex("""^([+-])(\d+(?:\.\d+)?)(%?)([A-Za-z0-9]+)(SEU|ADV)?$""", RegexOption.IGNORE_CASE)
 
-
 // Converte strings como "+8%HPSSEU", "-14%AGIADV", "+300%PASSEU", "+300PASSEU" em lista de Efeito.
 fun parseEfeitos(strEfeitos: String?): List<Efeito> {
     if (strEfeitos.isNullOrBlank()) return emptyList()
@@ -135,7 +134,6 @@ data class EstatisticasCombate(val potencialAtaque: Double, val potencialDefesa:
 
 //Calcula PAS, PDS e CRI a partir do EstadoRato (levando em conta percentuais e absolutos).
 fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 0.10): EstatisticasCombate {
-    // atributos efetivos (após percentuais/flat)
     val forca = (estado.forcaBase * (1.0 + estado.percentuais.getOrDefault(AtributoEfeito.STR, 0.0))
             + estado.absolutos.getOrDefault(AtributoEfeito.STR, 0.0)).coerceAtLeast(0.0)
     val agi = (estado.agilidadeBase * (1.0 + estado.percentuais.getOrDefault(AtributoEfeito.AGI, 0.0))
@@ -145,12 +143,9 @@ fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 
     val def = (estado.defesaBase * (1.0 + estado.percentuais.getOrDefault(AtributoEfeito.DEF, 0.0))
             + estado.absolutos.getOrDefault(AtributoEfeito.DEF, 0.0)).coerceAtLeast(0.0)
 
-    //val basePas = forca * (1.0 + agi / 300.0 + intel / 500.0)
-    val basePas = (forca * (1.0 + agi / 200.0 + intel / 400.0)) * 1.1
+    val basePas = (forca * (1.0 + agi / 250.0 + intel / 500.0)) * 1.1
+    val basePds = def * (1.0 + agi / 250.0 + intel / 500.0)
 
-    val basePds = def * (1.0 + agi / 200.0 + intel / 400.0)
-
-    // efeitos de habilidade (percentuais / flat) aplicados em PAS/PDS/CRI
     val pctPas = estado.percentuais.getOrDefault(AtributoEfeito.PAS, 0.0)
     val pctPds = estado.percentuais.getOrDefault(AtributoEfeito.PDS, 0.0)
     val pctCri = estado.percentuais.getOrDefault(AtributoEfeito.CRI, 0.0)
@@ -158,26 +153,27 @@ fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 
     val flatPas = estado.absolutos.getOrDefault(AtributoEfeito.PAS, 0.0)
     val flatPds = estado.absolutos.getOrDefault(AtributoEfeito.PDS, 0.0)
 
-    // cálculo base
     val pasRaw = (basePas * (1.0 + pctPas) + flatPas).coerceAtLeast(0.0)
     val pdsRaw = (basePds * (1.0 + pctPds) + flatPds).coerceAtLeast(0.0)
 
-    val pas = (pasRaw * (1.0 + kotlin.random.Random.nextDouble(-0.05, 0.05))).coerceAtLeast(1.0)
-    val pds = (pdsRaw * (1.0 + kotlin.random.Random.nextDouble(-0.05, 0.05))).coerceAtLeast(1.0)
+    val pas = (pasRaw * (1.0 + Random.nextDouble(0.1, 0.5))).coerceAtLeast(1.0)
+    val pds = (pdsRaw * (1.0 + Random.nextDouble(0.1, 0.5))).coerceAtLeast(1.0)
 
-    // CRI: soma percentual de habilidade ao crítico base, limitando a um máximo razoável (ex.: 0.75)
     val cri = (chanceCriticoBase + pctCri).coerceIn(0.0, 0.75)
 
     return EstatisticasCombate(pas, pds, cri)
 }
 
 
-//Calcula dano dado PAS, PDS e chanceCritico;
 fun calcularDano(pasAtacante: Double, pdsDefensor: Double, chanceCritico: Double): Int {
-    var dano = (pasAtacante - pdsDefensor * 0.8).roundToInt() // antes 0.6
-    if (dano < 1) dano = 1
+    val danoMinimo = pasAtacante * 0.15
+    val danoCalculado = pasAtacante - (pdsDefensor * 0.75)
+    var danoFinal = maxOf(danoCalculado, danoMinimo).roundToInt()
+    if (danoFinal < 1) danoFinal = 1
     val roll = Random.nextDouble()
     val ehCritico = roll < chanceCritico
-    if (ehCritico) dano = (dano * 2.0).roundToInt()
-    return dano
+    if (ehCritico) {
+        danoFinal = (danoFinal * 1.5).roundToInt()
+    }
+    return danoFinal
 }

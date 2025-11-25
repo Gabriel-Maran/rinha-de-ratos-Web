@@ -1,3 +1,10 @@
+.logoEAcesso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -5rem;
+}
+
 .caixa {
   height: auto;
   width: 30rem;
@@ -9,7 +16,7 @@
   margin-top: 8rem;
   border: 2px solid #000;
   padding: 3rem 0rem 3rem 0rem;
-  gap: 2rem
+  gap: 2rem;
 }
 
 .caixa h3 {
@@ -36,12 +43,41 @@
   transition: background-color 0.2s;
 }
 
-@media (max-width: 600px) {
-  .caixa {
-    width: 300px;
+/* ----------------------------------------- */
+/* Medias Query para tratar largura e altura */
+/* ----------------------------------------- */
+@media (max-height: 800px) or (max-width: 600px) {
+  .logoEAcesso {
+    transform: scale(0.9);
   }
+}
 
-  .caixa h3 {
-    text-align: center;
+@media (max-height: 720px) or (max-width: 500px) {
+  .logoEAcesso {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-height: 650px) or (max-width: 460px) {
+  .logoEAcesso {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-height: 550px) or (max-width: 430px) {
+  .logoEAcesso {
+    transform: scale(0.6);
+  }
+}
+
+@media (max-height: 460px) or (max-width: 350px) {
+  .logoEAcesso {
+    transform: scale(0.5);
+  }
+}
+
+@media (max-height: 380px) or (max-width: 300px) {
+  .logoEAcesso {
+    transform: scale(0.4);
   }
 }

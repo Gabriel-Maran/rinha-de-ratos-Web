@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Trofeu from "../../../../assets/icones/IconeTrofeu.png";
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
-import { entrarBatalha } from "../../../../Api/Api";
+import { entrarBatalha, batlhaBot } from "../../../../Api/Api";
 import "./ListaDeBatalhas.css";
+import TelaHistorico from "../../../perfil/TelaHistorico";
 
 export default function ListaDeBatalhas({
   ratosUsuario,
@@ -14,10 +15,32 @@ export default function ListaDeBatalhas({
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
-  const [ativarModal, setAtivarModal] = useState(false);
+  const [modalSelecionarRato, setModalSelecionarRato] = useState(false);
+  const [mostrarResultadoBatalha, setMostrarResultadoBatalha] = useState(false);
+  const [batalhaConcluidaId, setBatalhaConcluidaId] = useState(null);
+  const [comBot, setComBot] = useState(false);
   const [batalhaSelecionadaId, setBatalhaSelecionadaId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [erroModal, setErroModal] = useState(null);
+
+  const batalharComBot = async (idRato) => {
+    setIsLoading(true);
+    setErroModal(null);
+    try {
+      const resposta = await batlhaBot(idUsuarioLogado, idRato);
+      console.log("Resposta batlhaBot:", resposta?.data);
+      const novoId = resposta.data.idBatalha;
+      if (!novoId) throw new Error("Não foi possível recuperar o ID da batalha.");
+
+      setBatalhaConcluidaId(novoId);
+      setIsLoading(false);
+      setModalSelecionarRato(false);
+      setMostrarResultadoBatalha(true);
+    } catch (err) {
+      setIsLoading(false);
+      setErroModal(err?.response?.data?.message || "Erro ao realizar a batalha de treino.");
+    }
+  };
 
   const formatarDataEHora = (data) => {
     if (!data) return "Data Indisponível";
@@ -26,21 +49,29 @@ export default function ListaDeBatalhas({
       const [ano, mes, dia] = parteDaData.split("-");
       return `${dia}/${mes}, ${parteDaHora}`;
     } catch (erro) {
-      console.error("Erro ao formatar data:", erro);
       return data;
     }
   };
 
-  const handleAbrirModal = (idBatalha) => {
-    setBatalhaSelecionadaId(idBatalha);
-    setAtivarModal(true);
+  const handleAbrirModal = (idBatalha, bot) => {
+    if (bot) {
+      setComBot(true);
+      setBatalhaSelecionadaId(null);
+    } else {
+      setComBot(false);
+      setBatalhaSelecionadaId(idBatalha);
+    }
+    setModalSelecionarRato(true);
     setErroModal(null);
   };
 
   const handleFecharModal = () => {
-    setAtivarModal(false);
+    setModalSelecionarRato(false);
+    setMostrarResultadoBatalha(false);
     setErroModal(null);
     setBatalhaSelecionadaId(null);
+    setBatalhaConcluidaId(null);
+    setComBot(false);
   };
 
   const handleEntrarBatalha = async (idRato) => {
@@ -48,21 +79,18 @@ export default function ListaDeBatalhas({
       setErroModal("Erro: Dados incompletos.");
       return;
     }
-    
     setIsLoading(true);
     setErroModal(null);
-
     const dadosEntraBatalha = {
       idBatalha: batalhaSelecionadaId,
       idUsuario: idUsuarioLogado,
-      idRato: idRato
+      idRato: idRato,
     };
-
     try {
       await entrarBatalha(dadosEntraBatalha);
       setIsLoading(false);
       handleFecharModal();
-      onBatalhaInscrita(); // Avisa o pai para atualizar
+      onBatalhaInscrita();
     } catch (err) {
       setIsLoading(false);
       setErroModal(err?.response?.data?.message || "Erro ao entrar na batalha.");
@@ -70,64 +98,88 @@ export default function ListaDeBatalhas({
   };
 
   let conteudoOpcaoBatalhas;
-
   switch (btnOpcBatalhas) {
     case "Todas":
       conteudoOpcaoBatalhas = (
         <>
-          {ativarModal && (
+          {mostrarResultadoBatalha && (
+            <TelaHistorico
+              onClose={handleFecharModal}
+              mostrarHistorico={mostrarResultadoBatalha}
+              dadosBatalhaBot={comBot ? batalhaConcluidaId : null}
+              idBatalha={!comBot ? batalhaConcluidaId : null}
+              usuarioLogado={{ idUsuario: idUsuarioLogado }}
+            />
+          )}
+
+          {modalSelecionarRato && !mostrarResultadoBatalha && (
             <ModalEscolherRatoBatalha
               onClose={handleFecharModal}
               ratosUsuario={ratosUsuario}
-              onConfirmar={handleEntrarBatalha} 
+              onConfirmar={comBot ? batalharComBot : handleEntrarBatalha}
               isLoading={isLoading}
               erroModal={erroModal}
+              ignorarInscricao={comBot}
             />
           )}
-          <div className="listaBatalhasHome">
-            {batalhasAbertas && batalhasAbertas.map((batalha) => (
-              <div className="batalha" key={batalha.idBatalha}>
-                <img src={Trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nomeBatalha}</p>
-                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                  <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
-                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
-                </div>
-                <div className="opcoesBatalha">
-                  <button onClick={() => handleAbrirModal(batalha.idBatalha)}>
-                    Participar
-                  </button>
-                </div>
-              </div>
-            ))}
+
+          <div className="botaoBotELista">
+            <button
+              className="btnBatalhaComBot"
+              onClick={() => handleAbrirModal(null, true)}
+            >
+              Batalhar com Bot
+            </button>
+            <div className="listaBatalhas">
+              {batalhasAbertas &&
+                batalhasAbertas
+                  .filter((batalha) => !batalha.jogador2)
+                  .map((batalha) => (
+                    <div className="batalha" key={batalha.idBatalha}>
+                      <img src={Trofeu} alt="Troféu" />
+                      <div className="infoBatalha">
+                        <p>{batalha.nomeBatalha}</p>
+                        <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                        <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                        <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                      </div>
+                      <div className="opcoesBatalha">
+                        <button onClick={() => handleAbrirModal(batalha.idBatalha, false)}>
+                          Participar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+            </div>
           </div>
         </>
       );
       break;
-    case "Inscritas": 
+    case "Inscritas":
       conteudoOpcaoBatalhas = (
-        <div className="listaBatalhasHome">
-          {batalhasInscrito && batalhasInscrito.length > 0 ? (
-            batalhasInscrito.map((batalha) => (
-              <div className="batalha" key={batalha.idBatalha}>
-                <img src={Trofeu} />
-                <div className="infoBatalha">
-                  <p>{batalha.nomeBatalha}</p>
-                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                  <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
-                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+        <div className="botaoBotELista">
+          <div className="listaBatalhas">
+            {batalhasInscrito && batalhasInscrito.length > 0 ? (
+              batalhasInscrito.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} alt="Troféu" />
+                  <div className="infoBatalha">
+                    <p>{batalha.nomeBatalha}</p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  </div>
+                  <div className="opcoesBatalha">
+                    <button disabled>Aguardando...</button>
+                  </div>
                 </div>
-                <div className="opcoesBatalha">
-                  <button>Aguardando...</button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p style={{ textAlign: "center", fontSize: "1.5rem", marginTop: "2rem" }}>
-              Você não está inscrito em nenhuma batalha aberta.
-            </p>
-          )}
+              ))
+            ) : (
+              <p className="nenhumaInscricao">
+                Você não está inscrito em nenhuma batalha aberta.
+              </p>
+            )}
+          </div>
         </div>
       );
       break;

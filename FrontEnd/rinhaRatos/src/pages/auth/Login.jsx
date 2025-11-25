@@ -26,7 +26,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
-  const nome = ""; 
+  const nome = "";
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const funMostrarSenha = () => {
@@ -44,9 +44,9 @@ export default function Login() {
       console.log("Login OK!", resposta.data);
 
       // Assumindo que a resposta do login tem 'id'
-      const idUsuarioAPI = resposta.data.id; 
+      const idUsuarioAPI = resposta.data.id;
       const tipoContaDaAPI = resposta.data.tipo_conta;
-  
+
       sessionStorage.setItem("idUsuario", idUsuarioAPI);
 
       const respostaUsuario = await pegarUsuarioPorId(idUsuarioAPI);
@@ -59,63 +59,62 @@ export default function Login() {
   };
   return (
     <div className="acesso-container">
-      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
-      <div className="caixaLogin">
-        <div className="tituloEErro">
-          <h3>Fazer login</h3>
-          {erro && <p className="mensagem-erro">{erro}</p>}
-        </div>
-        <div className="inputs">
-          <Input
-            input={{
-              type: "text",
-              value: email,
-              onChange: (e) => setEmail(e.target.value),
-              placeholder: "E-mail",
-            }}
-          />
-          <div className="input-senha">
+      <div className="logoELogin">
+        <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
+        <div className="caixaLogin">
+          <div className="tituloEErro">
+            <h3>Fazer login</h3>
+            {erro && <p className="mensagem-erro">{erro}</p>}
+          </div>
+          <div className="inputs">
             <Input
               input={{
-                type: mostrarSenha ? "text" : "password",
-                value: senha,
-                onChange: (e) => setSenha(e.target.value),
-                placeholder: "Senha",
+                type: "text",
+                value: email,
+                onChange: (e) => setEmail(e.target.value),
+                placeholder: "E-mail",
               }}
             />
-            <span className="verSenha" onClick={funMostrarSenha}>
-              {mostrarSenha ? (
-                <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
-              ) : (
-                <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
-              )}
-            </span>
+            <div className="input-senha">
+              <Input
+                input={{
+                  type: mostrarSenha ? "text" : "password",
+                  value: senha,
+                  onChange: (e) => setSenha(e.target.value),
+                  placeholder: "Senha",
+                }}
+              />
+              <span className="verSenha" onClick={funMostrarSenha}>
+                {mostrarSenha ? (
+                  <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
+                ) : (
+                  <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
+                )}
+              </span>
+            </div>
           </div>
+          <Botao
+            acaoBtn={"Esqueci a senha..."}
+            button={{
+              className: "resetSenha",
+              onClick: irEsqueceuSenha,
+            }}
+          />
+          <Botao
+            acaoBtn={"Logar"}
+            button={{
+              className: "botao",
+              onClick: irLogin,
+            }}
+          />
+          <Botao
+            acaoBtn={"Não possuo conta"}
+            button={{
+              className: "linkCadastro",
+              onClick: irCadastro,
+            }}
+          />
         </div>
-
-        <Botao
-          acaoBtn={"Esqueci a senha..."}
-          button={{
-            className: "resetSenha",
-            onClick: irEsqueceuSenha,
-          }}
-        />
-
-        <Botao
-          acaoBtn={"Logar"}
-          button={{
-            className: "botao",
-            onClick: irLogin,
-          }}
-        />
-
-        <Botao
-          acaoBtn={"Não possuo conta"}
-          button={{
-            className: "linkCadastro",
-            onClick: irCadastro,
-          }}
-        />
       </div>
     </div>
   );

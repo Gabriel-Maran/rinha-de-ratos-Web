@@ -1,19 +1,22 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   pegarRatosDoUsuario,
   pegarTodasClasses,
   pegarDescricaoHabilidades,
-  pegarBatalhasAbertas,
   pegarBatalhasIncrito,
+  pegarBatalhasDisponiveis,
+  ratoMorto,
 } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
 import Botao from "../../../components/comuns/Botao";
 import ModalCriacaoRato from "./meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
-import Ranking from "./ranking/Ranking";
+import Ranking from "./ranking/Ranking";  
 import Loja from "./loja/Loja";
+import TelaHistorico from "../../perfil/TelaHistorico";
 import "./HomeJogador.css";
 
 const ETAPAS = {
@@ -25,6 +28,8 @@ const ETAPAS = {
 
 export default function HomeJogador() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const listaBatalhasAntigas = useRef([]);
 
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
@@ -32,13 +37,16 @@ export default function HomeJogador() {
   const [descHabilidade, setDescHabilidade] = useState(null);
   const [novoRato, setNovoRato] = useState(null);
 
+  const [mostrarResultadoBatalha, setMostrarResultadoBatalha] = useState(false);
+  const [idBatalhaResultado, setIdBatalhaResultado] = useState(null);
+
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
-  
+
   const [batalhasAbertas, setBatalhasAbertas] = useState([]);
   const [batalhasInscrito, setBatalhasInscrito] = useState([]);
-  
+
   const [loadingRatos, setLoadingRatos] = useState(true);
   const [erroRatos, setErroRatos] = useState(null);
 
@@ -47,64 +55,139 @@ export default function HomeJogador() {
 
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
+
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
 
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
+  useEffect(() => {
+    if (idUsuarioLogado === null) {
+      navigate("/login");
+    }
+  }, [idUsuarioLogado, navigate]);
 
-  const buscarDadosIniciais = useCallback(async (silencioso = false) => {
-    if (!idUsuarioLogado) return;
+  const buscarDadosIniciais = useCallback(
+    async (silencioso = false) => {
+      if (!idUsuarioLogado) return;
 
-    if (!silencioso) {
+      if (!silencioso) {
         setLoadingRatos(true);
         setErroRatos(null);
-    }
+      }
 
-    try {
-      const [
-        respostaRatos,
-        respostaClasses,
-        respostaHabilidades,
-        respostaBatalhas,
-        respostaBatalhasInscrito,
-      ] = await Promise.all([
-        pegarRatosDoUsuario(idUsuarioLogado),
-        pegarTodasClasses(),
-        pegarDescricaoHabilidades(),
-        pegarBatalhasAbertas(),
-        pegarBatalhasIncrito(idUsuarioLogado),
-      ]);
+      try {
+        const [
+          respostaRatos,
+          respostaClasses,
+          respostaHabilidades,
+          respostaBatalhas,
+          respostaBatalhasInscrito,
+        ] = await Promise.all([
+          pegarRatosDoUsuario(idUsuarioLogado),
+          pegarTodasClasses(),
+          pegarDescricaoHabilidades(),
+          pegarBatalhasDisponiveis(idUsuarioLogado),
+          pegarBatalhasIncrito(idUsuarioLogado),
+        ]);
 
-      setRatosUsuario(respostaRatos.data);
-      setClasses(respostaClasses.data);
-      setDescHabilidades(respostaHabilidades.data);
-      setBatalhasAbertas(respostaBatalhas.data);
-      setBatalhasInscrito(respostaBatalhasInscrito.data);
-    } catch (err) {
-      console.error("Erro ao buscar dados iniciais:", err);
-      if (!silencioso) setErroRatos("Falha ao carregar dados.");
-    } finally {
-      if (!silencioso) setLoadingRatos(false);
-    }
-  }, [idUsuarioLogado]);
+        setRatosUsuario(respostaRatos.data);
+        setClasses(respostaClasses.data);
+        setDescHabilidades(respostaHabilidades.data);
+        setBatalhasInscrito(respostaBatalhasInscrito.data);
 
+        if (Array.isArray(respostaBatalhas.data)) {
+          const listaOrdenada = respostaBatalhas.data.sort((a, b) => {
+            const idA = a.idBatalha || a.id;
+            const idB = b.idBatalha || b.id;
+            return idB - idA;
+          });
+          setBatalhasAbertas(listaOrdenada);
+        } else {
+          setBatalhasAbertas([]);
+        }
+
+        // --- LÓGICA DE FIM DE BATALHA ---
+        if (listaBatalhasAntigas.current.length > 0) {
+          listaBatalhasAntigas.current.forEach((batalhaVelha) => {
+            const batalhaNova = respostaBatalhasInscrito.data.find(
+              (b) =>
+                (b.idBatalha || b.id) ===
+                (batalhaVelha.idBatalha || batalhaVelha.id)
+            );
+
+            if (
+              batalhaNova &&
+              batalhaVelha.status !== "Concluida" &&
+              batalhaNova.status === "Concluida"
+            ) {
+              console.log("BATALHA ACABOU! ID:", batalhaNova.idBatalha);
+
+              let meuRatoNaBatalha = null;
+              if (batalhaNova.jogador1?.idUsuario === idUsuarioLogado) {
+                meuRatoNaBatalha = batalhaNova.rato1;
+              } else if (batalhaNova.jogador2?.idUsuario === idUsuarioLogado) {
+                meuRatoNaBatalha = batalhaNova.rato2;
+              }
+
+              if (meuRatoNaBatalha) {
+                setIdBatalhaResultado(batalhaNova.idBatalha || batalhaNova.id);
+                setMostrarResultadoBatalha(true);
+
+                // --- CORREÇÃO DA MORTE (VERSÃO ROBUSTA) ---
+                const criadorIdRaw = batalhaNova.admCriador?.idUsuario ?? batalhaNova.admCriador?.id;
+                const criadorIdNum = criadorIdRaw != null ? Number(criadorIdRaw) : null;
+                const ehBatalhaContraBot = !batalhaNova.admCriador || criadorIdNum === -1;
+
+                if (ehBatalhaContraBot) {
+                  console.log("🤖 Batalha contra Bot detectada: Morte desativada.");
+                } else {
+                  // Normaliza id do vencedor (várias possiblidades de formato)
+                  const idVencedor = Number(
+                    batalhaNova.vencedor?.idUsuario ??
+                    batalhaNova.vencedorId ??
+                    batalhaNova.vencedor?.id ??
+                    batalhaNova.vencedor
+                  );
+
+                  // Só executa morte se houver um vencedor numérico e for diferente do usuário logado
+                  if (Number.isFinite(idVencedor) && idVencedor !== idUsuarioLogado) {
+                    const ratoId = meuRatoNaBatalha?.idRato ?? meuRatoNaBatalha?.id;
+                    if (ratoId) {
+                      console.log("💀 DERROTA PVP! Executando baixa do rato...", ratoId);
+                      ratoMorto(ratoId);
+                    } else {
+                      console.warn("Não foi possível obter id do rato para executar ratoMorto:", meuRatoNaBatalha);
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        listaBatalhasAntigas.current = respostaBatalhasInscrito.data;
+      } catch (err) {
+        console.error("Erro ao buscar dados iniciais:", err);
+        if (!silencioso) setErroRatos("Falha ao carregar dados.");
+      } finally {
+        if (!silencioso) setLoadingRatos(false);
+      }
+    },
+    [idUsuarioLogado]
+  );
 
   useEffect(() => {
-    buscarDadosIniciais(false); 
-
+    buscarDadosIniciais(false);
     const intervalo = setInterval(() => {
-        buscarDadosIniciais(true); 
+      buscarDadosIniciais(true);
     }, 3000);
-
     return () => clearInterval(intervalo);
   }, [buscarDadosIniciais]);
 
-  const mostrarSelecaoClasse = () => {
-    setEtapaModal(ETAPAS.SELECAO_CLASSE);
-  };
-
+  // --- CONTROLE MODAL ---
+  const mostrarSelecaoClasse = () => setEtapaModal(ETAPAS.SELECAO_CLASSE);
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
     setClasseSelecionada(null);
@@ -112,31 +195,38 @@ export default function HomeJogador() {
     setNovoRato(null);
     setDescHabilidade(null);
   };
-
   const selecionarClasse = (classe, index) => {
     setEtapaModal(ETAPAS.DETALHES_CLASSE);
     setClasseSelecionada(classe);
     setIndexClasse(index);
   };
-
   const mostrarRatoCriado = (ratoCompletoDaApi, descHabilidadeDaClasse) => {
     setRatosUsuario((prevRatos) => [...prevRatos, ratoCompletoDaApi]);
     setNovoRato(ratoCompletoDaApi);
     setDescHabilidade(descHabilidadeDaClasse);
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
-
-  const mostrarDetalhesRato = () => {
+  const mostrarDetalhesRato = (ratoClicado) => {
+    setNovoRato(ratoClicado);
+    if (descricaoHabilidades && ratoClicado.habilidade) {
+      const habilidadeEncontrada = descricaoHabilidades.find(
+        (h) => h.nomeHabilidade === ratoClicado.habilidade.nomeHabilidade
+      );
+      setDescHabilidade(habilidadeEncontrada ? habilidadeEncontrada.descricao : "Descrição indisponível.");
+    }
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
-
   const definirRatoBatalha = (rato) => {
     localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
     setRatoParaBatalhar(rato);
   };
+  const fecharHistoricoAutomatico = () => {
+    setMostrarResultadoBatalha(false);
+    setIdBatalhaResultado(null);
+    buscarDadosIniciais(false);
+  };
 
   let conteudoCorpo;
-
   if (loadingRatos) {
     conteudoCorpo = <p className="loading-mensagem">A carregar dados...</p>;
   } else if (erroRatos) {
@@ -161,42 +251,31 @@ export default function HomeJogador() {
               loadingModal={loadingRatos}
               erroModal={erroRatos}
             />
-
-            <ListaDeRatos
-              ratosUsuario={ratosUsuario}
-              onSelectRato={definirRatoBatalha}
-              ratoSelecionado={ratoParaBatalhar}
-              mostrarDetalhesRato={mostrarDetalhesRato}
-            />
             <Botao
               button={{
                 className: "addRato",
                 onClick: mostrarSelecaoClasse,
                 disabled: loadingRatos || contagemRatosVivos >= limiteRatos,
               }}
-              acaoBtn={
-                <strong>
-                  {contagemRatosVivos >= limiteRatos
-                    ? "Limite Atingido"
-                    : loadingRatos
-                    ? "Carregando..."
-                    : ".Adicionar Rato + "}
-                </strong>
-              }
+              acaoBtn={<strong>{contagemRatosVivos >= limiteRatos ? "Limite Atingido" : loadingRatos ? "Carregando..." : ".Adicionar Rato + "}</strong>}
+            />
+            <ListaDeRatos
+              ratosUsuario={ratosUsuario}
+              onSelectRato={definirRatoBatalha}
+              ratoSelecionado={ratoParaBatalhar}
+              mostrarDetalhesRato={mostrarDetalhesRato}
             />
           </>
         );
         break;
       case "Batalhas":
-        // Filtramos a lista para mostrar APENAS as que ainda estão "InscricoesAbertas"
         const inscricoesPendentes = batalhasInscrito.filter(
-            (batalha) => batalha.status === "InscricoesAbertas"
+          (batalha) => batalha.status === "InscricoesAbertas"
         );
-
         conteudoCorpo = (
           <ListaDeBatalhas
             batalhasAbertas={batalhasAbertas}
-            batalhasInscrito={inscricoesPendentes} 
+            batalhasInscrito={inscricoesPendentes}
             ratosUsuario={ratosUsuario}
             idUsuarioLogado={idUsuarioLogado}
             onBatalhaInscrita={() => buscarDadosIniciais(false)}
@@ -214,6 +293,14 @@ export default function HomeJogador() {
 
   return (
     <>
+      {mostrarResultadoBatalha && idBatalhaResultado && (
+        <TelaHistorico
+          onClose={fecharHistoricoAutomatico}
+          mostrarHistorico={mostrarResultadoBatalha}
+          idBatalha={idBatalhaResultado}
+          usuarioLogado={user}
+        />
+      )}
       <Header home="home" qtdeMoedas={qtdeMoedas} />
       <div className="corpo-container">
         <div className={"opcoes"}>

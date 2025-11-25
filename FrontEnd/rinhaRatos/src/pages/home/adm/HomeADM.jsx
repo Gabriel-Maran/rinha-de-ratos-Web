@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { getFotoUrlById } from "../../perfil/ModalOpcFotosPerfil";
+import { useNavigate } from "react-router-dom";
 import {
   pegarBatalhasAbertas,
   iniciarBatlhas,
   ranking,
   verificarSeBatalhaCheia,
 } from "../../../Api/Api";
-
 import Header from "../../../components/comuns/Header/Header";
-import RatoEsgoto from "../../../assets/classeRatos/RatoEsgoto.png";
 import trofeu from "../../../assets/icones/IconeTrofeu.png";
 import ModalEditarBatalha from "./ModalEditarBatalha";
 import ModalCriarBatalha from "./ModalCriarBatalha";
 import "./HomeADM.css";
+import "../jogador/HomeJogador.css";
 import "../jogador/batalhas/ListaDeBatalhas";
 
 export default function HomeADM() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
@@ -32,6 +35,12 @@ export default function HomeADM() {
 
   const [loadingDados, setLoadingDados] = useState(true);
   const [erroDados, setErroDados] = useState(null);
+
+  useEffect(() => {
+    if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
+      navigate("/login");
+    }
+  }, [idUsuarioLogado, user, navigate]);
 
   const limparMensagens = () => {
     setTimeout(() => {
@@ -100,11 +109,10 @@ export default function HomeADM() {
       }
 
       await iniciarBatlhas(idBatalha);
-
+      console.log(idBatalha);
       setMensagemSucesso("Batalha iniciada com sucesso!");
       limparMensagens();
 
-      // Remove da lista visualmente
       setListaBatalhas((antiga) =>
         antiga.filter((b) => b.idBatalha !== idBatalha)
       );
@@ -132,7 +140,7 @@ export default function HomeADM() {
 
   let conteudoHomeAdm;
   if (loadingDados) {
-    conteudoHomeAdm = <p className="loading-mensagem">A carregar dados...</p>;
+    conteudoHomeAdm = <p className="loading-mensagem">Carregando...</p>;
   } else if (erroDados) {
     conteudoHomeAdm = <p className="erro-mensagem">{erroDados}</p>;
   } else {
@@ -142,20 +150,23 @@ export default function HomeADM() {
           <>
             <h1 className="subTitulo">Batalhas Vencidas</h1>
             <div className="listaJogadores">
-              {listaJogadores.map((jogador, index) => (
-                <div className="jogador" key={jogador.idUsuario}>
-                  <div className="posicaoJogador">
-                    <p>{index + 1}º</p>
-                  </div>
-                  <img src={RatoEsgoto} />
-                  <div className="nomeEVitorias">
-                    <p className="nomeJogador">{jogador.nome}</p>
-                    <div className="vitorias">
-                      <p>{jogador.vitorias}</p>
+              {listaJogadores.map((jogador, index) => {
+                const imgPerfil = getFotoUrlById(jogador.idFotoPerfil || 0);
+                return (
+                  <div className="jogador" key={jogador.idUsuario}>
+                    <div className="posicaoJogador">
+                      <p>{index + 1}º</p>
+                    </div>
+                    <img src={imgPerfil} alt={`Avatar de ${jogador.nome}`} />
+                    <div className="nomeEVitorias">
+                      <p className="nomeJogador">{jogador.nome}</p>
+                      <div className="vitorias">
+                        <p>{jogador.vitorias}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         );
@@ -167,7 +178,7 @@ export default function HomeADM() {
               <div className="msg-sucesso">{mensagemSucesso}</div>
             )}
             {mensagemErro && <div className="msg-erro">{mensagemErro}</div>}
-            
+
             {criarBatalha && (
               <ModalCriarBatalha
                 estadoModal={criarBatalha ? "bgModalAtivo" : "bgModal"}
@@ -188,34 +199,37 @@ export default function HomeADM() {
             <button className="btnIniciarCriacao" onClick={CriacaoBatalha}>
               Criar Batalha
             </button>
-
-            <div className="listaBatalhasNormal">
-              {listaBatalhas.map((batalha) => (
-                <div className="batalha" key={batalha.idBatalha || batalha.id}>
-                  <img src={trofeu} />
-                  <div className="infoBatalha">
-                    <p>{batalha.nomeBatalha}</p>
-                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                    <p>
-                      Data e Hora:{" "}
-                      {formatarDataEHora(batalha.dataHorarioInicio)}
-                    </p>
-                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+            <div className="botaoBotELista">
+              <div className="listaBatalhas">
+                {listaBatalhas.map((batalha) => (
+                  <div className="batalha" key={batalha.idBatalha || batalha.id}>
+                    <img src={trofeu} />
+                    <div className="infoBatalha">
+                      <p>{batalha.nomeBatalha}</p>
+                      <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                      <p>
+                        Data e Hora:{" "}
+                        {formatarDataEHora(batalha.dataHorarioInicio)}
+                      </p>
+                      <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                    </div>
+                    <div className="acoesBatalhaADM">
+                      <button
+                        className="btnIniciarBatalha"
+                        onClick={() => IniciarBatalha(batalha)}
+                      >
+                        Iniciar Batalha
+                      </button>
+                      <button
+                        className="btnGerenciarBatalha"
+                        onClick={() => EdicaoDeBatalha(batalha)}
+                      >
+                        Gerenciar
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    className="btnGerenciar"
-                    onClick={() => EdicaoDeBatalha(batalha)}
-                  >
-                    Gerenciar
-                  </button>
-                  <button
-                    className="btnGerenciar"
-                    onClick={() => IniciarBatalha(batalha)}
-                  >
-                    Iniciar Batalha
-                  </button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </>
         );

@@ -1,3 +1,10 @@
+.logoELogin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -5rem;
+}
+
 .caixaLogin {
   width: 28rem;
   padding: 1rem;
@@ -10,6 +17,7 @@
   margin-top: 8rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   font-family: "Inter", sans-serif;
+  transform-origin: top;
   transform: scale(1.2);
 }
 
@@ -119,14 +127,56 @@ button:active {
   text-decoration: underline;
 }
 
-
-
-@media (max-width: 600px) {
-  .caixaLogin {
-    width: 300px;
+/* ------------------------------- */
+/* Medias Query para tratar altura */
+/* ------------------------------- */
+@media (max-height: 300px) {
+  .logoELogin {
+    transform: scale(0.2);
   }
+}
 
-  .caixaLogin h3 {
-    text-align: center;
+/* ----------------------------------------- */
+/* Medias Query para tratar largura e altura */
+/* ----------------------------------------- */
+@media (max-height: 1000px) or (max-width: 600px) {
+  .logoELogin {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-height: 880px) or (max-width: 500px) {
+  .logoELogin {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-height: 800px) or (max-width: 460px) {
+  .logoELogin {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-height: 700px) or (max-width: 430px) {
+  .logoELogin {
+    transform: scale(0.6);
+  }
+}
+
+@media (max-height: 600px) or (max-width: 350px) {
+  .logoELogin {
+    transform: scale(0.5);
+  }
+}
+
+@media (max-height: 500px) or (max-width: 300px) {
+  .logoELogin {
+    transform: scale(0.4);
+  }
+}
+
+@media (max-height: 400px) or (max-width: 250px) {
+  .logoELogin {
+    transform: scale(0.3);
   }
 }

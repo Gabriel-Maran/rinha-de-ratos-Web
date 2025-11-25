@@ -1,0 +1,51 @@
+.logoECadastro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -5rem;
+}
+
+/* ----------------------------------------- */
+/* Medias Query para tratar largura e altura */
+/* ----------------------------------------- */
+@media (max-height: 1060px) or (max-width: 600px) {
+  .logoECadastro {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-height: 960px) or (max-width: 500px) {
+  .logoECadastro {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-height: 860px) or (max-width: 460px) {
+  .logoECadastro {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-height: 760px) or (max-width: 430px) {
+  .logoECadastro {
+    transform: scale(0.6);
+  }
+}
+
+@media (max-height: 660px) or (max-width: 350px) {
+  .logoECadastro {
+    transform: scale(0.5);
+  }
+}
+
+@media (max-height: 560px) or (max-width: 300px) {
+  .logoECadastro {
+    transform: scale(0.4);
+  }
+}
+
+@media (max-height: 460px) {
+  .logoECadastro {
+    transform: scale(0.3);
+  }
+}

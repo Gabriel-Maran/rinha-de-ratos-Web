@@ -17,22 +17,22 @@ export default function Acesso() {
 
   return (
     <div className="acesso-container">
-      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
-      <div className="caixa">
-        <h3>Você é...</h3>
-
-        <Botao
-          acaoBtn={"Jogador/ADM"}
-          button={{
-            className: "acesso",
-            onClick: irLogin,
-          }}
-        />
-
-        <Botao
-          acaoBtn={"Convidado"}
-          button={{ className: "acesso", onClick: irHomeConvidado }}
-        />
+      <div className="logoEAcesso">
+        <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
+        <div className="caixa">
+          <h3>Você é...</h3>
+          <Botao
+            acaoBtn={"Jogador/ADM"}
+            button={{
+              className: "acesso",
+              onClick: irLogin,
+            }}
+          />
+          <Botao
+            acaoBtn={"Convidado"}
+            button={{ className: "acesso", onClick: irHomeConvidado }}
+          />
+        </div>
       </div>
     </div>
   );

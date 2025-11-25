@@ -5,7 +5,7 @@ import MouseCoin from "../../../assets/moedas/MouseCoin.png";
 import { getFotoUrlById } from "../../../pages/perfil/ModalOpcFotosPerfil";
 import "./Header.css";
 
-export default function Header({ home }) {
+export default function Header() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
@@ -21,11 +21,8 @@ export default function Header({ home }) {
       case "ADM":
         navigate("/homeadm");
         break;
-      case "JOGADOR":
-        navigate("/home");
-        break;
       default:
-        navigate("/home"); 
+        navigate("/home");
         break;
     }
   };
@@ -37,15 +34,16 @@ export default function Header({ home }) {
           <img
             className="fotoJogador"
             onClick={() => navigate("/perfil")}
-            src={fotoPerfilUrl} 
+            src={fotoPerfilUrl}
             alt="Foto de perfil do jogador"
           />
           {user ? (
-            <h1 onClick={() => navigate("/perfil")}>{user.nome}</h1>
+            <h1 className={user?.tipoConta === "JOGADOR" ? "nomeUsuario" : ""}
+              onClick={() => navigate("/perfil")}
+            >{user.nome}</h1>
           ) : (
             <p>Carregando...</p>
           )}
-          
           {user?.tipoConta === "JOGADOR" && (
             <div className="quantidadeMoedas">
               <img

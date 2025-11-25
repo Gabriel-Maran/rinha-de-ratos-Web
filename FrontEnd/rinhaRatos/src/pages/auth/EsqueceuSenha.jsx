@@ -51,54 +51,55 @@ export default function EsqueceuSenha() {
 
   return (
     <div className="acesso-container">
-      <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
-      <div className="caixaLogin">
-        <div className="tituloEErro">
-          <h3>Redefinição de senha</h3>
-          {erro && <p className="mensagem-erro">{erro}</p>}
-        </div>
-        <div className="inputs">
-          <Input
-            input={{
-              type: "text",
-              value: email,
-              onChange: (e) => setEmail(e.target.value),
-              placeholder: "E-mail",
-            }}
-          />
-          <div className="input-senha">
+      <div className="logoELogin">
+        <img src={Logo} alt="logo coliseu dos ratos" className="logo" />
+        <div className="caixaLogin">
+          <div className="tituloEErro">
+            <h3>Redefinição de senha</h3>
+            {erro && <p className="mensagem-erro">{erro}</p>}
+          </div>
+          <div className="inputs">
             <Input
               input={{
-                type: mostrarSenha ? "text" : "password",
-                value: senha,
-                onChange: (e) => setSenha(e.target.value),
-                placeholder: "Nova Senha",
+                type: "text",
+                value: email,
+                onChange: (e) => setEmail(e.target.value),
+                placeholder: "E-mail",
               }}
             />
-            <span className="verSenha" onClick={funMostrarSenha}>
-              {mostrarSenha ? (
-                <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
-              ) : (
-                <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
-              )}
-            </span>
+            <div className="input-senha">
+              <Input
+                input={{
+                  type: mostrarSenha ? "text" : "password",
+                  value: senha,
+                  onChange: (e) => setSenha(e.target.value),
+                  placeholder: "Nova Senha",
+                }}
+              />
+              <span className="verSenha" onClick={funMostrarSenha}>
+                {mostrarSenha ? (
+                  <img src={Icone_Olho_Fechado} alt="icone de olho fechado" />
+                ) : (
+                  <img src={Icone_Olho_Aberto} alt="icone de olho aberto" />
+                )}
+              </span>
+            </div>
           </div>
+          <Botao
+            acaoBtn={"Redefinir"}
+            button={{
+              className: "botao",
+              onClick: redefinirSenha,
+            }}
+          />
+          <Botao
+            acaoBtn={"Lembrei kkkkk"}
+            button={{
+              className: "btnVoltar",
+              onClick: lembreiSenha,
+            }}
+          />
         </div>
-
-        <Botao
-          acaoBtn={"Redefinir"}
-          button={{
-            className: "botao",
-            onClick: redefinirSenha,
-          }}
-        />
-        <Botao
-          acaoBtn={"Lembrei kkkkk"}
-          button={{
-            className: "btnVoltar",
-            onClick: lembreiSenha,
-          }}
-        />
       </div>
     </div>
   );

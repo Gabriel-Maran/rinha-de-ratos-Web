@@ -70,8 +70,26 @@ class BatalhaController(
     }
 
     @GetMapping("/concluidas")
-    fun pegaBatalha(): ResponseEntity<Any> {
+    fun pegaBatalhaAcabadas(): ResponseEntity<Any> {
         val result = batalhaService.pegarTodasAsBatalhasAcabadas()
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
+    @GetMapping("/user/disponiveispara/{idUsuario}")
+    fun pegarBatalhasDisponiveisParaUsuario(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasAsBatalhasAbertasQueOUserNParticipa(idUsuario)
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
+    @GetMapping("/user/concluidas/{idUsuario}")
+    fun pegaBatalhaConcuildaIdUser(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
+    @GetMapping("/user/concluidas/sembot/{idUsuario}")
+    fun pegaBatalhaConcuildaIdUserSemBot(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasBatalhasDoUsuarioConcluidasSemBot(idUsuario)
         return ResponseEntity.ok(result.map{ it.toDto()})
     }
 
@@ -97,6 +115,7 @@ class BatalhaController(
             when {
                 msg.contains("USER_NOT_FOUND") -> buildError(HttpStatus.NOT_FOUND, "Usuário (adm) não encontrado", "USER_NOT_FOUND")
                 msg.contains("NAME_LIMIT_EXCEPTED") -> buildError(HttpStatus.BAD_REQUEST, "Ultrapassou o limite de caracteres para o nome da batalha", "NAME_LIMIT_EXCEPTED")
+                msg.contains("COINS_LIMIT_EXCEPTED") -> buildError(HttpStatus.BAD_REQUEST, "Ultrapassou o limite de moedas para o cadastro da batalha", "COINS_LIMIT_EXCEPTED")
                 msg.startsWith("BAD_DATE_FORMAT") -> {
                     // pode vir "BAD_DATE_FORMAT: detalhe..."
                     val detail = msg.removePrefix("BAD_DATE_FORMAT:").trim().ifEmpty { "Formato inválido para data/hora" }
@@ -175,8 +194,6 @@ class BatalhaController(
                 buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
             "BATALHA_HAPPENING_OR_OVER" ->
                 buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
-            "ALREADY_RUNNING" ->
-                buildError(HttpStatus.CONFLICT, "Simulação já em execução para esta batalha", "BATALHA_JA_EM_EXECUCAO")
             "OK" ->
                 ResponseEntity.ok(mapOf("message" to "Batalha iniciada com sucesso", "idBatalha" to idBatalha))
             else ->
@@ -204,8 +221,6 @@ class BatalhaController(
                 buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
             "BATALHA_HAPPENING_OR_OVER" ->
                 buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada ou concluída", "BATALHA_HAPPENING_OR_OVER")
-            "ALREADY_RUNNING" ->
-                buildError(HttpStatus.CONFLICT, "Simulação já em execução para esta batalha", "BATALHA_JA_EM_EXECUCAO")
             "OK" ->
                 ResponseEntity.ok(mapOf("message" to "Batalha iniciada com sucesso", "idBatalha" to respCriacao["idBatalha"]!!.toLong()))
             else ->
