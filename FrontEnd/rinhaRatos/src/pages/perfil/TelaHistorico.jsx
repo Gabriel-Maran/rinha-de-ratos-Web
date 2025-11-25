@@ -23,6 +23,23 @@ export default function TelaHistorico({
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
+  const calculoVidaRestante = (vidaTotal, danoRecebido) => {
+    const vidaRestante = vidaTotal - danoRecebido;
+    return Math.max((vidaRestante / vidaTotal) * 100, 0);
+  }
+
+  const pegarDanoTurno = (log) => {
+    const mensagem = log.descricao
+    if (!mensagem.includes("causou")) return 0;
+    const dano = parseInt(log.split("causou ")[1].split(" ")[0])
+    /* if (log.player === 1) {
+      return const danoEpic = dano
+    } */
+
+    console.log(danoCausadoP1)
+    return danoCausadoP1;
+  }
+
   useEffect(() => {
     if (!mostrarHistorico) return;
 
@@ -133,38 +150,40 @@ export default function TelaHistorico({
                     {logs.length > 0 ? (
                       logs.map((log, index) => {
                         const imgRato = RatoEsgoto;
-                        const danoRoundP1 = 12;
-                        const danoRoundP2 = 20;
                         const vidaP1 = 200;
-                        const vidaP1Atual =
-                          ((vidaP1 - danoRoundP2) / vidaP1) * 100;
                         const vidaP2 = 300;
-                        const vidaP2Atual =
-                          ((vidaP2 - danoRoundP1) / vidaP2) * 100;
-                        const isPlayer1 = log.player === 1;
-                        const imgAvatar = isPlayer1
+                        const danoRoundP1 = pegarDanoTurno(log);
+                        const danoRoundP2 = 0;
+                        const vidaP1Atual = calculoVidaRestante(vidaP1, danoRoundP2)
+                        const vidaP2Atual = calculoVidaRestante(vidaP2, danoRoundP1)
+                        const imgAvatar = log.player === 1
                           ? getFotoUrlById(user?.idFotoPerfil || 0)
                           : getFotoUrlById(idFotoInimigo);
                         return (
                           <>
                             <div
                               className={
-                                isPlayer1 ? "regHistEsq" : "regHistDir"
+                                log.player === 1
+                                  ? "regHistEsq"
+                                  : log.player === 2
+                                    ? "regHistDir"
+                                    : ""
                               }
                               key={log.idmessage || index}
                             >
-                              {isPlayer1 && (
+                              {log.player === 1 && (
                                 <img
                                   className="imgEsquerda"
                                   src={imgAvatar}
                                   alt="Eu"
                                 />
                               )}
-                              <p>
-                                <strong>Round {log.round}:</strong>{" "}
-                                {log.descricao}
-                              </p>
-                              {!isPlayer1 && (
+                              {log.player !== 0 && (
+                                <p>
+                                  <strong>Round {log.round}:</strong>{" "}
+                                  {log.descricao}
+                                </p>)}
+                              {log.player === 2 && (
                                 <img
                                   className="imgDireita"
                                   src={imgAvatar}
@@ -172,38 +191,42 @@ export default function TelaHistorico({
                                 />
                               )}
                             </div>
-                            {/*                             <div className="mostrarVidaDosRatos">
-                              <h1>Vida dos ratos</h1>
-                              <div>
-                                <div className="ratoJ1">
-                                  <div className="barraDeVida">
-                                    <div
-                                      className="qVidaJ1"
-                                      style={{
-                                        transform: `translateX(${
-                                          vidaP1Atual - 100
-                                        }%)`,
-                                      }}
-                                    />
-                                    <p>{vidaP1Atual}</p>
+                            {log.player === 0 && (
+                              <div className="regFinalRound">
+                                <h1>Round {log.round} - Vida dos ratos</h1>
+                                <p>
+                                  <strong>Round {log.round}:</strong>{" "}
+                                  {log.descricao}
+                                </p>
+                                <div className="fotoEVidaRatos">
+                                  <div className="ratoJ1">
+                                    <div className="barraDeVida">
+                                      <div
+                                        className="qVidaRatoJ1"
+                                        style={{
+                                          transform: `translateX(${vidaP1Atual - 100
+                                            }%)`,
+                                        }}
+                                      />
+                                      <p>{vidaP1Atual}</p>
+                                    </div>
+                                    <img src={imgRato} />
                                   </div>
-                                  <img src={imgRato} />
-                                </div>
-                                <div className="ratoJ2">
-                                  <div className="barraDeVida">
-                                    <div
-                                      className="qVidaJ2"
-                                      style={{
-                                        transform: `translateX(${
-                                          vidaP2Atual - 100
-                                        }%)`,
-                                      }}
-                                    />
+                                  <div className="ratoJ2">
+                                    <div className="barraDeVida">
+                                      <div
+                                        className="qVidaRatoJ2"
+                                        style={{
+                                          transform: `translateX(${vidaP2Atual - 100
+                                            }%)`,
+                                        }}
+                                      />
+                                    </div>
+                                    <img src={imgRato} />
                                   </div>
-                                  <img src={imgRato} />
                                 </div>
                               </div>
-                            </div> */}
+                            )}
                           </>
                         );
                       })
