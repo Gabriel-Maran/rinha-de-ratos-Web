@@ -98,138 +98,142 @@ class PDFGenerateService(
                     batalhasUser.forEach { battle ->
                         ensureSpace()
                         if (battle.vencedor != null) {
+                            if (battle.premioTotal > 0) {
 
-                            val ganhou = battle.vencedor!!.idUsuario == user.idUsuario
-                            if (ganhou) {
-                                vitorias += 1
-                                saldoBatalhasSomadas += battle.premioTotal
-                            } else {
-                                derrotas += 1
-                                saldoBatalhasSomadas -= battle.custoInscricao
+                                val ganhou = battle.vencedor!!.idUsuario == user.idUsuario
+                                if (ganhou) {
+                                    vitorias += 1
+                                    saldoBatalhasSomadas += battle.premioTotal
+                                } else {
+                                    derrotas += 1
+                                    saldoBatalhasSomadas -= battle.custoInscricao
+                                }
+                                r = (if (ganhou) 0 else 255).toFloat()
+                                g = (if (ganhou) 180 else 0).toFloat()
+                                b = 0F
+                                textSameLine[0] =
+                                    if (ganhou) "Ganhou a batalha: "
+                                    else "Perdeu a batalha: "
+                                textSameLine[1] =
+                                    if (ganhou) "${battle.nomeBatalha} (id = ${battle.idBatalha})"
+                                    else "${battle.nomeBatalha} (id = ${battle.idBatalha})"
+
+                                cs.beginText()
+                                cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
+                                cs.setFont(font, 15f)
+                                cs.newLineAtOffset(50f, y)
+                                cs.showText(textSameLine[0])
+                                cs.endText()
+
+                                r = 0F
+                                g = 0F
+                                b = 0F
+                                cs.beginText()
+                                cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
+                                cs.setFont(font, 15f)
+                                cs.newLineAtOffset(50f + (font.getStringWidth(textSameLine[0]) / 1000 * 15f), y)
+                                cs.showText(textSameLine[1])
+                                cs.endText()
+
+                                y -= 16f
                             }
-                            r = (if (ganhou) 0 else 255).toFloat()
-                            g = (if (ganhou) 180 else 0).toFloat()
-                            b = 0F
-                            textSameLine[0] =
-                                if (ganhou) "Ganhou a batalha: "
-                                else "Perdeu a batalha: "
-                            textSameLine[1] =
-                                if (ganhou) "${battle.nomeBatalha} (id = ${battle.idBatalha})${if (battle.custoInscricao == 0) " - BOT" else ""}"
-                                else "${battle.nomeBatalha} (id = ${battle.idBatalha})${if (battle.custoInscricao == 0) " - BOT" else ""}"
-
-                            cs.beginText()
-                            cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
-                            cs.setFont(font, 15f)
-                            cs.newLineAtOffset(50f, y)
-                            cs.showText(textSameLine[0])
-                            cs.endText()
-
-                            r = 0F
-                            g = 0F
-                            b = 0F
-                            cs.beginText()
-                            cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
-                            cs.setFont(font, 15f)
-                            cs.newLineAtOffset(50f + (font.getStringWidth(textSameLine[0]) / 1000 * 15f), y)
-                            cs.showText(textSameLine[1])
-                            cs.endText()
-
-                            y -= 16f
                         }
                     }
-                    y -= 20f
+                    if(vitorias + derrotas == 0){
+                        textSameLine[0] = "${user.nome} não participou de nenhuma batalha ainda"
+                        cs.beginText()
+                        cs.setFont(fontBold, 16f)
+                        cs.newLineAtOffset(textAllignCenter(textSameLine[0], 16f, pageWidth), y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
+                        y -= 36f
+                    }else{
+                        y -= 20f
+                        ensureSpace()
+                        textSameLine[0] = "Total de vitórias:   "
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 180 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(400F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
 
-                    ensureSpace()
-                    textSameLine[0] = "Total de vitórias:   "
-                    cs.beginText()
-                    cs.setNonStrokingColor(0 / 255f, 180 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(400F, y)
-                    cs.showText(textSameLine[0])
-                    cs.endText()
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(402F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
+                        cs.showText(vitorias.toString())
+                        cs.endText()
+                        y -= 20f
 
-                    cs.beginText()
-                    cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(402F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
-                    cs.showText(vitorias.toString())
-                    cs.endText()
-                    y -= 20f
+                        ensureSpace()
+                        textSameLine[0] = "Total de derrotas: "
+                        cs.beginText()
+                        cs.setNonStrokingColor(255 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(400F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
 
-                    ensureSpace()
-                    textSameLine[0] = "Total de derrotas: "
-                    cs.beginText()
-                    cs.setNonStrokingColor(255 / 255f, 0 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(400F, y)
-                    cs.showText(textSameLine[0])
-                    cs.endText()
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(402F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
+                        cs.showText(derrotas.toString())
+                        cs.endText()
+                        y -= 20f
 
-                    cs.beginText()
-                    cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(402F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
-                    cs.showText(derrotas.toString())
-                    cs.endText()
-                    y -= 20f
+                        ensureSpace()
+                        textSameLine[0] = "Total de batalhas: "
+                        textSameLine[1] = "${vitorias + derrotas} "
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(400F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
 
-                    ensureSpace()
-                    textSameLine[0] = "Total de batalhas: "
-                    textSameLine[1] = "${vitorias + derrotas} "
-                    cs.beginText()
-                    cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(400F, y)
-                    cs.showText(textSameLine[0])
-                    cs.endText()
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(400F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
+                        cs.showText(textSameLine[1])
+                        cs.endText()
+                        y -= 20f
 
-                    cs.beginText()
-                    cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(400F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
-                    cs.showText(textSameLine[1])
-                    cs.endText()
-                    y -= 20f
+                        var tempTextTotalSaldo = ""
 
-                    var tempTextTotalSaldo = ""
+                        if (saldoBatalhasSomadas >= 0) {
+                            tempTextTotalSaldo = "Saldo ganho: "
+                            r = 0f
+                            g = 180f
+                            b = 0f
+                        } else {
+                            tempTextTotalSaldo = "Saldo perdido: "
+                            r = 255f
+                            g = 0f
+                            b = 0f
+                            saldoBatalhasSomadas *= -1
+                        }
 
-                    if (saldoBatalhasSomadas >= 0) {
-                        tempTextTotalSaldo = "Saldo ganho: "
-                        r = 0f
-                        g = 180f
-                        b = 0f
-                    } else {
-                        tempTextTotalSaldo = "Saldo perdido: "
-                        r = 255f
-                        g = 0f
-                        b = 0f
-                        saldoBatalhasSomadas *= -1
+                        ensureSpace()
+                        textSameLine[0] = tempTextTotalSaldo
+                        textSameLine[1] = saldoBatalhasSomadas.toString()
+                        cs.beginText()
+                        cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(400F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
+
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 17f)
+                        cs.newLineAtOffset(426F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
+                        cs.showText(textSameLine[1])
+                        cs.endText()
+
                     }
-
-                    ensureSpace()
-                    textSameLine[0] = tempTextTotalSaldo
-                    textSameLine[1] = saldoBatalhasSomadas.toString()
-                    cs.beginText()
-                    cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(400F, y)
-                    cs.showText(textSameLine[0])
-                    cs.endText()
-
-                    cs.beginText()
-                    cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
-                    cs.setFont(font, 17f)
-                    cs.newLineAtOffset(426F + (font.getStringWidth(textSameLine[0]) / 1000 * 17f), y)
-                    cs.showText(textSameLine[1])
-                    cs.endText()
-
-                } else {
-                    textSameLine[0] = "Sem dados da batalha"
-                    cs.beginText()
-                    cs.setFont(fontBold, 15f)
-                    cs.newLineAtOffset(textAllignCenter(textSameLine[0], 15f, pageWidth), y)
-                    cs.showText(textSameLine[0])
-                    cs.endText()
                 }
             } finally {
                 cs.close()
@@ -325,7 +329,6 @@ class PDFGenerateService(
 
                     ensureSpace()
                     if (battle.vencedor != null) {
-
                         val ganhou = battle.vencedor!!.idUsuario == user.idUsuario
                         if (ganhou) {
                             saldoBatalhasSomadas += battle.premioTotal
@@ -347,6 +350,40 @@ class PDFGenerateService(
                         cs.endText()
 
                         y -= 60f
+
+
+                        ensureSpace()
+                        textSameLine[0] = "Ratos: "
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(fontBold, 17f)
+                        cs.newLineAtOffset(50F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
+
+                        y -= 20f
+
+                        ensureSpace()
+                        textSameLine[0] = " - ${battle.rato1?.nomeCustomizado ?: "Sem nome"}"
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 15f)
+                        cs.newLineAtOffset(50F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
+
+                        y -= 20f
+
+                        ensureSpace()
+                        textSameLine[0] = " - ${battle.rato2?.nomeCustomizado ?: "Sem nome"}"
+                        cs.beginText()
+                        cs.setNonStrokingColor(0 / 255f, 0 / 255f, 0 / 255f)
+                        cs.setFont(font, 15f)
+                        cs.newLineAtOffset(50F, y)
+                        cs.showText(textSameLine[0])
+                        cs.endText()
+
+                        y -= 35f
 
                         saldoBatalhasSomadas = battle.premioTotal
                         var tempTextTotalSaldo = ""
@@ -381,6 +418,8 @@ class PDFGenerateService(
                         cs.showText(textSameLine[1])
                         cs.endText()
 
+
+
                         y -= 45f
                     }
 
@@ -394,7 +433,7 @@ class PDFGenerateService(
                     textSameLine[1] = ""
                     cs.beginText()
                     cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
-                    cs.setFont(font, 18F)
+                    cs.setFont(fontBold, 18F)
                     cs.newLineAtOffset(50F, y)
                     cs.showText(textSameLine[0])
                     cs.endText()
@@ -415,7 +454,7 @@ class PDFGenerateService(
                         textSameLine[1] = ""
                         var round = -1L
                         for (turno in historico) {
-                            if (turno.round != round){
+                            if (turno.round != round) {
                                 y -= 40f
                                 round = turno.round
                                 textSameLine[0] = "Round $round"
@@ -433,10 +472,10 @@ class PDFGenerateService(
                             textSameLine[1] = turno.descricao
                             cs.beginText()
                             cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
-                            if(turno.descricao.contains("HPs após round")){
+                            if (turno.descricao.contains("HPs após round")) {
                                 cs.setFont(fontObliqueBold, 12F)
 
-                            }else {
+                            } else {
                                 cs.setFont(font, 12F)
                             }
                             cs.newLineAtOffset(50F, y)
@@ -444,18 +483,6 @@ class PDFGenerateService(
                             cs.endText()
                         }
                     }
-                    y -= 20f
-
-                    textSameLine[0] = historico[1].descricao
-                    textSameLine[1] = ""
-                    cs.beginText()
-                    cs.setNonStrokingColor(r / 255f, g / 255f, b / 255f)
-                    cs.setFont(font, 12F)
-                    cs.newLineAtOffset(50F, y)
-                    cs.showText(textSameLine[0])
-                    cs.endText()
-
-
                 }
                 y -= 20f
             } finally {
