@@ -33,7 +33,7 @@ class PDFController(
     }
 
     @GetMapping("/user/{idUsuario}/{idBatalha}")
-    fun historicoDaBatalhasPorUserId(
+    fun historicoDaBatalhaPorUserId(
         @PathVariable("idUsuario") idUsuario: Long,
         @PathVariable("idBatalha") idBatalha: Long)
     : ResponseEntity<Any> {
@@ -41,7 +41,7 @@ class PDFController(
             val pdfBytes = pdfService.getUserBatalhaHistorico(idUsuario, idBatalha) // retorna ByteArray do PDF
             return ResponseEntity
                 .ok()
-                .header("Content-Disposition", "attachment; filename=\"relatorio.pdf\"")
+                .header("Content-Disposition", "attachment; filename=\"batalha.pdf\"")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes)
         }catch(e: NoSuchElementException){
