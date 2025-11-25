@@ -14,7 +14,6 @@ export default function Ranking() {
   const [erroDados, setErroDados] = useState(null);
 
   useEffect(() => {
-    if (!idUsuarioLogado) return;
 
     const buscarDadosIniciais = async () => {
       setLoadingDados(true);
