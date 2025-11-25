@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getFotoUrlById } from "./ModalOpcFotosPerfil";
 import ImgVitoria from "../../assets/icones/IconeVitoria.png";
 import ImgDerrota from "../../assets/icones/IconeDerrota.png";
+import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png";
 import "../../pages/perfil/TelaHistorico.css";
 
 export default function TelaHistorico({
@@ -57,12 +58,21 @@ export default function TelaHistorico({
             if (idDoOponente && idDoOponente > 0) {
               try {
                 const respInimigo = await pegarUsuarioPorId(idDoOponente);
-                if (respInimigo.data && respInimigo.data.idFotoPerfil !== undefined) {
-                  console.log("Foto do inimigo encontrada:", respInimigo.data.idFotoPerfil);
+                if (
+                  respInimigo.data &&
+                  respInimigo.data.idFotoPerfil !== undefined
+                ) {
+                  console.log(
+                    "Foto do inimigo encontrada:",
+                    respInimigo.data.idFotoPerfil
+                  );
                   setIdFotoInimigo(respInimigo.data.idFotoPerfil);
                 }
               } catch (errInimigo) {
-                console.warn(`Não foi possível carregar foto do oponente ${idDoOponente}. Usando padrão.`, errInimigo);
+                console.warn(
+                  `Não foi possível carregar foto do oponente ${idDoOponente}. Usando padrão.`,
+                  errInimigo
+                );
               }
             }
           }
@@ -85,54 +95,62 @@ export default function TelaHistorico({
   const [abaModal, setAbaModal] = useState("1");
   const botoesNavModal = ["1", "2"];
 
-
   let conteudoAba;
 
   switch (abaModal) {
     case "1":
       conteudoAba = (
         <>
-          {
-            loading ? (
-              <h2 className="loadingResultado">Carregando resultado...</h2>
-            ) : (
-              <>
-                <h1 className="tituloResultado">Resultado da Batalha:</h1>
-                <div className="area-banner-central">
-                  <img
-                    src={imagemBanner}
-                    alt="Resultado"
-                    className="img-banner-final"
-                  />
-                  <h2 className="texto-resultado-final">{mensagemResultado}</h2>
-                </div>
-              </>
-            )
-          }
+          {loading ? (
+            <h2 className="loadingResultado">Carregando resultado...</h2>
+          ) : (
+            <>
+              <h1 className="tituloResultado">Resultado da Batalha:</h1>
+              <div className="area-banner-central">
+                <img
+                  src={imagemBanner}
+                  alt="Resultado"
+                  className="img-banner-final"
+                />
+                <h2 className="texto-resultado-final">{mensagemResultado}</h2>
+              </div>
+            </>
+          )}
         </>
       );
-      break
+      break;
     default:
       conteudoAba = (
         <>
-          {
-            loading ? (
-              <h2 className="loadingResultado" >Carregando resultado...</h2>
-            ) : (
-              <>
-                <div className="historicoBatalha">
-                  <h3>Histórico</h3>
-                  <div className="bgConteinerHist">
-                    <div className="conteinerHistorico">
-                      {logs.length > 0 ? (
-                        logs.map((log, index) => {
-                          const isPlayer1 = log.player === 1;
-                          const imgAvatar = isPlayer1
-                            ? getFotoUrlById(user?.idFotoPerfil || 0)
-                            : getFotoUrlById(idFotoInimigo);
-                          return (
+          {loading ? (
+            <h2 className="loadingResultado">Carregando resultado...</h2>
+          ) : (
+            <>
+              <div className="historicoBatalha">
+                <h3>Histórico</h3>
+                <div className="bgConteinerHist">
+                  <div className="conteinerHistorico">
+                    {logs.length > 0 ? (
+                      logs.map((log, index) => {
+                        const imgRato = RatoEsgoto;
+                        const danoRoundP1 = 12;
+                        const danoRoundP2 = 20;
+                        const vidaP1 = 200;
+                        const vidaP1Atual =
+                          ((vidaP1 - danoRoundP2) / vidaP1) * 100;
+                        const vidaP2 = 300;
+                        const vidaP2Atual =
+                          ((vidaP2 - danoRoundP1) / vidaP2) * 100;
+                        const isPlayer1 = log.player === 1;
+                        const imgAvatar = isPlayer1
+                          ? getFotoUrlById(user?.idFotoPerfil || 0)
+                          : getFotoUrlById(idFotoInimigo);
+                        return (
+                          <>
                             <div
-                              className={isPlayer1 ? "regHistEsq" : "regHistDir"}
+                              className={
+                                isPlayer1 ? "regHistEsq" : "regHistDir"
+                              }
                               key={log.idmessage || index}
                             >
                               {isPlayer1 && (
@@ -143,7 +161,8 @@ export default function TelaHistorico({
                                 />
                               )}
                               <p>
-                                <strong>Round {log.round}:</strong> {log.descricao}
+                                <strong>Round {log.round}:</strong>{" "}
+                                {log.descricao}
                               </p>
                               {!isPlayer1 && (
                                 <img
@@ -153,21 +172,53 @@ export default function TelaHistorico({
                                 />
                               )}
                             </div>
-                          );
-                        })
-                      ) : (
-                        <p className="nenhumRegistro">
-                          Nenhum registro de combate.
-                        </p>
-                      )}
-                    </div>
+                            {/*                             <div className="mostrarVidaDosRatos">
+                              <h1>Vida dos ratos</h1>
+                              <div>
+                                <div className="ratoJ1">
+                                  <div className="barraDeVida">
+                                    <div
+                                      className="qVidaJ1"
+                                      style={{
+                                        transform: `translateX(${
+                                          vidaP1Atual - 100
+                                        }%)`,
+                                      }}
+                                    />
+                                    <p>{vidaP1Atual}</p>
+                                  </div>
+                                  <img src={imgRato} />
+                                </div>
+                                <div className="ratoJ2">
+                                  <div className="barraDeVida">
+                                    <div
+                                      className="qVidaJ2"
+                                      style={{
+                                        transform: `translateX(${
+                                          vidaP2Atual - 100
+                                        }%)`,
+                                      }}
+                                    />
+                                  </div>
+                                  <img src={imgRato} />
+                                </div>
+                              </div>
+                            </div> */}
+                          </>
+                        );
+                      })
+                    ) : (
+                      <p className="nenhumRegistro">
+                        Nenhum registro de combate.
+                      </p>
+                    )}
                   </div>
                 </div>
-              </>
-            )
-          }
+              </div>
+            </>
+          )}
         </>
-      )
+      );
   }
 
   return (

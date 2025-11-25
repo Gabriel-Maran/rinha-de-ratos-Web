@@ -45,8 +45,10 @@
 .modalResultado {
   width: 45rem;
   height: 55rem;
-  background-image: linear-gradient(rgba(79, 81, 83, 0.3),
-      rgba(79, 81, 83, 0.3)),
+  background-image: linear-gradient(
+      rgba(79, 81, 83, 0.3),
+      rgba(79, 81, 83, 0.3)
+    ),
     url("../../assets/backgrounds/bgBatalhaMenor.jpg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -138,12 +140,8 @@
   /* Remove margens que possam atrapalhar */
 
   /* Sombra forte para ler em cima do vermelho/azul */
-  text-shadow:
-    3px 3px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 /* (Mantenha os ajustes do histórico abaixo) */
@@ -194,7 +192,6 @@
   width: 5rem;
   margin-right: 1rem;
   padding: 0.5rem;
-  transform: scaleX(-1);
 }
 
 .brasaoResultado .infoRatoResultBatalha {
@@ -314,7 +311,6 @@
 
 .imgEsquerda {
   margin-right: 0.5rem;
-  transform: scaleX(-1);
   border: 0.3rem solid rgb(0, 0, 0);
   box-shadow: 0 0 10px #000000, 0 0 20px #000000;
   border-radius: 50%;
@@ -338,6 +334,48 @@
   border: 0.3rem solid rgb(255, 255, 255);
   box-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff;
   border-radius: 50%;
+}
+
+.mostrarVidaDosRatos {
+  width: 35rem;
+  height: 30rem;
+  background-color: rgb(134, 128, 128);
+  align-self: center;
+  border-radius: 3rem 1rem 3rem 1rem;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  box-sizing: content-box;
+}
+
+.ratoJ1,
+.ratoJ2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.barraDeVida {
+  width: 12rem;
+  height: 2rem;
+  background-color: white;
+  border: 0.3rem solid;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.qVidaJ1,
+.qVidaJ2 {
+  height: 100%;
+  background-color: green;
+  border: none;
+}
+
+.ratoJ1 img,
+.ratoJ2 img {
+  width: 5rem;
 }
 
 /* ----------------------------------------- */
@@ -366,7 +404,6 @@
     transform: scale(0.6);
   }
 }
-
 
 /* -------------------------------- */
 /* Medias Query para tratar largura */
