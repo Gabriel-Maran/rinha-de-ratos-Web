@@ -8,13 +8,13 @@ export default function ModalEscolherRatoBatalha({
   onConfirmar,
   isLoading,
   erroModal,
-  ignorarInscricao, // Nova prop recebida
+  ignorarInscricao,
 }) {
   function handleRatoSelecionado(rato) {
     onConfirmar(rato.idRato);
   }
 
-  // LÓGICA CORRIGIDA:
+
   // 1. O rato deve estar vivo.
   // 2. Se 'ignorarInscricao' for true (Bot), aceitamos ratos em torneio.
   // 3. Se for false (PvP), o rato NÃO pode estar em torneio (!rato.estaTorneio).

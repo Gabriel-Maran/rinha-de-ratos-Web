@@ -160,3 +160,7 @@ export const verificarSeBatalhaCheia = (idBatalha) => {
 export const pegarBatalhasCriadas = (idADM) => {
   return apiClient.get(`batalha/adm/${idADM}`);
 };
+
+export const pegarBatalhaPorId = (idBatalha) => {
+    return apiClient.get(`/batalha/${idBatalha}`); 
+}
