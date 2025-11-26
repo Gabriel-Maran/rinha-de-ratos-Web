@@ -14,7 +14,7 @@ import Botao from "../../../components/comuns/Botao";
 import ModalCriacaoRato from "./meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
-import Ranking from "./ranking/Ranking";  
+import Ranking from "../../../components/comuns/ranking/Ranking"; 
 import Loja from "./loja/Loja";
 import TelaHistorico from "../../perfil/TelaHistorico";
 import "./HomeJogador.css";

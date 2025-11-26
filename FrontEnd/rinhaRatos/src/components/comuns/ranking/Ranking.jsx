@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../../../context/AuthContext";
-import { ranking } from "../../../../Api/Api";
-import { getFotoUrlById } from "../../../perfil/ModalOpcFotosPerfil";
-import "./Ranking.css";
+import { useAuth } from "../../../context/AuthContext";
+import { ranking } from "../../../Api/Api";
+import { getFotoUrlById } from "../../../pages/perfil/ModalOpcFotosPerfil";
+import "./Ranking.css"
 
 export default function Ranking() {
   const { user } = useAuth();

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import HeaderConvidado from "../../components/comuns/Header/HeaderConvidado";
-import Ranking from "./jogador/ranking/Ranking";
+import Ranking from "../../components/comuns/ranking/Ranking";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import "../home/adm/HomeADM";
 
