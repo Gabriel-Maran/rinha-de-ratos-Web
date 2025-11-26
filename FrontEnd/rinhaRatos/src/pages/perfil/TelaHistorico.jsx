@@ -23,22 +23,49 @@ export default function TelaHistorico({
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
-  const calculoVidaRestante = (vidaTotal, danoRecebido) => {
-    const vidaRestante = vidaTotal - danoRecebido;
-    return Math.max((vidaRestante / vidaTotal) * 100, 0);
-  }
+  const [vidaRatoJ1, setVidaRatoJ1] = useState(0);
+  const [vidaRatoJ2, setVidaRatoJ2] = useState(0);
+  const [valorVidaPorRound, setValorVidaPorRound] = useState([]);
 
-  const pegarDanoTurno = (log) => {
-    const mensagem = log.descricao
-    if (!mensagem.includes("causou")) return 0;
-    const dano = parseInt(log.split("causou ")[1].split(" ")[0])
-    /* if (log.player === 1) {
-      return const danoEpic = dano
-    } */
+  useEffect(() => {
+    if (logs.length < 4) return;
 
-    console.log(danoCausadoP1)
-    return danoCausadoP1;
-  }
+    const regexDano = /causou\s+(\d+)\s+ao/i;
+
+    const reg2 = logs[2].descricao;
+    const matchReg2 = reg2.match(regexDano);
+    const primeiroDanoFeitoAoP2 = Number(matchReg2?.[1] ?? 0);
+
+    const reg3 = logs[3].descricao;
+    const matchReg3 = reg3.match(regexDano);
+    const primeiroDanoFeitoAoP1 = Number(matchReg3?.[1] ?? 0);
+
+    const regexRound =
+      /HPs após round:\s*([\wÀ-ÖØ-öø-ÿ]+)=(\d+)\s*\|\s*([\wÀ-ÖØ-öø-ÿ]+)=(\d+)/;
+
+    const finaisDeRound = logs.filter((r) => r.player === 0);
+
+    let novasVidas = [];
+
+    finaisDeRound.map((regTerminouRound) => {
+      const index = regTerminouRound.round - 1;
+
+      const msgAcabouRound = regTerminouRound.descricao.match(regexRound);
+
+      if (msgAcabouRound) {
+        const vRJ1 = Number(msgAcabouRound[2]);
+        const vRJ2 = Number(msgAcabouRound[4]);
+
+        if (regTerminouRound.round === 1) {
+          setVidaRatoJ1(vRJ1 + primeiroDanoFeitoAoP1);
+          setVidaRatoJ2(vRJ2 + primeiroDanoFeitoAoP2);
+        }
+        novasVidas[index] = { vRJ1, vRJ2 };
+      }
+    });
+
+    setValorVidaPorRound(novasVidas);
+  }, [logs]);
 
   useEffect(() => {
     if (!mostrarHistorico) return;
@@ -150,15 +177,10 @@ export default function TelaHistorico({
                     {logs.length > 0 ? (
                       logs.map((log, index) => {
                         const imgRato = RatoEsgoto;
-                        const vidaP1 = 200;
-                        const vidaP2 = 300;
-                        const danoRoundP1 = pegarDanoTurno(log);
-                        const danoRoundP2 = 0;
-                        const vidaP1Atual = calculoVidaRestante(vidaP1, danoRoundP2)
-                        const vidaP2Atual = calculoVidaRestante(vidaP2, danoRoundP1)
-                        const imgAvatar = log.player === 1
-                          ? getFotoUrlById(user?.idFotoPerfil || 0)
-                          : getFotoUrlById(idFotoInimigo);
+                        const imgAvatar =
+                          log.player === 1
+                            ? getFotoUrlById(user?.idFotoPerfil || 0)
+                            : getFotoUrlById(idFotoInimigo);
                         return (
                           <>
                             <div
@@ -166,8 +188,8 @@ export default function TelaHistorico({
                                 log.player === 1
                                   ? "regHistEsq"
                                   : log.player === 2
-                                    ? "regHistDir"
-                                    : ""
+                                  ? "regHistDir"
+                                  : ""
                               }
                               key={log.idmessage || index}
                             >
@@ -182,7 +204,8 @@ export default function TelaHistorico({
                                 <p>
                                   <strong>Round {log.round}:</strong>{" "}
                                   {log.descricao}
-                                </p>)}
+                                </p>
+                              )}
                               {log.player === 2 && (
                                 <img
                                   className="imgDireita"
@@ -198,33 +221,48 @@ export default function TelaHistorico({
                                   <strong>Round {log.round}:</strong>{" "}
                                   {log.descricao}
                                 </p>
-                                <div className="fotoEVidaRatos">
-                                  <div className="ratoJ1">
-                                    <div className="barraDeVida">
-                                      <div
-                                        className="qVidaRatoJ1"
-                                        style={{
-                                          transform: `translateX(${vidaP1Atual - 100
-                                            }%)`,
-                                        }}
-                                      />
-                                      <p>{vidaP1Atual}</p>
+                                {(() => {
+                                  const vidaAtual = valorVidaPorRound[
+                                    log.round - 1
+                                  ] || {
+                                    vRJ1: vidaRatoJ1,
+                                    vRJ2: vidaRatoJ2,
+                                  };
+                                  const maxJ1 = vidaRatoJ1 > 0 ? vidaRatoJ1 : 1;
+                                  const maxJ2 = vidaRatoJ2 > 0 ? vidaRatoJ2 : 1;
+                                  return (
+                                    <div className="fotoEVidaRatos">
+                                      <div className="ratoJ1">
+                                        <div className="barraDeVida">
+                                          <div
+                                            className="qVidaRatoJ1"
+                                            style={{
+                                              transform: `translateX(${
+                                                (vidaAtual.vRJ1 / maxJ1) * 100 -
+                                                100
+                                              }%)`,
+                                            }}
+                                          />
+                                        </div>
+                                        <img src={imgRato} />
+                                      </div>
+                                      <div className="ratoJ2">
+                                        <div className="barraDeVida">
+                                          <div
+                                            className="qVidaRatoJ2"
+                                            style={{
+                                              transform: `translateX(${
+                                                (vidaAtual.vRJ2 / maxJ2) * 100 -
+                                                100
+                                              }%)`,
+                                            }}
+                                          />
+                                        </div>
+                                        <img src={imgRato} />
+                                      </div>
                                     </div>
-                                    <img src={imgRato} />
-                                  </div>
-                                  <div className="ratoJ2">
-                                    <div className="barraDeVida">
-                                      <div
-                                        className="qVidaRatoJ2"
-                                        style={{
-                                          transform: `translateX(${vidaP2Atual - 100
-                                            }%)`,
-                                        }}
-                                      />
-                                    </div>
-                                    <img src={imgRato} />
-                                  </div>
-                                </div>
+                                  );
+                                })()}
                               </div>
                             )}
                           </>
