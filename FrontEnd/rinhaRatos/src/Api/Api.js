@@ -62,6 +62,10 @@ export const compraPacote = async (idPacote, idUsuario) => {
 // ---------------------------------------------------------
 // APIS RELACIONADAS AOS RATOS
 // ---------------------------------------------------------
+export const pegarRatoPorID = async (id) => {
+  return await apiClient.get(`rato/${id}`)
+}
+
 export const ratosUsuario = (dadosRatos) => {
   return apiClient.post("/rato/cadastro", dadosRatos);
 };

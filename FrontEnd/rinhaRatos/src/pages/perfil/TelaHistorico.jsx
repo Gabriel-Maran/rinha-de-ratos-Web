@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { buscarHistorico, pegarUsuarioPorId } from "../../Api/Api";
+import { buscarHistorico, pegarUsuarioPorId, pegarJogadoresDaBatalha, pegarRatoPorID } from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { getFotoUrlById } from "./ModalOpcFotosPerfil";
 import ImgVitoria from "../../assets/icones/IconeVitoria.png";
 import ImgDerrota from "../../assets/icones/IconeDerrota.png";
+import ImagensRato from "../../components/ImagensRato";
 import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png";
 import "../../pages/perfil/TelaHistorico.css";
 
@@ -23,26 +24,25 @@ export default function TelaHistorico({
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
+  const [idJogador1, setIdJogador1] = useState(0)
+  const [idJogador2, setIdJogador2] = useState(0)
+
+  const [nomeRatoJ1, setNomeRatoJ1] = useState("")
+  const [nomeRatoJ2, setNomeRatoJ2] = useState("")
+  const [fotoRatoJ1, setFotoRatoJ1] = useState("")
+  const [fotoRatoJ2, setFotoRatoJ2] = useState("")
   const [vidaRatoJ1, setVidaRatoJ1] = useState(0);
   const [vidaRatoJ2, setVidaRatoJ2] = useState(0);
   const [valorVidaPorRound, setValorVidaPorRound] = useState([]);
 
   useEffect(() => {
-    if (logs.length < 4) return;
-
-    const regexDano = /causou\s+(\d+)\s+ao/i;
-
-    const reg2 = logs[2].descricao;
-    const matchReg2 = reg2.match(regexDano);
-    const primeiroDanoFeitoAoP2 = Number(matchReg2?.[1] ?? 0);
-
-    const reg3 = logs[3].descricao;
-    const matchReg3 = reg3.match(regexDano);
-    const primeiroDanoFeitoAoP1 = Number(matchReg3?.[1] ?? 0);
-
+    /* Regex maroto pra pegar os valores das vidas */
     const regexRound =
-      /HPs após round:\s*([\wÀ-ÖØ-öø-ÿ]+)=(\d+)\s*\|\s*([\wÀ-ÖØ-öø-ÿ]+)=(\d+)/;
+      /(\d+)\s*\|\s*[\wÀ-ÖØ-öø-ÿ]+=(\d+)/;
 
+    /* Serve pra filtrar pelos logs e pegar somente aqueles tem as vidas
+       Ou seja, aqueles em que o id do player é 0 (narrador)
+    */
     const finaisDeRound = logs.filter((r) => r.player === 0);
 
     let novasVidas = [];
@@ -53,13 +53,9 @@ export default function TelaHistorico({
       const msgAcabouRound = regTerminouRound.descricao.match(regexRound);
 
       if (msgAcabouRound) {
-        const vRJ1 = Number(msgAcabouRound[2]);
-        const vRJ2 = Number(msgAcabouRound[4]);
+        const vRJ1 = Number(msgAcabouRound[1]);
+        const vRJ2 = Number(msgAcabouRound[2]);
 
-        if (regTerminouRound.round === 1) {
-          setVidaRatoJ1(vRJ1 + primeiroDanoFeitoAoP1);
-          setVidaRatoJ2(vRJ2 + primeiroDanoFeitoAoP2);
-        }
         novasVidas[index] = { vRJ1, vRJ2 };
       }
     });
@@ -83,6 +79,45 @@ export default function TelaHistorico({
         const dados = resposta.data;
 
         if (Array.isArray(dados) && dados.length >= 2) {
+          try {
+            const respostaBatalha = await pegarJogadoresDaBatalha(idFinal)
+            const dadosBatalha = respostaBatalha.data;
+                        console.log(dadosBatalha)
+
+            /* setIdJogador1(dadosBatalha.jogador1.idUsuario)
+            setIdJogador2(dadosBatalha.jogador2.idUsuario)
+            console.log(idJogador1)
+            console.log(idJogador2)
+
+            const respostaJogador1 = await pegarUsuarioPorId(idJogador1)
+            const dadosJogador1 = respostaJogador1.data
+            console.log(dadosJogador1)
+
+            const respostaJogador2 = await pegarUsuarioPorId(idJogador1)
+            const dadosJogador2 = respostaJogador2.data */
+
+            setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado)
+            setNomeRatoJ2(dadosBatalha.rato2.nomeCustomizado)
+
+            const idRatoJ1 = dadosBatalha.rato1.idRato
+            const idRatoJ2 = dadosBatalha.rato2.idRato
+
+            try {
+              const ratoJ1 = await pegarRatoPorID(idRatoJ1);
+              const ratoJ2 = await pegarRatoPorID(idRatoJ2);
+              const dadosRatoJ1 = ratoJ1.data;
+              const dadosRatoJ2 = ratoJ2.data;
+              setFotoRatoJ1(ImagensRato[dadosRatoJ1.classe?.nomeClasse])
+              setFotoRatoJ2(ImagensRato[dadosRatoJ2.classe?.nomeClasse])
+              setVidaRatoJ1(dadosRatoJ1.hpsBase)
+              setVidaRatoJ2(dadosRatoJ2.hpsBase)
+            } catch (err) {
+              console.error("Erro ao buscar ratos:", err.response?.data || err);
+            }
+          } catch (err) {
+            console.error("Erro ao pegar os jogadores da batalh:", err.response?.data || err)
+          }
+
           setLogs(dados[0]); // Gaveta 1: Logs
 
           const infoResultado = dados[1]?.[0]; // Gaveta 2: Resultado
@@ -188,8 +223,8 @@ export default function TelaHistorico({
                                 log.player === 1
                                   ? "regHistEsq"
                                   : log.player === 2
-                                  ? "regHistDir"
-                                  : ""
+                                    ? "regHistDir"
+                                    : ""
                               }
                               key={log.idmessage || index}
                             >
@@ -202,7 +237,6 @@ export default function TelaHistorico({
                               )}
                               {log.player !== 0 && (
                                 <p>
-                                  <strong>Round {log.round}:</strong>{" "}
                                   {log.descricao}
                                 </p>
                               )}
@@ -217,10 +251,6 @@ export default function TelaHistorico({
                             {log.player === 0 && (
                               <div className="regFinalRound">
                                 <h1>Round {log.round} - Vida dos ratos</h1>
-                                <p>
-                                  <strong>Round {log.round}:</strong>{" "}
-                                  {log.descricao}
-                                </p>
                                 {(() => {
                                   const vidaAtual = valorVidaPorRound[
                                     log.round - 1
@@ -231,34 +261,36 @@ export default function TelaHistorico({
                                   const maxJ1 = vidaRatoJ1 > 0 ? vidaRatoJ1 : 1;
                                   const maxJ2 = vidaRatoJ2 > 0 ? vidaRatoJ2 : 1;
                                   return (
-                                    <div className="fotoEVidaRatos">
+                                    <div className="fotoEVidaRatos">                                                             
                                       <div className="ratoJ1">
+                                        <p>{vidaAtual.vRJ1} / {vidaRatoJ1}</p>
                                         <div className="barraDeVida">
                                           <div
                                             className="qVidaRatoJ1"
                                             style={{
-                                              transform: `translateX(${
-                                                (vidaAtual.vRJ1 / maxJ1) * 100 -
+                                              transform: `translateX(${(vidaAtual.vRJ1 / maxJ1) * 100 -
                                                 100
-                                              }%)`,
+                                                }%)`,
                                             }}
                                           />
                                         </div>
-                                        <img src={imgRato} />
+                                        <p>{nomeRatoJ1}</p>
+                                        <img src={fotoRatoJ1} />
                                       </div>
                                       <div className="ratoJ2">
+                                        <p>{vidaAtual.vRJ2} / {vidaRatoJ2}</p>
                                         <div className="barraDeVida">
                                           <div
                                             className="qVidaRatoJ2"
                                             style={{
-                                              transform: `translateX(${
-                                                (vidaAtual.vRJ2 / maxJ2) * 100 -
+                                              transform: `translateX(${(vidaAtual.vRJ2 / maxJ2) * 100 -
                                                 100
-                                              }%)`,
+                                                }%)`,
                                             }}
                                           />
                                         </div>
-                                        <img src={imgRato} />
+                                        <p>{nomeRatoJ2}</p>
+                                        <img src={fotoRatoJ2} />
                                       </div>
                                     </div>
                                   );
