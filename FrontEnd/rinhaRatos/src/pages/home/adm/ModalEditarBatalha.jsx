@@ -148,8 +148,6 @@ export default function ModalEditarBatalha({
     const idBatalha = batalhaSendoEditada?.idBatalha || batalhaSendoEditada?.id;
     if (!idBatalha) return;
 
-    if (!window.confirm("Confirmar exclusão?")) return;
-
     try {
       await deletarBatalha(idBatalha);
       setListaBatalhas((antiga) =>

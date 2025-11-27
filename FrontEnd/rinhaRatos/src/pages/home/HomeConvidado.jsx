@@ -1,17 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderConvidado from "../../components/comuns/Header/HeaderConvidado";
-import Ranking from "./jogador/ranking/Ranking";
+import Ranking from "../../components/comuns/ranking/Ranking";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
-import "../home/adm/HomeADM";
+import { pegarTodasBatalhasConcluidas } from "../../Api/Api";
 
 export default function HomeConvidado() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
 
-  const [listaBatalhas, setListaBatalhas] = useState([]);
+  const [historicoBatalhas, setHistoricoBatalhas] = useState([]);
+  const [loadingHistorico, setLoadingHistorico] = useState(false);
 
-  const [listaJogadores, setListaJogadores] = useState([]);
-  const [nome, setNome] = useState("");
+  // --- NOVA FUNÇÃO DE FORMATAÇÃO--
+  //Segundo pesquisas com o home essa é melhor, vou validar isso e se pá troco nas outras e comento certinho 
+  const formatarDataEHora = (dataISO) => {
+    if (!dataISO) return "Data Indisponível";
+    const data = new Date(dataISO);
+    return data.toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+   
+  };
+  useEffect(() => {
+    if (opcaoAtivada === "Batalhas") {
+      const buscarHistorico = async () => {
+        setLoadingHistorico(true);
+        try {
+          const resposta = await pegarTodasBatalhasConcluidas();
+
+          if (resposta && Array.isArray(resposta.data)) {
+            setHistoricoBatalhas(resposta.data);
+          } else {
+            setHistoricoBatalhas([]);
+          }
+        } catch (err) {
+          console.error("Erro ao buscar histórico:", err);
+          setHistoricoBatalhas([]);
+        } finally {
+          setLoadingHistorico(false);
+        }
+      };
+      buscarHistorico();
+    }
+  }, [opcaoAtivada]);
 
   let conteudoHomeConvidado;
 
@@ -21,29 +55,42 @@ export default function HomeConvidado() {
       break;
     default:
       conteudoHomeConvidado = (
-        <>
-          <div className="listaBatalhas">
-            {listaBatalhas.map((batalha) => (
-              <div className="batalha" key={batalha.id}>
-                <img src={Trofeu} />
+        <div className="listaBatalhas">
+          {loadingHistorico ? (
+            <p className="msg-historico-vazio">Carregando batalhas...</p>
+          ) : historicoBatalhas.length > 0 ? (
+            historicoBatalhas.map((batalha) => (
+              <div className="batalha" key={batalha.idBatalha}>
+                <img src={Trofeu} alt="Troféu" />
                 <div className="infoBatalha">
-                  <p>{batalha.nome}</p>
-                  <p>Inscrição: {batalha.custo} MouseCoin</p>
-                  <p>Data e Hora: {batalha.dataEHora}</p>
-                  <p>Prêmio: {batalha.premio} MouseCoin</p>
+                  <p>
+                    <strong>{batalha.nomeBatalha}</strong>
+                  </p>
+                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                  <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                  <p className="status-batalha-texto">Concluída</p>
                 </div>
-                <button
-                  className="btnGerenciar"
-                  onClick={() => VerHistorico(batalha)}
-                >
-                  Historico
-                </button>
+                <div className="opcoesBatalhaPerfil">
+                  <button className="btnVerHistorico">Ver Detalhes</button>
+                  <button
+                    className="btnBaixarRelatorio"
+                    onClick={() => baixarHistoricoBatalha(batalha.idBatalha)}
+                  >
+                    Baixar Relatório
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
-        </>
+            ))
+          ) : (
+            <p className="msg-historico-vazio">
+              Nenhuma batalha concluída encontrada.
+            </p>
+          )}
+        </div>
       );
   }
+
   return (
     <>
       <HeaderConvidado home="homeconvidado" />
@@ -52,7 +99,7 @@ export default function HomeConvidado() {
           {botoes.map((botao) => (
             <button
               key={botao}
-              className={opcaoAtivada == botao ? "opcaoAtiva" : "btnOpcao"}
+              className={opcaoAtivada === botao ? "opcaoAtiva" : "btnOpcao"}
               onClick={() => setOpcaoAtivada(botao)}
             >
               {botao}

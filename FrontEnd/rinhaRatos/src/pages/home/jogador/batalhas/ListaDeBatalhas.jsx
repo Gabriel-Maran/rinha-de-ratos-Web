@@ -153,7 +153,7 @@ export default function ListaDeBatalhas({
                       <div className="opcoesBatalha">
                         <button
                           onClick={() =>
-                            handleAbrirModal(batalha.idBatalha, false)
+                            handleAbrirModal(batalha.idBatalha)
                           }
                         >
                           Participar

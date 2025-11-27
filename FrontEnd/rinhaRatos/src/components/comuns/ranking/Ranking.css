@@ -3,7 +3,7 @@
   height: 6rem;
   margin-top: 1rem;
   margin-bottom: 2.5rem;
-  background-image: url("../../../../assets/labels/lblPapelTitulo.png");
+  background-image: url("../../../assets/labels/lblPapelTitulo.png");
   background-size: 100% 100%;
   display: flex;
   justify-content: center;
@@ -26,9 +26,9 @@
 }
 
 .jogador {
-  width: 100%;
+  width: 100%;          
   min-height: 5rem;
-  background-image: url("../../../../assets/labels/lblPapelJogador.png");
+  background-image: url("../../../assets/labels/lblPapelJogador.png");
   background-size: 100% 100%;
   display: flex;
   flex-direction: row;

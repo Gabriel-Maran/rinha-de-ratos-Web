@@ -373,7 +373,6 @@ export default function Perfil({ qtdeMoedas }) {
             {loadingHistorico ? (
               <p className="msg-historico-vazio">Carregando batalhas...</p>
             ) : historicoBatalhas.length > 0 ? (
-              // Map direto sem filter, assumindo que a API já filtra ou queremos ver tudo
               historicoBatalhas.map((batalha) => (
                 <div className="batalha" key={batalha.idBatalha}>
                   <img src={Trofeu} alt="Troféu" />

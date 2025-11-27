@@ -166,5 +166,13 @@ export const pegarBatalhasCriadas = (idADM) => {
 };
 
 export const pegarBatalhaPorId = (idBatalha) => {
-    return apiClient.get(`/batalha/${idBatalha}`); 
-}
+  return apiClient.get(`/batalha/${idBatalha}`);
+};
+
+// ---------------------------------------------------------
+// APIS RELACIONADAS AO CONVIDADO
+// ---------------------------------------------------------
+
+export const pegarTodasBatalhasConcluidas = () => {
+  return apiClient.get("batalha/concluidas");
+};
