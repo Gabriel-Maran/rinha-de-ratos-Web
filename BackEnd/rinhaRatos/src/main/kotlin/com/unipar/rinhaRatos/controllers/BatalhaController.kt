@@ -75,6 +75,12 @@ class BatalhaController(
         return ResponseEntity.ok(result.map{ it.toDto()})
     }
 
+    @GetMapping("/concluidas/sembot")
+    fun pegaBatalhaAcabadasSemBot(): ResponseEntity<Any> {
+        val result = batalhaService.pegarTodasAsBatalhasAcabadasSemBot()
+        return ResponseEntity.ok(result.map{ it.toDto()})
+    }
+
     @GetMapping("/user/disponiveispara/{idUsuario}")
     fun pegarBatalhasDisponiveisParaUsuario(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
         val result = batalhaService.pegarTodasAsBatalhasAbertasQueOUserNParticipa(idUsuario)
@@ -187,7 +193,7 @@ class BatalhaController(
 
     @PostMapping("/iniciar/{idBatalha}")
     fun iniciarBatalha(@PathVariable idBatalha: Long): ResponseEntity<Any> {
-        val resp = batalhaService.iniciarBatalhaAsync(idBatalha)
+        val resp = batalhaService.iniciarBatalha(idBatalha)
         return when (resp) {
             "NOT_ENOUGH_USERS" ->
                 buildError(HttpStatus.BAD_REQUEST, "Sem usuários suficientes para iniciar a batalha", "NOT_ENOUGH_USERS")
@@ -214,7 +220,7 @@ class BatalhaController(
                 return buildError(HttpStatus.BAD_REQUEST, respCriacao["message"].toString(), "RATO_DONT_BELONG_THIS_PLAYER")
         }
 
-        val respInicio = batalhaService.iniciarBatalhaAsync(respCriacao["idBatalha"]!!.toLong())
+        val respInicio = batalhaService.iniciarBatalha(respCriacao["idBatalha"]!!.toLong())
         return when (respInicio) {
             "NOT_ENOUGH_USERS" ->
                 buildError(HttpStatus.BAD_REQUEST, "Sem usuários suficientes para iniciar a batalha", "NOT_ENOUGH_USERS")
