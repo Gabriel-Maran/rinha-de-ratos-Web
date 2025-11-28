@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { buscarHistorico, pegarUsuarioPorId, pegarJogadoresDaBatalha, pegarRatoPorID } from "../../Api/Api";
+import {
+  buscarHistorico,
+  pegarUsuarioPorId,
+  pegarJogadoresDaBatalha,
+  pegarRatoPorID,
+} from "../../Api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { getFotoUrlById } from "./ModalOpcFotosPerfil";
 import ImgVitoria from "../../assets/icones/IconeVitoria.png";
 import ImgDerrota from "../../assets/icones/IconeDerrota.png";
 import ImagensRato from "../../components/ImagensRato";
-import RatoEsgoto from "../../assets/classeRatos/RatoEsgoto.png";
 import "../../pages/perfil/TelaHistorico.css";
 
 export default function TelaHistorico({
@@ -24,21 +28,23 @@ export default function TelaHistorico({
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
-  const [idJogador1, setIdJogador1] = useState(0)
-  const [idJogador2, setIdJogador2] = useState(0)
+  /* const [idJogador1, setIdJogador1] = useState(0)
+  const [idJogador2, setIdJogador2] = useState(0) */
 
-  const [nomeRatoJ1, setNomeRatoJ1] = useState("")
-  const [nomeRatoJ2, setNomeRatoJ2] = useState("")
-  const [fotoRatoJ1, setFotoRatoJ1] = useState("")
-  const [fotoRatoJ2, setFotoRatoJ2] = useState("")
+  const [idFotoJ1, setIdFotoJ1] = useState(0);
+  const [idFotoJ2, setIdFotoJ2] = useState(0);
+
+  const [nomeRatoJ1, setNomeRatoJ1] = useState("");
+  const [nomeRatoJ2, setNomeRatoJ2] = useState("");
+  const [fotoRatoJ1, setFotoRatoJ1] = useState("");
+  const [fotoRatoJ2, setFotoRatoJ2] = useState("");
   const [vidaRatoJ1, setVidaRatoJ1] = useState(0);
   const [vidaRatoJ2, setVidaRatoJ2] = useState(0);
   const [valorVidaPorRound, setValorVidaPorRound] = useState([]);
 
   useEffect(() => {
     /* Regex maroto pra pegar os valores das vidas */
-    const regexRound =
-      /(\d+)\s*\|\s*[\wÀ-ÖØ-öø-ÿ]+=(\d+)/;
+    const regexRound = /(\d+)\s*\|\s*[\wÀ-ÖØ-öø-ÿ]+=(\d+)/;
 
     /* Serve pra filtrar pelos logs e pegar somente aqueles tem as vidas
        Ou seja, aqueles em que o id do player é 0 (narrador)
@@ -80,42 +86,44 @@ export default function TelaHistorico({
 
         if (Array.isArray(dados) && dados.length >= 2) {
           try {
-            const respostaBatalha = await pegarJogadoresDaBatalha(idFinal)
+            const respostaBatalha = await pegarJogadoresDaBatalha(idFinal);
             const dadosBatalha = respostaBatalha.data;
-                        console.log(dadosBatalha)
-
-            /* setIdJogador1(dadosBatalha.jogador1.idUsuario)
-            setIdJogador2(dadosBatalha.jogador2.idUsuario)
-            console.log(idJogador1)
-            console.log(idJogador2)
-
-            const respostaJogador1 = await pegarUsuarioPorId(idJogador1)
-            const dadosJogador1 = respostaJogador1.data
-            console.log(dadosJogador1)
-
-            const respostaJogador2 = await pegarUsuarioPorId(idJogador1)
-            const dadosJogador2 = respostaJogador2.data */
-
-            setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado)
-            setNomeRatoJ2(dadosBatalha.rato2.nomeCustomizado)
-
-            const idRatoJ1 = dadosBatalha.rato1.idRato
-            const idRatoJ2 = dadosBatalha.rato2.idRato
-
+            const idJogador1 = dadosBatalha.jogador1.idUsuario;
+            const idJogador2 = dadosBatalha.jogador2.idUsuario;
+            setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado);
+            setNomeRatoJ2(dadosBatalha.rato2.nomeCustomizado);
+            const idRatoJ1 = dadosBatalha.rato1.idRato;
+            const idRatoJ2 = dadosBatalha.rato2.idRato;
+            try {
+              const respostaJogador1 = await pegarUsuarioPorId(idJogador1);
+              const dadosJogador1 = respostaJogador1.data;
+              const respostaJogador2 = await pegarUsuarioPorId(idJogador2);
+              const dadosJogador2 = respostaJogador2.data;
+              setIdFotoJ1(dadosJogador1.idFotoPerfil);
+              setIdFotoJ2(dadosJogador2.idFotoPerfil);
+            } catch (err) {
+              console.error(
+                "Erro ao buscar dados dos usuários:",
+                err.response?.data || err
+              );
+            }
             try {
               const ratoJ1 = await pegarRatoPorID(idRatoJ1);
               const ratoJ2 = await pegarRatoPorID(idRatoJ2);
               const dadosRatoJ1 = ratoJ1.data;
               const dadosRatoJ2 = ratoJ2.data;
-              setFotoRatoJ1(ImagensRato[dadosRatoJ1.classe?.nomeClasse])
-              setFotoRatoJ2(ImagensRato[dadosRatoJ2.classe?.nomeClasse])
-              setVidaRatoJ1(dadosRatoJ1.hpsBase)
-              setVidaRatoJ2(dadosRatoJ2.hpsBase)
+              setFotoRatoJ1(ImagensRato[dadosRatoJ1.classe?.nomeClasse]);
+              setFotoRatoJ2(ImagensRato[dadosRatoJ2.classe?.nomeClasse]);
+              setVidaRatoJ1(dadosRatoJ1.hpsBase);
+              setVidaRatoJ2(dadosRatoJ2.hpsBase);
             } catch (err) {
               console.error("Erro ao buscar ratos:", err.response?.data || err);
             }
           } catch (err) {
-            console.error("Erro ao pegar os jogadores da batalh:", err.response?.data || err)
+            console.error(
+              "Erro ao pegar os jogadores da batalh:",
+              err.response?.data || err
+            );
           }
 
           setLogs(dados[0]); // Gaveta 1: Logs
@@ -124,36 +132,6 @@ export default function TelaHistorico({
 
           if (infoResultado) {
             setIdVencedor(infoResultado.id_vencedor);
-
-            let idDoOponente = null;
-
-            if (infoResultado.id_vencedor === idUsuarioLogado) {
-              idDoOponente = infoResultado.id_perdedor;
-            } else if (infoResultado.id_perdedor === idUsuarioLogado) {
-              idDoOponente = infoResultado.id_vencedor;
-            } else {
-              idDoOponente = infoResultado.id_vencedor;
-            }
-            if (idDoOponente && idDoOponente > 0) {
-              try {
-                const respInimigo = await pegarUsuarioPorId(idDoOponente);
-                if (
-                  respInimigo.data &&
-                  respInimigo.data.idFotoPerfil !== undefined
-                ) {
-                  console.log(
-                    "Foto do inimigo encontrada:",
-                    respInimigo.data.idFotoPerfil
-                  );
-                  setIdFotoInimigo(respInimigo.data.idFotoPerfil);
-                }
-              } catch (errInimigo) {
-                console.warn(
-                  `Não foi possível carregar foto do oponente ${idDoOponente}. Usando padrão.`,
-                  errInimigo
-                );
-              }
-            }
           }
         }
       } catch (err) {
@@ -211,43 +189,42 @@ export default function TelaHistorico({
                   <div className="conteinerHistorico">
                     {logs.length > 0 ? (
                       logs.map((log, index) => {
-                        const imgRato = RatoEsgoto;
                         const imgAvatar =
                           log.player === 1
-                            ? getFotoUrlById(user?.idFotoPerfil || 0)
-                            : getFotoUrlById(idFotoInimigo);
+                            ? getFotoUrlById(idFotoJ1)
+                            : log.player === 2
+                            ? getFotoUrlById(idFotoJ2)
+                            : getFotoUrlById(0);
                         return (
                           <>
-                            <div
-                              className={
-                                log.player === 1
-                                  ? "regHistEsq"
-                                  : log.player === 2
+                            {log.player !== 0 && (
+                              <div
+                                className={
+                                  log.player === 1
+                                    ? "regHistEsq"
+                                    : log.player === 2
                                     ? "regHistDir"
                                     : ""
-                              }
-                              key={log.idmessage || index}
-                            >
-                              {log.player === 1 && (
-                                <img
-                                  className="imgEsquerda"
-                                  src={imgAvatar}
-                                  alt="Eu"
-                                />
-                              )}
-                              {log.player !== 0 && (
-                                <p>
-                                  {log.descricao}
-                                </p>
-                              )}
-                              {log.player === 2 && (
-                                <img
-                                  className="imgDireita"
-                                  src={imgAvatar}
-                                  alt="Oponente"
-                                />
-                              )}
-                            </div>
+                                }
+                                key={log.idmessage || index}
+                              >
+                                {log.player === 1 && (
+                                  <img
+                                    className="imgEsquerda"
+                                    src={imgAvatar}
+                                    alt="Eu"
+                                  />
+                                )}
+                                {log.player !== 0 && <p>{log.descricao}</p>}
+                                {log.player === 2 && (
+                                  <img
+                                    className="imgDireita"
+                                    src={imgAvatar}
+                                    alt="Oponente"
+                                  />
+                                )}
+                              </div>
+                            )}
                             {log.player === 0 && (
                               <div className="regFinalRound">
                                 <h1>Round {log.round} - Vida dos ratos</h1>
@@ -261,16 +238,19 @@ export default function TelaHistorico({
                                   const maxJ1 = vidaRatoJ1 > 0 ? vidaRatoJ1 : 1;
                                   const maxJ2 = vidaRatoJ2 > 0 ? vidaRatoJ2 : 1;
                                   return (
-                                    <div className="fotoEVidaRatos">                                                             
+                                    <div className="fotoEVidaRatos">
                                       <div className="ratoJ1">
-                                        <p>{vidaAtual.vRJ1} / {vidaRatoJ1}</p>
+                                        <p>
+                                          {vidaAtual.vRJ1} / {vidaRatoJ1}
+                                        </p>
                                         <div className="barraDeVida">
                                           <div
                                             className="qVidaRatoJ1"
                                             style={{
-                                              transform: `translateX(${(vidaAtual.vRJ1 / maxJ1) * 100 -
+                                              transform: `translateX(${
+                                                (vidaAtual.vRJ1 / maxJ1) * 100 -
                                                 100
-                                                }%)`,
+                                              }%)`,
                                             }}
                                           />
                                         </div>
@@ -278,14 +258,17 @@ export default function TelaHistorico({
                                         <img src={fotoRatoJ1} />
                                       </div>
                                       <div className="ratoJ2">
-                                        <p>{vidaAtual.vRJ2} / {vidaRatoJ2}</p>
+                                        <p>
+                                          {vidaAtual.vRJ2} / {vidaRatoJ2}
+                                        </p>
                                         <div className="barraDeVida">
                                           <div
                                             className="qVidaRatoJ2"
                                             style={{
-                                              transform: `translateX(${(vidaAtual.vRJ2 / maxJ2) * 100 -
+                                              transform: `translateX(${
+                                                (vidaAtual.vRJ2 / maxJ2) * 100 -
                                                 100
-                                                }%)`,
+                                              }%)`,
                                             }}
                                           />
                                         </div>
