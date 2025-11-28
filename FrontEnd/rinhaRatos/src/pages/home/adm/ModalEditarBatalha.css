@@ -106,11 +106,12 @@ input[type="number"] {
 .qJogadorBatalha {
   width: 100%;
   height: 5.8rem;
-  background-color: #d9d9d9;
+  /* background-color: #d9d9d9; */
+  background-image: url("../../../assets/displays/displayPlacaDeCarro2.png");
+  background-size: 100% 100%;
   display: flex;
   align-items: center;
-  border-radius: 1.5rem;
-  border: 0.2rem solid black;
+  border-radius: 1rem;
 }
 
 .qFotoENomeJogador {
@@ -122,6 +123,7 @@ input[type="number"] {
 
 .nomeJogadorBatalha {
   width: 10rem;
+  color: rgb(0, 0, 0);
 }
 
 .fotoJogadorBatalha {
@@ -136,7 +138,7 @@ input[type="number"] {
   height: 5.8rem;
   background-color: red;
   border: 0.2rem solid black;
-  border-radius: 0 1.5rem 1.5rem 0;
+  border-radius: 0 1rem 1rem 0;
   font-size: 2rem;
 }
 

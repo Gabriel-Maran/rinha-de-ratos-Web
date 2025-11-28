@@ -61,7 +61,7 @@ data class UsuarioDTO(
 data class RatoDTO(
     val idRato: Long,
     val nomeCustomizado: String,
-    val descricao: String,
+    val descricao: String?,
     val usuario: UsuarioSummaryDTO?,
     val classe: ClasseSummaryDTO?,
     val habilidade: HabilidadeSummaryDTO?,
