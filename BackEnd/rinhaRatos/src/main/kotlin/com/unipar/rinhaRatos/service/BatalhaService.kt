@@ -35,7 +35,7 @@ class BatalhaService(
     private val batalhaRepository: BatalhaRepository,
     private val usuarioRepository: UsuarioRepository,
     private val ratoRepository: RatoRepository,
-    private val battleManager : GerenciadorBatalhasAutomatica,
+    private val battleManager: GerenciadorBatalhasAutomatica,
     private val ratoService: RatoService
 ) {
     private val ISO_FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
@@ -56,14 +56,23 @@ class BatalhaService(
     fun pegarTodasAsBatalhasAcabadas(): List<Batalha> =
         batalhaRepository.pegarTodasAsBatalhasAcabadas()
 
+    fun pegarTodasAsBatalhasAcabadasSemBot(): List<Batalha> {
+        val todasBatalhas = batalhaRepository.pegarTodasAsBatalhasAcabadas()
+        val batalhasSemBot = todasBatalhas.filter { battle ->
+            (battle.jogador1?.tipoConta ?: TipoConta.ADM) == TipoConta.JOGADOR && (battle.jogador2?.tipoConta
+                ?: TipoConta.ADM) == TipoConta.JOGADOR
+        }
+        return batalhasSemBot
+    }
+
     fun pegarTodasBatalhasDoUsuarioConcluidas(idUsuario: Long): List<Batalha> =
         batalhaRepository.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
 
     fun pegarTodasBatalhasDoUsuarioConcluidasSemBot(idUsuario: Long): List<Batalha> {
-       val batalhas = batalhaRepository.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
+        val batalhas = batalhaRepository.pegarTodasBatalhasDoUsuarioConcluidas(idUsuario)
         val batalhasSemBot = mutableListOf<Batalha>()
         for (batalha in batalhas) {
-            if(batalha.custoInscricao > 0 ){
+            if (batalha.custoInscricao > 0) {
                 batalhasSemBot.add(batalha)
             }
         }
@@ -76,7 +85,7 @@ class BatalhaService(
         for (batalha in batalhas) {
             val player1 = batalha.jogador1?.idUsuario ?: -100
             val player2 = batalha.jogador2?.idUsuario ?: -100
-            if(player1 != idUsuario && player2 != idUsuario){
+            if (player1 != idUsuario && player2 != idUsuario) {
                 batalhasParaUser.add(batalha)
             }
         }
@@ -106,9 +115,9 @@ class BatalhaService(
         return "USER_IS_NOT_IN_THIS_BATTLE"
     }
 
-    fun getById(idBatalha: Long, ): Optional<Batalha> {
-        val batalha =  batalhaRepository.findById(idBatalha)
-        if(batalha.isEmpty){
+    fun getById(idBatalha: Long): Optional<Batalha> {
+        val batalha = batalhaRepository.findById(idBatalha)
+        if (batalha.isEmpty) {
             log.warn("Batalha vazia no id $idBatalha")
         }
         return batalha
@@ -120,9 +129,9 @@ class BatalhaService(
             throw IllegalArgumentException("USER_NOT_FOUND")
         }
         val adm = admOpt.get()
-        if(basic.nomeBatalha.trim().length > 40 ) throw IllegalArgumentException("NAME_LIMIT_EXCEPTED")
-        if(basic.custoInscricao.toString().length > 4 ) throw IllegalArgumentException("COINS_LIMIT_EXCEPTED")
-        if(adm.tipoConta != TipoConta.ADM) throw IllegalArgumentException("USER_IS_NOT_ADM")
+        if (basic.nomeBatalha.trim().length > 40) throw IllegalArgumentException("NAME_LIMIT_EXCEPTED")
+        if (basic.custoInscricao.toString().length > 4) throw IllegalArgumentException("COINS_LIMIT_EXCEPTED")
+        if (adm.tipoConta != TipoConta.ADM) throw IllegalArgumentException("USER_IS_NOT_ADM")
         val parsedDate = try {
             parseIsoToLocalDateTime(basic.dataHorarioInicio)
         } catch (e: IllegalArgumentException) {
@@ -132,8 +141,8 @@ class BatalhaService(
         val batalhaFinal = Batalha().apply {
             nomeBatalha = basic.nomeBatalha.trim().ifEmpty { "Sem nome" }
             dataHorarioInicio = parsedDate ?: LocalDateTime.now()
-            custoInscricao = if(basic.custoInscricao <= 0) 5 else basic.custoInscricao
-            premioTotal = if(basic.custoInscricao <= 0) 5 else basic.custoInscricao * 2
+            custoInscricao = if (basic.custoInscricao <= 0) 5 else basic.custoInscricao
+            premioTotal = if (basic.custoInscricao <= 0) 5 else basic.custoInscricao * 2
             admCriador = adm
             status = StatusBatalha.InscricoesAbertas
         }
@@ -146,12 +155,12 @@ class BatalhaService(
     fun atualizarInfomacoesBatalha(idBatalha: Long, summary: BatalhaSummary): String {
         val admOpt = usuarioRepository.findById(summary.idAdm)
         if (admOpt.isEmpty) return "USER_NOT_FOUND"
-        if(admOpt.get().tipoConta != TipoConta.ADM) return "USER_IS_NOT_ADM"
+        if (admOpt.get().tipoConta != TipoConta.ADM) return "USER_IS_NOT_ADM"
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
 
-        if (batalha.status == StatusBatalha.EmAndamento || batalha.status == StatusBatalha.Concluida) {
+        if (batalha.status == StatusBatalha.Concluida) {
             return "BATALHA_HAPPENING_OR_OVER"
         }
 
@@ -171,9 +180,9 @@ class BatalhaService(
             }
         }
 
-        if (summary.inscricaoMousecoin <=0 ){
+        if (summary.inscricaoMousecoin <= 0) {
             batalha.custoInscricao = 10
-        }else{
+        } else {
             batalha.custoInscricao = summary.inscricaoMousecoin
         }
         batalha.premioTotal = batalha.custoInscricao * 2
@@ -188,7 +197,7 @@ class BatalhaService(
         val batalhaOpt = batalhaRepository.findById(idBatalha)
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
-        if (batalha.status == StatusBatalha.EmAndamento || batalha.status == StatusBatalha.Concluida) return "BATALHA_HAPPENING_OR_OVER"
+        if (batalha.status == StatusBatalha.Concluida) return "BATALHA_HAPPENING_OR_OVER"
 
         batalha.rato1?.let { r ->
             safeUnsetRatoTorneio(r)
@@ -250,11 +259,17 @@ class BatalhaService(
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
 
+        val jogadorOpt = usuarioRepository.findById(idUsuario)
+        if (jogadorOpt.isEmpty) return "USER_NOT_FOUND"
+        val jogador = jogadorOpt.get()
+        jogador.mousecoinSaldo += batalha.custoInscricao
+
         if (batalha.status != StatusBatalha.InscricoesAbertas) return "BATALHA_ALREADY_STARTED"
 
         val removed = removePlayerFromBattle(batalha, idUsuario)
         if (!removed) return "USER_NOT_IN_BATTLE"
 
+        usuarioRepository.save(jogador)
         batalhaRepository.save(batalha)
         log.info("Usuário $idUsuario saiu/removido da batalha $idBatalha")
         return "OK"
@@ -287,7 +302,7 @@ class BatalhaService(
         return false
     }
 
-    fun iniciarBatalhaAsync(idBatalha: Long): String {
+    fun iniciarBatalha(idBatalha: Long): String {
         val opt = batalhaRepository.findById(idBatalha)
         if (opt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = opt.get()
@@ -298,23 +313,29 @@ class BatalhaService(
         }
 
         // marca como em andamento e salva imediatamente para sinalizar que começou
-        batalha.status = StatusBatalha.EmAndamento
-        batalhaRepository.save(batalha)
-        if(batalha.jogador1 == null || batalha.jogador2 == null) return "NOT_ENOUGH_USERS"
+        if (batalha.jogador1 == null || batalha.jogador2 == null) return "NOT_ENOUGH_USERS"
 
         // delega ao gerenciador: ele retorna false se já estiver rodando
         val iniciou = battleManager.iniciarSimulacaoBatalhaAsync(idBatalha)
+        batalha.status = StatusBatalha.Concluida
+        batalhaRepository.save(batalha)
         return if (iniciou) "OK" else "UNKNOWN_ERROR"
     }
 
-    fun criarBatalhaComBot(idUsuario: Long, idRato: Long): Map<String, String>{
+    fun criarBatalhaComBot(idUsuario: Long, idRato: Long): Map<String, String> {
         val usuarioOpt = usuarioRepository.findById(idUsuario)
         val ratoOpt = ratoRepository.findById(idRato)
-        if(usuarioOpt.isEmpty || ratoOpt.isEmpty) return mapOf("message" to "Usuário ou rato não existente", "error" to "USER_OR_RATO_NOT_FOUND")
+        if (usuarioOpt.isEmpty || ratoOpt.isEmpty) return mapOf(
+            "message" to "Usuário ou rato não existente",
+            "error" to "USER_OR_RATO_NOT_FOUND"
+        )
         val rato = ratoOpt.get()
         val usuario = usuarioOpt.get()
-        if(rato.usuario!!.idUsuario != usuario.idUsuario) return mapOf("message" to "Rato não pertence a este usuário", "error" to "RATO_DONT_BELONG_THIS_PLAYER")
-        if(!rato.estaVivo) return mapOf("message" to "Rato está morto", "error" to "RATO_IS_DEAD")
+        if (rato.usuario!!.idUsuario != usuario.idUsuario) return mapOf(
+            "message" to "Rato não pertence a este usuário",
+            "error" to "RATO_DONT_BELONG_THIS_PLAYER"
+        )
+        if (!rato.estaVivo) return mapOf("message" to "Rato está morto", "error" to "RATO_IS_DEAD")
         val botUser = usuarioRepository.findById(-2).get()
         val randomLong = Random.nextLong(1L..18L) * -1
         val botRato = ratoRepository.findById(randomLong).get()
