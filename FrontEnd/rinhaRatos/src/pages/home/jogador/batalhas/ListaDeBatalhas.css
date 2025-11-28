@@ -63,7 +63,6 @@
   margin-top: 5rem;
 }
 
-
 .listaBatalhas {
   width: 50rem;
   height: 35rem;
@@ -90,15 +89,17 @@
 
 .batalha p {
   margin-bottom: 1rem;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
 }
 
-.batalha p+p {
+.batalha p + p {
   margin: 0;
 }
 
 .batalha img {
   width: 7rem;
   margin-right: 1rem;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
 }
 
 .infoBatalha {
@@ -109,11 +110,11 @@
 .opcoesBatalha {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
-.opcoesBatalha button,
-.btnSairBatalha button {
+.entrarOuAguardarBatalha,
+.btnSairBatalha {
   width: 10rem;
   height: 3.5rem;
   background-image: url("../../../../assets/buttons/btnParticiparBatalha.png");
@@ -123,9 +124,10 @@
   background-color: transparent;
   font-size: 1.5rem;
   color: white;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
 }
 
-.btnSairBatalha button {
+.btnSairBatalha {
   background-image: url("../../../../assets/buttons/btnSairBatalha.png");
 }
 

@@ -152,9 +152,8 @@ export default function ListaDeBatalhas({
                       </div>
                       <div className="opcoesBatalha">
                         <button
-                          onClick={() =>
-                            handleAbrirModal(batalha.idBatalha)
-                          }
+                          className="entrarOuAguardarBatalha"
+                          onClick={() => handleAbrirModal(batalha.idBatalha)}
                         >
                           Participar
                         </button>
@@ -181,7 +180,10 @@ export default function ListaDeBatalhas({
                     <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
                   </div>
                   <div className="opcoesBatalha">
-                    <button disabled>Aguardando...</button>
+                    <button className="entrarOuAguardarBatalha" disabled>
+                      Aguardando...
+                    </button>
+                    <button className="btnSairBatalha">Sair</button>
                   </div>
                 </div>
               ))
