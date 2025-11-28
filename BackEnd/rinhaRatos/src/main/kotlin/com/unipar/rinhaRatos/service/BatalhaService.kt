@@ -250,11 +250,17 @@ class BatalhaService(
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
 
+        val jogadorOpt = usuarioRepository.findById(idUsuario)
+        if(jogadorOpt.isEmpty) return "USER_NOT_FOUND"
+        val jogador = jogadorOpt.get()
+        jogador.mousecoinSaldo += batalha.custoInscricao
+
         if (batalha.status != StatusBatalha.InscricoesAbertas) return "BATALHA_ALREADY_STARTED"
 
         val removed = removePlayerFromBattle(batalha, idUsuario)
         if (!removed) return "USER_NOT_IN_BATTLE"
 
+        usuarioRepository.save(jogador)
         batalhaRepository.save(batalha)
         log.info("Usuário $idUsuario saiu/removido da batalha $idBatalha")
         return "OK"

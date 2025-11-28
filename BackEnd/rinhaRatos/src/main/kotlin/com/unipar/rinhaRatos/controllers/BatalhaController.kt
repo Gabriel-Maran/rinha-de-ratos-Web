@@ -179,6 +179,7 @@ class BatalhaController(
             "BATALHA_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
             "USER_NOT_IN_BATTLE" -> buildError(HttpStatus.FORBIDDEN, "Usuário não faz parte desta batalha", "USER_NOT_IN_BATTLE")
             "BATALHA_ALREADY_STARTED" -> buildError(HttpStatus.FORBIDDEN, "Batalha já iniciada", "BATALHA_ALREADY_STARTED")
+            "USER_NOT_FOUND" -> buildError(HttpStatus.NOT_FOUND, "Usuário não encontrado", "USER_NOT_FOUND")
             "OK" -> ResponseEntity.ok(mapOf("message" to "Usuário removido com sucesso", "status" to "excluido"))
             else -> buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", "UNKNOWN")
         }
