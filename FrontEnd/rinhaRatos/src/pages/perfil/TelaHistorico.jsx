@@ -23,23 +23,22 @@ export default function TelaHistorico({
   const [idVencedor, setIdVencedor] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Começamos com 0. Se a API achar a foto, atualizamos.
-  const [idFotoInimigo, setIdFotoInimigo] = useState(0);
-
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
-  /* const [idJogador1, setIdJogador1] = useState(0)
-  const [idJogador2, setIdJogador2] = useState(0) */
+  const [infoJogador1, setInfoJogador1] = useState(null)
+  const [infoJogador2, setInfoJogador2] = useState(null)
 
-  const [idFotoJ1, setIdFotoJ1] = useState(0);
-  const [idFotoJ2, setIdFotoJ2] = useState(0);
+  const [nomeJ1, setNomeJ1] = useState("")
+  const [nomeJ2, setNomeJ2] = useState("")
 
   const [nomeRatoJ1, setNomeRatoJ1] = useState("");
-  const [nomeRatoJ2, setNomeRatoJ2] = useState("");
   const [fotoRatoJ1, setFotoRatoJ1] = useState("");
-  const [fotoRatoJ2, setFotoRatoJ2] = useState("");
   const [vidaRatoJ1, setVidaRatoJ1] = useState(0);
+
+  const [nomeRatoJ2, setNomeRatoJ2] = useState("");
+  const [fotoRatoJ2, setFotoRatoJ2] = useState("");
   const [vidaRatoJ2, setVidaRatoJ2] = useState(0);
+
   const [valorVidaPorRound, setValorVidaPorRound] = useState([]);
 
   useEffect(() => {
@@ -77,8 +76,6 @@ export default function TelaHistorico({
       if (!idFinal) return;
 
       setLoading(true);
-      // Reseta a foto do inimigo para padrão ao abrir nova batalha
-      setIdFotoInimigo(0);
 
       try {
         const resposta = await buscarHistorico(idFinal);
@@ -97,10 +94,15 @@ export default function TelaHistorico({
             try {
               const respostaJogador1 = await pegarUsuarioPorId(idJogador1);
               const dadosJogador1 = respostaJogador1.data;
+              setInfoJogador1(dadosJogador1)
+
               const respostaJogador2 = await pegarUsuarioPorId(idJogador2);
               const dadosJogador2 = respostaJogador2.data;
-              setIdFotoJ1(dadosJogador1.idFotoPerfil);
-              setIdFotoJ2(dadosJogador2.idFotoPerfil);
+              setInfoJogador2(dadosJogador2)
+              /* setIdFotoJ1(dadosJogador1.idFotoPerfil); */
+              /*  setNomeJ1(dadosJogador1.nome) */
+              /*  setNomeJ2(dadosJogador2.nome) */
+              console.log(nomeJ1, nomeJ2)
             } catch (err) {
               console.error(
                 "Erro ao buscar dados dos usuários:",
@@ -191,10 +193,10 @@ export default function TelaHistorico({
                       logs.map((log, index) => {
                         const imgAvatar =
                           log.player === 1
-                            ? getFotoUrlById(idFotoJ1)
+                            ? getFotoUrlById(infoJogador1.idFotoPerfil)
                             : log.player === 2
-                            ? getFotoUrlById(idFotoJ2)
-                            : getFotoUrlById(0);
+                              ? getFotoUrlById(infoJogador2.idFotoPerfil)
+                              : getFotoUrlById(0);
                         return (
                           <>
                             {log.player !== 0 && (
@@ -203,25 +205,34 @@ export default function TelaHistorico({
                                   log.player === 1
                                     ? "regHistEsq"
                                     : log.player === 2
-                                    ? "regHistDir"
-                                    : ""
+                                      ? "regHistDir"
+                                      : ""
                                 }
                                 key={log.idmessage || index}
                               >
                                 {log.player === 1 && (
-                                  <img
-                                    className="imgEsquerda"
-                                    src={imgAvatar}
-                                    alt="Eu"
-                                  />
+                                  <p className="nomeJogador1">{infoJogador1.nome}</p>
                                 )}
-                                {log.player !== 0 && <p>{log.descricao}</p>}
                                 {log.player === 2 && (
-                                  <img
-                                    className="imgDireita"
-                                    src={imgAvatar}
-                                    alt="Oponente"
-                                  />
+                                  <p className="nomeJogador2">{infoJogador2.nome}</p>
+                                )}
+                                {log.player !== 0 && (
+                                  <div className="fotoJogadorERegistro">
+                                    {log.player === 1 && (
+                                      <img
+                                        className="imgEsquerda"
+                                        src={imgAvatar}
+                                        alt="Eu"
+                                      />
+                                    )}
+                                    <p className="regRound">{log.descricao}</p>
+                                    {log.player === 2 && (
+                                      <img
+                                        className="imgDireita"
+                                        src={imgAvatar}
+                                        alt="Oponente"
+                                      />)}
+                                  </div>
                                 )}
                               </div>
                             )}
@@ -247,10 +258,9 @@ export default function TelaHistorico({
                                           <div
                                             className="qVidaRatoJ1"
                                             style={{
-                                              transform: `translateX(${
-                                                (vidaAtual.vRJ1 / maxJ1) * 100 -
+                                              transform: `translateX(${(vidaAtual.vRJ1 / maxJ1) * 100 -
                                                 100
-                                              }%)`,
+                                                }%)`,
                                             }}
                                           />
                                         </div>
@@ -265,10 +275,9 @@ export default function TelaHistorico({
                                           <div
                                             className="qVidaRatoJ2"
                                             style={{
-                                              transform: `translateX(${
-                                                (vidaAtual.vRJ2 / maxJ2) * 100 -
+                                              transform: `translateX(${(vidaAtual.vRJ2 / maxJ2) * 100 -
                                                 100
-                                              }%)`,
+                                                }%)`,
                                             }}
                                           />
                                         </div>
