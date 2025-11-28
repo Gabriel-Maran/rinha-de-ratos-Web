@@ -2,6 +2,7 @@ import { useState } from "react";
 import Trofeu from "../../../../assets/icones/IconeTrofeu.png";
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
 import { entrarBatalha, batlhaBot } from "../../../../Api/Api";
+import { useAuth } from "../../../../context/AuthContext";
 import "./ListaDeBatalhas.css";
 import TelaHistorico from "../../../perfil/TelaHistorico";
 
@@ -12,6 +13,7 @@ export default function ListaDeBatalhas({
   idUsuarioLogado,
   onBatalhaInscrita,
 }) {
+  const { user, setUser } = useAuth();
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
@@ -94,6 +96,19 @@ export default function ListaDeBatalhas({
       setIsLoading(false);
       handleFecharModal();
       onBatalhaInscrita();
+
+      //Entra na função batalhasAbertas e pega a batalha que estou editando permitindo que eu acesse os dados dessa batalha.
+      const pegarIdBatalha = batalhasAbertas.find(
+        (batalha) => batalha.idBatalha === batalhaSelecionadaId
+      );
+
+      const novoSaldo = user.mousecoinSaldo - pegarIdBatalha.custoInscricao;
+
+      // Atualiza o estado global com o novo objeto de usuário
+      setUser((userAntigo) => ({
+        ...userAntigo, // Copia todos os dados antigos
+        mousecoinSaldo: novoSaldo,
+      }));
     } catch (err) {
       setIsLoading(false);
       setErroModal(
@@ -152,9 +167,7 @@ export default function ListaDeBatalhas({
                       </div>
                       <div className="opcoesBatalha">
                         <button
-                          onClick={() =>
-                            handleAbrirModal(batalha.idBatalha)
-                          }
+                          onClick={() => handleAbrirModal(batalha.idBatalha)}
                         >
                           Participar
                         </button>

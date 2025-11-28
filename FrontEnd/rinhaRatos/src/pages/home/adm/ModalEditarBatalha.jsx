@@ -58,8 +58,6 @@ export default function ModalEditarBatalha({
         const resposta = await pegarBatalhaPorId(idBatalha);
         const batalhaFresca = resposta.data;
 
-        console.log("--> DADOS RECEBIDOS DA API:", batalhaFresca);
-
         setNomeBatalhaEditada(
           batalhaFresca.nomeBatalha || batalhaFresca.nome || ""
         );
@@ -108,7 +106,6 @@ export default function ModalEditarBatalha({
 
     try {
       await removerJogador(idBatalhaSeguro, idUsuarioAlvo);
-
       setJogadoresBatalha((listaAtual) =>
         listaAtual.filter(
           (jogador) => String(jogador.idUsuario) !== String(idUsuarioAlvo)
@@ -132,7 +129,12 @@ export default function ModalEditarBatalha({
           return batalha;
         })
       );
-
+      const novoSaldo =
+        idUsuarioAlvo.mousecoinSaldo + idBatalhaSeguro.custoInscricao;
+      setUser((idUsuarioAlvo) => ({
+        ...idUsuarioAlvo, // Copia todos os dados antigos
+        mousecoinSaldo: novoSaldo,
+      }));
       setMensagemSucesso("Jogador removido!");
       limparMensagens();
     } catch (err) {
