@@ -7,7 +7,7 @@ INSERT INTO classes (id_classe, nome_classe, descricao, apelido, str_min, str_ma
 (3, 'Rato de Laboratório','Gênio dos experimentos: ganha buffs monstruosos com alto risco — recompensa ou desastre.','Cobaia 07', 45, 65, 45, 65, 160, 200, 65, 85, 15, 30),
 (4, 'Rato de Fazenda','Tanque do campo: força bruta e golpes pesados que esmagam a defesa inimiga.','Tratorzinho', 60, 80, 15, 35, 300, 360, 15, 30, 40, 60),
 (5, 'Rato de Cassino','Viciado em apostas: trapaças e jogadas de alto risco que podem virar a partida.','Aposta Alta', 35, 55, 50, 75, 150, 190, 50, 70, 20, 30),
-(6, 'Rato de Biblioteca','Estratégia fria: lê padrões, reduz defesas e abre janelas para ataques precisos.','Folha-rato', 25, 45, 40, 60, 180, 220, 70, 95, 20, 35);
+(6, 'Rato de Biblioteca','Estratégia fria: lê padrões, reduz defesas e abre janelas para ataques precisos.','Biblioterato', 25, 45, 40, 60, 180, 220, 70, 95, 20, 35);
 
 -- 2. HABILIDADES
 

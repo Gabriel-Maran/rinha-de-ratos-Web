@@ -96,7 +96,7 @@ class ServicoBatalhaAutomatica(
             estadoRato2.hpAtual = (estadoRato2.hpAtual - danoParaRato2).coerceAtLeast(0)
             mensagens.add(
                 mapOf(
-                    "message" to "${rato1.nomeCustomizado} causou $danoParaRato2 ao ${rato2.nomeCustomizado}!",
+                    "message" to "${rato1.nomeCustomizado} causou $danoParaRato2 de dano ao ${rato2.nomeCustomizado}!",
                     "player" to "1"
                 )
             )
@@ -106,7 +106,7 @@ class ServicoBatalhaAutomatica(
                 estadoRato1.hpAtual = (estadoRato1.hpAtual - danoParaRato1).coerceAtLeast(0)
                 mensagens.add(
                     mapOf(
-                        "message" to "${rato2.nomeCustomizado} causou $danoParaRato1 ao ${rato1.nomeCustomizado}!",
+                        "message" to "${rato2.nomeCustomizado} causou $danoParaRato1 de dano ao ${rato1.nomeCustomizado}!",
                         "player" to "2"
                     )
                 )

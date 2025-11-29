@@ -45,10 +45,8 @@
 .modalResultado {
   width: 45rem;
   height: 55rem;
-  background-image: linear-gradient(
-      rgba(79, 81, 83, 0.3),
-      rgba(79, 81, 83, 0.3)
-    ),
+  background-image: linear-gradient(rgba(79, 81, 83, 0.3),
+      rgba(79, 81, 83, 0.3)),
     url("../../assets/backgrounds/bgBatalhaMenor.jpg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -226,6 +224,7 @@
   display: flex;
   flex-direction: column;
   padding: 2.5rem 2rem 2.5rem 2rem;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
 }
 
 .historicoBatalha h3 {
@@ -240,7 +239,7 @@
   background-image: url("../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   position: absolute;
-  top: -25rem;
+  top: -29rem;
 }
 
 .bgConteinerHist {
@@ -259,12 +258,13 @@
   flex-direction: column;
   overflow-y: auto;
   scrollbar-width: none;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .regHistEsq,
 .regHistDir {
   display: flex;
+  flex-direction: column;
   align-items: center;
   max-width: 100%;
   padding: 0.5rem;
@@ -273,6 +273,17 @@
   font-size: 1.5rem;
   overflow-wrap: anywhere;
   background-size: 100% 100%;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
+}
+
+.nomeJogador1{
+  align-self: flex-start;
+  margin-left: 1rem;
+}
+
+.nomeJogador2{
+  align-self: flex-end;
+  margin-right: 1rem;
 }
 
 .regHistEsq {
@@ -284,11 +295,8 @@
   background-image: url("../../assets/labels/lblPapiroReg.png");
 }
 
-.regHistEsq p,
-.regHistDir p {
-  flex: 1;
-  margin: 0;
-  text-align: left;
+.regRound {
+  text-align: right;
 }
 
 .regHistEsq img,
@@ -322,11 +330,17 @@
   padding: 1rem 1.5rem 1rem 2rem;
 }
 
-.regHistDir p {
+/* .regHistDir p {
   text-shadow: 0rem 0rem 0.5rem rgb(255, 255, 255),
     0rem 0rem 0.5rem rgb(255, 255, 255), 0rem 0rem 0.5rem rgb(255, 255, 255),
     0rem 0rem 0.5rem rgb(255, 255, 255), 0rem 0rem 0.5rem rgb(255, 255, 255),
     0rem 0rem 0.5rem rgb(255, 255, 255);
+} */
+
+.fotoJogadorERegistro {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .imgDireita {
@@ -339,6 +353,7 @@
 .regFinalRound {
   width: 35rem;
   height: 30rem;
+  margin-bottom: 1rem;
   background-color: rgb(255, 255, 255);
   align-self: center;
   border-radius: 3rem 1rem 3rem 1rem;
@@ -347,13 +362,15 @@
   justify-content: center;
   flex-direction: column;
   gap: 0.5rem;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
 }
 
-.fotoEVidaRatos{
+.fotoEVidaRatos {
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: 1rem;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8))
 }
 
 .ratoJ1,
@@ -380,12 +397,17 @@
   border: none;
 }
 
+.ratoJ1 p,
+.ratoJ2 p {
+  font-size: 1.2rem;
+}
+
 .ratoJ1 img,
 .ratoJ2 img {
   width: 5rem;
 }
 
-.ratoJ1 img{
+.ratoJ1 img {
   transform: scaleX(-1);
 }
 
