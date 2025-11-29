@@ -28,16 +28,11 @@ export default function TelaHistorico({
   const [infoJogador1, setInfoJogador1] = useState(null);
   const [infoJogador2, setInfoJogador2] = useState(null);
 
-  const [nomeJ1, setNomeJ1] = useState("");
-  const [nomeJ2, setNomeJ2] = useState("");
-
   const [nomeRatoJ1, setNomeRatoJ1] = useState("");
-  const [fotoRatoJ1, setFotoRatoJ1] = useState("");
-  const [vidaRatoJ1, setVidaRatoJ1] = useState(0);
+  const [infoRatoJ1, setInfoRatoJ1] = useState(null);
 
   const [nomeRatoJ2, setNomeRatoJ2] = useState("");
-  const [fotoRatoJ2, setFotoRatoJ2] = useState("");
-  const [vidaRatoJ2, setVidaRatoJ2] = useState(0);
+  const [infoRatoJ2, setInfoRatoJ2] = useState(null);
 
   const [valorVidaPorRound, setValorVidaPorRound] = useState([]);
 
@@ -80,6 +75,7 @@ export default function TelaHistorico({
       try {
         const resposta = await buscarHistorico(idFinal);
         const dados = resposta.data;
+        console.log(dados);
 
         if (Array.isArray(dados) && dados.length >= 2) {
           try {
@@ -99,10 +95,6 @@ export default function TelaHistorico({
               const respostaJogador2 = await pegarUsuarioPorId(idJogador2);
               const dadosJogador2 = respostaJogador2.data;
               setInfoJogador2(dadosJogador2);
-              /* setIdFotoJ1(dadosJogador1.idFotoPerfil); */
-              /*  setNomeJ1(dadosJogador1.nome) */
-              /*  setNomeJ2(dadosJogador2.nome) */
-              console.log(nomeJ1, nomeJ2);
             } catch (err) {
               console.error(
                 "Erro ao buscar dados dos usuários:",
@@ -111,13 +103,12 @@ export default function TelaHistorico({
             }
             try {
               const ratoJ1 = await pegarRatoPorID(idRatoJ1);
-              const ratoJ2 = await pegarRatoPorID(idRatoJ2);
               const dadosRatoJ1 = ratoJ1.data;
+              setInfoRatoJ1(dadosRatoJ1);
+
+              const ratoJ2 = await pegarRatoPorID(idRatoJ2);
               const dadosRatoJ2 = ratoJ2.data;
-              setFotoRatoJ1(ImagensRato[dadosRatoJ1.classe?.nomeClasse]);
-              setFotoRatoJ2(ImagensRato[dadosRatoJ2.classe?.nomeClasse]);
-              setVidaRatoJ1(dadosRatoJ1.hpsBase);
-              setVidaRatoJ2(dadosRatoJ2.hpsBase);
+              setInfoRatoJ2(dadosRatoJ2);
             } catch (err) {
               console.error("Erro ao buscar ratos:", err.response?.data || err);
             }
@@ -248,16 +239,23 @@ export default function TelaHistorico({
                                   const vidaAtual = valorVidaPorRound[
                                     log.round - 1
                                   ] || {
-                                    vRJ1: vidaRatoJ1,
-                                    vRJ2: vidaRatoJ2,
+                                    vRJ1: infoRatoJ1.hpsBase,
+                                    vRJ2: infoRatoJ2.hpsBase,
                                   };
-                                  const maxJ1 = vidaRatoJ1 > 0 ? vidaRatoJ1 : 1;
-                                  const maxJ2 = vidaRatoJ2 > 0 ? vidaRatoJ2 : 1;
+                                  const maxJ1 =
+                                    infoRatoJ1.hpsBase > 0
+                                      ? infoRatoJ1.hpsBase
+                                      : 0;
+                                  const maxJ2 =
+                                    infoRatoJ2.hpsBase > 0
+                                      ? infoRatoJ2.hpsBase
+                                      : 0;
                                   return (
                                     <div className="fotoEVidaRatos">
                                       <div className="ratoJ1">
                                         <p>
-                                          {vidaAtual.vRJ1} / {vidaRatoJ1}
+                                          {vidaAtual.vRJ1} /{" "}
+                                          {infoRatoJ1.hpsBase}
                                         </p>
                                         <div className="barraDeVida">
                                           <div
@@ -271,11 +269,18 @@ export default function TelaHistorico({
                                           />
                                         </div>
                                         <p>{nomeRatoJ1}</p>
-                                        <img src={fotoRatoJ1} />
+                                        <img
+                                          src={
+                                            ImagensRato[
+                                              infoRatoJ1.classe?.nomeClasse
+                                            ]
+                                          }
+                                        />
                                       </div>
                                       <div className="ratoJ2">
                                         <p>
-                                          {vidaAtual.vRJ2} / {vidaRatoJ2}
+                                          {vidaAtual.vRJ2} /{" "}
+                                          {infoRatoJ2.hpsBase}
                                         </p>
                                         <div className="barraDeVida">
                                           <div
@@ -289,7 +294,13 @@ export default function TelaHistorico({
                                           />
                                         </div>
                                         <p>{nomeRatoJ2}</p>
-                                        <img src={fotoRatoJ2} />
+                                        <img
+                                          src={
+                                            ImagensRato[
+                                              infoRatoJ2.classe?.nomeClasse
+                                            ]
+                                          }
+                                        />
                                       </div>
                                     </div>
                                   );
