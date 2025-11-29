@@ -97,7 +97,7 @@ export default function HomeADM() {
     try {
       try {
         await verificarSeBatalhaCheia(idBatalha);
-        setMensagemErro("🚫 Jogadores insuficiente!");
+        setMensagemErro("🚫 Jogadores insuficientes!");
         limparMensagens();
         return;
       } catch (errCheck) {
@@ -174,11 +174,6 @@ export default function HomeADM() {
       default:
         conteudoHomeAdm = (
           <>
-            {mensagemSucesso && (
-              <div className="msg-sucesso">{mensagemSucesso}</div>
-            )}
-            {mensagemErro && <div className="msg-erro">{mensagemErro}</div>}
-
             {criarBatalha && (
               <ModalCriarBatalha
                 estadoModal={criarBatalha ? "bgModalAtivo" : "bgModal"}
@@ -200,9 +195,16 @@ export default function HomeADM() {
               Criar Batalha
             </button>
             <div className="botaoBotELista">
+              {mensagemSucesso && (
+                <div className="msg-sucesso">{mensagemSucesso}</div>
+              )}
+              {mensagemErro && <div className="msg-erro">{mensagemErro}</div>}
               <div className="listaBatalhas">
                 {listaBatalhas.map((batalha) => (
-                  <div className="batalha" key={batalha.idBatalha || batalha.id}>
+                  <div
+                    className="batalha"
+                    key={batalha.idBatalha || batalha.id}
+                  >
                     <img src={trofeu} />
                     <div className="infoBatalha">
                       <p>{batalha.nomeBatalha}</p>

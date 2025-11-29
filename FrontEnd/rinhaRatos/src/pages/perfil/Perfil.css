@@ -313,8 +313,6 @@
 /* RESPONSIVIDADE (MEDIA QUERIES) */
 /* ------------------------------------------------- */
 
-
-
 /* ========================================= */
 /*               Aba "Perfil"                */
 /* ========================================= */
@@ -365,7 +363,6 @@
     transform: scale(0.2);
   }
 }
-
 
 /* ================================ */
 /*    Sub-titulo da aba "Perfil"    */
@@ -435,11 +432,9 @@
   }
 }
 
-
 /* ======================= */
 /*    Botões das opções    */
 @media (max-width: 520px) {
-
   .btnOpcao,
   .opcaoAtiva {
     font-size: 1.2rem;
@@ -447,7 +442,6 @@
 }
 
 @media (max-width: 450px) {
-
   .btnOpcao,
   .opcaoAtiva {
     font-size: 1rem;
@@ -455,7 +449,6 @@
 }
 
 @media (max-width: 410px) {
-
   .btnOpcao,
   .opcaoAtiva {
     font-size: 0.8rem;
@@ -463,7 +456,6 @@
 }
 
 @media (max-width: 230px) {
-
   .btnOpcao,
   .opcaoAtiva {
     height: 1.5rem;
@@ -481,49 +473,67 @@
 
 /* ============================================ */
 /* Reduz a Lista de Batalhas conforme a largura */
-@media (max-height: 870px) or (max-width: 790px) {
+@media (max-height: 955px) or (max-width: 790px) {
+  .subTituloEBotaoRelatorio {
+    margin-bottom: 9rem;
+  }
   .listaBatalhasPerfil {
     transform: scale(0.7);
   }
 }
 
-@media (max-height: 812px) or (max-width: 710px) {
+@media (max-height: 865px) or (max-width: 710px) {
+  .subTituloEBotaoRelatorio {
+    margin-bottom: 7rem;
+  }
   .listaBatalhasPerfil {
     transform: scale(0.6);
   }
 }
 
-@media (max-height: 760px) or (max-width: 600px) {
+@media (max-height: 775px) or (max-width: 600px) {
+  .subTituloEBotaoRelatorio {
+    margin-bottom: 6rem;
+  }
   .listaBatalhasPerfil {
     transform: scale(0.5);
   }
 }
 
-@media (max-height: 700px) or (max-width: 500px) {
+@media (max-height: 710px) or (max-width: 500px) {
+  .subTituloEBotaoRelatorio {
+    margin-bottom: 5.5rem;
+  }
   .listaBatalhasPerfil {
     transform: scale(0.4);
   }
 }
 
-@media (max-height: 645px) or (max-width: 400px) {
+@media (max-height: 640px) or (max-width: 400px) {
+  .subTituloEBotaoRelatorio {
+    margin-bottom: 5rem;
+  }
   .listaBatalhasPerfil {
     transform: scale(0.3);
   }
 }
 
-@media (max-height: 590px) or (max-width: 300px) {
+@media (max-height: 580px) or (max-width: 300px) {
   .listaBatalhasPerfil {
     transform: scale(0.2);
   }
 }
 
-@media (max-height: 532px) or (max-width: 200px) {
+@media (max-height: 520px) or (max-width: 200px) {
   .listaBatalhasPerfil {
     transform: scale(0.1);
   }
 }
 
-@media (max-height: 475px) or (max-width: 100px) {
+@media (max-height: 465px) or (max-width: 100px) {
+  .subTituloEBotaoRelatorio {
+    margin-bottom: 4rem;
+  }
   .listaBatalhasPerfil {
     transform: scale(0.05);
   }
@@ -573,7 +583,6 @@
     font-size: 0.3rem;
   }
 }
-
 
 /* -------------------------------- */
 /* Medias Query para tratar largura */

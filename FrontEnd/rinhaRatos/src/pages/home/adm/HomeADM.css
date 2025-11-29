@@ -1,4 +1,4 @@
-.loading-mensagem{
+.loading-mensagem {
   margin-top: 12rem;
   font-size: 3rem;
   color: white;
@@ -23,22 +23,16 @@
   transform: scale(0.97);
 }
 
-.listaBatalhasADM {
-  width: 50rem;
-  height: 40rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  scrollbar-width: none;
-  transform-origin: top;
-  transform: scale(0.9);
+.msg-sucesso,
+.msg-erro {
+  font-size: 1.5rem;
+  color: white;
 }
 
-.acoesBatalhaADM{
+.acoesBatalhaADM {
   display: flex;
   flex-direction: column;
-  gap:1rem
+  gap: 1rem;
 }
 
 .btnGerenciarBatalha,
@@ -52,17 +46,16 @@
   background-color: transparent;
   font-size: 1.5rem;
   color: white;
-  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8))
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
 }
 
-.btnIniciarBatalha{
+.btnIniciarBatalha {
   background-image: url("../../../assets/buttons/btnParticiparBatalha.png");
 }
 
 .btnGerenciar:active {
   transform: scale(0.97);
 }
-
 
 /* ----------------------------------------- */
 /* Medias Query para tratar altura e largura */

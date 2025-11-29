@@ -3,6 +3,8 @@ import HeaderConvidado from "../../components/comuns/Header/HeaderConvidado";
 import Ranking from "../../components/comuns/ranking/Ranking";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import { pegarTodasBatalhasConcluidas } from "../../Api/Api";
+import "../perfil/Perfil.css";
+import "../home/jogador/batalhas/ListaDeBatalhas.css";
 
 export default function HomeConvidado() {
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
@@ -12,7 +14,7 @@ export default function HomeConvidado() {
   const [loadingHistorico, setLoadingHistorico] = useState(false);
 
   // --- NOVA FUNÇÃO DE FORMATAÇÃO--
-  //Segundo pesquisas com o home essa é melhor, vou validar isso e se pá troco nas outras e comento certinho 
+  //Segundo pesquisas com o home essa é melhor, vou validar isso e se pá troco nas outras e comento certinho
   const formatarDataEHora = (dataISO) => {
     if (!dataISO) return "Data Indisponível";
     const data = new Date(dataISO);
@@ -22,7 +24,6 @@ export default function HomeConvidado() {
       hour: "2-digit",
       minute: "2-digit",
     });
-   
   };
   useEffect(() => {
     if (opcaoAtivada === "Batalhas") {
@@ -55,39 +56,38 @@ export default function HomeConvidado() {
       break;
     default:
       conteudoHomeConvidado = (
-        <div className="listaBatalhas">
-          {loadingHistorico ? (
-            <p className="msg-historico-vazio">Carregando batalhas...</p>
-          ) : historicoBatalhas.length > 0 ? (
-            historicoBatalhas.map((batalha) => (
-              <div className="batalha" key={batalha.idBatalha}>
-                <img src={Trofeu} alt="Troféu" />
-                <div className="infoBatalha">
-                  <p>
-                    <strong>{batalha.nomeBatalha}</strong>
-                  </p>
-                  <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
-                  <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
-                  <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
-                  <p className="status-batalha-texto">Concluída</p>
+        <>
+          <div className="subTituloEBotaoRelatorio">
+            <h1 className="subTituloBatalhas">Batalhas Concluídas</h1>
+          </div>
+          <div className="listaBatalhasPerfil">
+            {loadingHistorico ? (
+              <p className="msg-historico-vazio">Carregando batalhas...</p>
+            ) : historicoBatalhas.length > 0 ? (
+              historicoBatalhas.map((batalha) => (
+                <div className="batalha" key={batalha.idBatalha}>
+                  <img src={Trofeu} alt="Troféu" />
+                  <div className="infoBatalha">
+                    <p>
+                      <strong>{batalha.nomeBatalha}</strong>
+                    </p>
+                    <p>Inscrição: {batalha.custoInscricao} MouseCoin</p>
+                    <p>Data: {formatarDataEHora(batalha.dataHorarioInicio)}</p>
+                    <p>Prêmio: {batalha.premioTotal} MouseCoin</p>
+                    <p className="status-batalha-texto">Concluída</p>
+                  </div>
+                  <div className="opcoesBatalhaPerfil">
+                    <button className="btnVerHistorico">Ver Detalhes</button>
+                  </div>
                 </div>
-                <div className="opcoesBatalhaPerfil">
-                  <button className="btnVerHistorico">Ver Detalhes</button>
-                  <button
-                    className="btnBaixarRelatorio"
-                    onClick={() => baixarHistoricoBatalha(batalha.idBatalha)}
-                  >
-                    Baixar Relatório
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="msg-historico-vazio">
-              Nenhuma batalha concluída encontrada.
-            </p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p className="msg-historico-vazio">
+                Nenhuma batalha concluída encontrada.
+              </p>
+            )}
+          </div>
+        </>
       );
   }
 

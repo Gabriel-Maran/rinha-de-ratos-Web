@@ -230,7 +230,6 @@ export default function Perfil({ qtdeMoedas }) {
     setModalOpcFoto(false);
   };
 
-
   const handleFotoSelecionada = (id) => {
     setFotoSelecionada(id);
   };
@@ -356,7 +355,6 @@ export default function Perfil({ qtdeMoedas }) {
             />
           )}
           <div className="subTituloEBotaoRelatorio">
-            <div className="filler" />
             {loginADM ? (
               <h1 className="subTituloBatalhas">Batalhas Criadas</h1>
             ) : (
