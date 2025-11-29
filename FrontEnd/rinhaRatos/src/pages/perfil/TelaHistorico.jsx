@@ -25,11 +25,11 @@ export default function TelaHistorico({
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
-  const [infoJogador1, setInfoJogador1] = useState(null)
-  const [infoJogador2, setInfoJogador2] = useState(null)
+  const [infoJogador1, setInfoJogador1] = useState(null);
+  const [infoJogador2, setInfoJogador2] = useState(null);
 
-  const [nomeJ1, setNomeJ1] = useState("")
-  const [nomeJ2, setNomeJ2] = useState("")
+  const [nomeJ1, setNomeJ1] = useState("");
+  const [nomeJ2, setNomeJ2] = useState("");
 
   const [nomeRatoJ1, setNomeRatoJ1] = useState("");
   const [fotoRatoJ1, setFotoRatoJ1] = useState("");
@@ -94,15 +94,15 @@ export default function TelaHistorico({
             try {
               const respostaJogador1 = await pegarUsuarioPorId(idJogador1);
               const dadosJogador1 = respostaJogador1.data;
-              setInfoJogador1(dadosJogador1)
+              setInfoJogador1(dadosJogador1);
 
               const respostaJogador2 = await pegarUsuarioPorId(idJogador2);
               const dadosJogador2 = respostaJogador2.data;
-              setInfoJogador2(dadosJogador2)
+              setInfoJogador2(dadosJogador2);
               /* setIdFotoJ1(dadosJogador1.idFotoPerfil); */
               /*  setNomeJ1(dadosJogador1.nome) */
               /*  setNomeJ2(dadosJogador2.nome) */
-              console.log(nomeJ1, nomeJ2)
+              console.log(nomeJ1, nomeJ2);
             } catch (err) {
               console.error(
                 "Erro ao buscar dados dos usuários:",
@@ -195,8 +195,8 @@ export default function TelaHistorico({
                           log.player === 1
                             ? getFotoUrlById(infoJogador1.idFotoPerfil)
                             : log.player === 2
-                              ? getFotoUrlById(infoJogador2.idFotoPerfil)
-                              : getFotoUrlById(0);
+                            ? getFotoUrlById(infoJogador2.idFotoPerfil)
+                            : getFotoUrlById(0);
                         return (
                           <>
                             {log.player !== 0 && (
@@ -205,16 +205,20 @@ export default function TelaHistorico({
                                   log.player === 1
                                     ? "regHistEsq"
                                     : log.player === 2
-                                      ? "regHistDir"
-                                      : ""
+                                    ? "regHistDir"
+                                    : ""
                                 }
                                 key={log.idmessage || index}
                               >
                                 {log.player === 1 && (
-                                  <p className="nomeJogador1">{infoJogador1.nome}</p>
+                                  <p className="nomeJogador1">
+                                    {infoJogador1.nome}
+                                  </p>
                                 )}
                                 {log.player === 2 && (
-                                  <p className="nomeJogador2">{infoJogador2.nome}</p>
+                                  <p className="nomeJogador2">
+                                    {infoJogador2.nome}
+                                  </p>
                                 )}
                                 {log.player !== 0 && (
                                   <div className="fotoJogadorERegistro">
@@ -231,7 +235,8 @@ export default function TelaHistorico({
                                         className="imgDireita"
                                         src={imgAvatar}
                                         alt="Oponente"
-                                      />)}
+                                      />
+                                    )}
                                   </div>
                                 )}
                               </div>
@@ -258,9 +263,10 @@ export default function TelaHistorico({
                                           <div
                                             className="qVidaRatoJ1"
                                             style={{
-                                              transform: `translateX(${(vidaAtual.vRJ1 / maxJ1) * 100 -
+                                              transform: `translateX(${
+                                                (vidaAtual.vRJ1 / maxJ1) * 100 -
                                                 100
-                                                }%)`,
+                                              }%)`,
                                             }}
                                           />
                                         </div>
@@ -275,9 +281,10 @@ export default function TelaHistorico({
                                           <div
                                             className="qVidaRatoJ2"
                                             style={{
-                                              transform: `translateX(${(vidaAtual.vRJ2 / maxJ2) * 100 -
+                                              transform: `translateX(${
+                                                (vidaAtual.vRJ2 / maxJ2) * 100 -
                                                 100
-                                                }%)`,
+                                              }%)`,
                                             }}
                                           />
                                         </div>
