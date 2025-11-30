@@ -1,7 +1,6 @@
 package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.ClasseDTO
-import com.unipar.rinhaRatos.DTOandBASIC.HabilidadeDTO
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.models.Habilidade
 import com.unipar.rinhaRatos.repositorys.ClasseRepository
@@ -9,6 +8,9 @@ import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.Optional
+
+// Service da Classe
+// Comentado apenas em partes essenciais, as outras se auto descrevem
 
 @Service
 class ClasseService(

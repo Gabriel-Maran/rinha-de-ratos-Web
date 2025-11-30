@@ -5,9 +5,11 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.io.Serializable
 
+
+// Model da batalha, sem segredo
 @Entity
 @Table(name = "batalhas")
-class Batalha(
+open class Batalha(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

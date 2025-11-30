@@ -2,7 +2,14 @@ package com.unipar.rinhaRatos.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.concurrent.*
+
+///////////////////////////////////////////////////////////////
+//
+// GERENCIADOR DE TODAS AS BATALHAS
+// RESPONSAVEL POR RECEBER REQUISIÇÃO DO SERVICE DA BATALHA
+// Pq separar assim? ORGANIZAÇÃO, MAIS SIMPLES DE DAR SUPORTE
+//
+///////////////////////////////////////////////////////////////
 
 @Service
 class GerenciadorBatalhasAutomatica(
@@ -10,9 +17,9 @@ class GerenciadorBatalhasAutomatica(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // Inicia execução assíncrona da simulação; retorna false se já estiver rodando
-    fun iniciarSimulacaoBatalhaAsync(idBatalha: Long): Boolean {
-        val resultado = servicoBatalhaAutomatica.executarBatalhaSincrona(idBatalha)
+    // Inicia execução da simulação; retorna false se já estiver rodando ou tiver rodado
+    fun iniciarSimulacaoBatalha(idBatalha: Long): Boolean {
+        val resultado = servicoBatalhaAutomatica.executaBatalha(idBatalha)
         return resultado.isPresent
     }
 }

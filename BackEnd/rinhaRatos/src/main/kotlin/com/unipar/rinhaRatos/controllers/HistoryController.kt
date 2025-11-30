@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
+
+//////////////////////////////////////////////////////////////////
+// CONTROLLER GERAL DO HISTORICO DA BATALHA
+// As funções fazem LITERALMENTE oq está no nome delas KKKKKKKKKKK
+//////////////////////////////////////////////////////////////////
+
 @CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/history")

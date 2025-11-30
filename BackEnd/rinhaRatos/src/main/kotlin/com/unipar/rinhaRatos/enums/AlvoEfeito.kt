@@ -1,3 +1,6 @@
 package com.unipar.rinhaRatos.enums
 
-enum class AlvoEfeito { SEU, ADV }
+// Enum que auxilia a descobrir se é seu ou do adversario o buff ou debuff
+enum class AlvoEfeito {
+    SEU, ADV
+}

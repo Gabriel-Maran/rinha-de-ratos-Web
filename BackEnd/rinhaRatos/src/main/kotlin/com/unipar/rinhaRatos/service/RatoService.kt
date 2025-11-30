@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.Optional
 
+// Service do Rato
+// Comentado apenas em partes essenciais, as outras se auto descrevem
+
 @Service
 class RatoService(
     private val ratoRepository: RatoRepository,
@@ -71,13 +74,11 @@ class RatoService(
         val ratoAtualizado = auxSortRatoAtributos(rato, classe)
         val ratoSalvo = ratoRepository.save(ratoAtualizado)
 
-        donoDoRato.ratos.add(ratoSalvo)
-        usuarioRepository.save(donoDoRato)
-
         log.info("Rato ${ratoSalvo.idRato} cadastrado para usuário ${donoDoRato.idUsuario}")
         return mapOf("Status" to "CREATED", "idRato" to ratoSalvo.idRato.toString())
     }
 
+    // Função auxiliar que gera os atributos base do rato
     private fun auxSortRatoAtributos(rato: Rato, classe: Classe): Rato {
         rato.strBase = (classe.strMin..classe.strMax).random()
         rato.agiBase = (classe.agiMin..classe.agiMax).random()
@@ -108,7 +109,6 @@ class RatoService(
 
         usuario.ratos.removeIf { it.idRato == rato.idRato }
         ratoRepository.save(rato)
-        usuarioRepository.save(usuario)
 
         log.info("Rato ${rato.idRato} removido (soft) do usuário ${usuario.idUsuario}")
         return mapOf("Status" to "NO_CONTENT")

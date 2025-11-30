@@ -12,12 +12,16 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
+//////////////////////////////////////////////////////////////////
+// CONTROLLER GERAL DAS BATALHAS
+// As funções fazem LITERALMENTE oq está no nome delas KKKKKKKKKKK
+//////////////////////////////////////////////////////////////////
+
 @CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/batalha")
 class BatalhaController(
     private val batalhaService: BatalhaService,
-    private val batalhaRepository: BatalhaRepository,
 ) {
 
     @GetMapping("/adm/{idADM}")

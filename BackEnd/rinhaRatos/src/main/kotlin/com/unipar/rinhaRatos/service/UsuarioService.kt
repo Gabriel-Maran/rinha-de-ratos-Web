@@ -2,8 +2,6 @@ package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioBasic
 import com.unipar.rinhaRatos.DTOandBASIC.UsuarioDTO
-import com.unipar.rinhaRatos.DTOandBASIC.UsuarioDetailsDto
-import com.unipar.rinhaRatos.DTOandBASIC.UsuarioSummaryDTO
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import com.unipar.rinhaRatos.enums.TipoConta
@@ -12,10 +10,12 @@ import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.util.Optional
+
+// Service do Usuario
+// Comentado apenas em partes essenciais, as outras se auto descrevem
 
 @Service
 class UsuarioService(
@@ -61,6 +61,10 @@ class UsuarioService(
         usersRaw.forEach {
             val usuario = Usuario()
             val optUser = usuarioRepository.findByIdUsuarioWithoutRatos(it.idUsuario)
+            // Pq nn usei meus modelo prontos aqui?
+            // - Ocorria erro ao buscar os ratos do usuario (quando tinha ratos > 0 )
+            // - Ocorria erro ao retornar dados completos do usuario
+            // Essa foi uma solução simples que achei, apenas pegar e validar a quantidade de ratos
             if (optUser.isPresent) {
                 if (usuarioRepository.countRatosVivosByIdUsuario(it.idUsuario) > 0) {
                     val userCompleto = usuarioRepository.findByIdUsuarioWithRatosVivos(it.idUsuario)
@@ -68,7 +72,7 @@ class UsuarioService(
                 }else{
                     usuario.idUsuario = optUser.get().idUsuario
                     usuario.ratos = mutableListOf()
-                    usuario.senha = "VAZIO"
+                    usuario.senha = ""
                     usuario.email = optUser.get().email
                     usuario.idFotoPerfil = optUser.get().idFotoPerfil
                     usuario.nome = optUser.get().nome

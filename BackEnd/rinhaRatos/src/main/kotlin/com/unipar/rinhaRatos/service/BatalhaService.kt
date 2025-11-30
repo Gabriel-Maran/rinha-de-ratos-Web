@@ -1,33 +1,26 @@
 package com.unipar.rinhaRatos.service
 
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaBasic
-import com.unipar.rinhaRatos.DTOandBASIC.BatalhaDTO
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaSummary
-import com.unipar.rinhaRatos.DTOandBASIC.RatoBasic
-import com.unipar.rinhaRatos.DTOandBASIC.RatoDTO
-import com.unipar.rinhaRatos.DTOandBASIC.RatoSummaryDTO
 import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.enums.TipoConta
 import com.unipar.rinhaRatos.models.Batalha
 import com.unipar.rinhaRatos.models.Rato
-import com.unipar.rinhaRatos.models.Usuario
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.RatoRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Optional
 import kotlin.random.Random
 import kotlin.random.nextLong
+
+// Service Principal da batalha
+// Comentado apenas em partes essenciais, as outras se auto descrevem
 
 @Service
 @Transactional
@@ -36,8 +29,9 @@ class BatalhaService(
     private val usuarioRepository: UsuarioRepository,
     private val ratoRepository: RatoRepository,
     private val battleManager: GerenciadorBatalhasAutomatica,
-    private val ratoService: RatoService
 ) {
+    // Pega ISO para fazer parse da data e hora para o formato ISO
+    // Utiliza de log para informações
     private val ISO_FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -169,6 +163,7 @@ class BatalhaService(
             batalha.nomeBatalha = novoNome
         }
 
+        // Salva a data e o tempo em que a batalha foi setada para acontecer
         if (summary.dataHorarioInicio.isNotBlank()) {
             val parsed = try {
                 parseIsoToLocalDateTime(summary.dataHorarioInicio)
@@ -180,8 +175,10 @@ class BatalhaService(
             }
         }
 
+        // Valida de que batalhas entre player nunca terão saldo menor ou igual a 0
+        // Porq -> Batalha que tem 0 de custo são batalhas de bots e batalhas com < 0 de custo são 100% invalidas, se increver e ganhar dinheiro? KKKKKKK
         if (summary.inscricaoMousecoin <= 0) {
-            batalha.custoInscricao = 10
+            batalha.custoInscricao = 10 // Valor padrão para se increver em uma batalha
         } else {
             batalha.custoInscricao = summary.inscricaoMousecoin
         }
@@ -198,7 +195,7 @@ class BatalhaService(
         if (batalhaOpt.isEmpty) return "BATALHA_NOT_FOUND"
         val batalha = batalhaOpt.get()
         if (batalha.status == StatusBatalha.Concluida) return "BATALHA_HAPPENING_OR_OVER"
-
+        //Retira ratos da batalha, por conta de exclusão
         batalha.rato1?.let { r ->
             safeUnsetRatoTorneio(r)
         }
@@ -274,7 +271,8 @@ class BatalhaService(
         log.info("Usuário $idUsuario saiu/removido da batalha $idBatalha")
         return "OK"
     }
-
+    // Remove o rato da batalha
+    // Garante que o rato possa se incrrever em outras batalhas, caso seja removido da batalha, ou a batalha seja excluida
     private fun safeUnsetRatoTorneio(ratoRef: Rato) {
         val ropt = ratoRepository.findById(ratoRef.idRato)
         if (ropt.isPresent) {
@@ -283,7 +281,7 @@ class BatalhaService(
             ratoRepository.save(rdb)
         }
     }
-
+    //Remove o jogador da batalha
     private fun removePlayerFromBattle(batalha: Batalha, usuarioId: Long): Boolean {
         if (batalha.jogador1?.idUsuario == usuarioId) {
             batalha.rato1?.let { r -> safeUnsetRatoTorneio(r) }
@@ -316,12 +314,14 @@ class BatalhaService(
         if (batalha.jogador1 == null || batalha.jogador2 == null) return "NOT_ENOUGH_USERS"
 
         // delega ao gerenciador: ele retorna false se já estiver rodando
-        val iniciou = battleManager.iniciarSimulacaoBatalhaAsync(idBatalha)
+        val iniciou = battleManager.iniciarSimulacaoBatalha(idBatalha)
+        if(!iniciou) return "BATALHA_HAPPENING_OR_OVER"
         batalha.status = StatusBatalha.Concluida
         batalhaRepository.save(batalha)
-        return if (iniciou) "OK" else "UNKNOWN_ERROR"
+        return "OK"
     }
 
+    // Cria batalha padrão contra um BOT, como explicado, sem custo e sem perder ou ganhar nada
     fun criarBatalhaComBot(idUsuario: Long, idRato: Long): Map<String, String> {
         val usuarioOpt = usuarioRepository.findById(idUsuario)
         val ratoOpt = ratoRepository.findById(idRato)
@@ -357,6 +357,7 @@ class BatalhaService(
         return mapOf("idBatalha" to criarBatalha.idBatalha.toString())
     }
 
+    // Parser do LocalDateTime da batalha, salvando em formato da ISO
     fun parseIsoToLocalDateTime(value: String?): LocalDateTime? {
         if (value.isNullOrBlank()) return null
         val dataString = value.trim()

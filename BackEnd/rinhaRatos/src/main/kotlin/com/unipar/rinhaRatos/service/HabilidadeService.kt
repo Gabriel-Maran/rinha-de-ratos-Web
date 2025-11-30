@@ -6,6 +6,9 @@ import com.unipar.rinhaRatos.repositorys.HabilidadeRepository
 import org.springframework.stereotype.Service
 import java.util.Optional
 
+// Service da Habilidade
+// Comentado apenas em partes essenciais, as outras se auto descrevem
+
 @Service
 class HabilidadeService(
     private val habilidadeRepository: HabilidadeRepository

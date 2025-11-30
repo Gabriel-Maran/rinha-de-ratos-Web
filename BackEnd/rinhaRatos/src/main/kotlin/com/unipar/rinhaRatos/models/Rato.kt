@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import java.io.Serializable
 
+
+// Model do Rato, sem segredo
+
 @Entity
 @Table(name = "ratos")
-class Rato(
+open class Rato(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

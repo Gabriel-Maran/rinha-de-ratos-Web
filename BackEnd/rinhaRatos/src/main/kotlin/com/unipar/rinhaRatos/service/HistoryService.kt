@@ -4,6 +4,9 @@ import com.unipar.rinhaRatos.repositorys.ResultsRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
+// Service do Historico
+// Comentado apenas em partes essenciais, as outras se auto descrevem
+
 @Service
 class HistoryService(
     private val messageService: MessageService,

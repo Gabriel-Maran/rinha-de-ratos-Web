@@ -8,6 +8,19 @@ import jakarta.persistence.Column
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
+// As classes aqui representam:
+// - DTOs ou seja, modelos de tranferencia de objetos de forma segura(sem senhas ou dados sensiveis)
+// - SummaryDTO, ou seja, um sumario que resume informações para não dar erros de LAZY(encadeamento infinito)
+// - Nosso querido Error Response (usado em todos os cantos possiveis dos controllers kkkkk)
+
+data class ErrorResponse(
+    val timestamp: String,
+    val status: Int,
+    val error: String,
+    val message: String?,
+    val code: String
+)
+
 data class UsuarioSummaryDTO(
     val idUsuario: Long,
     val idFotoPerfil: Long? = 0,
@@ -126,14 +139,6 @@ data class BatalhaDTO(
     val rato2: RatoSummaryDTO?,
     val vencedor: UsuarioSummaryDTO?,
     val perdedor: UsuarioSummaryDTO?
-)
-
-data class ErrorResponse(
-    val timestamp: String,
-    val status: Int,
-    val error: String,
-    val message: String?,
-    val code: String
 )
 
 data class MessageRoundDTO(

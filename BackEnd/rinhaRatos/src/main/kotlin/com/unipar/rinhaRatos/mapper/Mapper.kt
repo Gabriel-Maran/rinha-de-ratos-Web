@@ -4,6 +4,9 @@ import com.unipar.rinhaRatos.DTOandBASIC.*
 import com.unipar.rinhaRatos.enums.ClassesRato
 import com.unipar.rinhaRatos.models.*
 
+// Mapper que retornam os valores de Model -> DTO
+// Ou seja, convertem um modelo para um modelo de tranferencia
+
 fun Usuario.toSummaryDto(): UsuarioSummaryDTO {
     return UsuarioSummaryDTO(
         idUsuario = this.idUsuario,

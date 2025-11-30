@@ -9,9 +9,13 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.io.Serializable
 
+
+
+// Model do Resultado da batalha, sem segredo
+
 @Entity
 @Table(name = "resultsbattle")
-class Results(
+open class Results(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var idresult: Long = 0L,
