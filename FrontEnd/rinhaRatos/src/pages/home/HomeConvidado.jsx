@@ -16,8 +16,6 @@ export default function HomeConvidado() {
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
   const [idBatalhaSelecionada, setIdBatalhaSelecionada] = useState(null);
 
-  // --- NOVA FUNÇÃO DE FORMATAÇÃO--
-  //Segundo pesquisas com o home essa é melhor, vou validar isso e se pá troco nas outras e comento certinho
   const formatarDataEHora = (dataISO) => {
     if (!dataISO) return "Data Indisponível";
     const data = new Date(dataISO);
@@ -28,26 +26,40 @@ export default function HomeConvidado() {
       minute: "2-digit",
     });
   };
+
   useEffect(() => {
     if (opcaoAtivada === "Batalhas") {
       const buscarHistorico = async () => {
-        setLoadingHistorico(true);
-        try {
+       try {
           const resposta = await pegarTodasBatalhasConcluidas();
 
           if (resposta && Array.isArray(resposta.data)) {
-            setHistoricoBatalhas(resposta.data);
+            // lógica (b - a) coloca os números maiores (IDs mais novos) no topo
+            const listaOrdenada = resposta.data.sort((a, b) => {
+               const idA = a.idBatalha || a.id;
+               const idB = b.idBatalha || b.id;
+               return idB - idA;
+            });
+            
+            setHistoricoBatalhas(listaOrdenada);
           } else {
             setHistoricoBatalhas([]);
           }
         } catch (err) {
           console.error("Erro ao buscar histórico:", err);
-          setHistoricoBatalhas([]);
         } finally {
           setLoadingHistorico(false);
         }
       };
+
+      setLoadingHistorico(true);
       buscarHistorico();
+
+      // 3. Configura o intervalo
+      const intervalo = setInterval(() => {
+        buscarHistorico();
+      }, 3000);
+      return () => clearInterval(intervalo);
     }
   }, [opcaoAtivada]);
 

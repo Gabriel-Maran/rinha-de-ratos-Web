@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Trofeu from "../../../../assets/icones/IconeTrofeu.png";
 import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
-import { entrarBatalha, batlhaBot } from "../../../../Api/Api";
+import { entrarBatalha, batlhaBot, removerJogador } from "../../../../Api/Api";
 import { useAuth } from "../../../../context/AuthContext";
 import "./ListaDeBatalhas.css";
 import TelaHistorico from "../../../../components/comuns/historico/TelaHistorico";
@@ -13,7 +13,7 @@ export default function ListaDeBatalhas({
   idUsuarioLogado,
   onBatalhaInscrita,
 }) {
-  const { user, setUser } = useAuth();
+  const { user, recarregarUsuario } = useAuth();
   const [btnOpcBatalhas, setBtnOpcBatalhas] = useState("Todas");
   const botoesOpcBatalha = ["Todas", "Inscritas"];
 
@@ -44,6 +44,23 @@ export default function ListaDeBatalhas({
       setErroModal(
         err?.response?.data?.message || "Erro ao realizar a batalha de treino."
       );
+    }
+  };
+  const sairBatalha = async (idBatalha) => {
+    if (!idBatalha || !idUsuarioLogado) return;
+
+    setIsLoading(true);
+    setErroModal(null);
+    
+    try {
+      await removerJogador(idBatalha, idUsuarioLogado);
+      await recarregarUsuario();
+      onBatalhaInscrita();
+      setIsLoading(false);
+    } catch (err) {
+      console.error("Erro ao sair:", err);
+      setIsLoading(false);
+      setErroModal(err?.response?.data?.message || "Erro ao sair da batalha.");
     }
   };
 
@@ -198,7 +215,13 @@ export default function ListaDeBatalhas({
                     <button className="entrarOuAguardarBatalha" disabled>
                       Aguardando...
                     </button>
-                    <button className="btnSairBatalha">Sair</button>
+                    <button
+                      className="btnSairBatalha"
+                      onClick={() => sairBatalha(batalha.idBatalha)}
+                      disabled={isLoading}
+                    >
+                      Sair
+                    </button>
                   </div>
                 </div>
               ))
