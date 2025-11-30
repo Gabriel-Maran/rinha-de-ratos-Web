@@ -242,6 +242,7 @@
   background-size: 100% 100%;
   position: absolute;
   top: -29rem;
+    z-index: 1;
 }
 
 .bgConteinerHist {
@@ -267,15 +268,18 @@
 .regHistDir {
   display: flex;
   flex-direction: column;
-  align-items: center;
   max-width: 100%;
   padding: 0.5rem;
   border-radius: 0.5rem;
   background-color: transparent;
   font-size: 1.5rem;
-  overflow-wrap: anywhere;
   background-size: 100% 100%;
   filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
+}
+
+.fotoJogadorERegistro {
+  display: flex;
+  align-items: center;
 }
 
 .nomeJogador1 {
@@ -337,12 +341,6 @@
     0rem 0rem 0.5rem rgb(255, 255, 255), 0rem 0rem 0.5rem rgb(255, 255, 255),
     0rem 0rem 0.5rem rgb(255, 255, 255), 0rem 0rem 0.5rem rgb(255, 255, 255),
     0rem 0rem 0.5rem rgb(255, 255, 255);
-}
-
-.fotoJogadorERegistro {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }
 
 .imgDireita {

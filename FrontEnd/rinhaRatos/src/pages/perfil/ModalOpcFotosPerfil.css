@@ -22,17 +22,6 @@
     transition: transform 0.3s ease;
 }
 
-
-@media (max-width: 768px) {
-    .containerModalFotos {
-        width: 95%;
-        transform: scale(0.9);
-    }
-    .listaFotosPerfil {
-        gap: 1rem;
-    }
-}
-
 .titModalOpcFoto {
     min-height: 4rem;
     width: 30rem;
@@ -51,7 +40,6 @@
 }
 
 .listaFotosPerfil {
-    width: 100%;
     height: auto;
     display: flex;
     flex-wrap: wrap;
@@ -116,21 +104,41 @@
     transition: transform 5s ease;
 }
 
+/* ------------------------------- */
+/* Medias Query para tratar altura */
+/* =============================== */
 @media(max-height: 900px) {
     .containerModalFotos {
-        height: 30rem;
-    }
-
-    .listaFotosPerfil {
-        margin-top: 0rem;
-        padding-top: 1rem;
-        overflow-y: auto;
+        transform: scale(0.9);
     }
 }
 
-@media(max-height: 670px) {
+@media(max-height: 725px) {
     .containerModalFotos {
-        height: 20rem;
+        transform: scale(0.8);
+    }
+}
+
+@media(max-height: 650px) {
+    .containerModalFotos {
+        transform: scale(0.7);
+    }
+}
+
+@media(max-height: 570px) {
+    .containerModalFotos {
+        transform: scale(0.6);
+    }
+}
+
+
+/* -------------------------------- */
+/* Medias Query para tratar largura */
+/* ================================ */
+@media (max-width: 900px) {
+    .containerModalFotos {
+        width: 40rem;
+        height: 35rem;
     }
 
     .listaFotosPerfil {
@@ -140,21 +148,10 @@
     }
 }
 
-@media (max-width: 1130px) {
+@media (max-width: 700px) {
     .containerModalFotos {
         width: 35rem;
-    }
-
-    .listaFotosPerfil {
-        margin-top: 0rem;
-        padding-top: 1rem;
-        overflow-y: auto;
-    }
-}
-
-@media (max-width: 780px) {
-    .containerModalFotos {
-        width: 25rem;
+        height: 20rem;
     }
 
     .titModalOpcFoto {
@@ -171,9 +168,10 @@
     }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 580px) {
     .containerModalFotos {
         width: 20rem;
+        height: 20rem;
     }
 
     .titModalOpcFoto {
@@ -197,7 +195,7 @@
     }
 }
 
-@media (max-width: 455px) {
+@media (max-width: 400px) {
     .containerModalFotos {
         width: 15rem;
     }
