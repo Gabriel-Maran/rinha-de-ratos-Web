@@ -15,7 +15,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "resultsbattle")
-open class Results(
+class Results(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var idresult: Long = 0L,

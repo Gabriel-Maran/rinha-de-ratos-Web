@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "habilidades")
-open class Habilidade(
+class Habilidade(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

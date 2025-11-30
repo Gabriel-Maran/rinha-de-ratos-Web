@@ -9,7 +9,7 @@ import java.io.Serializable
 // Model da batalha, sem segredo
 @Entity
 @Table(name = "batalhas")
-open class Batalha(
+class Batalha(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

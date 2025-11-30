@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "classes")
-open class Classe(
+class Classe(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

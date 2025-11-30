@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "messageround")
-open class MessageRound (
+class MessageRound (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var idmessage: Long = 0L,

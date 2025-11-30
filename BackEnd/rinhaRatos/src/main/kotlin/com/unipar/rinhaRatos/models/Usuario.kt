@@ -9,7 +9,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "usuarios")
-open class Usuario(
+class Usuario(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
