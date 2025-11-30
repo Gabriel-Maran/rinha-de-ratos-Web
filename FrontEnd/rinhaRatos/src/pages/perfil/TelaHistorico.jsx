@@ -38,7 +38,7 @@ export default function TelaHistorico({
 
   useEffect(() => {
     /* Regex maroto pra pegar os valores das vidas */
-    const regexRound = /(\d+)\s*\|\s*[\wÀ-ÖØ-öø-ÿ]+=(\d+)/;
+    const regexRound = /[\wÀ-ÖØ-öø-ÿ]+= *(\d+)\s*\|\s*[\wÀ-ÖØ-öø-ÿ]+= *(\d+)/;
 
     /* Serve pra filtrar pelos logs e pegar somente aqueles tem as vidas
        Ou seja, aqueles em que o id do player é 0 (narrador)
