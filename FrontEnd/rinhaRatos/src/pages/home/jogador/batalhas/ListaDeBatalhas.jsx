@@ -4,7 +4,7 @@ import ModalEscolherRatoBatalha from "./ModalEscolherRatoBatalha";
 import { entrarBatalha, batlhaBot } from "../../../../Api/Api";
 import { useAuth } from "../../../../context/AuthContext";
 import "./ListaDeBatalhas.css";
-import TelaHistorico from "../../../perfil/TelaHistorico";
+import TelaHistorico from "../../../../components/comuns/historico/TelaHistorico";
 
 export default function ListaDeBatalhas({
   ratosUsuario,

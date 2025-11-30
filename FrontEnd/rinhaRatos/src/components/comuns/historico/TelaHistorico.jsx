@@ -4,13 +4,14 @@ import {
   pegarUsuarioPorId,
   pegarJogadoresDaBatalha,
   pegarRatoPorID,
-} from "../../Api/Api";
-import { useAuth } from "../../context/AuthContext";
-import { getFotoUrlById } from "./ModalOpcFotosPerfil";
-import ImgVitoria from "../../assets/icones/IconeVitoria.png";
-import ImgDerrota from "../../assets/icones/IconeDerrota.png";
-import ImagensRato from "../../components/ImagensRato";
-import "../../pages/perfil/TelaHistorico.css";
+} from "../../../Api/Api";
+import { useAuth } from "../../../context/AuthContext";
+import { getFotoUrlById } from "../../../pages/perfil/ModalOpcFotosPerfil";
+import ImgVitoria from "../../../assets/icones/IconeVitoria.png";
+import ImgDerrota from "../../../assets/icones/IconeDerrota.png";
+import ImgNeutra from "../../../assets/icones/IconeNeutro.png";
+import ImagensRato from "../../ImagensRato";
+import "./TelaHistorico.css";
 
 export default function TelaHistorico({
   onClose,
@@ -25,6 +26,7 @@ export default function TelaHistorico({
 
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
+  const [participou, setParticipou] = useState(false);
   const [infoJogador1, setInfoJogador1] = useState(null);
   const [infoJogador2, setInfoJogador2] = useState(null);
 
@@ -43,6 +45,7 @@ export default function TelaHistorico({
     /* Serve pra filtrar pelos logs e pegar somente aqueles tem as vidas
        Ou seja, aqueles em que o id do player é 0 (narrador)
     */
+
     const finaisDeRound = logs.filter((r) => r.player === 0);
 
     let novasVidas = [];
@@ -102,6 +105,7 @@ export default function TelaHistorico({
               );
             }
             try {
+              !idUsuarioLogado ? setParticipou(false) : setParticipou(true);
               const ratoJ1 = await pegarRatoPorID(idRatoJ1);
               const dadosRatoJ1 = ratoJ1.data;
               setInfoRatoJ1(dadosRatoJ1);
@@ -140,7 +144,11 @@ export default function TelaHistorico({
   if (!mostrarHistorico) return null;
 
   const vitoria = idVencedor === idUsuarioLogado;
-  const imagemBanner = vitoria ? ImgVitoria : ImgDerrota;
+  const imagemBanner = !idUsuarioLogado
+    ? ImgNeutra
+    : vitoria
+    ? ImgVitoria
+    : ImgDerrota;
   const mensagemResultado = vitoria ? "Você venceu!!!" : "Você perdeu...";
   const [abaModal, setAbaModal] = useState("1");
   const botoesNavModal = ["1", "2"];
@@ -156,14 +164,40 @@ export default function TelaHistorico({
           ) : (
             <>
               <h1 className="tituloResultado">Resultado da Batalha:</h1>
-              <div className="area-banner-central">
-                <img
-                  src={imagemBanner}
-                  alt="Resultado"
-                  className="img-banner-final"
-                />
-                <h2 className="texto-resultado-final">{mensagemResultado}</h2>
-              </div>
+              {!participou && (
+                <div className="brasaoResultado">
+                  <div className="secaoVitorioso">
+                    <p className="statusJogadorVencedor">Vencedor:</p>
+                    <div>
+                      <p className="resultNomeJogador">{infoJogador1.nome}</p>
+                      <div className="infoRatoResultBatalha">
+                        <img src={ImagensRato[infoRatoJ1.classe?.nomeClasse]} />
+                        <p>{nomeRatoJ1}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="secaoDerrotado">
+                    <p className="statusJogadorDerrotado">Comedor de bola:</p>
+                    <div>
+                      <p className="resultNomeJogador">{infoJogador2.nome}</p>
+                      <div className="infoRatoResultBatalha">
+                        <img src={ImagensRato[infoRatoJ2.classe?.nomeClasse]} />
+                        <p>{nomeRatoJ2}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {participou && (
+                <div className="area-banner-central">
+                  <img
+                    src={imagemBanner}
+                    alt="Resultado"
+                    className="img-banner-final"
+                  />
+                  <h2 className="texto-resultado-final">{mensagemResultado}</h2>
+                </div>
+              )}
             </>
           )}
         </>

@@ -172,7 +172,7 @@ export const pegarBatalhaPorId = (idBatalha) => {
 // ---------------------------------------------------------
 // APIS RELACIONADAS AO CONVIDADO
 // ---------------------------------------------------------
-
+  
 export const pegarTodasBatalhasConcluidas = () => {
   return apiClient.get("batalha/concluidas/sembot");
 };

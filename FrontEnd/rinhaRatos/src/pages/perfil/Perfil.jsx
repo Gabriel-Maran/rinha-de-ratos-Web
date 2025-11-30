@@ -12,7 +12,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
 import Header from "../../components/comuns/Header/Header";
-import TelaHistorico from "./TelaHistorico";
+import TelaHistorico from "../../components/comuns/historico/TelaHistorico";
 import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
 import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
 import Input from "../../components/comuns/Input";

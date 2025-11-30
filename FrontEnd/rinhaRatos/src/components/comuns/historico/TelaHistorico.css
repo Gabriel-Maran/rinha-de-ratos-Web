@@ -49,7 +49,7 @@
       rgba(79, 81, 83, 0.3),
       rgba(79, 81, 83, 0.3)
     ),
-    url("../../assets/backgrounds/bgBatalhaMenor.jpg");
+    url("../../../assets/backgrounds/bgBatalhaMenor.jpg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
 
@@ -94,7 +94,7 @@
   margin-top: 1rem;
   color: yellow;
   font-size: 3rem;
-  background-image: url("../../assets/labels/lblTabua.png");
+  background-image: url("../../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   display: flex;
   justify-content: center;
@@ -197,7 +197,7 @@
 .brasaoResultado .infoRatoResultBatalha {
   display: flex;
   flex-direction: row;
-  background-image: url("../../assets/labels/lblPapelAmarelado.png");
+  background-image: url("../../../ssets/labels/lblPapelAmarelado.png");
   background-size: 100% 100%;
 }
 
@@ -220,7 +220,7 @@
 .historicoBatalha {
   width: 42rem;
   height: 50rem;
-  background-image: url("../../assets/displays/displayMadeira2.png");
+  background-image: url("../../../assets/displays/displayMadeira2.png");
   background-size: 100% 100%;
   margin-top: 1rem;
   display: flex;
@@ -238,7 +238,7 @@
   align-items: center;
   color: white;
   font-size: 2rem;
-  background-image: url("../../assets/labels/lblTabua.png");
+  background-image: url("../../../assets/labels/lblTabua.png");
   background-size: 100% 100%;
   position: absolute;
   top: -29rem;
@@ -247,7 +247,7 @@
 
 .bgConteinerHist {
   height: 100%;
-  background-image: url("../../assets/labels/lblPapelPregos.png");
+  background-image: url("../../../assets/labels/lblPapelPregos.png");
   background-size: 110% 110%;
   background-position: center;
   border-radius: 0.5rem;
@@ -294,11 +294,11 @@
 
 .regHistEsq {
   color: white;
-  background-image: url("../../assets/labels/lblCouroReg.png");
+  background-image: url("../../../assets/labels/lblCouroReg.png");
 }
 
 .regHistDir {
-  background-image: url("../../assets/labels/lblPapiroReg.png");
+  background-image: url("../../../assets/labels/lblPapiroReg.png");
 }
 
 .regRound {

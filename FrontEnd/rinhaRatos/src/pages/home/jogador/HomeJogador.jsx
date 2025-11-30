@@ -16,7 +16,7 @@ import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
 import Ranking from "../../../components/comuns/ranking/Ranking";
 import Loja from "./loja/Loja";
-import TelaHistorico from "../../perfil/TelaHistorico";
+import TelaHistorico from "../../../components/comuns/historico/TelaHistorico";
 import "./HomeJogador.css";
 
 const ETAPAS = {

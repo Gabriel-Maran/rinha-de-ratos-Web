@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { pegarTodasBatalhasConcluidas } from "../../Api/Api";
 import HeaderConvidado from "../../components/comuns/Header/HeaderConvidado";
 import Ranking from "../../components/comuns/ranking/Ranking";
 import Trofeu from "../../assets/icones/IconeTrofeu.png";
-import { pegarTodasBatalhasConcluidas } from "../../Api/Api";
+import TelaHistorico from "../../components/comuns/historico/TelaHistorico";
 import "../perfil/Perfil.css";
 import "../home/jogador/batalhas/ListaDeBatalhas.css";
 
@@ -12,6 +13,8 @@ export default function HomeConvidado() {
 
   const [historicoBatalhas, setHistoricoBatalhas] = useState([]);
   const [loadingHistorico, setLoadingHistorico] = useState(false);
+  const [mostrarHistorico, setMostrarHistorico] = useState(false);
+  const [idBatalhaSelecionada, setIdBatalhaSelecionada] = useState(null);
 
   // --- NOVA FUNÇÃO DE FORMATAÇÃO--
   //Segundo pesquisas com o home essa é melhor, vou validar isso e se pá troco nas outras e comento certinho
@@ -48,6 +51,16 @@ export default function HomeConvidado() {
     }
   }, [opcaoAtivada]);
 
+  const abrirHistorico = (idBatalha) => {
+    setIdBatalhaSelecionada(idBatalha);
+    setMostrarHistorico(true);
+  };
+
+  const fecharHistorico = () => {
+    setMostrarHistorico(false);
+    setIdBatalhaSelecionada(null);
+  };
+
   let conteudoHomeConvidado;
 
   switch (opcaoAtivada) {
@@ -77,7 +90,12 @@ export default function HomeConvidado() {
                     <p className="status-batalha-texto">Concluída</p>
                   </div>
                   <div className="opcoesBatalhaPerfil">
-                    <button className="btnVerHistorico">Ver Detalhes</button>
+                    <button
+                      className="btnVerHistorico"
+                      onClick={() => abrirHistorico(batalha.idBatalha)}
+                    >
+                      Ver Detalhes
+                    </button>
                   </div>
                 </div>
               ))
@@ -93,6 +111,13 @@ export default function HomeConvidado() {
 
   return (
     <>
+      {mostrarHistorico && idBatalhaSelecionada && (
+        <TelaHistorico
+          onClose={fecharHistorico}
+          mostrarHistorico={mostrarHistorico}
+          idBatalha={idBatalhaSelecionada}
+        />
+      )}
       <HeaderConvidado home="homeconvidado" />
       <div className="corpo-container">
         <div className={"opcoes"}>
