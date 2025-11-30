@@ -1,42 +1,47 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { pegarUsuarioPorId } from "../Api/Api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  // Serve para o  app não "piscar" enquanto o user carrega
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const storedId = sessionStorage.getItem("idUsuario");
+ 
+  // Usamos useCallback para garantir que essa função não seja recriada a cada renderização
+  const recarregarUsuario = useCallback(async () => {
+    const storedId = sessionStorage.getItem("idUsuario");
 
-      if (storedId) {
-        try {
-          const resposta = await pegarUsuarioPorId(storedId);
-          setUser(resposta.data);
-        } catch (err) {
-          console.error("Falha ao carregar usuário:", err);
-          sessionStorage.removeItem("idUsuario");
-        }
+    if (storedId) {
+      try {
+        const resposta = await pegarUsuarioPorId(storedId);
+        setUser(resposta.data);
+      } catch (err) {
+        console.error("Falha ao carregar usuário:", err);
+        sessionStorage.removeItem("idUsuario");
+        setUser(null);
       }
-      setLoading(false);
-    };
-
-    loadUser();
+    }
+    setLoading(false);
   }, []);
 
-  // O 'value' partilha o objeto 'user', a função 'setUser', e o 'loading'
-  const value = { user, setUser, loading };
+
+  // Ele roda apenas uma vez quando o app abre, chamando nossa função
+  useEffect(() => {
+    recarregarUsuario();
+  }, [recarregarUsuario]);
+
+ 
+  // Adicionamos 'recarregarUsuario' aqui para você usar em outros lugares!
+  const value = { user, setUser, loading, recarregarUsuario };
 
   return (
     <AuthContext.Provider value={value}>
-      {/* O 'children' só é renderizado depois de o loading terminar */}
       {!loading && children}
     </AuthContext.Provider>
   );
 }
+
 export function useAuth() {
   return useContext(AuthContext);
 }

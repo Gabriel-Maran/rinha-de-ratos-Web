@@ -174,5 +174,5 @@ export const pegarBatalhaPorId = (idBatalha) => {
 // ---------------------------------------------------------
 
 export const pegarTodasBatalhasConcluidas = () => {
-  return apiClient.get("batalha/concluidas");
+  return apiClient.get("batalha/concluidas/sembot");
 };

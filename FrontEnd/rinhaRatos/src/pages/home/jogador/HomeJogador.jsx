@@ -14,7 +14,7 @@ import Botao from "../../../components/comuns/Botao";
 import ModalCriacaoRato from "./meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
-import Ranking from "../../../components/comuns/ranking/Ranking"; 
+import Ranking from "../../../components/comuns/ranking/Ranking";
 import Loja from "./loja/Loja";
 import TelaHistorico from "../../perfil/TelaHistorico";
 import "./HomeJogador.css";
@@ -27,7 +27,8 @@ const ETAPAS = {
 };
 
 export default function HomeJogador() {
-  const { user } = useAuth();
+  const { user, recarregarUsuario } = useAuth();
+
   const navigate = useNavigate();
   const listaBatalhasAntigas = useRef([]);
 
@@ -122,8 +123,6 @@ export default function HomeJogador() {
               batalhaVelha.status !== "Concluida" &&
               batalhaNova.status === "Concluida"
             ) {
-              console.log("BATALHA ACABOU! ID:", batalhaNova.idBatalha);
-
               let meuRatoNaBatalha = null;
               if (batalhaNova.jogador1?.idUsuario === idUsuarioLogado) {
                 meuRatoNaBatalha = batalhaNova.rato1;
@@ -134,31 +133,37 @@ export default function HomeJogador() {
               if (meuRatoNaBatalha) {
                 setIdBatalhaResultado(batalhaNova.idBatalha || batalhaNova.id);
                 setMostrarResultadoBatalha(true);
+                recarregarUsuario();
 
-                // --- CORREÇÃO DA MORTE (VERSÃO ROBUSTA) ---
-                const criadorIdRaw = batalhaNova.admCriador?.idUsuario ?? batalhaNova.admCriador?.id;
-                const criadorIdNum = criadorIdRaw != null ? Number(criadorIdRaw) : null;
-                const ehBatalhaContraBot = !batalhaNova.admCriador || criadorIdNum === -1;
+                const criadorIdRaw =
+                  batalhaNova.admCriador?.idUsuario ??
+                  batalhaNova.admCriador?.id;
+                const criadorIdNum =
+                  criadorIdRaw != null ? Number(criadorIdRaw) : null;
+                const ehBatalhaContraBot =
+                  !batalhaNova.admCriador || criadorIdNum === -1;
 
                 if (ehBatalhaContraBot) {
-                  console.log("🤖 Batalha contra Bot detectada: Morte desativada.");
+                  console.log(
+                    "🤖 Batalha contra Bot detectada: Morte desativada."
+                  );
                 } else {
-                  // Normaliza id do vencedor (várias possiblidades de formato)
                   const idVencedor = Number(
                     batalhaNova.vencedor?.idUsuario ??
-                    batalhaNova.vencedorId ??
-                    batalhaNova.vencedor?.id ??
-                    batalhaNova.vencedor
+                      batalhaNova.vencedorId ??
+                      batalhaNova.vencedor?.id ??
+                      batalhaNova.vencedor
                   );
 
-                  // Só executa morte se houver um vencedor numérico e for diferente do usuário logado
-                  if (Number.isFinite(idVencedor) && idVencedor !== idUsuarioLogado) {
-                    const ratoId = meuRatoNaBatalha?.idRato ?? meuRatoNaBatalha?.id;
+                  if (
+                    Number.isFinite(idVencedor) &&
+                    idVencedor !== idUsuarioLogado
+                  ) {
+                    const ratoId =
+                      meuRatoNaBatalha?.idRato ?? meuRatoNaBatalha?.id;
                     if (ratoId) {
-                      console.log("💀 DERROTA PVP! Executando baixa do rato...", ratoId);
                       ratoMorto(ratoId);
-                    } else {
-                      console.warn("Não foi possível obter id do rato para executar ratoMorto:", meuRatoNaBatalha);
+                      buscarDadosIniciais(true);
                     }
                   }
                 }
@@ -175,18 +180,25 @@ export default function HomeJogador() {
         if (!silencioso) setLoadingRatos(false);
       }
     },
-    [idUsuarioLogado]
+    [idUsuarioLogado, recarregarUsuario]
   );
 
   useEffect(() => {
     buscarDadosIniciais(false);
+    recarregarUsuario();
     const intervalo = setInterval(() => {
       buscarDadosIniciais(true);
+      recarregarUsuario();
     }, 3000);
-    return () => clearInterval(intervalo);
-  }, [buscarDadosIniciais]);
 
-  // --- CONTROLE MODAL ---
+    return () => clearInterval(intervalo);
+  }, [buscarDadosIniciais, recarregarUsuario]); //
+
+  const handleAtualizarAposInscricao = async () => {
+    await buscarDadosIniciais(false);
+    await recarregarUsuario();
+  };
+
   const mostrarSelecaoClasse = () => setEtapaModal(ETAPAS.SELECAO_CLASSE);
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
@@ -212,7 +224,11 @@ export default function HomeJogador() {
       const habilidadeEncontrada = descricaoHabilidades.find(
         (h) => h.nomeHabilidade === ratoClicado.habilidade.nomeHabilidade
       );
-      setDescHabilidade(habilidadeEncontrada ? habilidadeEncontrada.descricao : "Descrição indisponível.");
+      setDescHabilidade(
+        habilidadeEncontrada
+          ? habilidadeEncontrada.descricao
+          : "Descrição indisponível."
+      );
     }
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
@@ -224,6 +240,7 @@ export default function HomeJogador() {
     setMostrarResultadoBatalha(false);
     setIdBatalhaResultado(null);
     buscarDadosIniciais(false);
+    recarregarUsuario();
   };
 
   let conteudoCorpo;
@@ -257,7 +274,15 @@ export default function HomeJogador() {
                 onClick: mostrarSelecaoClasse,
                 disabled: loadingRatos || contagemRatosVivos >= limiteRatos,
               }}
-              acaoBtn={<strong>{contagemRatosVivos >= limiteRatos ? "Limite Atingido" : loadingRatos ? "Carregando..." : ".Adicionar Rato + "}</strong>}
+              acaoBtn={
+                <strong>
+                  {contagemRatosVivos >= limiteRatos
+                    ? "Limite Atingido"
+                    : loadingRatos
+                    ? "Carregando..."
+                    : ".Adicionar Rato + "}
+                </strong>
+              }
             />
             <ListaDeRatos
               ratosUsuario={ratosUsuario}
@@ -278,7 +303,7 @@ export default function HomeJogador() {
             batalhasInscrito={inscricoesPendentes}
             ratosUsuario={ratosUsuario}
             idUsuarioLogado={idUsuarioLogado}
-            onBatalhaInscrita={() => buscarDadosIniciais(false)}
+            onBatalhaInscrita={handleAtualizarAposInscricao}
           />
         );
         break;

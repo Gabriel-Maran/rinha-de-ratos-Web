@@ -15,7 +15,8 @@ export default function ModalEditarBatalha({
   batalhaSendoEditada,
   setListaBatalhas,
 }) {
-  const { user } = useAuth();
+  const { user, recarregarUsuario } = useAuth();
+
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
 
   const [nomeBatalhaEditada, setNomeBatalhaEditada] = useState("");
@@ -37,12 +38,8 @@ export default function ModalEditarBatalha({
   };
 
   // ---------------------------------------------------------
-  // 1. CARREGAR DADOS (
+  // 1. CARREGAR DADOS
   // ---------------------------------------------------------
-
-  //typeof é o operador de identificação, devolve o tipo que está sendo guardado da variavael que vc colocou ele antes
-  // Na utilização abaixo ele verifica se o jogador é um objeto.
-  //push adiciona um novo item no final da fila.
   useEffect(() => {
     const carregarDadosFrescos = async () => {
       const idBatalha =
@@ -106,6 +103,10 @@ export default function ModalEditarBatalha({
 
     try {
       await removerJogador(idBatalhaSeguro, idUsuarioAlvo);
+
+      //  Força a atualização do saldo no Header
+      await recarregarUsuario();
+
       setJogadoresBatalha((listaAtual) =>
         listaAtual.filter(
           (jogador) => String(jogador.idUsuario) !== String(idUsuarioAlvo)
@@ -129,12 +130,7 @@ export default function ModalEditarBatalha({
           return batalha;
         })
       );
-      const novoSaldo =
-        idUsuarioAlvo.mousecoinSaldo + idBatalhaSeguro.custoInscricao;
-      setUser((idUsuarioAlvo) => ({
-        ...idUsuarioAlvo, // Copia todos os dados antigos
-        mousecoinSaldo: novoSaldo,
-      }));
+
       setMensagemSucesso("Jogador removido!");
       limparMensagens();
     } catch (err) {
@@ -152,6 +148,9 @@ export default function ModalEditarBatalha({
 
     try {
       await deletarBatalha(idBatalha);
+
+      await recarregarUsuario();
+
       setListaBatalhas((antiga) =>
         antiga.filter((b) => b.idBatalha !== idBatalha)
       );
