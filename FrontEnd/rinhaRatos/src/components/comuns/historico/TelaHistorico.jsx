@@ -32,6 +32,8 @@ export default function TelaHistorico({
   const [infoJogadorDerrotado, setInfoJogadorDerrotado] = useState(null);
   const [fotoJVencedor, setFotoJVencedor] = useState(0);
   const [fotoJDerrotado, setFotoJDerrotado] = useState(0);
+  const [infoRatoVencedor, setInfoRatoVencedor] = useState(null)
+  const [infoRatoDerrotado, setInfoRatoDerrotado] = useState(null)
 
   const [infoJogador1, setInfoJogador1] = useState(null);
   const [fotoJ1, setFotoJ1] = useState(0);
@@ -103,12 +105,25 @@ export default function TelaHistorico({
       try {
         const resposta = await buscarHistorico(idFinal);
         const dados = resposta.data;
-        console.log(dados);
 
         if (Array.isArray(dados) && dados.length >= 2) {
           try {
             const respostaBatalha = await pegarJogadoresDaBatalha(idFinal);
             const dadosBatalha = respostaBatalha.data;
+            try {
+              const idRatoVencedor = dadosBatalha?.idRatoVencedor;
+              const idRatoDerrotado = dadosBatalha?.idRatoPerdedor;
+              const respostaRatoVencedor = await pegarRatoPorID(idRatoVencedor);
+              const respostaRatoDerrotado = await pegarRatoPorID(idRatoDerrotado);
+              setInfoRatoVencedor(respostaRatoVencedor?.data);
+              setInfoRatoDerrotado(respostaRatoDerrotado?.data);
+            } catch (err) {
+              console.error(
+                "Erro ao buscar dados do rato vencedor ou do rato derrotado:",
+                err.response?.data || err
+              );
+            }
+
             const idJogador1 = dadosBatalha.jogador1.idUsuario;
             const idJogador2 = dadosBatalha.jogador2.idUsuario;
             setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado);
@@ -135,7 +150,6 @@ export default function TelaHistorico({
               !idUsuarioLogado ? setParticipou(false) : setParticipou(true);
               const ratoJ1 = await pegarRatoPorID(idRatoJ1);
               const dadosRatoJ1 = ratoJ1.data;
-              console.log(dadosRatoJ1);
               setInfoRatoJ1(dadosRatoJ1);
 
               const ratoJ2 = await pegarRatoPorID(idRatoJ2);
@@ -175,8 +189,8 @@ export default function TelaHistorico({
   const imagemBanner = !idUsuarioLogado
     ? ImgNeutra
     : vitoria
-    ? ImgVitoria
-    : ImgDerrota;
+      ? ImgVitoria
+      : ImgDerrota;
   const mensagemResultado = vitoria ? "Você venceu!!!" : "Você perdeu...";
   const [abaModal, setAbaModal] = useState("1");
   const botoesNavModal = ["1", "2"];
@@ -192,7 +206,6 @@ export default function TelaHistorico({
           ) : (
             <>
               <h1 className="tituloResultado">Resultado da Batalha:</h1>
-              {/* {!participou && <div className="brasaoResultado"></div>} */}
               <div className="area-banner-central">
                 <img
                   src={imagemBanner}
@@ -205,30 +218,30 @@ export default function TelaHistorico({
                   <>
                     <div className="resultadoDaBatalhaNeutro">
                       <div className="secaoVitorioso">
-                        <p className="statusJogadorVencedor">Sigmas:</p>
+                        <p className="statusJogadorVencedor">Sigmas 🗿:</p>
                         <div className="resultInfoJogador">
                           <img src={fotoJVencedor} />
                           <p>{infoJogadorVencedor?.nome ?? ""}</p>
                         </div>
-                        {/*                         <div className="infoRatoResultBatalha">
+                        <div className="infoRatoResultBatalha">
                           <img
-                            src={ImagensRato[infoRatoJ1.classe?.nomeClasse]}
+                            src={ImagensRato[infoRatoVencedor?.classe?.nomeClasse]}
                           />
-                          <p>{nomeRatoJ1}</p>
-                        </div> */}
+                          <p>{infoRatoVencedor?.nomeCustomizado}</p>
+                        </div>
                       </div>
                       <div className="secaoDerrotado">
-                        <p className="statusJogadorDerrotado">Betinhas:</p>
+                        <p className="statusJogadorDerrotado">Betinhas 🤓:</p>
                         <div className="resultInfoJogador">
                           <img src={fotoJDerrotado} />
                           <p>{infoJogadorDerrotado?.nome ?? ""}</p>
                         </div>
-                        {/*                         <div className="infoRatoResultBatalha">
+                        <div className="infoRatoResultBatalha">
                           <img
-                            src={ImagensRato[infoRatoJ2.classe?.nomeClasse]}
+                            src={ImagensRato[infoRatoDerrotado?.classe?.nomeClasse]}
                           />
-                          <p>{nomeRatoJ2}</p>
-                        </div> */}
+                          <p>{infoRatoDerrotado?.nomeCustomizado}</p>
+                        </div>
                       </div>
                     </div>
                   </>
@@ -237,7 +250,6 @@ export default function TelaHistorico({
                   <h2 className="texto-resultado-final">{mensagemResultado}</h2>
                 )}
               </div>
-              {/*  )} */}
             </>
           )}
         </>
@@ -260,8 +272,8 @@ export default function TelaHistorico({
                           log.player === 1
                             ? fotoJ1
                             : log.player === 2
-                            ? fotoJ2
-                            : getFotoUrlById(0);
+                              ? fotoJ2
+                              : getFotoUrlById(0);
                         return (
                           <>
                             {log.player !== 0 && (
@@ -270,8 +282,8 @@ export default function TelaHistorico({
                                   log.player === 1
                                     ? "regHistEsq"
                                     : log.player === 2
-                                    ? "regHistDir"
-                                    : ""
+                                      ? "regHistDir"
+                                      : ""
                                 }
                                 key={log.idmessage || index}
                               >
@@ -335,10 +347,9 @@ export default function TelaHistorico({
                                           <div
                                             className="qVidaRatoJ1"
                                             style={{
-                                              transform: `translateX(${
-                                                (vidaAtual.vRJ1 / maxJ1) * 100 -
+                                              transform: `translateX(${(vidaAtual.vRJ1 / maxJ1) * 100 -
                                                 100
-                                              }%)`,
+                                                }%)`,
                                             }}
                                           />
                                         </div>
@@ -346,7 +357,7 @@ export default function TelaHistorico({
                                         <img
                                           src={
                                             ImagensRato[
-                                              infoRatoJ1.classe?.nomeClasse
+                                            infoRatoJ1.classe?.nomeClasse
                                             ]
                                           }
                                         />
@@ -360,10 +371,9 @@ export default function TelaHistorico({
                                           <div
                                             className="qVidaRatoJ2"
                                             style={{
-                                              transform: `translateX(${
-                                                (vidaAtual.vRJ2 / maxJ2) * 100 -
+                                              transform: `translateX(${(vidaAtual.vRJ2 / maxJ2) * 100 -
                                                 100
-                                              }%)`,
+                                                }%)`,
                                             }}
                                           />
                                         </div>
@@ -371,7 +381,7 @@ export default function TelaHistorico({
                                         <img
                                           src={
                                             ImagensRato[
-                                              infoRatoJ2.classe?.nomeClasse
+                                            infoRatoJ2.classe?.nomeClasse
                                             ]
                                           }
                                         />
