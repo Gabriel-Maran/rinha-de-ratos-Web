@@ -19,7 +19,7 @@ INSERT INTO habilidades (id_habilidade, id_classe, nome_habilidade, descricao, c
 
 -- Habilidades Classe 2: Rato de Hospital
 INSERT INTO habilidades (id_habilidade, id_classe, nome_habilidade, descricao, chance_sucesso, efeito_sucesso_str, efeito_falha_str, efetivo_txt, falha_txt) VALUES
-(4, 2, 'Autocurado', '''85% de chance de regenerar 8% do HP máximo (instantâneo). Falha: perde 5% da DEF na rodada.', 85, '+8%HPSSEU', '-5%DEFSEU', 'Injeção aplicada! O rato recupera 8% de HP.','A seringa travou! O rato fica mais frágil: -5% DEF nesta rodada.'),
+(4, 2, 'Autocurado', '85% de chance de regenerar 8% do HP máximo (instantâneo). Falha: perde 5% da DEF na rodada.', 85, '+8%HPSSEU', '-5%DEFSEU', 'Injeção aplicada! O rato recupera 8% de HP.','A seringa travou! O rato fica mais frágil: -5% DEF nesta rodada.'),
 (5, 2, 'Antisséptico', '75% de chance de ganhar +12% PA e +12% PD — 1 rodada. Falha: perde 6% do HP.', 75, '+12%PASSEU;+12%PDSSEU', '-6%HPSSEU', 'Limpeza total! +12% PA e +12% PD apenas nesta rodada!','Reação alérgica! O antisséptico causa 6% de dano de HP.'),
 (6, 2, 'Escudo Antígeno', '70% de chance de ganhar +20% PD — 1 rodada. Falha: perde 8% do HP e -5% DEF na rodada.', 70, '+20%PDSSEU', '-8%HPSSEU;-5%DEFSEU', 'Defesas ativadas! +20% PD apenas nesta rodada!','Sobrecarga imunológica! -8% HP e -5% DEF nesta rodada.');
 
