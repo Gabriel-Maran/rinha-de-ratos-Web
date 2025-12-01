@@ -24,7 +24,7 @@ export default function TelaHistorico({
   const [idVencedor, setIdVencedor] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const idUsuarioLogado = user?.idUsuario || user?.id;
+  const idUsuarioLogado = (user?.idUsuario && user?.tipoConta === 'JOGADOR') ? user?.idUsuario : user?.id;
 
   const [participou, setParticipou] = useState(false);
 
@@ -109,7 +109,6 @@ export default function TelaHistorico({
           try {
             const respostaBatalha = await pegarJogadoresDaBatalha(idFinal);
             const dadosBatalha = respostaBatalha.data;
-            console.log(dadosBatalha);
             const idJogador1 = dadosBatalha.jogador1.idUsuario;
             const idJogador2 = dadosBatalha.jogador2.idUsuario;
             setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado);
