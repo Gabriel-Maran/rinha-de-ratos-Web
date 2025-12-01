@@ -1,4 +1,4 @@
-# README
+# Rinha de ratos - Game Web
 
 Ao clonar o repositório, não esqueça de realizar os seguintes passos:
 
