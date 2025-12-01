@@ -5,6 +5,7 @@ import com.unipar.rinhaRatos.DTOandBASIC.BatalhaDTO
 import com.unipar.rinhaRatos.DTOandBASIC.BatalhaSummary
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.mapper.toDto
+import com.unipar.rinhaRatos.mapper.toDtoPlus
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.service.BatalhaService
 import org.springframework.http.HttpStatus
@@ -70,7 +71,7 @@ class BatalhaController(
     fun pegaBatalha(@PathVariable("idBatalha") idBatalha: Long): ResponseEntity<Any> {
         val result = batalhaService.getById(idBatalha)
         if(result.isEmpty) return buildError(HttpStatus.NOT_FOUND, "Batalha não encontrada", "BATALHA_NOT_FOUND")
-        return ResponseEntity.ok(result.get().toDto())
+        return ResponseEntity.ok(result.get().toDtoPlus())
     }
 
     @GetMapping("/concluidas")
