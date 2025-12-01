@@ -3,7 +3,6 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { ratosUsuario } from "../../../../../Api/Api.js";
 import ImagensRato from "../../../../../components/ImagensRato";
 import MouseCoin from "../../../../../assets/moedas/MouseCoin.png";
-import Input from "../../../../../components/comuns/Input";
 import "./DetalhesDaClasse.css";
 
 export default function DetalhesDaClasse({
@@ -11,19 +10,45 @@ export default function DetalhesDaClasse({
   onMostrar,
   descricaoHabilidades,
 }) {
+  // ---------------------------------------------------------
+  // GERENCIAMENTO DE ESTADO LOCAL E GLOBAL
+  // ---------------------------------------------------------
+
+  // useAuth: Recupera o usuário para verificar saldo e
+  // setUser para atualizar o saldo após a compra.
+  const { user, setUser } = useAuth();
+
+  // Estados locais para controlar o formulário de criação
   const [nomeRato, setNomeRato] = useState(classe.apelido);
   const [habilAtiva, setHabilAtiva] = useState(0);
   const [erro, setErro] = useState(null);
-  const {user, setUser } = useAuth();
+
+  // Função simples para atualizar o índice da habilidade selecionada
   const handleBtnHabil = (index) => setHabilAtiva(index);
+
+  // ---------------------------------------------------------
+  // LÓGICA DE DADOS DERIVADOS (LOOKUP)
+  // ---------------------------------------------------------
+
+  // Em vez de salvar a descrição inteira no estado, salvamos apenas o índice (habilAtiva).
+  // A cada renderização, calculamos qual é a habilidade e buscamos a descrição correspondente
+  // no array 'descricaoHabilidades' vindo das props.
   const habilidadeAtiva = classe.habilidades[habilAtiva];
-  
-  
+
   const descObj = descricaoHabilidades.find(
     (itemDesc) => itemDesc.idHabilidade === habilidadeAtiva.idHabilidade
   );
   const textoDescricao = descObj?.descricao;
-  
+
+  // ---------------------------------------------------------
+  // FINALIZAR CRIAÇÃO (COMPRA)
+  // ---------------------------------------------------------
+
+  // Fluxo de Transação:
+  // 1. Validação: Verifica se o usuário tem saldo antes de incomodar o servidor.
+  // 2. Persistência: Chama a API (ratosUsuario) para salvar o novo rato no banco.
+  // 3. Atualização Otimista: Subtrai o valor do Contexto Global (setUser) manualmente.
+  //    Isso garante que o Header mostre o novo saldo imediatamente, sem precisar de F5 ou nova query.
   const salvarRato = async () => {
     const custoRato = 5;
 
@@ -32,10 +57,8 @@ export default function DetalhesDaClasse({
       return;
     }
 
-
     const idUsuarioLogado = user.idUsuario || user.id;
     const habilidadeSelecionada = classe.habilidades[habilAtiva];
-
 
     const dados = {
       idUsuario: idUsuarioLogado,
@@ -44,15 +67,12 @@ export default function DetalhesDaClasse({
     };
 
     try {
-      console.log("Enviando para API:", dados);
       const resposta = await ratosUsuario(dados);
       console.log("Cadastro OK! (Resposta da API):", resposta.data);
 
       const ratoSalvo = resposta.data;
 
       const novoSaldo = user.mousecoinSaldo - 5;
-
-      // ATUALIZA o 'user' no AuthContext globalmente
       setUser((prevUser) => ({
         ...prevUser,
         mousecoinSaldo: novoSaldo,
@@ -65,33 +85,35 @@ export default function DetalhesDaClasse({
     }
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO
+  // ---------------------------------------------------------
+
+  // Input Controlado: O valor do input é ligado ao estado 'nomeRato'.
+  // Image Fallback (||): Se a classe não tiver imagem específica, usa "Rato de Esgoto".
+  // Map de Habilidades: Renderiza botões dinâmicos. O estilo "btnAtivo" depende da comparação do índice.
   return (
     <>
       <div className="titulo">{classe.nomeClasse}</div>
-
       <div className="detalhes-conteudo">
         <div className="inputEFoto">
           <div className="nomeRato">
-            <Input
-              input={{
-                type: "text",
-                placeholder: nomeRato,
-                maxLength: 15,
-                onChange: (e) => setNomeRato(e.target.value),
-              }}
+            <input
+              type="text"
+              className="input-nome-rato"
+              placeholder={nomeRato}
+              maxLength={15}
+              onChange={(e) => setNomeRato(e.target.value)}
             />
             <span className="simboloEditar">🖊</span>
           </div>
-
           <img
             src={
               ImagensRato[classe.nomeClasse] || ImagensRato["Rato de Esgoto"]
             }
           />
         </div>
-
         <div className="descRato">{classe.descricao}</div>
-
         <p className="slctHabilidade">Selecione a habilidade:</p>
         <div className="opcoesHabilidade">
           {classe.habilidades.map((habilidade, index) => (
@@ -106,11 +128,9 @@ export default function DetalhesDaClasse({
             </button>
           ))}
         </div>
-
         <div className="descHabilidade">
           {textoDescricao || "Descrição não encontrada."}
         </div>
-
         <div className="socorro">
           <button className="btnFinalizar" onClick={salvarRato}>
             Finalizar
@@ -120,7 +140,6 @@ export default function DetalhesDaClasse({
             <img src={MouseCoin} />
           </div>
         </div>
-
         {erro && <p className="erro">{erro}</p>}
       </div>
     </>

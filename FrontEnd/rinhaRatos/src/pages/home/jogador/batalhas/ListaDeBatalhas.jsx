@@ -25,6 +25,15 @@ export default function ListaDeBatalhas({
   const [isLoading, setIsLoading] = useState(false);
   const [erroModal, setErroModal] = useState(null);
 
+  // ---------------------------------------------------------
+  // BATALHAR COM BOT 
+  // ---------------------------------------------------------
+
+  // Fluxo de execução assíncrona para batalhas instantâneas:
+  // 1. Envia os dados para a API (batlhaBot).
+  // 2. A API processa a luta no backend e retorna o ID da batalha gerada.
+  // 3. Atualizamos o estado para exibir o modal de resultado imediatamente (TelaHistorico).
+  // Diferente do PvP, aqui não há "inscrição", a luta acontece na hora.
   const batalharComBot = async (idRato) => {
     setIsLoading(true);
     setErroModal(null);
@@ -46,12 +55,24 @@ export default function ListaDeBatalhas({
       );
     }
   };
+
+  // ---------------------------------------------------------
+  // SAIR DA BATALHA (CANCELAR INSCRIÇÃO)
+  // ---------------------------------------------------------
+
+  // Gerenciamento de Reembolso e Sincronia:
+  // Quando o jogador sai, o dinheiro deve voltar para a conta.
+
+  // 1. removerJogador(API): O Backend remove o registro e estorna o valor no banco de dados.
+  // 2. recarregarUsuario(Context): O Frontend força uma busca no endpoint de usuário para
+  //    pegar o saldo atualizado. Isso garante que o Header mostre as moedas certas sem F5.
+  // 3. onBatalhaInscrita(Prop): Avisa o componente Pai (HomeJogador) para recarregar as listas de batalha.
   const sairBatalha = async (idBatalha) => {
     if (!idBatalha || !idUsuarioLogado) return;
 
     setIsLoading(true);
     setErroModal(null);
-    
+
     try {
       await removerJogador(idBatalha, idUsuarioLogado);
       await recarregarUsuario();
@@ -64,6 +85,14 @@ export default function ListaDeBatalhas({
     }
   };
 
+  // ---------------------------------------------------------
+  // FORMATAÇÃO DE DATA
+  // ---------------------------------------------------------
+
+  // Parsing Manual de String:
+  // A API retorna datas no formato ISO (ex: "2023-11-20T14:30:00").
+  // O split("T") separa data de hora. O split("-") quebra ano, mês e dia.
+  // Template String (`${}`) remonta no formato brasileiro DD/MM.
   const formatarDataEHora = (data) => {
     if (!data) return "Data Indisponível";
     try {
@@ -75,6 +104,14 @@ export default function ListaDeBatalhas({
     }
   };
 
+  // ---------------------------------------------------------
+  // CONTROLE DE MODAL (ABRIR/FECHAR)
+  // ---------------------------------------------------------
+
+  // Reutilização de Componente:
+  // Usamos o mesmo modal (ModalEscolherRatoBatalha) para dois contextos diferentes:
+  // 1. PvP (entrar em batalha existente): Salva o ID da batalha selecionada.
+  // 2. PvE (Bot): Seta a flag 'bot' como true e limpa o ID da batalha.
   const handleAbrirModal = (idBatalha, bot) => {
     if (bot) {
       setComBot(true);
@@ -96,6 +133,18 @@ export default function ListaDeBatalhas({
     setComBot(false);
   };
 
+  // ---------------------------------------------------------
+  // ENTRAR NA BATALHA (PvP)
+  // ---------------------------------------------------------
+
+  // Atualização Otimista (Optimistic UI) vs Real:
+  // Aqui você optou por calcular o saldo manualmente no Frontend para resposta imediata,
+  // ao invés de esperar o recarregarUsuario() (que usamos no sairBatalha).
+
+  // 1. entrarBatalha(API): Registra o usuário na luta.
+  // 2. find(): Procura na lista local (batalhasAbertas) o objeto da batalha pelo ID
+  //    para descobrir quanto custava a inscrição.
+  // 3. setUser(State): Atualiza manualmente o saldo local subtraindo o valor.
   const handleEntrarBatalha = async (idRato) => {
     if (!idRato || !idUsuarioLogado || !batalhaSelecionadaId) {
       setErroModal("Erro: Dados incompletos.");
@@ -114,16 +163,14 @@ export default function ListaDeBatalhas({
       handleFecharModal();
       onBatalhaInscrita();
 
-      //Entra na função batalhasAbertas e pega a batalha que estou editando permitindo que eu acesse os dados dessa batalha.
       const pegarIdBatalha = batalhasAbertas.find(
         (batalha) => batalha.idBatalha === batalhaSelecionadaId
       );
 
       const novoSaldo = user.mousecoinSaldo - pegarIdBatalha.custoInscricao;
 
-      // Atualiza o estado global com o novo objeto de usuário
       setUser((userAntigo) => ({
-        ...userAntigo, // Copia todos os dados antigos
+        ...userAntigo,
         mousecoinSaldo: novoSaldo,
       }));
     } catch (err) {
@@ -134,6 +181,13 @@ export default function ListaDeBatalhas({
     }
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO CONDICIONAL
+  // ---------------------------------------------------------
+
+  // Switch Case: Alterna o conteúdo principal da tela baseado no botão clicado no Header interno.
+  // Case "Todas": Mostra batalhas disponíveis para entrar e botão de luta contra Bot.
+  // Case "Inscritas": Mostra apenas batalhas onde o usuário já está, permitindo sair.
   let conteudoOpcaoBatalhas;
   switch (btnOpcBatalhas) {
     case "Todas":

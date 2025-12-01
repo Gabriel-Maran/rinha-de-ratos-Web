@@ -15,7 +15,6 @@ import Header from "../../components/comuns/Header/Header";
 import TelaHistorico from "../../components/comuns/historico/TelaHistorico";
 import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
 import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
-import Input from "../../components/comuns/Input";
 import ModalOpcFoto, { getFotoUrlById } from "./ModalOpcFotosPerfil";
 import "./Perfil.css";
 import "../home/jogador/batalhas/ListaDeBatalhas.css";
@@ -56,14 +55,25 @@ export default function Perfil({ qtdeMoedas }) {
   const fotoUrl = getFotoUrlById(fotoSelecionada);
 
   // ---------------------------------------------------------
-  // CARREGAMENTO INICIAL
+  // CARREGAMENTO INICIAL E PROTEÇÃO DE ROTA
   // ---------------------------------------------------------
+
+  // se não houver um ID de usuário válido (não logado),
+  // ele redireciona imediatamente para a tela de login para proteger a rota.
   useEffect(() => {
     if (idUsuarioLogado === null) {
       navigate("/login");
     }
   }, [idUsuarioLogado, navigate]);
 
+  // ---------------------------------------------------------
+  // BUSCA DE DADOS (PERFIL OU HISTÓRICO)
+  // ---------------------------------------------------------
+
+  // Lógica Condicional de Busca:
+  // 1. Se a aba "Perfil" estiver ativa, preenchemos os inputs com os dados do Contexto (user).
+  // 2. Se a aba "Histórico" estiver ativa, decidimos qual API chamar baseados no tipo de conta (ADM ou JOGADOR).
+  // Isso evita chamadas desnecessárias à API quando o usuário está apenas editando o perfil.
   useEffect(() => {
     if (!idUsuarioLogado) return;
 
@@ -119,18 +129,16 @@ export default function Perfil({ qtdeMoedas }) {
   }, [user, opcaoAtivada, idUsuarioLogado]);
 
   // ---------------------------------------------------------
-  //  BAIXAR O HISTORICO EM PDF
+  //  BAIXAR O HISTORICO ESPECÍFICO EM PDF
   // ---------------------------------------------------------
 
-  // BLOB(Binary Large Object)  sem usar o blob o axios tenta abrir o arquivo e ler um json,
-  // já com o blob você diz para ele apenas guardar os dados  brutos em uma caixa,
-  // com isso o javScript   pega os binários exatos e salva na memória.
+  // BLOB (Binary Large Object): Sem usar o blob, o axios tenta abrir o arquivo e ler como texto/json.
+  // Com o blob, você diz para ele tratar os dados brutos como um arquivo binário e salvar na memória.
 
-  // 1. Cria uma URL temporária para o arquivo binário createObjectURL(Blob).
-  // 2. Cria um link HTML invisível(createElement).
-  // 3. Define o nome do arquivo que será baixado(setAttribute).
-  // 4. Adiciona no corpo do site, clica e remove(appendChild).
-
+  // 1. window.URL.createObjectURL: Cria uma URL temporária apontando para o arquivo na memória RAM do navegador.
+  // 2. document.createElement("a"): Cria um link de download invisível.
+  // 3. setAttribute("download", ...): Define o nome que o arquivo terá ao ser salvo no PC do usuário.
+  // 4. click(): Simula o clique do usuário para iniciar o download.
   const baixarHistoricoBatalha = async (idBatalha) => {
     setMensagemSucesso(null);
     setErro(null);
@@ -157,6 +165,12 @@ export default function Perfil({ qtdeMoedas }) {
     }
   };
 
+  // ---------------------------------------------------------
+  //  BAIXAR RELATÓRIO GERAL EM PDF
+  // ---------------------------------------------------------
+
+  // Funciona exatamente como a função anterior, mas chama o endpoint que gera
+  // um compilado de todas as batalhas do usuário, em vez de uma única batalha.
   const baixarHistoricoBatalhaGeral = async () => {
     setMensagemSucesso(null);
     setErro(null);
@@ -184,8 +198,16 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   // ---------------------------------------------------------
-  //  TROCAR DADOS
+  //  ATUALIZAR DADOS DO PERFIL
   // ---------------------------------------------------------
+
+  // preventDefault(): Evita que o navegador recarregue a página (comportamento padrão de formulários HTML).
+  // Contexto (setUser): Após salvar no banco de dados (API), é CRUCIAL atualizar o contexto global (setUser).
+  // Isso garante que o Header e outros componentes reflitam as mudanças (ex: nova foto) sem precisar de F5.
+
+  // 1. Atualiza dados textuais (senha, email, nome).
+  // 2. Verifica se a foto mudou antes de enviar (economia de dados).
+  // 3. Busca o usuário atualizado no Back e atualiza o Front.
   const senhaTrocada = async (evento) => {
     evento.preventDefault();
     setErro(null);
@@ -213,6 +235,14 @@ export default function Perfil({ qtdeMoedas }) {
     }
   };
 
+  // ---------------------------------------------------------
+  //  LOGOUT 
+  // ---------------------------------------------------------
+
+  // Limpeza de Sessão:
+  // 1. setUser(null): Limpa o estado global da aplicação.
+  // 2. sessionStorage.removeItem: Remove o "cookie" do navegador para evitar login automático.
+  // 3. navigate("/login"): Redireciona o usuário para a porta de entrada.
   const deslogar = () => {
     setUser(null);
     sessionStorage.removeItem("idUsuario");
@@ -220,8 +250,10 @@ export default function Perfil({ qtdeMoedas }) {
   };
 
   // ---------------------------------------------------------
-  // FUNÇÕES AUXILIARES
+  // FUNÇÕES AUXILIARES E VISUAIS
   // ---------------------------------------------------------
+
+  // Alterna o estado booleano para trocar o tipo do input entre 'text' e 'password'
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
@@ -244,6 +276,9 @@ export default function Perfil({ qtdeMoedas }) {
     setIdBatalhaSelecionada(null);
   };
 
+  // Formatação de Data:
+  // Recebe uma string ISO (2025-11-26T15:30:00) e a quebra usando .split("T") e .split("-").
+  // Retorna uma string amigável no formato DD/MM, HH:MM.
   const formatarDataEHora = (data) => {
     if (!data) return "Data Indisponível";
     try {
@@ -256,6 +291,9 @@ export default function Perfil({ qtdeMoedas }) {
     }
   };
 
+  // Retorno Visual Condicional:
+  // Verifica o ID do vencedor comparado ao usuário logado para retornar "Vitória" ou "Derrota".
+  // Se ainda estiver em aberto, retorna o status da batalha.
   const getStatusVisual = (batalha) => {
     if (batalha.vencedor) {
       if (batalha.vencedor.idUsuario === idUsuarioLogado) return "Vitória 🏆";
@@ -291,32 +329,30 @@ export default function Perfil({ qtdeMoedas }) {
               <img className="perfil" src={fotoUrl} alt="Foto de Perfil" />
             </button>
             <p className="lblInfoPerfil">Nome:</p>
-            <Input
-              input={{
-                type: "text",
-                value: nome,
-                onChange: (e) => setNome(e.target.value),
-                placeholder: "",
-              }}
+            <input
+              type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder=""
             />
+
             <p className="lblInfoPerfil">E-mail:</p>
-            <Input
-              input={{
-                type: "text",
-                value: email,
-                onChange: (e) => setEmail(e.target.value),
-                placeholder: "",
-              }}
+            <input
+              type="text"
+              className="input-padrao"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder=""
             />
+
             <p className="lblInfoPerfil">Nova Senha:</p>
             <div className="input-senha">
-              <Input
-                input={{
-                  type: mostrarSenha ? "text" : "password",
-                  value: senha,
-                  onChange: (e) => setSenha(e.target.value),
-                  placeholder: "Nova senha",
-                }}
+              <input
+                type={mostrarSenha ? "text" : "password"}
+                className="input-padrao"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="Nova senha"
               />
               <span className="verSenhaRedefinida" onClick={funMostrarSenha}>
                 {mostrarSenha ? (
