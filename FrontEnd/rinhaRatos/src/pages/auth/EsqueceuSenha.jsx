@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { esqueceuSenha } from "../../Api/Api";
-import Botao from "../../components/comuns/Botao";
-import Input from "../../components/comuns/Input";
 import Logo from "../../assets/Logo_Coliseu_dos_Ratos.svg";
 import Icone_Olho_Aberto from "../../assets/icones/icone_olho_aberto.png";
 import Icone_Olho_Fechado from "../../assets/icones/icone_olho_fechado.png";
@@ -10,6 +8,11 @@ import "./LogoEFundo.css";
 import "./CaixaAcesso.css";
 
 export default function EsqueceuSenha() {
+  // ---------------------------------------------------------
+  //  ESTADOS DO FORMULÁRIO E VARIÁVEIS
+  // ---------------------------------------------------------
+
+  // Definição dos estados para controlar os inputs e feedback visual.
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
@@ -17,13 +20,41 @@ export default function EsqueceuSenha() {
   const nome = "";
 
   const navigate = useNavigate();
+
+  // ---------------------------------------------------------
+  //  NAVEGAÇÃO
+  // ---------------------------------------------------------
+
+  // Função de redirecionamento para o caso de o usuário lembrar a senha.
+
+  // 1. navigate("/login"): Redireciona de volta para a tela de autenticação.
   const lembreiSenha = () => {
     navigate("/login");
   };
+
+  // ---------------------------------------------------------
+  //  FUNÇÕES AUXILIARES E VISUAIS
+  // ---------------------------------------------------------
+
+  // Alternador de visibilidade para o campo de nova senha.
+
+  // 1. Inverte o valor de 'mostrarSenha' para alternar o type do input
+  //    entre 'text' (visível) e 'password' (oculto).
   const funMostrarSenha = () => {
     setMostrarSenha(!mostrarSenha);
   };
 
+  // ---------------------------------------------------------
+  //  REDEFINIR SENHA (SUBMIT)
+  // ---------------------------------------------------------
+
+  // Função assíncrona que envia a solicitação de troca de senha para o servidor.
+
+  // 1. Validação: Checa se campos estão vazios antes de prosseguir.
+  // 2. preventDefault(): Evita o recarregamento da página.
+  // 3. Payload: Monta o objeto com email, a nova senha e o nome (vazio).
+  // 4. API Call: Chama 'esqueceuSenha'. Se sucesso, redireciona ao login.
+  // 5. Tratamento de Erro: Exibe feedback caso a conta não exista ou haja falha no servidor.
   const redefinirSenha = async (evento) => {
     evento.preventDefault();
     if (email === "" || senha === "") {
@@ -49,6 +80,9 @@ export default function EsqueceuSenha() {
     }
   };
 
+  // ---------------------------------------------------------
+  //  RENDERIZAÇÃO
+  // ---------------------------------------------------------
   return (
     <div className="acesso-container">
       <div className="logoELogin">
@@ -59,22 +93,20 @@ export default function EsqueceuSenha() {
             {erro && <p className="mensagem-erro">{erro}</p>}
           </div>
           <div className="inputs">
-            <Input
-              input={{
-                type: "text",
-                value: email,
-                onChange: (e) => setEmail(e.target.value),
-                placeholder: "E-mail",
-              }}
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-mail"
             />
+
             <div className="input-senha">
-              <Input
-                input={{
-                  type: mostrarSenha ? "text" : "password",
-                  value: senha,
-                  onChange: (e) => setSenha(e.target.value),
-                  placeholder: "Nova Senha",
-                }}
+              <input
+                type={mostrarSenha ? "text" : "password"}
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="Nova Senha"
+                className="input-padrao"
               />
               <span className="verSenha" onClick={funMostrarSenha}>
                 {mostrarSenha ? (
@@ -85,20 +117,13 @@ export default function EsqueceuSenha() {
               </span>
             </div>
           </div>
-          <Botao
-            acaoBtn={"Redefinir"}
-            button={{
-              className: "botao",
-              onClick: redefinirSenha,
-            }}
-          />
-          <Botao
-            acaoBtn={"Lembrei kkkkk"}
-            button={{
-              className: "btnVoltar",
-              onClick: lembreiSenha,
-            }}
-          />
+          <button className="botao" onClick={redefinirSenha}>
+            Redefinir
+          </button>
+
+          <button className="btnVoltar" onClick={lembreiSenha}>
+            Lembrei kkkkk
+          </button>
         </div>
       </div>
     </div>

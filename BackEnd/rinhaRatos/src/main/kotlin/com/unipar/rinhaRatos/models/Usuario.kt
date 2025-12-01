@@ -4,6 +4,9 @@ import com.unipar.rinhaRatos.enums.TipoConta
 import jakarta.persistence.*
 import java.io.Serializable
 
+
+// Model do Usuário, sem segredo
+
 @Entity
 @Table(name = "usuarios")
 class Usuario(

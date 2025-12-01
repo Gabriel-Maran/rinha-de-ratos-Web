@@ -17,8 +17,10 @@ export default function ModalEditarBatalha({
 }) {
   const { user, recarregarUsuario } = useAuth();
 
+  // Garante o ID do admin para log e permissões
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
 
+  // Estados locais do formulário de edição
   const [nomeBatalhaEditada, setNomeBatalhaEditada] = useState("");
   const [inscricaoEditada, setInscricaoEditada] = useState(0);
   const [dataHoraEditada, setDataHoraEditada] = useState("");
@@ -27,9 +29,11 @@ export default function ModalEditarBatalha({
   const [erro, setErro] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
 
+  // Controle de navegação interna (Abas do modal)
   const [btnNavModal, setBtnNavModal] = useState("1");
   const botoesNavModal = ["1", "2"];
 
+  // Função auxiliar para limpar feedback visual após alguns segundos
   const limparMensagens = () => {
     setTimeout(() => {
       setMensagemSucesso(null);
@@ -38,8 +42,15 @@ export default function ModalEditarBatalha({
   };
 
   // ---------------------------------------------------------
-  // 1. CARREGAR DADOS
+  // CARREGAR DADOS DA BATALHA 
   // ---------------------------------------------------------
+
+  // useEffect com Dependência: Sempre que 'batalhaSendoEditada' muda (usuário clica em editar outra),
+  // buscamos os dados mais recentes do servidor para garantir que não estamos editando informação velha.
+  
+  // Tratamento de Dados:
+  // - Data: Cortamos a string ISO para caber no input 'datetime-local' (YYYY-MM-DDTHH:MM).
+  // - Jogadores: Normalizamos os objetos jogador1 e jogador2 em um array único para facilitar o .map().
   useEffect(() => {
     const carregarDadosFrescos = async () => {
       const idBatalha =
@@ -91,8 +102,15 @@ export default function ModalEditarBatalha({
   }, [batalhaSendoEditada]);
 
   // ---------------------------------------------------------
-  // 2. REMOVER JOGADOR
+  // REMOVER JOGADOR 
   // ---------------------------------------------------------
+
+  // Lógica de Atualização em Cascata:
+  // 1. API: Remove o jogador do banco de dados.
+  // 2. Contexto: Atualiza saldo (reembolso) se necessário.
+  // 3. Estado Local (Modal): Filtra a lista 'jogadoresBatalha' para sumir a foto imediatamente.
+  // 4. Estado Pai (HomeADM): Percorre a lista geral de batalhas e "limpa" a vaga na batalha específica.
+  //    Isso é complexo porque exige criar uma cópia profunda do objeto batalha para não mutar o estado diretamente.
   const handleRemoverJogador = async (idUsuarioAlvo) => {
     const idBatalhaSeguro =
       batalhaSendoEditada?.idBatalha || batalhaSendoEditada?.id;
@@ -104,7 +122,6 @@ export default function ModalEditarBatalha({
     try {
       await removerJogador(idBatalhaSeguro, idUsuarioAlvo);
 
-      //  Força a atualização do saldo no Header
       await recarregarUsuario();
 
       setJogadoresBatalha((listaAtual) =>
@@ -113,7 +130,6 @@ export default function ModalEditarBatalha({
         )
       );
 
-      // Atualiza o Pai também
       setListaBatalhas((listaAntiga) =>
         listaAntiga.map((batalha) => {
           if (
@@ -140,8 +156,13 @@ export default function ModalEditarBatalha({
   };
 
   // ---------------------------------------------------------
-  // 3. EXCLUIR BATALHA
+  // EXCLUIR BATALHA 
   // ---------------------------------------------------------
+
+  // Exclusão Simples:
+  // 1. Chama API de delete.
+  // 2. Filtra a lista do Pai (HomeADM) removendo o item com o ID deletado.
+  // 3. Fecha o modal automaticamente após o sucesso.
   const excluirBatalha = async () => {
     const idBatalha = batalhaSendoEditada?.idBatalha || batalhaSendoEditada?.id;
     if (!idBatalha) return;
@@ -165,8 +186,13 @@ export default function ModalEditarBatalha({
   };
 
   // ---------------------------------------------------------
-  // 4. ATUALIZAR DADOS
+  // ATUALIZAR DADOS 
   // ---------------------------------------------------------
+
+  // Edição de Propriedades:
+  // Envia os novos dados (Nome, Preço, Data) para a API.
+  // Em seguida, atualiza a lista do Pai (map) substituindo as propriedades antigas
+  // pelas novas, garantindo que a HomeADM reflita a edição sem F5.
   const atualizarBatalha = async () => {
     setErro(null);
     setMensagemSucesso(null);
@@ -184,8 +210,6 @@ export default function ModalEditarBatalha({
 
     try {
       await gerenciarBatalha(dadosAtt);
-
-      // Atualiza Pai
       setListaBatalhas((antiga) =>
         antiga.map((b) => {
           if (b.idBatalha === idBatalha || b.id === idBatalha) {
@@ -211,8 +235,12 @@ export default function ModalEditarBatalha({
   };
 
   // ---------------------------------------------------------
-  // RENDERIZAÇÃO
+  // RENDERIZAÇÃO CONDICIONAL
   // ---------------------------------------------------------
+
+  // Switch Case para Abas Internas:
+  // Aba 1 ("Informações Gerais"): Inputs de texto para editar nome, preço e data.
+  // Aba 2 ("Participantes"): Lista visual dos jogadores com botão de remover.
   let abaModal;
   let txtTituloAba;
 

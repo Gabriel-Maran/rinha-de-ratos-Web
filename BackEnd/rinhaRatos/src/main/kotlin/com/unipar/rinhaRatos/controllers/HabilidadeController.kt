@@ -8,6 +8,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
+//////////////////////////////////////////////////////////////////
+// CONTROLLER GERAL DAS HABILIDADES
+// As funções fazem LITERALMENTE oq está no nome delas KKKKKKKKKKK
+//////////////////////////////////////////////////////////////////
+
 @CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/habilidade")

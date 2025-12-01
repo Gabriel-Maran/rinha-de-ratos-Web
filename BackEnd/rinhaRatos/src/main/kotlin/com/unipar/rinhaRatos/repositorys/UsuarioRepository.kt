@@ -11,6 +11,9 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.Optional
 
+// Repositorio do Usuario
+// SQL auto descritivos
+
 @Repository
 interface UsuarioRepository: JpaRepository<Usuario, Long> {
     fun findByEmail(email: String): Optional<Usuario>

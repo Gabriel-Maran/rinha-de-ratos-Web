@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.Optional
 
+// Service das Mensagens de Rounds
+// Comentado apenas em partes essenciais, as outras se auto descrevem
+
 @Service
 class MessageService(
     private val messageRoundRepository: MessageRoundRepository,
@@ -18,7 +21,7 @@ class MessageService(
 
     fun criarMensagem(mensagem: MessageRound): Optional<MessageRound> {
         if (mensagem.id_batalha == 0L || mensagem.round == -1L) return Optional.empty()
-        if (mensagem.descricao.isEmpty()) mensagem.descricao = "Sen ação"
+        if (mensagem.descricao.isEmpty()) mensagem.descricao = "Sem ação"
         val mensagemPront = messageRoundRepository.save(mensagem)
         return Optional.of(mensagemPront)
     }

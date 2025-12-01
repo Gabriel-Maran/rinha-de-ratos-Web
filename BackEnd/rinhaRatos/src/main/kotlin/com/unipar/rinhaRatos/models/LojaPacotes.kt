@@ -4,6 +4,9 @@ import jakarta.persistence.*
 import java.math.BigDecimal
 import java.io.Serializable
 
+
+// Model da Loja de Pacotes, sem segredo
+
 @Entity
 @Table(name = "lojaPacotes")
 class LojaPacotes(

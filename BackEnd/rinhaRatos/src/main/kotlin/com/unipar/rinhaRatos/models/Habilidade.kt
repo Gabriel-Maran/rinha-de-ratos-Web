@@ -3,6 +3,9 @@ package com.unipar.rinhaRatos.models
 import jakarta.persistence.*
 import java.io.Serializable
 
+
+// Model da Habilidade, sem segredo
+
 @Entity
 @Table(name = "habilidades")
 class Habilidade(

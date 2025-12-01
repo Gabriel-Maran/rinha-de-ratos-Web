@@ -1,0 +1,3 @@
+NOTA: Execute o back end, abra o PgAdmin e execute tudo que esta dentro do arquivo SQL.sql, após isso, tudo estará nos conformes para rodar
+
+Este é o link para a documentação dos endpoints:             https://docs.google.com/document/d/1d5bPNbAnuY9BInJl5SNicZwrRkfyn7IoW_Tx8Q9KRNE/edit?usp=sharing

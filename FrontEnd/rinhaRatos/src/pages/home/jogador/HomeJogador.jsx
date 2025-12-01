@@ -10,7 +10,6 @@ import {
   ratoMorto,
 } from "../../../Api/Api";
 import Header from "../../../components/comuns/Header/Header";
-import Botao from "../../../components/comuns/Botao";
 import ModalCriacaoRato from "./meusRatos/modalRato/ModalCriacaoRato";
 import ListaDeRatos from "./meusRatos/ListaDeRatos";
 import ListaDeBatalhas from "./batalhas/ListaDeBatalhas";
@@ -251,7 +250,7 @@ export default function HomeJogador() {
   } else {
     switch (opcaoAtivada) {
       case "Meus ratos":
-        conteudoCorpo = (
+       conteudoCorpo = (
           <>
             <ModalCriacaoRato
               etapa={etapaModal}
@@ -268,22 +267,19 @@ export default function HomeJogador() {
               loadingModal={loadingRatos}
               erroModal={erroRatos}
             />
-            <Botao
-              button={{
-                className: "addRato",
-                onClick: mostrarSelecaoClasse,
-                disabled: loadingRatos || contagemRatosVivos >= limiteRatos,
-              }}
-              acaoBtn={
-                <strong>
-                  {contagemRatosVivos >= limiteRatos
-                    ? "Limite Atingido"
-                    : loadingRatos
-                    ? "Carregando..."
-                    : ".Adicionar Rato + "}
-                </strong>
-              }
-            />
+            <button
+              className="addRato"
+              onClick={mostrarSelecaoClasse}
+              disabled={loadingRatos || contagemRatosVivos >= limiteRatos}
+            >
+              <strong>
+                {contagemRatosVivos >= limiteRatos
+                  ? "Limite Atingido"
+                  : loadingRatos
+                  ? "Carregando..."
+                  : ".Adicionar Rato + "}
+              </strong>
+            </button>
             <ListaDeRatos
               ratosUsuario={ratosUsuario}
               onSelectRato={definirRatoBatalha}

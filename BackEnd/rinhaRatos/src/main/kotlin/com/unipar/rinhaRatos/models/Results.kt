@@ -9,6 +9,10 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.io.Serializable
 
+
+
+// Model do Resultado da batalha, sem segredo
+
 @Entity
 @Table(name = "resultsbattle")
 class Results(

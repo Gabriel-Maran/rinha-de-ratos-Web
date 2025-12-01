@@ -1,10 +1,12 @@
 package com.unipar.rinhaRatos.service
 
-import com.unipar.rinhaRatos.models.MessageRound
 import com.unipar.rinhaRatos.models.Results
 import com.unipar.rinhaRatos.repositorys.ResultsRepository
 import org.springframework.stereotype.Service
 import java.util.Optional
+
+// Service do Resultado final da batalha
+// Comentado apenas em partes essenciais, as outras se auto descrevem
 
 @Service
 class ResultsService(

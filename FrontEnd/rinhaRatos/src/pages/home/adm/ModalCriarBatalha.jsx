@@ -11,6 +11,8 @@ export default function ModalCriarBatalhas({
   onClose,
 }) {
   const { user } = useAuth();
+  
+  // Estados para feedback visual (Sucesso/Erro) e controle dos Inputs
   const [erro, setErro] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState(null);
 
@@ -18,13 +20,28 @@ export default function ModalCriarBatalhas({
   const [dataHorarioInicio, setDataHorarioInicio] = useState("");
   const [custoInscricao, setCustoInscricao] = useState("");
 
+  // ---------------------------------------------------------
+  // VALIDAÇÃO E ENVIO (LÓGICA DE CRIAÇÃO)
+  // ---------------------------------------------------------
+
+  // Validação:
+  // Antes de incomodar o servidor, verificamos se os dados básicos estão preenchidos.
+  // Isso economiza requisições e dá feedback rápido ao usuário.
+
+  // Atualização de Estado (Imutabilidade):
+  // setListaBatalhas([novaBatalha, ...listaBatalhas]):
+  // O React não percebe mudanças se você apenas fizer 'lista.push(novo)'.
+  // Usamos o Spread Operator (...) para criar um NOVO array contendo o item novo NO TOPO,
+  // seguido de todos os itens antigos. Isso atualiza a tela do ADM instantaneamente.
   const CadastrarBatalha = async () => {
     if (nomeBatalha === "" || custoInscricao <= 0 || dataHorarioInicio === "") {
       setErro("Por favor, preencha todos os campos corretamente.");
       return;
     }
+    
     setErro(null);
     setMensagemSucesso(null);
+    
     const idAdmCriador = user.idUsuario || user.id;
 
     const dados = {
@@ -42,6 +59,7 @@ export default function ModalCriarBatalhas({
 
       const novaBatalha = resposta.data;
       console.log("Batalha Criada!", novaBatalha);
+      
       setListaBatalhas([novaBatalha, ...listaBatalhas]);
 
       onClose();
@@ -52,6 +70,14 @@ export default function ModalCriarBatalhas({
     }
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO 
+  // ---------------------------------------------------------
+
+  // Controlled Inputs:
+  // Os campos <input> têm seu 'value' amarrado ao estado React (ex: value={nomeBatalha}).
+  // Qualquer digitação dispara o onChange, que atualiza o estado, que por sua vez atualiza o value.
+  // Isso garante que o React seja a "única fonte de verdade" dos dados do formulário.
   return (
     <>
       <div className={estadoModal}>
@@ -60,10 +86,12 @@ export default function ModalCriarBatalhas({
             ✖
           </button>
           <h1 className="tituloAba">Criação da Batalha</h1>
+          
           {erro && <p className="mensagem-erro-batalha">{erro}</p>}
           {mensagemSucesso && (
             <p className="mensagem-sucesso-batalha">{mensagemSucesso}</p>
           )}
+          
           <div className="criarBatalha">
             <div>
               <h3>Nome</h3>

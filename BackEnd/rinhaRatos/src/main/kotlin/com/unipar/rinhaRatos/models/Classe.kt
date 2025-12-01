@@ -3,6 +3,9 @@ package com.unipar.rinhaRatos.models
 import jakarta.persistence.*
 import java.io.Serializable
 
+
+// Model da Classe, sem segredo
+
 @Entity
 @Table(name = "classes")
 class Classe(

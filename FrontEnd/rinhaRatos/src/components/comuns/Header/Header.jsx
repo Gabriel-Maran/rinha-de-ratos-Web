@@ -6,12 +6,37 @@ import { getFotoUrlById } from "../../../pages/perfil/ModalOpcFotosPerfil";
 import "./Header.css";
 
 export default function Header() {
-  const { user, setUser } = useAuth();
+  // ---------------------------------------------------------
+  // HOOKS E CONTEXTO
+  // ---------------------------------------------------------
+
+  // useAuth: Acessa o objeto 'user' global. É daqui que vem o saldo atualizado e a foto.
+  // useNavigate: Hook do React Router que nos permite mudar de página via função JavaScript
+  // (útil para lógica condicional, como "se for admin, vá para X").
+  const { user} = useAuth();
   const navigate = useNavigate();
 
-  // 2. LÓGICA: Converte o ID (número) na URL da Imagem (string)
-  const fotoPerfilUrl = user ? getFotoUrlById(user.idFotoPerfil) : getFotoUrlById(0);
+  // ---------------------------------------------------------
+  // TRATAMENTO DE DADOS VISUAIS 
+  // ---------------------------------------------------------
 
+  // Verifica se o objeto 'user' existe.
+  // - Se existir, busca a URL da foto baseada no ID salvo no banco.
+  // - Se for nulo (carregando ou deslogado), carrega a foto padrão (ID 0).
+  // Isso impede que a imagem quebre enquanto os dados carregam.
+  const fotoPerfilUrl = user
+    ? getFotoUrlById(user.idFotoPerfil)
+    : getFotoUrlById(0);
+
+  // ---------------------------------------------------------
+  // LÓGICA DE NAVEGAÇÃO INTELIGENTE
+  // ---------------------------------------------------------
+
+  // Função chamada ao clicar na Logo.
+  // Redireciona o usuário para a "Home" correta dependendo do seu nível de acesso.
+  // 1. Sem usuário -> Login.
+  // 2. Tipo ADM -> HomeADM.
+  // 3. Padrão (Jogador) -> Home.
   const decidirOndeIr = () => {
     if (!user) {
       navigate("/login");
@@ -27,6 +52,16 @@ export default function Header() {
     }
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO
+  // ---------------------------------------------------------
+
+  // Renderização Condicional:
+  // 1. Nome: Mostra "Carregando..." se o user for null.
+  // 2. Moedas: O bloco {user?.tipoConta === "JOGADOR" && (...)} garante que
+  //    apenas JOGADORES vejam o saldo. ADMs não precisam ver moedas no header.
+  // 3. Atualização Reativa: Como usamos {user.mousecoinSaldo} direto do Contexto,
+  //    qualquer chamada de 'recarregarUsuario()' feita em outros arquivos atualiza este número automaticamente.
   return (
     <>
       <div className="header">
@@ -38,9 +73,12 @@ export default function Header() {
             alt="Foto de perfil do jogador"
           />
           {user ? (
-            <h1 className={user?.tipoConta === "JOGADOR" ? "nomeUsuario" : ""}
+            <h1
+              className={user?.tipoConta === "JOGADOR" ? "nomeUsuario" : ""}
               onClick={() => navigate("/perfil")}
-            >{user.nome}</h1>
+            >
+              {user.nome}
+            </h1>
           ) : (
             <p>Carregando...</p>
           )}
@@ -60,7 +98,7 @@ export default function Header() {
           className="logoColiseu"
           src={Logo}
           alt="Logo Coliseu"
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
         />
       </div>
     </>

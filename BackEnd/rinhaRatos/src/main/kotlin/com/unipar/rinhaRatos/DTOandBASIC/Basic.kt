@@ -1,6 +1,7 @@
 package com.unipar.rinhaRatos.DTOandBASIC
 
-import java.time.LocalDateTime
+// Guarda todos os modelos mais SINMPLES da batalha, usuario e rato
+// Eles são usados para retornas e realizar operações super simples de cada um deles
 
 data class RatoBasic(
     val nomeCustomizado: String?,
@@ -19,10 +20,4 @@ data class BatalhaBasic(
     val dataHorarioInicio: String = "",
     val idAdmCriador: Long,
     val custoInscricao: Int = 0
-)
-
-data class MessageRoundBasic(
-    var descricao: String = "",
-    var id_batalha: Long = 0L,
-    var round: Long = -1,
 )

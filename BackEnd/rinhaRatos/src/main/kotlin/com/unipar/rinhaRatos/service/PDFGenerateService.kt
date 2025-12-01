@@ -3,7 +3,6 @@ package com.unipar.rinhaRatos.service
 import com.unipar.rinhaRatos.enums.StatusBatalha
 import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.repositorys.MessageRoundRepository
-import com.unipar.rinhaRatos.repositorys.ResultsRepository
 import com.unipar.rinhaRatos.repositorys.UsuarioRepository
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
@@ -13,6 +12,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts
 import org.slf4j.LoggerFactory
+
+// Service do Gerador de PDF
+// Comentado apenas em partes essenciais, as outras se auto descrevem
 
 @Service
 class PDFGenerateService(
@@ -39,19 +41,27 @@ class PDFGenerateService(
         var derrotas = 0
         var saldoBatalhasSomadas = 0
 
+        //------------------------------------------------
+        // Inicia docx
+        //------------------------------------------------
         PDDocument().use { docx ->
             var page = PDPage()
             docx.addPage(page)
-            val pageWidth = page.mediaBox.width
-            val textSameLine: Array<String> = arrayOf("", "", "")
-            var y = 750f
-            var cs = PDPageContentStream(docx, page)
-            var r: Float = 0F
-            var g: Float = 0F
-            var b: Float = 0F
-            val marginTop: Float = 56f
-            val marginBottom: Float = 76f
+            val pageWidth = page.mediaBox.width // Salva a largura da tela
+            val textSameLine: Array<String> = arrayOf("", "", "") // Auxiliar para centralizar textos, criei pq é mais pratico as vezes
+            var y = 750f // Contral a altura que está sendo realizado a mudança
+            var cs = PDPageContentStream(docx, page) // Permite adicionar coisas a pagina
+            var r: Float = 0F // Controla o red da cor (RGB)
+            var g: Float = 0F // Controla o green da cor (RGB)
+            var b: Float = 0F // Controla o blue da cor (RGB)
+            val marginTop: Float = 56f // Margin top padrão da página
+            val marginBottom: Float = 76f // Margin bottom padrão da página
 
+            // Tudo aqui é baseado em plano cartesiano simples, x e y
+
+            //------------------------------------------------
+            // Função que cria uma nova pagina
+            //------------------------------------------------
             fun newPage() {
                 cs.close()
                 page = PDPage()
@@ -60,7 +70,10 @@ class PDFGenerateService(
                 y = 750f - marginTop
             }
 
-            // helper: garante espaço vertical requerido (cria nova página se necessário)
+            //------------------------------------------------
+            // Função que verifica verticalmente o espaço
+            // Verifica se é necessario criar uma pagina nova
+            //------------------------------------------------
             fun ensureSpace() {
                 if (y - marginBottom < 10) {
                     newPage()
@@ -68,7 +81,7 @@ class PDFGenerateService(
             }
 
             try {
-                //Título ---------------------------------------------
+                // Título ---------------------------------------------
                 y -= marginTop
                 textSameLine[0] = "Relatório de batalhas - "
                 textSameLine[1] = user.nome
@@ -94,7 +107,7 @@ class PDFGenerateService(
                 y -= 80
 
                 if (batalhasUser.isNotEmpty()) {
-
+                    // Registra resultados de cada batalha com o for each
                     batalhasUser.forEach { battle ->
                         ensureSpace()
                         if (battle.vencedor != null) {
@@ -139,6 +152,14 @@ class PDFGenerateService(
                             }
                         }
                     }
+                    // --------------------------------------------------
+
+                    //Responsavel por salvar no documento se o resultado final de todas as batalhas
+                    // Se participou de alguma salva
+                    //  - Total de vitorioas (em verde)
+                    //  - Total de derrotas (em vermelho)
+                    //  - Total de batalhas
+                    //  - Total ganho(verde) ou perdido(vermelho) de mousecoins
                     if(vitorias + derrotas == 0){
                         textSameLine[0] = "${user.nome} não participou de nenhuma batalha ainda"
                         cs.beginText()
@@ -236,10 +257,13 @@ class PDFGenerateService(
                     }
                 }
             } finally {
+                // Termina o update do documento
                 cs.close()
             }
+            // Salva o documento final
             docx.save(pdfByte)
         }
+        // Retorna o pdf em um byte array para o controller
         return pdfByte.toByteArray()
     }
 
@@ -247,8 +271,6 @@ class PDFGenerateService(
     //------------------------------------------------
     // Faz o documento por batalha  do usuário
     //------------------------------------------------
-
-
     fun getUserBatalhaHistorico(idUsuario: Long, idBatalha: Long): ByteArray {
         val userOpt = usuarioRepository.findById(idUsuario)
         val batalhaOpt = batalhaRepository.findById(idBatalha)
@@ -265,19 +287,25 @@ class PDFGenerateService(
         val pdfByte = ByteArrayOutputStream()
         var saldoBatalhasSomadas = 0
 
+        //------------------------------------------------
+        // Inicia o documento
+        //------------------------------------------------
         PDDocument().use { docx ->
             var page = PDPage()
             docx.addPage(page)
-            val pageWidth = page.mediaBox.width
-            val textSameLine: Array<String> = arrayOf("", "", "")
-            var y = 750f
-            var cs = PDPageContentStream(docx, page)
-            var r: Float = 0F
-            var g: Float = 0F
-            var b: Float = 0F
-            val marginTop: Float = 56f
-            val marginBottom: Float = 76f
+            val pageWidth = page.mediaBox.width // Salva a largura da tela
+            val textSameLine: Array<String> = arrayOf("", "", "") // Auxiliar para centralizar textos, criei pq é mais pratico as vezes
+            var y = 750f // Contrala a altura que está sendo realizado a mudança
+            var cs = PDPageContentStream(docx, page)  // Permite adicionar coisas a pagina
+            var r: Float = 0F // Controla o red da cor (RGB)
+            var g: Float = 0F // Controla o green da cor (RGB)
+            var b: Float = 0F // Controla o blue da cor (RGB)
+            val marginTop: Float = 56f // Margin top padrão da página
+            val marginBottom: Float = 76f // Margin bottom padrão da página
 
+            //------------------------------------------------
+            // Função que cria uma nova pagina
+            //------------------------------------------------
             fun newPage() {
                 cs.close()
                 page = PDPage()
@@ -286,13 +314,20 @@ class PDFGenerateService(
                 y = 750f - marginTop
             }
 
-            // helper: garante espaço vertical requerido (cria nova página se necessário)
+            //------------------------------------------------
+            // Função que verifica verticalmente o espaço
+            // Verifica se é necessario criar uma pagina nova
+            //------------------------------------------------
             fun ensureSpace() {
                 if (y - marginBottom < 10) {
                     newPage()
                 }
             }
 
+            //---------------------------------------------------------------
+            // Busca os dados da batalha e os salva
+            // Contem Historico Geral, ratos, mousecoins ganhadas ou perdidas
+            //---------------------------------------------------------------
             try {
                 //Dados da batalha
                 val user = userOpt.get()
@@ -326,15 +361,15 @@ class PDFGenerateService(
                     // ----------------------------------------------------
                     y -= 45
 
-
+                    //------------------------------------------------------
+                    // Registra se o usuario ganhouu ou perdeu
+                    // Registra os ratos
+                    // Registra quanto o usuario ganhou ou perdeu na batalha
+                    // Verifica se o espaço é o suficiente verticalmente
+                    //------------------------------------------------------
                     ensureSpace()
                     if (battle.vencedor != null) {
                         val ganhou = battle.vencedor!!.idUsuario == user.idUsuario
-                        if (ganhou) {
-                            saldoBatalhasSomadas += battle.premioTotal
-                        } else {
-                            saldoBatalhasSomadas -= battle.custoInscricao
-                        }
                         r = (if (ganhou) 0 else 255).toFloat()
                         g = (if (ganhou) 180 else 0).toFloat()
                         b = 0F
@@ -486,21 +521,19 @@ class PDFGenerateService(
                 }
                 y -= 20f
             } finally {
+                // Termina o update do documento
                 cs.close()
             }
+            // Salva o documento
             docx.save(pdfByte)
         }
+        // Retorna o pdf em um byte array para o controller
         return pdfByte.toByteArray()
 
     }
 
-
-    fun textAllignCenter(text: String, fontSize: Float, pageWidth: Float): Float {
+    // Função para centralizar texto em X
+     fun textAllignCenter(text: String, fontSize: Float, pageWidth: Float): Float {
         return (pageWidth - font.getStringWidth(text) / 1000 * fontSize) / 2
     }
-
-    fun textAllignEnd(text: String, fontSize: Float, pageWidth: Float): Float {
-        return (pageWidth - font.getStringWidth(text) / 1000 * fontSize)
-    }
-
 }

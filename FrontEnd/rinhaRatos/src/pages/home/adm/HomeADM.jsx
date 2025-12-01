@@ -22,6 +22,8 @@ export default function HomeADM() {
 
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
+
+  // Normalização de ID: Garante que o código funcione tanto se o backend retornar .id quanto .idUsuario.
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
 
   const [listaBatalhas, setListaBatalhas] = useState([]);
@@ -36,6 +38,13 @@ export default function HomeADM() {
   const [loadingDados, setLoadingDados] = useState(true);
   const [erroDados, setErroDados] = useState(null);
 
+  // ---------------------------------------------------------
+  // PROTEÇÃO DE ROTA
+  // ---------------------------------------------------------
+
+  // Redirecionamento de Segurança:
+  // Verifica se o usuário está logado E se ele é realmente um ADM.
+  // Se for um jogador comum tentando acessar "/homeadm", ele é chutado de volta para o login.
   useEffect(() => {
     if (!idUsuarioLogado || user?.tipoConta?.toUpperCase() === "JOGADOR") {
       navigate("/login");
@@ -49,6 +58,14 @@ export default function HomeADM() {
     }, 1000);
   };
 
+  // ---------------------------------------------------------
+  // BUSCA DE DADOS INICIAIS (PARALELISMO)
+  // ---------------------------------------------------------
+
+  // Promise.all: Técnica de otimização de performance.
+  // Em vez de esperar uma requisição terminar para começar a outra (Waterfall),
+  // disparamos 'pegarBatalhasAbertas' e 'ranking' simultaneamente.
+  // O código só continua quando AMBAS terminarem. Isso reduz o tempo total de carregamento pela metade.
   useEffect(() => {
     if (!idUsuarioLogado) return;
 
@@ -74,6 +91,9 @@ export default function HomeADM() {
     buscarDadosIniciais();
   }, [idUsuarioLogado]);
 
+  // ---------------------------------------------------------
+  // CONTROLE DE MODAIS
+  // ---------------------------------------------------------
   const CriacaoBatalha = () => {
     setCriarBatalha(true);
   };
@@ -88,6 +108,18 @@ export default function HomeADM() {
     setCriarBatalha(false);
   };
 
+  // ---------------------------------------------------------
+  // LÓGICA DE INICIAR BATALHA (VALIDAÇÃO E EXCEÇÃO)
+  // ---------------------------------------------------------
+
+  // Validação via Fluxo de Exceção:
+  // A função 'verificarSeBatalhaCheia' tem um comportamento específico:
+  // - Se retornar sucesso (200), significa que a batalha NÃO está cheia (tem vagas) -> Erro para iniciar.
+  // - Se retornar erro (409 Conflict), significa que a batalha ESTÁ cheia -> Sucesso para iniciar.
+
+  // Atualização Otimista (setListaBatalhas filter):
+  // Após o sucesso, removemos a batalha da lista visualmente sem precisar recarregar
+  // todos os dados do servidor novamente.
   const IniciarBatalha = async (batalha) => {
     const idBatalha = batalha.idBatalha || batalha.id;
 
@@ -101,7 +133,6 @@ export default function HomeADM() {
         limparMensagens();
         return;
       } catch (errCheck) {
-        // Se der 409 (Cheia), é bom!
         if (errCheck.response && errCheck.response.status === 409) {
         } else {
           throw errCheck;
@@ -125,6 +156,13 @@ export default function HomeADM() {
     }
   };
 
+  // ---------------------------------------------------------
+  // FORMATAÇÃO DE DADOS
+  // ---------------------------------------------------------
+
+  // Tratamento de String de Data:
+  // Recebe formato ISO do banco e transforma manualmente em "DD/MM, HH:MM".
+  // O bloco try/catch evita que a tela inteira quebre caso venha uma data inválida ("null" ou undefined).
   const formatarDataEHora = (data) => {
     if (!data) return "Data Indisponível";
     try {
@@ -138,7 +176,14 @@ export default function HomeADM() {
     }
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO CONDICIONAL E SWITCH
+  // ---------------------------------------------------------
+
   let conteudoHomeAdm;
+
+  // Feedback de Carregamento:
+  // Antes de mostrar o conteúdo, verificamos se os dados chegaram.
   if (loadingDados) {
     conteudoHomeAdm = <p className="loading-mensagem">Carregando...</p>;
   } else if (erroDados) {

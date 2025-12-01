@@ -8,16 +8,24 @@ import "../perfil/Perfil.css";
 import "../home/jogador/batalhas/ListaDeBatalhas.css";
 
 export default function HomeConvidado() {
+  // ---------------------------------------------------------
+  // GERENCIAMENTO DE ESTADO (NAVEGAÇÃO E DADOS)
+  // ---------------------------------------------------------
+
+  // Controle de Abas:
+  // Define qual conteúdo será renderizado: "Batalhas" (Histórico) ou "Ranking".
   const [opcaoAtivada, setOpcaoAtivada] = useState("Batalhas");
   const botoes = ["Batalhas", "Ranking"];
 
+  // Estados de Dados e UI:
+  // Armazena a lista de batalhas vindas da API, controla o loader e
+  // gerencia a visibilidade do Modal de detalhes (TelaHistorico).
   const [historicoBatalhas, setHistoricoBatalhas] = useState([]);
   const [loadingHistorico, setLoadingHistorico] = useState(false);
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
   const [idBatalhaSelecionada, setIdBatalhaSelecionada] = useState(null);
 
-  // --- NOVA FUNÇÃO DE FORMATAÇÃO--
-  //Segundo pesquisas com o home essa é melhor, vou validar isso e se pá troco nas outras e comento certinho
+  // Função utilitária para formatar data ISO para o padrão brasileiro legível
   const formatarDataEHora = (dataISO) => {
     if (!dataISO) return "Data Indisponível";
     const data = new Date(dataISO);
@@ -28,26 +36,54 @@ export default function HomeConvidado() {
       minute: "2-digit",
     });
   };
+
+  // ---------------------------------------------------------
+  // BUSCA DE DADOS E POLLING (ATUALIZAÇÃO EM TEMPO REAL)
+  // ---------------------------------------------------------
+
+  // useEffect com Polling:
+  // Este efeito é disparado quando a aba muda. Se for "Batalhas", ele inicia
+  // um ciclo de busca automática (Polling) a cada 3 segundos.
+
+  // Cleanup Function (Limpeza):
+  // O retorno "return () => clearInterval(intervalo)" é crucial.
+  // Ele cancela o timer quando o usuário sai da tela ou muda de aba,
+  // prevenindo vazamento de memória e erros de atualização em componentes desmontados.
   useEffect(() => {
     if (opcaoAtivada === "Batalhas") {
       const buscarHistorico = async () => {
-        setLoadingHistorico(true);
         try {
           const resposta = await pegarTodasBatalhasConcluidas();
 
           if (resposta && Array.isArray(resposta.data)) {
-            setHistoricoBatalhas(resposta.data);
+            // Ordenação (Sort):
+            // Lógica (b - a) garante que os IDs maiores (batalhas mais recentes)
+            // apareçam no topo da lista.
+            const listaOrdenada = resposta.data.sort((a, b) => {
+              const idA = a.idBatalha || a.id;
+              const idB = b.idBatalha || b.id;
+              return idB - idA;
+            });
+
+            setHistoricoBatalhas(listaOrdenada);
           } else {
             setHistoricoBatalhas([]);
           }
         } catch (err) {
           console.error("Erro ao buscar histórico:", err);
-          setHistoricoBatalhas([]);
         } finally {
           setLoadingHistorico(false);
         }
       };
+
+      setLoadingHistorico(true);
       buscarHistorico();
+  
+      const intervalo = setInterval(() => {
+        buscarHistorico();
+      }, 3000);
+
+      return () => clearInterval(intervalo);
     }
   }, [opcaoAtivada]);
 
@@ -61,6 +97,13 @@ export default function HomeConvidado() {
     setIdBatalhaSelecionada(null);
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO CONDICIONAL DO CONTEÚDO
+  // ---------------------------------------------------------
+
+  // Switch Case para View:
+  // Determina o que será armazenado na variável 'conteudoHomeConvidado'
+  // mantendo o return principal do componente mais limpo.
   let conteudoHomeConvidado;
 
   switch (opcaoAtivada) {
@@ -109,6 +152,9 @@ export default function HomeConvidado() {
       );
   }
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO FINAL 
+  // ---------------------------------------------------------
   return (
     <>
       {mostrarHistorico && idBatalhaSelecionada && (

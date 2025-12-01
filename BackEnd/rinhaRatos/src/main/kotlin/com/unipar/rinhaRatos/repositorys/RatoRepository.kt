@@ -7,6 +7,9 @@ import java.util.Optional
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
+// Repositorio do Rato
+// SQL auto descritivos
+
 @Repository
 interface RatoRepository: JpaRepository<Rato, Long> {
     @Query("select r from Rato r left join fetch r.usuario where r.idRato = :id")

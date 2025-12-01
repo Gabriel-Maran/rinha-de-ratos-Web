@@ -7,9 +7,19 @@ import org.slf4j.LoggerFactory
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+///////////////////////////////////////////////////////////////
+//
+// PACOTE CORE DA BATALHA
+// RESPONSAVEL POR CONTROLAR O FUNDAMENTAL DA BATALHA
+// Dano Geral, Efeitos, Estatisticas...
+//
+///////////////////////////////////////////////////////////////
+
+
+
 private val log = LoggerFactory.getLogger("MotorBatalha")
 
-//Representa um efeito (ex: "+18%PASSEU", "-8%HPSADV").
+//Representa um efeito (ex: "+18%PASSEU", "-8%HPSADV") de forma tranquila para ler no codigo.
 data class Efeito(
     val sinal: Int,
     val valor: Double,
@@ -19,7 +29,7 @@ data class Efeito(
 )
 
 
-//Estado de um rato durante a simulação (em memória).
+//Estado de um rato durante a simulação (em memória, seguindo a lógica que só atualiza o banco no final).
 data class EstadoRato(
     val idRato: Long,
     val hpMaximo: Int,
@@ -40,12 +50,15 @@ private val tokenRegex = Regex("""^([+-])(\d+(?:\.\d+)?)(%?)([A-Za-z0-9]+)(SEU|A
 fun parseEfeitos(strEfeitos: String?): List<Efeito> {
     if (strEfeitos.isNullOrBlank()) return emptyList()
 
+    //Separa por efeito, se tiver "+18%PASSEU; -8%HPSADV" separa em dois efeitos diferentes
     val tokens = strEfeitos.split(";")
         .map { it.trim() }
         .filter { it.isNotEmpty() }
 
+    //Mantem os efeitos separados em uma lista
     val lista = mutableListOf<Efeito>()
 
+    //Tranforma e guarda dentro da lista de efeitos cada efeito(chamado de token)
     for (token in tokens) {
         val m = tokenRegex.matchEntire(token)
         if (m == null) {
@@ -93,13 +106,14 @@ fun parseEfeitos(strEfeitos: String?): List<Efeito> {
 }
 
 
-// Aplica um único efeito no estado (apenas para o round corrente). Gera mensagens explicativas.
+// Aplica um único efeito no estado (apenas para o round atual), gera mensagens tbm
+// Absoluto é o base do player, percentual é o bônus pela habilidade, tranquilinho
 fun aplicarEfeito(efeito: Efeito, fonte: EstadoRato, alvoEstado: EstadoRato, mensagens: MutableList<String>) {
     val destino = if (efeito.alvo == AlvoEfeito.SEU) fonte else alvoEstado
 
     when (efeito.atributo) {
         AtributoEfeito.HPS -> {
-            // aplica alteração de HP (instantânea) — NÃO adiciona mensagem aqui
+            // aplica alteração de HP (insta)
             val auxHp = if (efeito.ehPercentual) {
                 (destino.hpMaximo * efeito.valor * efeito.sinal).roundToInt()
             } else {
@@ -128,12 +142,14 @@ fun aplicarEfeito(efeito: Efeito, fonte: EstadoRato, alvoEstado: EstadoRato, men
     }
 }
 
-//Estrutura de estatísticas de combate usadas no cálculo de dano:
+//Guarda oq é usado para dar dano, se defender e critico de cada player
 data class EstatisticasCombate(val potencialAtaque: Double, val potencialDefesa: Double, val chanceCritico: Double)
 
 
-//Calcula PAS, PDS e CRI a partir do EstadoRato (levando em conta percentuais e absolutos).
+// Calcula PAS, PDS e CRI a partir do EstadoRato (levando em conta percentuais e absolutos).
+// Absoluto é o base do player, percentual é o bônus pela habilidade
 fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 0.10): EstatisticasCombate {
+    //Calcula os atributos base que serão usados para PA, PD e critico (levando em conta percentuais de STR, AGI, INT e DEF)
     val forca = (estado.forcaBase * (1.0 + estado.percentuais.getOrDefault(AtributoEfeito.STR, 0.0))
             + estado.absolutos.getOrDefault(AtributoEfeito.STR, 0.0)).coerceAtLeast(0.0)
     val agi = (estado.agilidadeBase * (1.0 + estado.percentuais.getOrDefault(AtributoEfeito.AGI, 0.0))
@@ -143,28 +159,32 @@ fun calcularEstatisticasCombate(estado: EstadoRato, chanceCriticoBase: Double = 
     val def = (estado.defesaBase * (1.0 + estado.percentuais.getOrDefault(AtributoEfeito.DEF, 0.0))
             + estado.absolutos.getOrDefault(AtributoEfeito.DEF, 0.0)).coerceAtLeast(0.0)
 
+    //Retira o PA e PD base para dar o tal do dano depois e a tal da defesa kkkkkk
     val basePas = (forca * (1.0 + agi / 250.0 + intel / 500.0)) * 1.1
     val basePds = def * (1.0 + agi / 250.0 + intel / 500.0)
 
+    //Calcula os atributos finais que serão usados para dano, defesa e critico do rato (levando em conta percentuais de PAS, PDS e CRI)
     val pctPas = estado.percentuais.getOrDefault(AtributoEfeito.PAS, 0.0)
     val pctPds = estado.percentuais.getOrDefault(AtributoEfeito.PDS, 0.0)
     val pctCri = estado.percentuais.getOrDefault(AtributoEfeito.CRI, 0.0)
 
+    //Valida se nn ta com < 0 PA e PD
     val flatPas = estado.absolutos.getOrDefault(AtributoEfeito.PAS, 0.0)
     val flatPds = estado.absolutos.getOrDefault(AtributoEfeito.PDS, 0.0)
 
     val pasRaw = (basePas * (1.0 + pctPas) + flatPas).coerceAtLeast(0.0)
     val pdsRaw = (basePds * (1.0 + pctPds) + flatPds).coerceAtLeast(0.0)
 
+    // Para dar uma graça, um random para dano e defesa, pra ficar mais variado o damage e não tão fixo
     val pas = (pasRaw * (1.0 + Random.nextDouble(0.1, 0.5))).coerceAtLeast(1.0)
     val pds = (pdsRaw * (1.0 + Random.nextDouble(0.1, 0.5))).coerceAtLeast(1.0)
 
     val cri = (chanceCriticoBase + pctCri).coerceIn(0.0, 0.75)
-
+    //Retorna no final *EstatisticasCombate* do rato para usar na battle
     return EstatisticasCombate(pas, pds, cri)
 }
 
-
+// Função que retorna o vida que um rato tira do outro
 fun calcularDano(pasAtacante: Double, pdsDefensor: Double, chanceCritico: Double): Int {
     val danoMinimo = pasAtacante * 0.15
     val danoCalculado = pasAtacante - (pdsDefensor * 0.75)

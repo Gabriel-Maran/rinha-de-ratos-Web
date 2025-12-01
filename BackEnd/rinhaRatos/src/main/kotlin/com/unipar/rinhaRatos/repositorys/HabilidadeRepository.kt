@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.Optional
 
+// Repositorio das Habilidades
+// SQL auto descritivos
+
 @Repository
 interface HabilidadeRepository : JpaRepository<Habilidade, Long> {
 

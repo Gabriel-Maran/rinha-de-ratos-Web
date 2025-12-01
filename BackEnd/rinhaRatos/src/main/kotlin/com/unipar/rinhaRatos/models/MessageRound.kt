@@ -1,8 +1,10 @@
 package com.unipar.rinhaRatos.models
 
-import com.unipar.rinhaRatos.models.Habilidade
 import jakarta.persistence.*
 import java.io.Serializable
+
+
+// Model das mensagens por round, sem segredo
 
 @Entity
 @Table(name = "messageround")

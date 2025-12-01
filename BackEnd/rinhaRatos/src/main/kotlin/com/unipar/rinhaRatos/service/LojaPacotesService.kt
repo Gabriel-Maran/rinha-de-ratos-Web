@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
+// Service do Loja de Pacotes
+// Comentado apenas em partes essenciais, as outras se auto descrevem
+
 @Service
 class LojaPacotesService(
     private val lojaPacotesRepository: LojaPacotesRepository,

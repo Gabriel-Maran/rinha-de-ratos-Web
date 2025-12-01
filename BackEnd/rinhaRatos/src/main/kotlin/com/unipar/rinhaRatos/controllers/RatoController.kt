@@ -11,6 +11,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
+//////////////////////////////////////////////////////////////////
+// CONTROLLER GERAL DOS RATOS
+// As funções fazem LITERALMENTE oq está no nome delas KKKKKKKKKKK
+//////////////////////////////////////////////////////////////////
+
 @CrossOrigin(origins = ["http://localhost:5173"])
 @RestController
 @RequestMapping("/rato")
@@ -70,6 +75,8 @@ class RatoController(
             }
             "NON_EXISTENT_CLASS_OR_HABILIDADE" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade não existente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
+            } "INVALID_CHAR_NAME" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Caracter inválido no nome do rato", "INVALID_CHAR_NAME")
             }
             "NAME_LIMIT_EXCEPTED" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Limite maximo de caracteres para o nome", "NAME_LIMIT_EXCEPTED")
