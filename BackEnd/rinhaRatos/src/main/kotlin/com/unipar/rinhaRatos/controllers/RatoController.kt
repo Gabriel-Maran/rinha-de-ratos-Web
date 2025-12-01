@@ -75,6 +75,8 @@ class RatoController(
             }
             "NON_EXISTENT_CLASS_OR_HABILIDADE" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Classe ou habilidade não existente", "NON_EXISTENT_CLASS_OR_HABILIDADE")
+            } "INVALID_CHAR_NAME" -> {
+                return buildError(HttpStatus.BAD_REQUEST, "Caracter inválido no nome do rato", "INVALID_CHAR_NAME")
             }
             "NAME_LIMIT_EXCEPTED" -> {
                 return buildError(HttpStatus.BAD_REQUEST, "Limite maximo de caracteres para o nome", "NAME_LIMIT_EXCEPTED")

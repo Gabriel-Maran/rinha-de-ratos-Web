@@ -60,6 +60,7 @@ class RatoService(
             nome = classe.apelido.toString()
         }
         if(nome.length > 25) return mapOf("Status" to "NAME_LIMIT_EXCEPTED")
+        if(nome.contains("|") || nome.contains("=")) return mapOf("Status" to "INVALID_CHAR_NAME")
 
 
         val descricao = classe.descricao ?: "Sem descrição"

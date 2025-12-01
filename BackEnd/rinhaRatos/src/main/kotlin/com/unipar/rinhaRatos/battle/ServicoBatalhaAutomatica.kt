@@ -142,6 +142,7 @@ class ServicoBatalhaAutomatica(
                     "player" to "0"
                 )
             )
+
             /////////////////////////////////////////////////////////////////////////////////
             // SALVA mensagens deste round no banco — usa nomes para identificar player 1/2
             salvarMensagensDoRound(
