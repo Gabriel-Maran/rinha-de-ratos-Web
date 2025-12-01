@@ -91,7 +91,8 @@
 .tituloResultado {
   width: 30rem;
   height: 5rem;
-  margin-top: 1rem;
+  position: absolute;
+  margin-top: 4rem;
   color: yellow;
   font-size: 3rem;
   background-image: url("../../../assets/labels/lblTabua.png");
@@ -99,7 +100,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 200;
   text-shadow: 0rem 0rem 1rem black, 0rem 0rem 1rem black, 0rem 0rem 1rem black;
 }
 
@@ -114,10 +115,18 @@
 }
 
 /* A Imagem do Banner */
-.img-banner-final {
-  width: 35rem;
+.img-banner-final,
+.img-banner-final-neutro {
+  width: 40rem;
+  margin-top: 4.5rem;
   height: auto;
   filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8));
+}
+
+.img-banner-final-neutro {
+  width: 38rem;
+  height: 48rem;
+  margin-top: 0;
 }
 
 /* O Texto "Você perdeu..." / "Você venceu!" */
@@ -150,29 +159,39 @@
   bottom: 1rem;
 }
 
+.resultadoDaBatalhaNeutro {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  z-index: 1000;
+  top: 42%;
+  left: 49.2%;
+  transform: translate(-50%, -50%);
+  gap: 0.5rem;
+}
+
 .historicoBatalha h3 {
   bottom: 16rem;
 }
 
 .secaoVitorioso,
 .secaoDerrotado {
-  width: 90%;
+  width: 22rem;
   margin-left: 1.5rem;
 }
 
 .secaoDerrotado {
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
-.secaoVitorioso div div p,
-.secaoDerrotado div div p,
+.secaoVitorioso .infoRatoResultBatalha p,
+.secaoDerrotado .infoRatoResultBatalha p,
 .statusJogadorVencedor,
 .statusJogadorDerrotado,
-.resultNomeJogador {
-  font-size: 2.5rem;
+.resultInfoJogador p {
+  font-size: 2rem;
   color: white;
   align-self: center;
-  background-image: url();
   text-shadow: 0rem 0rem 1rem black, 0rem 0rem 1rem black, 0rem 0rem 1rem black;
 }
 
@@ -184,20 +203,27 @@
   color: red;
 }
 
-.resultNomeJogador {
-  color: rgb(117, 172, 255);
+.resultInfoJogador {
+  background-image: url("../../../assets/labels/lblPapelAmarelado.png");
+  background-size: 100% 100%;
+  display: flex;
 }
 
-.brasaoResultado img {
+.resultInfoJogador p {
+  color: rgb(117, 172, 255);
+  text-shadow: 0rem 0rem 1rem rgb(255, 255, 255), 0rem 0rem 1rem rgb(255, 255, 255), 0rem 0rem 1rem rgb(255, 255, 255);
+}
+
+.resultadoDaBatalhaNeutro img {
   width: 5rem;
-  margin-right: 1rem;
   padding: 0.5rem;
 }
 
-.brasaoResultado .infoRatoResultBatalha {
+.resultadoDaBatalhaNeutro .infoRatoResultBatalha {
   display: flex;
+  margin-top: 1rem;
   flex-direction: row;
-  background-image: url("../../../ssets/labels/lblPapelAmarelado.png");
+  background-image: url("../../../assets/labels/lblPapiroReg.png");
   background-size: 100% 100%;
 }
 
@@ -242,7 +268,7 @@
   background-size: 100% 100%;
   position: absolute;
   top: -29rem;
-    z-index: 1;
+  z-index: 1;
 }
 
 .bgConteinerHist {

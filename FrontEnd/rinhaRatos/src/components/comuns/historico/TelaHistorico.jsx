@@ -27,8 +27,17 @@ export default function TelaHistorico({
   const idUsuarioLogado = user?.idUsuario || user?.id;
 
   const [participou, setParticipou] = useState(false);
+
+  const [infoJogadorVencedor, setInfoJogadorVencedor] = useState(null);
+  const [infoJogadorDerrotado, setInfoJogadorDerrotado] = useState(null);
+  const [fotoJVencedor, setFotoJVencedor] = useState(0);
+  const [fotoJDerrotado, setFotoJDerrotado] = useState(0);
+
   const [infoJogador1, setInfoJogador1] = useState(null);
+  const [fotoJ1, setFotoJ1] = useState(0);
+
   const [infoJogador2, setInfoJogador2] = useState(null);
+  const [fotoJ2, setFotoJ2] = useState(0);
 
   const [nomeRatoJ1, setNomeRatoJ1] = useState("");
   const [infoRatoJ1, setInfoRatoJ1] = useState(null);
@@ -67,6 +76,22 @@ export default function TelaHistorico({
   }, [logs]);
 
   useEffect(() => {
+    if (idVencedor && infoJogador1 && infoJogador2) {
+      if (idVencedor === infoJogador1.idUsuario) {
+        setInfoJogadorVencedor(infoJogador1);
+        setInfoJogadorDerrotado(infoJogador2);
+        setFotoJVencedor(getFotoUrlById(infoJogador1.idFotoPerfil));
+        setFotoJDerrotado(getFotoUrlById(infoJogador2.idFotoPerfil));
+      } else {
+        setInfoJogadorVencedor(infoJogador2);
+        setInfoJogadorDerrotado(infoJogador1);
+        setFotoJVencedor(getFotoUrlById(infoJogador2.idFotoPerfil));
+        setFotoJDerrotado(getFotoUrlById(infoJogador1.idFotoPerfil));
+      }
+    }
+  }, [idVencedor, infoJogador1, infoJogador2]);
+
+  useEffect(() => {
     if (!mostrarHistorico) return;
 
     const carregarDados = async () => {
@@ -84,6 +109,7 @@ export default function TelaHistorico({
           try {
             const respostaBatalha = await pegarJogadoresDaBatalha(idFinal);
             const dadosBatalha = respostaBatalha.data;
+            console.log(dadosBatalha);
             const idJogador1 = dadosBatalha.jogador1.idUsuario;
             const idJogador2 = dadosBatalha.jogador2.idUsuario;
             setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado);
@@ -93,10 +119,12 @@ export default function TelaHistorico({
             try {
               const respostaJogador1 = await pegarUsuarioPorId(idJogador1);
               const dadosJogador1 = respostaJogador1.data;
+              setFotoJ1(getFotoUrlById(dadosJogador1.idFotoPerfil));
               setInfoJogador1(dadosJogador1);
 
               const respostaJogador2 = await pegarUsuarioPorId(idJogador2);
               const dadosJogador2 = respostaJogador2.data;
+              setFotoJ2(getFotoUrlById(dadosJogador2.idFotoPerfil));
               setInfoJogador2(dadosJogador2);
             } catch (err) {
               console.error(
@@ -108,6 +136,7 @@ export default function TelaHistorico({
               !idUsuarioLogado ? setParticipou(false) : setParticipou(true);
               const ratoJ1 = await pegarRatoPorID(idRatoJ1);
               const dadosRatoJ1 = ratoJ1.data;
+              console.log(dadosRatoJ1);
               setInfoRatoJ1(dadosRatoJ1);
 
               const ratoJ2 = await pegarRatoPorID(idRatoJ2);
@@ -164,40 +193,52 @@ export default function TelaHistorico({
           ) : (
             <>
               <h1 className="tituloResultado">Resultado da Batalha:</h1>
-              {!participou && (
-                <div className="brasaoResultado">
-                  <div className="secaoVitorioso">
-                    <p className="statusJogadorVencedor">Vencedor:</p>
-                    <div>
-                      <p className="resultNomeJogador">{infoJogador1.nome}</p>
-                      <div className="infoRatoResultBatalha">
-                        <img src={ImagensRato[infoRatoJ1.classe?.nomeClasse]} />
-                        <p>{nomeRatoJ1}</p>
+              {/* {!participou && <div className="brasaoResultado"></div>} */}
+              <div className="area-banner-central">
+                <img
+                  src={imagemBanner}
+                  alt="Resultado"
+                  className={
+                    participou ? "img-banner-final" : "img-banner-final-neutro"
+                  }
+                />
+                {!participou && (
+                  <>
+                    <div className="resultadoDaBatalhaNeutro">
+                      <div className="secaoVitorioso">
+                        <p className="statusJogadorVencedor">Sigmas:</p>
+                        <div className="resultInfoJogador">
+                          <img src={fotoJVencedor} />
+                          <p>{infoJogadorVencedor?.nome ?? ""}</p>
+                        </div>
+                        {/*                         <div className="infoRatoResultBatalha">
+                          <img
+                            src={ImagensRato[infoRatoJ1.classe?.nomeClasse]}
+                          />
+                          <p>{nomeRatoJ1}</p>
+                        </div> */}
+                      </div>
+                      <div className="secaoDerrotado">
+                        <p className="statusJogadorDerrotado">Betinhas:</p>
+                        <div className="resultInfoJogador">
+                          <img src={fotoJDerrotado} />
+                          <p>{infoJogadorDerrotado?.nome ?? ""}</p>
+                        </div>
+                        {/*                         <div className="infoRatoResultBatalha">
+                          <img
+                            src={ImagensRato[infoRatoJ2.classe?.nomeClasse]}
+                          />
+                          <p>{nomeRatoJ2}</p>
+                        </div> */}
                       </div>
                     </div>
-                  </div>
-                  <div className="secaoDerrotado">
-                    <p className="statusJogadorDerrotado">Comedor de bola:</p>
-                    <div>
-                      <p className="resultNomeJogador">{infoJogador2.nome}</p>
-                      <div className="infoRatoResultBatalha">
-                        <img src={ImagensRato[infoRatoJ2.classe?.nomeClasse]} />
-                        <p>{nomeRatoJ2}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {participou && (
-                <div className="area-banner-central">
-                  <img
-                    src={imagemBanner}
-                    alt="Resultado"
-                    className="img-banner-final"
-                  />
+                  </>
+                )}
+                {participou && (
                   <h2 className="texto-resultado-final">{mensagemResultado}</h2>
-                </div>
-              )}
+                )}
+              </div>
+              {/*  )} */}
             </>
           )}
         </>
@@ -218,9 +259,9 @@ export default function TelaHistorico({
                       logs.map((log, index) => {
                         const imgAvatar =
                           log.player === 1
-                            ? getFotoUrlById(infoJogador1.idFotoPerfil)
+                            ? fotoJ1
                             : log.player === 2
-                            ? getFotoUrlById(infoJogador2.idFotoPerfil)
+                            ? fotoJ2
                             : getFotoUrlById(0);
                         return (
                           <>
@@ -237,12 +278,12 @@ export default function TelaHistorico({
                               >
                                 {log.player === 1 && (
                                   <p className="nomeJogador1">
-                                    {infoJogador1.nome}
+                                    {infoJogador1?.nome}
                                   </p>
                                 )}
                                 {log.player === 2 && (
                                   <p className="nomeJogador2">
-                                    {infoJogador2.nome}
+                                    {infoJogador2?.nome}
                                   </p>
                                 )}
                                 {log.player !== 0 && (
