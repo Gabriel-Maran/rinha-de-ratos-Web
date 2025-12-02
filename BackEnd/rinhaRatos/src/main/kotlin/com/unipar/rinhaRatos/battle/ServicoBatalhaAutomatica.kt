@@ -34,14 +34,13 @@ class ServicoBatalhaAutomatica(
     private val repositorioRato: RatoRepository,
     private val repositorioHabilidade: HabilidadeRepository,
     private val usuarioRepository: UsuarioRepository,
-    private val serviceRato: RatoService,
     private val messageService: MessageService,
     private val resultsService: ResultsService,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     //Guarda Resultados de Rounds e Finais da batalha
-    data class ResultadoRound(val numeroRound: Int, val mensagens: List<String>, val hpPorRato: Map<Long, Int>)
+    data class  ResultadoRound(val numeroRound: Int, val mensagens: List<String>, val hpPorRato: Map<Long, Int>)
     data class ResultadoBatalha(
         val idBatalha: Long,
         val idRatoVencedor: Long?,

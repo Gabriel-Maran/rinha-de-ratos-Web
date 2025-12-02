@@ -22,7 +22,6 @@ interface ClasseRepository : JpaRepository<Classe, Long> {
     @Query("select distinct c from Classe c")
     fun findAllWithHabilidades(): List<Classe>
 
-    // NOVO: busca por id trazendo também as habilidades (evita lazy init ao mapear)
     @EntityGraph(attributePaths = ["habilidades"])
     @Query("select c from Classe c where c.idClasse = :id")
     fun findByIdWithHabilidades(@Param("id") id: Long): Optional<Classe>

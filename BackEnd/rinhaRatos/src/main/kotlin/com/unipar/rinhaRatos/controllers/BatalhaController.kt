@@ -6,7 +6,6 @@ import com.unipar.rinhaRatos.DTOandBASIC.BatalhaSummary
 import com.unipar.rinhaRatos.DTOandBASIC.ErrorResponse
 import com.unipar.rinhaRatos.mapper.toDto
 import com.unipar.rinhaRatos.mapper.toDtoPlus
-import com.unipar.rinhaRatos.repositorys.BatalhaRepository
 import com.unipar.rinhaRatos.service.BatalhaService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -98,6 +97,7 @@ class BatalhaController(
         return ResponseEntity.ok(result.map{ it.toDto()})
     }
 
+    
     @GetMapping("/user/concluidas/sembot/{idUsuario}")
     fun pegaBatalhaConcuildaIdUserSemBot(@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<Any> {
         val result = batalhaService.pegarTodasBatalhasDoUsuarioConcluidasSemBot(idUsuario)

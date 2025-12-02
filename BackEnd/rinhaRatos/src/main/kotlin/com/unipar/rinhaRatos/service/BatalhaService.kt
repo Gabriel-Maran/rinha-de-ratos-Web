@@ -48,7 +48,7 @@ class BatalhaService(
         batalhaRepository.pegarTodasBatalhasDoUsuarioComInscricaoAberta(idUsuario)
 
     fun pegarTodasAsBatalhasAcabadas(): List<Batalha> =
-        batalhaRepository.pegarTodasAsBatalhasAcabadas()
+         batalhaRepository.pegarTodasAsBatalhasAcabadas()
 
     fun pegarTodasAsBatalhasAcabadasSemBot(): List<Batalha> {
         val todasBatalhas = batalhaRepository.pegarTodasAsBatalhasAcabadas()
