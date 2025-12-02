@@ -141,6 +141,24 @@ data class BatalhaDTO(
     val perdedor: UsuarioSummaryDTO?
 )
 
+data class BatalhaDTOPlus(
+    val idBatalha: Long,
+    val admCriador: UsuarioSummaryDTO,
+    val nomeBatalha: String,
+    val dataHorarioInicio: LocalDateTime,
+    val custoInscricao: Int,
+    val premioTotal: Int,
+    val status: StatusBatalha,
+    val jogador1: UsuarioSummaryDTO?,
+    val rato1: RatoSummaryDTO?,
+    val jogador2: UsuarioSummaryDTO?,
+    val rato2: RatoSummaryDTO?,
+    val vencedor: UsuarioSummaryDTO?,
+    val perdedor: UsuarioSummaryDTO?,
+    val idRatoVencedor: Long,
+    val idRatoPerdedor: Long
+)
+
 data class MessageRoundDTO(
     val idmessage: Long,
     val descricao: String,

@@ -13,6 +13,30 @@ import ImgNeutra from "../../../assets/icones/IconeNeutro.png";
 import ImagensRato from "../../ImagensRato";
 import "./TelaHistorico.css";
 
+// ---------------------------------------------------------
+// COMPONENTE DE VISUALIZAÇÃO DE RELATÓRIOS PÓS-BATALHA
+// ---------------------------------------------------------
+
+// ARQUITETURA DE DADOS:
+// Este componente atua como um agregador complexo de dados.
+// Ele recebe apenas um ID (idBatalha) e precisa reconstruir toda a cena:
+// 1. Busca o Histórico.
+// 2. Busca os dados da Batalha (Quem jogou, quem venceu).
+// 3. Busca os dados dos Usuários (Nomes, Fotos).
+// 4. Busca os dados dos Ratos (Classes, Skins).
+// Essa cadeia de requisições é gerenciada no useEffect principal.
+
+// PROCESSAMENTO DE LOGS (REGEX E PARSING):
+// O backend retorna os logs como strings textuais (ex: "Rato A causou 10 de dano").
+// Para desenhar as Barras de Vida entre os rounds, o componente
+// utiliza Regex para extrair os valores numéricos de vida
+// de strings específicas do log e armazená-los no estado 'valorVidaPorRound'.
+
+// RENDERIZAÇÃO E NAVEGAÇÃO INTERNA:
+// O modal possui um sistema de abas interno ("1" para Resumo/Banner, "2" para Logs Detalhados).
+// A renderização é condicional baseada no status de carregamento ('loading') e
+// na presença dos dados.
+
 export default function TelaHistorico({
   onClose,
   mostrarHistorico,
@@ -20,51 +44,73 @@ export default function TelaHistorico({
   dadosBatalhaBot,
 }) {
   const { user } = useAuth();
+
+  // ---------------------------------------------------------
+  // GERENCIAMENTO DE ESTADO (STATES)
+  // ---------------------------------------------------------
+
+  // Estados de Controle e Dados Brutos:
   const [logs, setLogs] = useState([]);
   const [idVencedor, setIdVencedor] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const idUsuarioLogado = (user?.idUsuario && user?.tipoConta === 'JOGADOR') ? user?.idUsuario : user?.id;
-
   const [participou, setParticipou] = useState(false);
 
+  // Derivação de Identidade:
+  // Garante que temos o ID correto, seja logado como 'JOGADOR' ou conta genérica.
+  const idUsuarioLogado =
+    user?.idUsuario && user?.tipoConta === "JOGADOR"
+      ? user?.idUsuario
+      : user?.id;
+
+  // Estados de Exibição (Vencedor vs Derrotado):
+  // Organiza os dados para o Banner de Resultado (Aba 1).
   const [infoJogadorVencedor, setInfoJogadorVencedor] = useState(null);
   const [infoJogadorDerrotado, setInfoJogadorDerrotado] = useState(null);
   const [fotoJVencedor, setFotoJVencedor] = useState(0);
   const [fotoJDerrotado, setFotoJDerrotado] = useState(0);
+  const [infoRatoVencedor, setInfoRatoVencedor] = useState(null);
+  const [infoRatoDerrotado, setInfoRatoDerrotado] = useState(null);
 
+  // Estados de Dados dos Jogadores (Posicionais):
+  // Organiza os dados para o Log de Batalha (Aba 2 - Esquerda vs Direita).
   const [infoJogador1, setInfoJogador1] = useState(null);
   const [fotoJ1, setFotoJ1] = useState(0);
-
-  const [infoJogador2, setInfoJogador2] = useState(null);
-  const [fotoJ2, setFotoJ2] = useState(0);
-
   const [nomeRatoJ1, setNomeRatoJ1] = useState("");
   const [infoRatoJ1, setInfoRatoJ1] = useState(null);
 
+  const [infoJogador2, setInfoJogador2] = useState(null);
+  const [fotoJ2, setFotoJ2] = useState(0);
   const [nomeRatoJ2, setNomeRatoJ2] = useState("");
   const [infoRatoJ2, setInfoRatoJ2] = useState(null);
 
+  // Estado Calculado (Vidas):
   const [valorVidaPorRound, setValorVidaPorRound] = useState([]);
 
+  // Controle de Navegação do Modal:
+  const [abaModal, setAbaModal] = useState("1");
+  const botoesNavModal = ["1", "2"];
+
+  // ---------------------------------------------------------
+  // EFEITOS E LÓGICA ASSÍNCRONA
+  // ---------------------------------------------------------
+
+  // Effect 1: Processamento de Logs (Parser)
+  // Observa mudanças nos 'logs' brutos e extrai a vida dos ratos ao final de cada round.
   useEffect(() => {
-    /* Regex maroto pra pegar os valores das vidas */
+    /* Regex para capturar padrões como "Vida=100 | Vida=90" */
     const regexRound = /[^=|]+=\s*(\d+)\s*\|\s*[^=|]+=\s*(\d+)/;
 
-    /* Serve pra filtrar pelos logs e pegar somente aqueles tem as vidas
-       Ou seja, aqueles em que o id do player é 0 (narrador)
-    */
-
+    /* Filtra apenas as mensagens do sistema (player === 0) que indicam fim de turno */
     const finaisDeRound = logs.filter((r) => r.player === 0);
 
     let novasVidas = [];
 
     finaisDeRound.map((regTerminouRound) => {
       const index = regTerminouRound.round - 1;
-
       const msgAcabouRound = regTerminouRound.descricao.match(regexRound);
 
       if (msgAcabouRound) {
+        // Captura grupos do Regex (Vida J1 e Vida J2)
         const vRJ1 = Number(msgAcabouRound[1]);
         const vRJ2 = Number(msgAcabouRound[2]);
 
@@ -75,6 +121,9 @@ export default function TelaHistorico({
     setValorVidaPorRound(novasVidas);
   }, [logs]);
 
+  // Effect 2: Organização Vencedor/Perdedor
+  // Define quem aparece à esquerda (Vencedor) e direita (Perdedor) no Banner,
+  // baseando-se no ID do vencedor retornado pela API.
   useEffect(() => {
     if (idVencedor && infoJogador1 && infoJogador2) {
       if (idVencedor === infoJogador1.idUsuario) {
@@ -91,6 +140,8 @@ export default function TelaHistorico({
     }
   }, [idVencedor, infoJogador1, infoJogador2]);
 
+  // Effect 3: Data Fetching (Cascata)
+  // Realiza a busca sequencial e paralela de todos os dados necessários.
   useEffect(() => {
     if (!mostrarHistorico) return;
 
@@ -103,18 +154,37 @@ export default function TelaHistorico({
       try {
         const resposta = await buscarHistorico(idFinal);
         const dados = resposta.data;
-        console.log(dados);
 
         if (Array.isArray(dados) && dados.length >= 2) {
           try {
             const respostaBatalha = await pegarJogadoresDaBatalha(idFinal);
             const dadosBatalha = respostaBatalha.data;
+            try {
+              const idRatoVencedor = dadosBatalha?.idRatoVencedor;
+              const idRatoDerrotado = dadosBatalha?.idRatoPerdedor;
+              const respostaRatoVencedor = await pegarRatoPorID(idRatoVencedor);
+              const respostaRatoDerrotado = await pegarRatoPorID(
+                idRatoDerrotado
+              );
+              setInfoRatoVencedor(respostaRatoVencedor?.data);
+              setInfoRatoDerrotado(respostaRatoDerrotado?.data);
+            } catch (err) {
+              console.error(
+                "Erro ao buscar dados do rato vencedor/derrotado:",
+                err
+              );
+            }
+
+            // Passo 4: Configurar Jogadores (Player 1 e Player 2)
             const idJogador1 = dadosBatalha.jogador1.idUsuario;
             const idJogador2 = dadosBatalha.jogador2.idUsuario;
             setNomeRatoJ1(dadosBatalha.rato1.nomeCustomizado);
             setNomeRatoJ2(dadosBatalha.rato2.nomeCustomizado);
+
             const idRatoJ1 = dadosBatalha.rato1.idRato;
             const idRatoJ2 = dadosBatalha.rato2.idRato;
+
+            // Passo 5 (Paralelo): Buscar perfil completo dos Usuários
             try {
               const respostaJogador1 = await pegarUsuarioPorId(idJogador1);
               const dadosJogador1 = respostaJogador1.data;
@@ -126,34 +196,28 @@ export default function TelaHistorico({
               setFotoJ2(getFotoUrlById(dadosJogador2.idFotoPerfil));
               setInfoJogador2(dadosJogador2);
             } catch (err) {
-              console.error(
-                "Erro ao buscar dados dos usuários:",
-                err.response?.data || err
-              );
+              console.error("Erro ao buscar dados dos usuários:", err);
             }
+
+            // Passo 6 (Paralelo): Buscar detalhes dos Ratos (Skins/Classes) para os Logs
             try {
               !idUsuarioLogado ? setParticipou(false) : setParticipou(true);
               const ratoJ1 = await pegarRatoPorID(idRatoJ1);
               const dadosRatoJ1 = ratoJ1.data;
-              console.log(dadosRatoJ1);
               setInfoRatoJ1(dadosRatoJ1);
 
               const ratoJ2 = await pegarRatoPorID(idRatoJ2);
               const dadosRatoJ2 = ratoJ2.data;
               setInfoRatoJ2(dadosRatoJ2);
             } catch (err) {
-              console.error("Erro ao buscar ratos:", err.response?.data || err);
+              console.error("Erro ao buscar ratos:", err);
             }
           } catch (err) {
-            console.error(
-              "Erro ao pegar os jogadores da batalh:",
-              err.response?.data || err
-            );
+            console.error("Erro ao pegar os jogadores da batalha:", err);
           }
 
-          setLogs(dados[0]); // Gaveta 1: Logs
-
-          const infoResultado = dados[1]?.[0]; // Gaveta 2: Resultado
+          setLogs(dados[0]); // Gaveta 1: Logs textuais
+          const infoResultado = dados[1]?.[0]; // Gaveta 2: Metadados do resultado
 
           if (infoResultado) {
             setIdVencedor(infoResultado.id_vencedor);
@@ -169,8 +233,13 @@ export default function TelaHistorico({
     carregarDados();
   }, [idBatalha, dadosBatalhaBot, mostrarHistorico, idUsuarioLogado]);
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO CONDICIONAL 
+  // ---------------------------------------------------------
+
   if (!mostrarHistorico) return null;
 
+  // Lógica de UI para o Banner (Vitória, Derrota ou Neutro)
   const vitoria = idVencedor === idUsuarioLogado;
   const imagemBanner = !idUsuarioLogado
     ? ImgNeutra
@@ -178,11 +247,10 @@ export default function TelaHistorico({
     ? ImgVitoria
     : ImgDerrota;
   const mensagemResultado = vitoria ? "Você venceu!!!" : "Você perdeu...";
-  const [abaModal, setAbaModal] = useState("1");
-  const botoesNavModal = ["1", "2"];
 
   let conteudoAba;
 
+  // Switch de Abas (1: Resumo, Default/2: Logs)
   switch (abaModal) {
     case "1":
       conteudoAba = (
@@ -192,7 +260,6 @@ export default function TelaHistorico({
           ) : (
             <>
               <h1 className="tituloResultado">Resultado da Batalha:</h1>
-              {/* {!participou && <div className="brasaoResultado"></div>} */}
               <div className="area-banner-central">
                 <img
                   src={imagemBanner}
@@ -205,30 +272,34 @@ export default function TelaHistorico({
                   <>
                     <div className="resultadoDaBatalhaNeutro">
                       <div className="secaoVitorioso">
-                        <p className="statusJogadorVencedor">Sigmas:</p>
+                        <p className="statusJogadorVencedor">Sigmas 🗿:</p>
                         <div className="resultInfoJogador">
                           <img src={fotoJVencedor} />
                           <p>{infoJogadorVencedor?.nome ?? ""}</p>
                         </div>
-                        {/*                         <div className="infoRatoResultBatalha">
+                        <div className="infoRatoResultBatalha">
                           <img
-                            src={ImagensRato[infoRatoJ1.classe?.nomeClasse]}
+                            src={
+                              ImagensRato[infoRatoVencedor?.classe?.nomeClasse]
+                            }
                           />
-                          <p>{nomeRatoJ1}</p>
-                        </div> */}
+                          <p>{infoRatoVencedor?.nomeCustomizado}</p>
+                        </div>
                       </div>
                       <div className="secaoDerrotado">
-                        <p className="statusJogadorDerrotado">Betinhas:</p>
+                        <p className="statusJogadorDerrotado">Betinhas 🤓:</p>
                         <div className="resultInfoJogador">
                           <img src={fotoJDerrotado} />
                           <p>{infoJogadorDerrotado?.nome ?? ""}</p>
                         </div>
-                        {/*                         <div className="infoRatoResultBatalha">
+                        <div className="infoRatoResultBatalha">
                           <img
-                            src={ImagensRato[infoRatoJ2.classe?.nomeClasse]}
+                            src={
+                              ImagensRato[infoRatoDerrotado?.classe?.nomeClasse]
+                            }
                           />
-                          <p>{nomeRatoJ2}</p>
-                        </div> */}
+                          <p>{infoRatoDerrotado?.nomeCustomizado}</p>
+                        </div>
                       </div>
                     </div>
                   </>
@@ -237,7 +308,6 @@ export default function TelaHistorico({
                   <h2 className="texto-resultado-final">{mensagemResultado}</h2>
                 )}
               </div>
-              {/*  )} */}
             </>
           )}
         </>
@@ -263,7 +333,7 @@ export default function TelaHistorico({
                             ? fotoJ2
                             : getFotoUrlById(0);
                         return (
-                          <>
+                          <>                         
                             {log.player !== 0 && (
                               <div
                                 className={
@@ -398,6 +468,9 @@ export default function TelaHistorico({
       );
   }
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO FINAL (JSX)
+  // ---------------------------------------------------------
   return (
     <div className="bgEscuroOn">
       <div className="modalResultado">

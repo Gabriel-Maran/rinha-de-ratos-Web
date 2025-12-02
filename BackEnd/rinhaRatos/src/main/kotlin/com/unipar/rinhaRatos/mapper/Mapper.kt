@@ -130,6 +130,26 @@ fun Batalha.toDto(): BatalhaDTO {
     )
 }
 
+fun Batalha.toDtoPlus(): BatalhaDTOPlus {
+    return BatalhaDTOPlus(
+        idBatalha = this.idBatalha,
+        admCriador = this.admCriador.toSummaryDto(),
+        nomeBatalha = this.nomeBatalha,
+        dataHorarioInicio = this.dataHorarioInicio,
+        custoInscricao = this.custoInscricao,
+        premioTotal = this.premioTotal,
+        status = this.status,
+        jogador1 = this.jogador1?.toSummaryDto(),
+        rato1 = this.rato1?.toSummaryDto(),
+        jogador2 = this.jogador2?.toSummaryDto(),
+        rato2 = this.rato2?.toSummaryDto(),
+        vencedor = this.vencedor?.toSummaryDto(),
+        perdedor = this.perdedor?.toSummaryDto(),
+        idRatoVencedor = if((vencedor?.idUsuario ?: -1000) == (rato1?.usuario?.idUsuario ?: 0)) rato1?.idRato ?: 0 else rato2?.idRato ?: 0,
+        idRatoPerdedor = if((perdedor?.idUsuario ?: -1000) == (rato1?.usuario?.idUsuario ?: 0)) rato1?.idRato ?: 0 else rato2?.idRato ?: 0,
+    )
+}
+
 fun MessageRound.toDto(): MessageRoundDTO {
     return MessageRoundDTO(
         idmessage = this.idmessage,
