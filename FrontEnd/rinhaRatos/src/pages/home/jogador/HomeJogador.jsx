@@ -27,47 +27,73 @@ const ETAPAS = {
 
 export default function HomeJogador() {
   const { user, recarregarUsuario } = useAuth();
-
   const navigate = useNavigate();
+
+  // ---------------------------------------------------------
+  // GERENCIAMENTO DE ESTADO E REFERÊNCIAS
+  // ---------------------------------------------------------
+  
+  // useRef (Persistência sem Re-render):
+  // Armazena a lista de batalhas da última renderização.
+  // Usado para comparar o "antes e depois" e detectar se uma batalha acabou.
   const listaBatalhasAntigas = useRef([]);
 
+  // Estados do Wizard (Modal de Criação):
+  // Controla o fluxo passo-a-passo da criação do rato (Máquina de Estados).
   const [etapaModal, setEtapaModal] = useState(ETAPAS.FECHADO);
   const [classeSelecionada, setClasseSelecionada] = useState(null);
   const [indexClasse, setIndexClasse] = useState(null);
   const [descHabilidade, setDescHabilidade] = useState(null);
   const [novoRato, setNovoRato] = useState(null);
 
+  // Estados de Notificação (Pop-up de Resultado):
   const [mostrarResultadoBatalha, setMostrarResultadoBatalha] = useState(false);
   const [idBatalhaResultado, setIdBatalhaResultado] = useState(null);
 
+  // Estados de Dados (Cache da API):
   const [ratosUsuario, setRatosUsuario] = useState([]);
   const [classes, setClasses] = useState(null);
   const [descricaoHabilidades, setDescHabilidades] = useState(null);
 
-  const [batalhasAbertas, setBatalhasAbertas] = useState([]);
-  const [batalhasInscrito, setBatalhasInscrito] = useState([]);
+  // Separação Lógica de Listas:
+  const [batalhasAbertas, setBatalhasAbertas] = useState([]); // Lobby
+  const [batalhasInscrito, setBatalhasInscrito] = useState([]); // Minhas Batalhas
 
+  // Feedback de UI (Loaders e Erros):
   const [loadingRatos, setLoadingRatos] = useState(true);
   const [erroRatos, setErroRatos] = useState(null);
 
+  // Navegação e Seleção:
   const [ratoParaBatalhar, setRatoParaBatalhar] = useState(null);
   const [opcaoAtivada, setOpcaoAtivada] = useState("Meus ratos");
 
+  // Dados Derivados:
   const idUsuarioLogado = user ? user.idUsuario || user.id : null;
   const qtdeMoedas = user?.mousecoinSaldo ?? 0;
-
   const botoes = ["Meus ratos", "Batalhas", "Ranking", "Loja"];
   const limiteRatos = 3;
 
+  // Filtragem Client-Side:
   const ratosVivos = ratosUsuario.filter((rato) => rato.estaVivo);
   const contagemRatosVivos = ratosVivos.length;
 
+  // ---------------------------------------------------------
+  // EFEITOS E LÓGICA ASSÍNCRONA
+  // ---------------------------------------------------------
+
+  // Proteção de Rota:
+  // Redireciona para o login se não houver usuário na sessão.
   useEffect(() => {
     if (idUsuarioLogado === null) {
       navigate("/login");
     }
   }, [idUsuarioLogado, navigate]);
 
+  // Função Central de Busca (Data Fetching) e Regras de Negócio:
+  // 1. Paralelismo (Promise.all): Executa 5 requisições simultâneas para otimizar tempo de carga.
+  // 2. Ordenação: Garante que as batalhas mais novas apareçam no topo.
+  // 3. Detecção de Fim de Batalha: Compara a lista atual com 'listaBatalhasAntigas'.
+  // 4. Morte Permanente (Perma-Death): Se a batalha acabou, o usuário perdeu e não foi contra Bot, o rato morre.
   const buscarDadosIniciais = useCallback(
     async (silencioso = false) => {
       if (!idUsuarioLogado) return;
@@ -108,7 +134,6 @@ export default function HomeJogador() {
           setBatalhasAbertas([]);
         }
 
-        // --- LÓGICA DE FIM DE BATALHA ---
         if (listaBatalhasAntigas.current.length > 0) {
           listaBatalhasAntigas.current.forEach((batalhaVelha) => {
             const batalhaNova = respostaBatalhasInscrito.data.find(
@@ -182,6 +207,9 @@ export default function HomeJogador() {
     [idUsuarioLogado, recarregarUsuario]
   );
 
+  // Polling Atualização em Tempo Real:
+  // Configura um intervalo de 3 segundos para buscar novos dados silenciosamente (sem loading).
+  // Retorna uma função de limpeza (clearInterval) para evitar vazamento de memória.
   useEffect(() => {
     buscarDadosIniciais(false);
     recarregarUsuario();
@@ -191,14 +219,23 @@ export default function HomeJogador() {
     }, 3000);
 
     return () => clearInterval(intervalo);
-  }, [buscarDadosIniciais, recarregarUsuario]); //
+  }, [buscarDadosIniciais, recarregarUsuario]);
 
+  // ---------------------------------------------------------
+  // HANDLERS E FUNÇÕES DE APOIO
+  // ---------------------------------------------------------
+
+  // Funções Auxiliares de Atualização e Navegação:
+  // - handleAtualizarAposInscricao: Força refresh após entrar em batalha.
+  // - mostrarSelecaoClasse / fecharModal: Controle de visibilidade do modal.
+  // - mostrarRatoCriado: atualiza lista local antes do refetch.
   const handleAtualizarAposInscricao = async () => {
     await buscarDadosIniciais(false);
     await recarregarUsuario();
   };
 
   const mostrarSelecaoClasse = () => setEtapaModal(ETAPAS.SELECAO_CLASSE);
+  
   const fecharModal = () => {
     setEtapaModal(ETAPAS.FECHADO);
     setClasseSelecionada(null);
@@ -206,17 +243,20 @@ export default function HomeJogador() {
     setNovoRato(null);
     setDescHabilidade(null);
   };
+  
   const selecionarClasse = (classe, index) => {
     setEtapaModal(ETAPAS.DETALHES_CLASSE);
     setClasseSelecionada(classe);
     setIndexClasse(index);
   };
+  
   const mostrarRatoCriado = (ratoCompletoDaApi, descHabilidadeDaClasse) => {
     setRatosUsuario((prevRatos) => [...prevRatos, ratoCompletoDaApi]);
     setNovoRato(ratoCompletoDaApi);
     setDescHabilidade(descHabilidadeDaClasse);
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
+  
   const mostrarDetalhesRato = (ratoClicado) => {
     setNovoRato(ratoClicado);
     if (descricaoHabilidades && ratoClicado.habilidade) {
@@ -231,10 +271,12 @@ export default function HomeJogador() {
     }
     setEtapaModal(ETAPAS.RATO_CRIADO);
   };
+  
   const definirRatoBatalha = (rato) => {
     localStorage.setItem("ratoSelecionado", JSON.stringify(rato));
     setRatoParaBatalhar(rato);
   };
+  
   const fecharHistoricoAutomatico = () => {
     setMostrarResultadoBatalha(false);
     setIdBatalhaResultado(null);
@@ -242,7 +284,16 @@ export default function HomeJogador() {
     recarregarUsuario();
   };
 
+  // ---------------------------------------------------------
+  // RENDERIZAÇÃO CONDICIONAL 
+  // ---------------------------------------------------------
+
+  // Lógica de Renderização do Conteúdo Principal:
+  // Verifica estados de Loading/Erro global primeiro.
+  // Caso contrário, usa um Switch Case na variável 'opcaoAtivada' para renderizar
+  // apenas o componente necessário (Ratos, Batalhas, Ranking ou Loja).
   let conteudoCorpo;
+  
   if (loadingRatos) {
     conteudoCorpo = <p className="loading-mensagem">A carregar dados...</p>;
   } else if (erroRatos) {
@@ -250,7 +301,7 @@ export default function HomeJogador() {
   } else {
     switch (opcaoAtivada) {
       case "Meus ratos":
-       conteudoCorpo = (
+        conteudoCorpo = (
           <>
             <ModalCriacaoRato
               etapa={etapaModal}
