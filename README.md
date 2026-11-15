@@ -1,8 +1,8 @@
 # Rinha de Ratos
 
-Jogo web de batalhas entre ratos, chamado de **Coliseu dos Ratos** dentro do app. Foi meu primeiro back-end completo, feito como trabalho acadêmico por uma equipe de quatro pessoas entre outubro e dezembro de 2025.
+Jogo web de batalhas entre ratos, feito pelo nosso grupo de quatro pessoas como trabalho acadêmico das matérias de front-end e back-end, entre outubro e dezembro de 2025. Foi o nosso primeiro projeto completo.
 
-> **Projeto preservado.** O código continua como foi entregue. Depois da entrega, só mudaram detalhes do repositório: a conexão do banco passou a ser lida por variáveis de ambiente, entrou o `.gitignore` e este README foi reescrito. O que eu faria diferente hoje está em [Olhando hoje](#olhando-hoje).
+> **Projeto preservado.** O código continua como entregamos. Depois da entrega, só mudaram detalhes do repositório: a conexão do banco passou a ser lida por variáveis de ambiente, entrou o `.gitignore` e este README foi reescrito. O que faríamos diferente hoje está em [Olhando hoje](#olhando-hoje).
 
 ## O que dá para fazer
 
@@ -20,7 +20,7 @@ Jogo web de batalhas entre ratos, chamado de **Coliseu dos Ratos** dentro do app
 - **Relatórios em PDF** gerados no servidor com o Apache PDFBox.
 - **API REST** com 48 endpoints em 8 controllers, separados em controllers, services, repositories e models.
 
-A batalha é calculada de uma vez, e não ao vivo, porque não havia tempo no prazo do trabalho para aprender WebSockets. O front-end mostra o resultado e o histórico das rodadas.
+A batalha é calculada de uma vez, e não ao vivo, porque não tínhamos tempo, dentro do prazo do trabalho, para aprender WebSockets. O front-end mostra o resultado e o histórico das rodadas.
 
 ## Stack
 
@@ -70,9 +70,9 @@ Os endpoints estão documentados [neste documento](https://docs.google.com/docum
 
 ## Olhando hoje
 
-Algumas decisões deste projeto eu tomaria de outro jeito hoje. Mesmo assim, preferi não reescrever o código, para ele continuar mostrando o ponto de onde eu parti. Por isso, ele não serve de base para nada em produção.
+Algumas decisões deste projeto nós tomaríamos de outro jeito hoje. Mesmo assim, preferimos não reescrever o código, para ele continuar mostrando o ponto de onde partimos. Por isso, ele não serve de base para nada em produção.
 
-O que eu mudaria:
+O que mudaríamos:
 
 - **Autenticação:** guardar as senhas com hash e exigir login nas rotas. Hoje as senhas ficam em texto puro e as rotas não conferem quem está chamando.
 - **Entrada da API:** usar DTOs validados em todos os endpoints. Hoje, por exemplo, quem define o tipo da conta no cadastro é o cliente.
